@@ -331,7 +331,7 @@
       "name": "ゲリラ戦術",
       "type": "キャラ/OP",
       "timing": "被射撃時",
-      "effect": "敵から2マス以内に近づかれるまで、射撃武装の対象にならない。",
+      "effect": "砂漠・森林・水・デブリ上にいる時、敵から2マス以内に近づかれるまで射撃武装の対象にならない。",
       "implemented": true
     },
     {
@@ -1001,7 +1001,6 @@
       "fixedWeaponIds": [
         "ballCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -1033,7 +1032,6 @@
       "fixedWeaponIds": [
         "tankGun55mm"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -1065,7 +1063,6 @@
       "fixedWeaponIds": [
         "headVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -1099,7 +1096,6 @@
         "coreBoosterMegaParticleCannon",
         "aircraftVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -1133,7 +1129,6 @@
         "gFighterBeamCannon",
         "gFighterNoseMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -1158,16 +1153,15 @@
       "name": "トリアーエズ",
       "faction": "federation",
       "cost": 40,
-      "armor": 90,
+      "armor": 75,
       "energy": 28,
       "agility": 22,
-      "mobility": 6,
+      "mobility": 5,
       "weaponSlots": 0,
       "optionSlots": 0,
       "fixedWeaponIds": [
         "aircraftVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -1191,17 +1185,16 @@
       "name": "TINコッド",
       "faction": "federation",
       "cost": 55,
-      "armor": 115,
+      "armor": 90,
       "energy": 32,
       "agility": 24,
-      "mobility": 6,
+      "mobility": 5,
       "weaponSlots": 0,
       "optionSlots": 0,
       "fixedWeaponIds": [
         "aircraftVulcan",
         "fighterMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -1224,17 +1217,16 @@
       "name": "セイバーフィッシュ",
       "faction": "federation",
       "cost": 70,
-      "armor": 130,
+      "armor": 105,
       "energy": 38,
       "agility": 26,
-      "mobility": 7,
+      "mobility": 6,
       "weaponSlots": 0,
       "optionSlots": 0,
       "fixedWeaponIds": [
         "fighterMissile",
         "aircraftVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -1257,17 +1249,16 @@
       "name": "フライ・マンタ",
       "faction": "federation",
       "cost": 65,
-      "armor": 125,
+      "armor": 105,
       "energy": 34,
       "agility": 18,
-      "mobility": 5,
+      "mobility": 4,
       "weaponSlots": 0,
       "optionSlots": 0,
       "fixedWeaponIds": [
         "heavyBomb",
         "fighterMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -1290,7 +1281,7 @@
       "name": "デプ・ロッグ",
       "faction": "federation",
       "cost": 85,
-      "armor": 170,
+      "armor": 145,
       "energy": 38,
       "agility": 12,
       "mobility": 4,
@@ -1300,7 +1291,6 @@
         "heavyBomb",
         "fighterMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -1333,7 +1323,6 @@
         "antiSubMissile",
         "fighterMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -1359,16 +1348,15 @@
       "name": "ファンファン",
       "faction": "federation",
       "cost": 35,
-      "armor": 70,
+      "armor": 60,
       "energy": 24,
       "agility": 20,
-      "mobility": 5,
+      "mobility": 4,
       "weaponSlots": 0,
       "optionSlots": 0,
       "fixedWeaponIds": [
         "fighterMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -1401,7 +1389,6 @@
       "fixedWeaponIds": [
         "aircraftVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -1437,7 +1424,6 @@
       "fixedWeaponIds": [
         "beamDisruptionRocket"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -1471,14 +1457,6 @@
         "headVulcan",
         "beamSaber"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "grenade",
-        "missile",
-        "shield"
-      ],
       "mapTypes": [
         "ground",
         "space"
@@ -1511,15 +1489,6 @@
       "fixedWeaponIds": [
         "headVulcan",
         "beamSaber"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "grenade",
-        "missile",
-        "hammer",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -1556,15 +1525,6 @@
       "fixedWeaponIds": [
         "headVulcan",
         "beamSaber"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "grenade",
-        "missile",
-        "hammer",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -1604,15 +1564,6 @@
         "headVulcan",
         "beamJavelin"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "grenade",
-        "missile",
-        "hammer",
-        "shield"
-      ],
       "mapTypes": [
         "ground",
         "space"
@@ -1648,15 +1599,6 @@
       "fixedWeaponIds": [
         "headVulcan",
         "beamSaberTwin"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "grenade",
-        "missile",
-        "hammer",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -1695,7 +1637,6 @@
       "fixedWeaponIds": [
         "gBullBeamCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -1732,7 +1673,6 @@
         "gFighterBeamCannon",
         "gFighterNoseMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -1774,11 +1714,6 @@
         "cannon",
         "headVulcan"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "machine-gun",
-        "shield"
-      ],
       "mapTypes": [
         "ground",
         "space"
@@ -1815,11 +1750,6 @@
       "fixedWeaponIds": [
         "sprayMissileLauncher",
         "headVulcan"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "machine-gun",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -1859,7 +1789,6 @@
         "bopMissile",
         "headVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -1897,14 +1826,6 @@
         "headVulcan",
         "beamSaberTwin"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "grenade",
-        "missile",
-        "shield"
-      ],
       "mapTypes": [
         "ground",
         "space"
@@ -1941,12 +1862,6 @@
         "gmCannonCannon",
         "headVulcan"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "machine-gun",
-        "bazooka",
-        "shield"
-      ],
       "mapTypes": [
         "ground",
         "space"
@@ -1970,6 +1885,9 @@
       "id": "zaku1",
       "name": "ザクI",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 85,
       "armor": 220,
       "energy": 40,
@@ -1979,13 +1897,6 @@
       "optionSlots": 1,
       "fixedWeaponIds": [
         "shoulderTackle"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -2009,6 +1920,9 @@
       "id": "zaku2",
       "name": "ザクII",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 105,
       "armor": 260,
       "energy": 55,
@@ -2019,13 +1933,6 @@
       "fixedWeaponIds": [
         "heatHawk",
         "zakuShoulderShield"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -2049,6 +1956,9 @@
       "id": "charZaku2S",
       "name": "ザクIIS型（シャア機）",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 165,
       "armor": 260,
       "energy": 60,
@@ -2059,13 +1969,6 @@
       "fixedWeaponIds": [
         "heatHawk",
         "zakuShoulderShield"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -2093,6 +1996,9 @@
       "id": "gouf",
       "name": "グフ",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 175,
       "armor": 320,
       "energy": 65,
@@ -2104,13 +2010,6 @@
         "heatSword",
         "heatRod",
         "fingerVulcan"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground"
@@ -2144,13 +2043,6 @@
         "heatSaber",
         "spreadBeam"
       ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "beam-bazooka",
-        "grenade",
-        "shield"
-      ],
       "mapTypes": [
         "ground"
       ],
@@ -2182,13 +2074,6 @@
         "heatSaber",
         "spreadBeam"
       ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "beam-bazooka",
-        "grenade",
-        "shield"
-      ],
       "mapTypes": [
         "space"
       ],
@@ -2219,12 +2104,6 @@
       "optionSlots": 1,
       "fixedWeaponIds": [
         "beamNaginata"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "missile",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -2259,7 +2138,6 @@
         "aquaticMegaParticleCannon",
         "waterJetMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -2295,7 +2173,6 @@
         "aquaticMegaParticleCannon",
         "waterJetMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -2330,7 +2207,6 @@
         "aquaticMegaParticleCannon",
         "waterJetMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -2369,7 +2245,6 @@
         "aquaticMegaParticleCannon",
         "acguyArmMissileLauncher"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -2406,7 +2281,6 @@
         "zockMegaParticleCannon",
         "zockHeadMegaParticleCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -2441,7 +2315,6 @@
         "grabroTorpedo",
         "waterJetMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -2475,12 +2348,6 @@
       "optionSlots": 1,
       "fixedWeaponIds": [
         "beamNaginata"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "missile",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -2517,9 +2384,6 @@
       "fixedWeaponIds": [
         "beamSaber"
       ],
-      "equipCategories": [
-        "shield"
-      ],
       "mapTypes": [
         "ground",
         "space"
@@ -2553,7 +2417,6 @@
         "azzamMegaParticleCannon",
         "azzamLeader"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -2587,7 +2450,6 @@
         "mobileArmorMissile",
         "bigroMegaParticleCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -2622,7 +2484,6 @@
         "mobileArmorMissile",
         "scatteringMegaParticleCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -2655,7 +2516,6 @@
         "bigroMegaParticleCannon",
         "wiredMegaParticleCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -2690,7 +2550,6 @@
         "bigZamAllRangeMegaParticleCannon",
         "bigZamLegMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -2727,7 +2586,6 @@
         "bigroMegaParticleCannon",
         "bit"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -2762,7 +2620,6 @@
         "zeongWiredArmMegaParticleCannon",
         "zeongWaistMegaParticleCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -2798,7 +2655,6 @@
       "fixedWeaponIds": [
         "zeongHeadMegaParticleCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -2823,17 +2679,16 @@
       "name": "ドップ",
       "faction": "zeon",
       "cost": 55,
-      "armor": 110,
+      "armor": 90,
       "energy": 30,
       "agility": 24,
-      "mobility": 6,
+      "mobility": 5,
       "weaponSlots": 0,
       "optionSlots": 0,
       "fixedWeaponIds": [
         "doppVulcan",
         "doppMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -2864,7 +2719,6 @@
       "fixedWeaponIds": [
         "luggunGun"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -2889,17 +2743,16 @@
       "name": "ガトル",
       "faction": "zeon",
       "cost": 65,
-      "armor": 120,
+      "armor": 100,
       "energy": 35,
       "agility": 23,
-      "mobility": 6,
+      "mobility": 5,
       "weaponSlots": 0,
       "optionSlots": 0,
       "fixedWeaponIds": [
         "gatlMissile",
         "gatlLargeMissile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -2926,20 +2779,11 @@
       "energy": 82,
       "agility": 22,
       "mobility": 5,
-      "weaponSlots": 2,
+      "weaponSlots": 1,
       "optionSlots": 1,
       "fixedWeaponIds": [
         "headVulcan",
         "beamSaber"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "bullpup",
-        "grenade",
-        "missile",
-        "shield"
       ],
       "mapTypes": [
         "space"
@@ -2974,15 +2818,6 @@
         "headVulcan",
         "beamSaber"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "bullpup",
-        "grenade",
-        "missile",
-        "shield"
-      ],
       "mapTypes": [
         "ground"
       ],
@@ -3015,15 +2850,6 @@
       "fixedWeaponIds": [
         "headVulcan",
         "enhancedBeamSaber"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "bullpup",
-        "grenade",
-        "missile",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -3058,15 +2884,6 @@
       "fixedWeaponIds": [
         "beamGunUnit",
         "beamSaberUnit"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "bullpup",
-        "grenade",
-        "missile",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -3105,13 +2922,6 @@
       "fixedWeaponIds": [
         "beamSaber"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "machine-gun",
-        "bullpup",
-        "grenade",
-        "shield"
-      ],
       "mapTypes": [
         "ground",
         "space"
@@ -3147,15 +2957,6 @@
         "headVulcan",
         "ballUnitPsycommu"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "bullpup",
-        "grenade",
-        "missile",
-        "shield"
-      ],
       "mapTypes": [
         "space"
       ],
@@ -3189,12 +2990,6 @@
       "fixedWeaponIds": [
         "twinBeamSpearRod",
         "twinBeamSpearScythe"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bullpup",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground"
@@ -3230,12 +3025,6 @@
         "guardianShield",
         "shieldVulcan",
         "beamDagger"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "machine-gun",
-        "bullpup",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -3274,12 +3063,6 @@
         "gmCannonCannon",
         "headVulcan"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "machine-gun",
-        "bazooka",
-        "shield"
-      ],
       "mapTypes": [
         "ground",
         "space"
@@ -3316,12 +3099,6 @@
         "anchor",
         "beamPick"
       ],
-      "equipCategories": [
-        "harpoon",
-        "beam-rifle",
-        "machine-gun",
-        "shield"
-      ],
       "mapTypes": [
         "ground"
       ],
@@ -3356,7 +3133,6 @@
         "twinSpearGun",
         "fishEyeClawArm"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -3392,12 +3168,6 @@
         "beamPick",
         "torpedo",
         "harpoonGun"
-      ],
-      "equipCategories": [
-        "harpoon",
-        "beam-rifle",
-        "machine-gun",
-        "shield"
       ],
       "mapTypes": [
         "ground"
@@ -3435,12 +3205,6 @@
         "faRocketCannon360mm",
         "simpleSmallShield"
       ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "shield"
-      ],
       "mapTypes": [
         "ground",
         "space"
@@ -3475,13 +3239,6 @@
       "fixedWeaponIds": [
         "beamSaber",
         "heavyGundamBeamCannon"
-      ],
-      "equipCategories": [
-        "beam-rifle",
-        "bazooka",
-        "machine-gun",
-        "heavy-launcher",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -3518,13 +3275,6 @@
         "heatSaber",
         "spreadBeam"
       ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "beam-bazooka",
-        "grenade",
-        "shield"
-      ],
       "mapTypes": [
         "space"
       ],
@@ -3550,6 +3300,9 @@
       "id": "zaku2S",
       "name": "ザクIIS型",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 140,
       "armor": 265,
       "energy": 58,
@@ -3560,13 +3313,6 @@
       "fixedWeaponIds": [
         "heatHawk",
         "zakuShoulderShield"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -3593,6 +3339,9 @@
       "id": "dozleZaku2",
       "name": "ザクII（ドズル機）",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 170,
       "armor": 330,
       "energy": 58,
@@ -3602,12 +3351,6 @@
       "optionSlots": 1,
       "fixedWeaponIds": [
         "largeHeatHawk"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade"
       ],
       "mapTypes": [
         "ground",
@@ -3634,6 +3377,9 @@
       "id": "zakuDesert",
       "name": "ザク・デザートタイプ",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 135,
       "armor": 265,
       "energy": 55,
@@ -3644,13 +3390,6 @@
       "fixedWeaponIds": [
         "heatHawk",
         "crackerPod"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground"
@@ -3674,6 +3413,9 @@
       "id": "zakuCannon",
       "name": "ザク・キャノン",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 170,
       "armor": 285,
       "energy": 58,
@@ -3685,13 +3427,6 @@
         "zakuCannonGun",
         "zakuShoulderShield",
         "smokeDischargerWeapon"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground"
@@ -3716,6 +3451,9 @@
       "id": "rambaZaku1",
       "name": "ザクI（ラル機）",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 120,
       "armor": 230,
       "energy": 43,
@@ -3725,13 +3463,6 @@
       "optionSlots": 1,
       "fixedWeaponIds": [
         "largeHeatHawk"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -3757,6 +3488,9 @@
       "id": "blackTriStarsZaku1",
       "name": "ザクI（黒い三連星）",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 115,
       "armor": 225,
       "energy": 45,
@@ -3766,13 +3500,6 @@
       "optionSlots": 1,
       "fixedWeaponIds": [
         "heatHawk"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -3797,6 +3524,9 @@
       "id": "matsunagaZaku2",
       "name": "ザクII（マツナガ機）",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 185,
       "armor": 280,
       "energy": 60,
@@ -3807,13 +3537,6 @@
       "fixedWeaponIds": [
         "largeHeatHawk",
         "zakuShoulderShield"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -3839,6 +3562,9 @@
       "id": "garmaZaku2S",
       "name": "ザクIIS型（ガルマ機）",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 165,
       "armor": 270,
       "energy": 60,
@@ -3849,13 +3575,6 @@
       "fixedWeaponIds": [
         "heatHawk",
         "garmaHeadVulcan"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground",
@@ -3895,7 +3614,6 @@
         "zakuShoulderShield",
         "zakuShoulderShieldSub"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -3918,6 +3636,9 @@
       "id": "highMobilityZaku",
       "name": "高機動型ザク",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 210,
       "armor": 275,
       "energy": 70,
@@ -3928,13 +3649,6 @@
       "fixedWeaponIds": [
         "heatHawk",
         "zakuShoulderShield"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "space"
@@ -3959,6 +3673,9 @@
       "id": "johnnyHighMobilityZaku",
       "name": "高機動型ザク（ジョニー機）",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 260,
       "armor": 280,
       "energy": 75,
@@ -3970,13 +3687,6 @@
         "heatHawk",
         "zakuShoulderShield",
         "tripleMissilePod"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "space"
@@ -4002,6 +3712,9 @@
       "id": "matsunagaHighMobilityZaku",
       "name": "高機動型ザク（マツナガ機）",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 260,
       "armor": 285,
       "energy": 78,
@@ -4012,13 +3725,6 @@
       "fixedWeaponIds": [
         "largeHeatHawk",
         "zakuShoulderShield"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "space"
@@ -4045,6 +3751,9 @@
       "id": "mquveGouf",
       "name": "グフ（マ・クベ機）",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 185,
       "armor": 340,
       "energy": 65,
@@ -4056,13 +3765,6 @@
         "heatSword",
         "heatRod",
         "fingerVulcan"
-      ],
-      "equipCategories": [
-        "machine-gun",
-        "bazooka",
-        "cannon",
-        "grenade",
-        "shield"
       ],
       "mapTypes": [
         "ground"
@@ -4097,7 +3799,6 @@
         "magellaAttackGun",
         "doppVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4132,7 +3833,6 @@
       "fixedWeaponIds": [
         "magellaAttackGun"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4158,7 +3858,6 @@
         "heavyGuncannonCannon",
         "headVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -4192,7 +3891,6 @@
         "typeDShortCannon",
         "headVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -4226,7 +3924,6 @@
         "guncannon2BeamCannon",
         "headVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -4263,7 +3960,6 @@
         "guntank2Rocket",
         "guntank2Missile"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4299,7 +3995,6 @@
         "beamSaber",
         "simpleFixedShield"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4331,7 +4026,6 @@
       "fixedWeaponIds": [
         "beamSaber"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4365,7 +4059,6 @@
         "beamSaber",
         "smallShield"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4398,7 +4091,6 @@
       "fixedWeaponIds": [
         "beamSaber"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4435,7 +4127,6 @@
         "beamSaber",
         "chestVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4467,7 +4158,6 @@
       "fixedWeaponIds": [
         "ballK15Caliber"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -4500,7 +4190,6 @@
         "aircraftVulcan",
         "largeSmartBomb"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4533,7 +4222,6 @@
         "heatHawk",
         "mineDispenser"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -4553,6 +4241,9 @@
       "id": "zakuMineLayer",
       "name": "ザク・マインレイヤー",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 115,
       "armor": 260,
       "agility": 12,
@@ -4566,7 +4257,6 @@
         "zeonHeadVulcan",
         "zakuMarineRocketPod"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4586,6 +4276,9 @@
       "id": "zakuMarine",
       "name": "ザク・マリンタイプ",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 90,
       "armor": 235,
       "agility": 10,
@@ -4596,7 +4289,6 @@
       "weaponSlots": 2,
       "optionSlots": 1,
       "fixedWeaponIds": [],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -4619,6 +4311,9 @@
       "id": "zakuFlipper",
       "name": "ザク・フリッパー",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 120,
       "armor": 235,
       "agility": 21,
@@ -4632,7 +4327,6 @@
         "psycommuZakuWiredCannon",
         "psycommuZakuLegCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -4664,7 +4358,6 @@
       "fixedWeaponIds": [
         "zeonHeadVulcan"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -4700,7 +4393,6 @@
       "fixedWeaponIds": [
         "heatHawk"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -4721,6 +4413,9 @@
       "id": "prototypeGouf",
       "name": "プロトタイプ・グフ",
       "faction": "zeon",
+      "forbiddenWeaponKinds": [
+        "beam"
+      ],
       "cost": 135,
       "armor": 290,
       "agility": 17,
@@ -4734,7 +4429,6 @@
         "enhancedFingerVulcan",
         "legTripleMissilePod"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4766,7 +4460,6 @@
         "fingerVulcan",
         "legTripleMissilePod"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4797,7 +4490,6 @@
       "fixedWeaponIds": [
         "heatSaber"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground"
       ],
@@ -4830,7 +4522,6 @@
         "beamNaginata",
         "gelgoogBeamCannon"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "ground",
         "space"
@@ -4863,7 +4554,6 @@
       "fixedWeaponIds": [
         "beamNaginata"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -4895,7 +4585,6 @@
       "fixedWeaponIds": [
         "beamNaginata"
       ],
-      "equipCategories": [],
       "mapTypes": [
         "space"
       ],
@@ -5977,7 +5666,7 @@
       "id": "fighterMissile",
       "name": "小型ミサイル",
       "cost": 0,
-      "power": 80,
+      "power": 65,
       "accuracy": 70,
       "range": 3,
       "minRange": 2,
@@ -5996,7 +5685,7 @@
       "id": "heavyBomb",
       "name": "対地爆弾",
       "cost": 0,
-      "power": 120,
+      "power": 100,
       "accuracy": 60,
       "range": 2,
       "minRange": 1,
@@ -7896,7 +7585,7 @@
       "id": "doppVulcan",
       "name": "ドップ・バルカン砲",
       "cost": 0,
-      "power": 45,
+      "power": 35,
       "accuracy": 82,
       "range": 2,
       "minRange": 1,
@@ -7915,7 +7604,7 @@
       "id": "doppMissile",
       "name": "ドップ・ミサイル",
       "cost": 0,
-      "power": 85,
+      "power": 70,
       "accuracy": 70,
       "range": 3,
       "minRange": 2,
@@ -7953,7 +7642,7 @@
       "id": "gatlMissile",
       "name": "ガトル5連装ミサイル",
       "cost": 0,
-      "power": 80,
+      "power": 65,
       "accuracy": 72,
       "range": 3,
       "minRange": 1,
@@ -7972,7 +7661,7 @@
       "id": "gatlLargeMissile",
       "name": "ガトル大型ミサイル",
       "cost": 0,
-      "power": 135,
+      "power": 110,
       "accuracy": 64,
       "range": 4,
       "minRange": 2,
@@ -11069,7 +10758,7 @@
       "cost": 55,
       "effectType": "skill",
       "grantsSkill": "guerrillaTactics",
-      "effectText": "敵から2マス以内に近づかれるまで、射撃武装の対象にならない。",
+      "effectText": "砂漠・森林・水・デブリ上にいる時、敵から2マス以内に近づかれるまで射撃武装の対象にならない。",
       "uniqueSkill": true,
       "factions": [
         "federation",

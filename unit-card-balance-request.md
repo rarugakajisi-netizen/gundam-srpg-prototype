@@ -57,7 +57,7 @@
   agility: 16,
   mobility: 4,
   fixedWeaponIds: ["headVulcan", "beamSaber"],
-  equipCategories: ["beam-rifle", "bazooka", "shield"],
+  forbiddenWeaponKinds: ["beam"],
   weaponSlots: 2,
   optionSlots: 1,
   mapTypes: ["ground", "space"],
@@ -76,7 +76,7 @@
 - `agility`: 回避に関わる機体性能
 - `mobility`: 移動力
 - `fixedWeaponIds`: 機体固定武装
-- `equipCategories`: 装備できる手持ち武器カテゴリ
+- `forbiddenWeaponKinds`: 原作設定上必要な場合だけ禁止する携行武器種別。通常は省略
 - `weaponSlots`: 手持ち武器を装備できる数。通常は2、特殊な機体は1または0
 - `optionSlots`: オプションパーツを装備できる数。まずは1を基本にしたい
 - `mapTypes`: 出撃できるマップ。`ground`, `space`
@@ -213,7 +213,7 @@
 2. 機体ごとの役割を説明してください。
 3. 既存機体の再調整案を表で出してください。
 4. 追加候補機体の性能案も表で出してください。
-5. 必要なら、固定武装や装備可能カテゴリの見直し案も出してください。
+5. 必要なら、固定武装や原作設定上必須となる携行武器制限の見直し案も出してください。
 6. 機体ごとの手持ち武器スロット数も提案してください。
 7. オプションパーツカードの候補と効果案も提案してください。
 8. 強すぎる、弱すぎる、役割が被るなどの注意点も書いてください。
@@ -222,7 +222,7 @@
 
 以下の列でお願いします。
 
-| id | name | faction | cost | armor | energy | agility | mobility | weaponSlots | optionSlots | mapTypes | movementType | terrainSuitability | fixedWeaponIds | equipCategories | specials | 役割メモ |
+| id | name | faction | cost | armor | energy | agility | mobility | weaponSlots | optionSlots | mapTypes | movementType | terrainSuitability | fixedWeaponIds | forbiddenWeaponKinds | specials | 役割メモ |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|---|---|---|---|
 
 `terrainSuitability` は以下のように書いてください。

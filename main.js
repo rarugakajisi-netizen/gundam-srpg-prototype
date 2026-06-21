@@ -13,6 +13,8 @@ const AI_SUPPORT_POSITION_BONUS = 70;
 const I_FIELD_EN_COST = 12;
 const FREEZY_YARD_TURNS = 2;
 const FREEZY_YARD_REDUCTION = 45;
+const REPEAT_ATTACK_ACCURACY_PENALTY = 15;
+const GUERRILLA_TERRAINS = new Set(["desert", "forest", "water", "debris"]);
 const SAVE_KEY = "gundamSrpgPrototypeSaveV1";
 const setupScreen = document.querySelector("#setupScreen");
 const battleScreen = document.querySelector("#battleScreen");
@@ -22,6 +24,7 @@ const state = {
   data: null,
   screen: "title",
   collection: null,
+  formationProfiles: {},
   picker: null,
   faction: "federation",
   formation: [],
@@ -209,13 +212,44 @@ function loadCollection() {
 }
 
 function saveCollection() {
-  localStorage.setItem(SAVE_KEY, JSON.stringify({ collection: state.collection }));
+  localStorage.setItem(SAVE_KEY, JSON.stringify({
+    collection: state.collection,
+    formationProfiles: state.formationProfiles
+  }));
+}
+
+function loadFormationProfiles() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SAVE_KEY));
+    return saved?.formationProfiles && typeof saved.formationProfiles === "object"
+      ? saved.formationProfiles
+      : {};
+  } catch (error) {
+    console.warn("Formation data could not be loaded.", error);
+    return {};
+  }
+}
+
+function rememberFormation() {
+  state.formationProfiles[state.faction] = {
+    battleshipId: state.selectedBattleshipId,
+    captainId: state.selectedCaptainId,
+    firstOfficerId: state.selectedFirstOfficerId,
+    units: state.formation.map((entry) => ({
+      msId: entry.msId,
+      characterIds: [...(entry.characterIds ?? [])],
+      weaponIds: [...(entry.weaponIds ?? [])],
+      optionIds: [...(entry.optionIds ?? [])]
+    }))
+  };
+  saveCollection();
 }
 
 function resetCollection() {
   state.collection = defaultCollection();
   state.selectedMapId = state.data.maps[0].id;
   state.formation = [];
+  state.formationProfiles = {};
   saveCollection();
   initializeSelections();
   applyStarterFormation();
@@ -416,13 +450,14 @@ async function boot() {
     return;
   }
   state.collection = loadCollection();
+  state.formationProfiles = loadFormationProfiles();
   initializeSelections();
-  applyStarterFormation();
+  if (!restoreRememberedFormation()) applyStarterFormation();
   renderTitle();
 }
 
 function defaultLoadout(ms) {
-  const candidates = state.data.weapons.filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && !weapon.fixedOnly && weaponUsableByFaction(weapon, ms.faction));
+  const candidates = state.data.weapons.filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && weaponEquippableByMs(ms, weapon));
   const shield = candidates.find((weapon) => weapon.kind === "shield");
   const attack = candidates.find((weapon) => weapon.kind !== "shield");
   return fitWeaponIdsToSlots([attack, shield].filter(Boolean).map((weapon) => weapon.id), ms);
@@ -580,6 +615,60 @@ function applyStarterFormation() {
     }));
 }
 
+function restoreRememberedFormation() {
+  if (!Object.prototype.hasOwnProperty.call(state.formationProfiles, state.faction)) return false;
+  const profile = state.formationProfiles[state.faction] ?? {};
+  const map = selectedMap();
+  const data = lookup();
+  const usedCharacters = new Set();
+
+  const ship = data.battleships[profile.battleshipId];
+  if (ship && hasCard("battleships", ship.id) && ship.faction === state.faction && battleshipCanDeployOnMap(ship, map)) {
+    state.selectedBattleshipId = ship.id;
+  }
+
+  const restoreBridgeCharacter = (id) => {
+    const character = data.characters[id];
+    if (!character || character.faction !== state.faction || !hasCard("characters", id) || usedCharacters.has(id)) return "";
+    usedCharacters.add(id);
+    return id;
+  };
+  state.selectedCaptainId = restoreBridgeCharacter(profile.captainId);
+  state.selectedFirstOfficerId = restoreBridgeCharacter(profile.firstOfficerId);
+
+  const reserved = {};
+  state.formation = (Array.isArray(profile.units) ? profile.units : []).flatMap((entry) => {
+    const ms = data.ms[entry?.msId];
+    const characterIds = Array.isArray(entry?.characterIds) ? entry.characterIds : [];
+    const weaponIds = Array.isArray(entry?.weaponIds) ? entry.weaponIds : [];
+    const optionIds = Array.isArray(entry?.optionIds) ? entry.optionIds : [];
+    const charactersValid = characterIds.every((id) => data.characters[id]
+      && data.characters[id].faction === state.faction
+      && hasCard("characters", id)
+      && !usedCharacters.has(id));
+    const weaponsValid = Boolean(ms) && weaponIds.every((id) => data.weapons[id]
+      && hasCard("weapons", id)
+      && weaponEquippableByMs(ms, data.weapons[id]));
+    const optionsValid = optionIds.every((id) => data.options[id]
+      && hasCard("options", id)
+      && optionUsableByFaction(data.options[id], state.faction));
+    const restored = { msId: entry?.msId, characterIds, weaponIds, optionIds };
+    const valid = ms
+      && ms.faction === state.faction
+      && hasCard("mobileSuits", ms.id)
+      && mobileSuitCanDeployOnMap(ms, map)
+      && charactersValid
+      && weaponsValid
+      && optionsValid
+      && selectedWeaponSlotCost(weaponIds) <= weaponSlotCount(ms)
+      && canReserveCountedCards(restored, reserved);
+    if (!valid) return [];
+    characterIds.forEach((id) => usedCharacters.add(id));
+    return [restored];
+  });
+  return true;
+}
+
 const roleLabels = {
   pilot: "パイロット",
   captain: "艦長",
@@ -668,8 +757,10 @@ function optionUsableByFaction(option, faction) {
   return !option.factions || option.factions.includes(faction);
 }
 
-function weaponEquippableByMs(ms, weapon, optionId = "") {
-  return !weapon.fixedOnly && weaponUsableByFaction(weapon, ms.faction);
+function weaponEquippableByMs(ms, weapon) {
+  return !weapon.fixedOnly
+    && weaponUsableByFaction(weapon, ms.faction)
+    && !(ms.forbiddenWeaponKinds ?? []).includes(weapon.kind);
 }
 
 function weaponMinRange(weapon) {
@@ -961,7 +1052,10 @@ function unitIsConcealedFrom(defender, attacker) {
   const nearbyScout = state.units.some((unit) => unit.side === attacker.side && isCombatUnit(unit) && distance(unit, defender) <= 2);
   const smokeConcealed = (defender.smokeConcealedTurns ?? 0) > 0;
   const stealthConcealed = unitHasSkill(defender, "stealth") && !defender.stealthRevealed && distance(defender, attacker) > 2 && !nearbyScout;
-  const guerrillaConcealed = unitHasSkill(defender, "guerrillaTactics") && distance(defender, attacker) > 2 && !nearbyScout;
+  const guerrillaConcealed = unitHasSkill(defender, "guerrillaTactics")
+    && GUERRILLA_TERRAINS.has(terrainAt(defender.x, defender.y))
+    && distance(defender, attacker) > 2
+    && !nearbyScout;
   return smokeConcealed || stealthConcealed || guerrillaConcealed;
 }
 
@@ -1259,6 +1353,7 @@ function renderMobileSuitDetails(ms, options = {}) {
         ["運動", ms.agility],
         ["移動", ms.mobility],
         ["装備枠", `武器${ms.weaponSlots ?? 2} / OP${ms.optionSlots ?? 1}`],
+        ["携行武器制限", (ms.forbiddenWeaponKinds ?? []).includes("beam") ? "ビーム兵器不可" : "なし"],
         ["特殊", specialsLabel(ms.specials)],
         ["脱出先", (ms.specials ?? []).includes("coreSystem") ? (lookup().ms[ms.escapeMsId ?? "coreFighter"]?.name ?? ms.escapeMsId ?? "コア・ファイター") : "なし"],
         ["地形適性", mapSuitabilityLabel(ms)]
@@ -1471,7 +1566,7 @@ function normalizeSelections() {
   const normalizedMs = ms[state.selectedMsId];
   if (normalizedMs) {
     const availableWeaponIds = state.data.weapons
-      .filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && !weapon.fixedOnly && weaponEquippableByMs(normalizedMs, weapon, state.selectedOptionId) && weaponUsableByFaction(weapon, normalizedMs.faction))
+      .filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && weaponEquippableByMs(normalizedMs, weapon))
       .map((weapon) => weapon.id);
     state.selectedWeaponIds = fitWeaponIdsToSlots(state.selectedWeaponIds.filter((id) => availableWeaponIds.includes(id)), normalizedMs);
   }
@@ -2278,7 +2373,7 @@ function renderSetup() {
   const selectedMs = ms[state.selectedMsId] ?? availableMs[0];
   const selectedWeaponSlots = weaponSlotCount(selectedMs);
   const usedWeaponSlots = selectedWeaponSlotCost(state.selectedWeaponIds);
-  const availableWeapons = state.data.weapons.filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && !weapon.fixedOnly && weaponEquippableByMs(selectedMs, weapon, state.selectedOptionId) && weaponUsableByFaction(weapon, selectedMs.faction));
+  const availableWeapons = state.data.weapons.filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && weaponEquippableByMs(selectedMs, weapon));
   const availableOptions = (state.data.options ?? []).filter((option) => remainingCardCopies("options", option.id) > 0 && optionUsableByFaction(option, state.faction));
   const selectedOption = options[state.selectedOptionId];
   const selectedCharacter = characters[state.selectedCharacterId];
@@ -2489,6 +2584,7 @@ function chooseBattleship(shipId) {
   const ship = lookup().battleships[shipId];
   if (!ship || !hasCard("battleships", ship.id) || !battleshipCanDeployOnMap(ship)) return;
   state.selectedBattleshipId = ship.id;
+  rememberFormation();
   renderSetup();
 }
 
@@ -2497,11 +2593,13 @@ function setCharacterForOwner(owner, characterId) {
   if (owner === "firstOfficer") state.selectedFirstOfficerId = characterId;
   if (owner === "mobileSuit") state.selectedCharacterId = characterId;
   if (characterId) clearCharacterConflicts(characterId, owner);
+  if (owner === "captain" || owner === "firstOfficer") rememberFormation();
   renderSetup();
 }
 
 function changeFaction(faction) {
   if (!playableFactionsOnMap().includes(faction)) return;
+  rememberFormation();
   state.faction = faction;
   state.formation = [];
   const factionBattleship = state.data.battleships.find((ship) => ship.faction === faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship));
@@ -2515,7 +2613,7 @@ function changeFaction(faction) {
   state.selectedCharacterId = firstAvailableCharacter(faction)?.id ?? factionCharacter?.id ?? "";
   state.selectedWeaponIds = factionMs ? defaultLoadout(factionMs) : [];
   state.selectedOptionId = "";
-  applyStarterFormation();
+  if (!restoreRememberedFormation()) applyStarterFormation();
   renderSetup();
 }
 
@@ -2534,6 +2632,7 @@ function addFormationEntry() {
   });
   state.selectedCharacterId = firstAvailableCharacter(state.faction)?.id ?? "";
   state.selectedOptionId = "";
+  rememberFormation();
   renderSetup();
 }
 
@@ -3051,10 +3150,12 @@ function attackButtons(attacker, target) {
     const inRange = reachable && !blocked;
     const usable = canPayCost(attacker, weapon);
     const compatibilityBonus = msWeaponBonus(attacker, weapon);
+    const repeatPenalty = repeatAttackAccuracyPenalty(attacker);
     const status = [
       weaponStatus(attacker, weapon),
       unitWeaponRangeLabel(attacker, weapon),
       compatibilityBonus > 0 ? `相性+${compatibilityBonus}` : "",
+      repeatPenalty > 0 ? `連続攻撃-${repeatPenalty}` : "",
       inRange ? `命中${hitRate(attacker, target, weapon)}%` : cannotTarget ? "飛行不可" : concealed ? "隠蔽" : blocked ? "障害物" : "射程外",
       used ? "使用済み" : ""
     ].filter(Boolean).join(" / ");
@@ -4199,6 +4300,11 @@ function oneHandBonus(unit, weapon) {
   return equippedWeapons.length === 1 && equippedWeapons[0] === weapon.id && weaponSlotCost(weapon) === 1 ? 8 : 0;
 }
 
+function repeatAttackAccuracyPenalty(unit, attackOrdinal = (unit.usedWeaponIds?.length ?? 0) + 1) {
+  if (!isMobileSuit(unit)) return 0;
+  return Math.max(0, attackOrdinal - 2) * REPEAT_ATTACK_ACCURACY_PENALTY;
+}
+
 function evasion(unit) {
   if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit);
   const ms = msFor(unit);
@@ -4206,7 +4312,7 @@ function evasion(unit) {
   return Math.max(0, ms.agility + character.reaction + Math.floor(character.awakening / 2) + characterMsBonus(unit) + skillEvasionBonus(unit) - unitTerrainPenalty(unit).evasion);
 }
 
-function hitRate(attacker, defender, weapon) {
+function hitRate(attacker, defender, weapon, options = {}) {
   const panicPenalty = unitHasSkill(attacker, "panic") ? 8 : 0;
   if (isBattleship(attacker)) {
     const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + barrageSupportPenalty(defender, attacker) - panicPenalty - evasion(defender);
@@ -4214,7 +4320,8 @@ function hitRate(attacker, defender, weapon) {
   }
   const character = primaryCharacterFor(attacker);
   const ability = weapon.attackType === "melee" ? character.melee : character.shooting;
-  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - evasion(defender);
+  const repeatPenalty = repeatAttackAccuracyPenalty(attacker, options.attackOrdinal);
+  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - repeatPenalty - evasion(defender);
   return clamp(raw, MIN_HIT_RATE, MAX_HIT_RATE);
 }
 
@@ -4451,15 +4558,17 @@ function attack(attacker, defender, weapon, renderAfter = true) {
 
   const attackerName = unitName(attacker);
   const defenderName = unitName(defender);
+  const attackOrdinal = (attacker.usedWeaponIds?.length ?? 0) + 1;
   payCost(attacker, weapon);
   markWeaponUsed(attacker, weapon);
-  const hit = hitRate(attacker, defender, weapon);
+  const hit = hitRate(attacker, defender, weapon, { attackOrdinal });
+  const repeatPenalty = repeatAttackAccuracyPenalty(attacker, attackOrdinal);
   const roll = Math.floor(Math.random() * 100) + 1;
   revealStealth(attacker, "攻撃");
 
   if (roll > hit) {
     pushDialogue(attacker, "miss");
-    state.log.push(`${attackerName}の${weapon.name}。命中${hit}%、出目${roll}で回避された。`);
+    state.log.push(`${attackerName}の${weapon.name}。命中${hit}%${repeatPenalty ? `（連続攻撃-${repeatPenalty}）` : ""}、出目${roll}で回避された。`);
     pushDialogue(defender, "evade");
   } else {
     pushDialogue(attacker, "hit");
@@ -4467,7 +4576,7 @@ function attack(attacker, defender, weapon, renderAfter = true) {
     const damage = damageFor(attacker, defender, weapon, { iFieldActive });
     const effectNotes = combatEffectNotes(attacker, defender, weapon, { iFieldActive });
     applyDamage(defender, damage);
-    state.log.push(`${attackerName}の${weapon.name}が命中。${defenderName}に${damage}ダメージ。`);
+    state.log.push(`${attackerName}の${weapon.name}が命中${repeatPenalty ? `（連続攻撃-${repeatPenalty}）` : ""}。${defenderName}に${damage}ダメージ。`);
     if (effectNotes.length > 0) state.log.push(`発動: ${effectNotes.join(" / ")}`);
     if (isAlive(defender)) pushDialogue(defender, "damaged");
     if (!isAlive(defender)) state.log.push(`${defenderName}を撃破。`);
@@ -4821,10 +4930,12 @@ setupScreen.addEventListener("change", (event) => {
     if (event.target.dataset.bridgeSlot === "captain") state.selectedCaptainId = event.target.value;
     if (event.target.dataset.bridgeSlot === "firstOfficer") state.selectedFirstOfficerId = event.target.value;
     if (event.target.value) clearCharacterConflicts(event.target.value, event.target.dataset.bridgeSlot);
+    rememberFormation();
     renderSetup();
   }
   if (event.target.id === "battleshipSelect") {
     state.selectedBattleshipId = event.target.value;
+    rememberFormation();
     renderSetup();
   }
   if (event.target.id === "mapSelect") {
@@ -4837,6 +4948,7 @@ setupScreen.addEventListener("change", (event) => {
       state.selectedMsId = factionMs.id;
       state.selectedWeaponIds = defaultLoadout(factionMs);
     }
+    if (!restoreRememberedFormation()) applyStarterFormation();
     renderSetup();
   }
   if (event.target.id === "msSelect") {
@@ -4923,13 +5035,14 @@ setupScreen.addEventListener("click", (event) => {
     state.selectedMapId = button.dataset.mapId;
     state.formation = [];
     initializeSelections();
-    applyStarterFormation();
+    if (!restoreRememberedFormation()) applyStarterFormation();
     renderSetup();
   }
   if (action === "faction") changeFaction(button.dataset.faction);
   if (action === "add") addFormationEntry();
   if (action === "remove") {
     state.formation.splice(Number(button.dataset.index), 1);
+    rememberFormation();
     renderSetup();
   }
   if (action === "launch") safeLaunchBattle();

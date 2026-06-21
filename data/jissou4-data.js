@@ -15,7 +15,7 @@
     durability: 0, imagePath: "", ...entry
   });
   const ms = (entry) => ({
-    energy: 60, weaponSlots: 2, optionSlots: 1, fixedWeaponIds: [], equipCategories: [],
+    energy: 60, weaponSlots: 2, optionSlots: 1, fixedWeaponIds: [],
     mapTypes: ["ground", "space"], movementType: "normal", terrainSuitability: terrain(),
     tags: [], specials: [], imagePath: "", ...entry
   });
@@ -78,12 +78,12 @@
     ms({ id: "ballK", name: "ボールK型", faction: "federation", cost: 60, armor: 145, energy: 38, agility: 13, mobility: 4, weaponSlots: 0, fixedWeaponIds: ["ballK15Caliber"], mapTypes: ["space"], terrainSuitability: terrain({ debris: true }), tags: ["ball", "supportPod"] }),
     ms({ id: "jetCoreBooster", name: "ジェット・コア・ブースター", faction: "federation", cost: 125, armor: 170, energy: 70, agility: 30, mobility: 8, weaponSlots: 0, fixedWeaponIds: ["aircraftVulcan", "largeSmartBomb"], mapTypes: ["ground"], movementType: "flying", tags: ["federationAircraft", "coreBooster"] }),
 
-    ms({ id: "zakuMineLayer", name: "ザク・マインレイヤー", faction: "zeon", cost: 115, armor: 260, energy: 55, agility: 12, mobility: 4, fixedWeaponIds: ["heatHawk", "mineDispenser"], mapTypes: ["space"], terrainSuitability: terrain({ debris: true }), tags: ["zaku", "zaku2"] }),
-    ms({ id: "zakuMarine", name: "ザク・マリンタイプ", faction: "zeon", cost: 90, armor: 235, energy: 45, agility: 10, mobility: 3, weaponSlots: 1, fixedWeaponIds: ["zeonHeadVulcan", "zakuMarineRocketPod"], mapTypes: ["ground"], terrainSuitability: terrain({ water: true }), tags: ["zaku", "aquatic"] }),
-    ms({ id: "zakuFlipper", name: "ザク・フリッパー", faction: "zeon", cost: 120, armor: 235, energy: 60, agility: 21, mobility: 6, fixedWeaponIds: [], terrainSuitability: terrain({ debris: true }), tags: ["zaku", "reconMs"], specials: ["recon"] }),
+    ms({ id: "zakuMineLayer", name: "ザク・マインレイヤー", faction: "zeon", cost: 115, armor: 260, energy: 55, agility: 12, mobility: 4, fixedWeaponIds: ["heatHawk", "mineDispenser"], forbiddenWeaponKinds: ["beam"], mapTypes: ["space"], terrainSuitability: terrain({ debris: true }), tags: ["zaku", "zaku2"] }),
+    ms({ id: "zakuMarine", name: "ザク・マリンタイプ", faction: "zeon", cost: 90, armor: 235, energy: 45, agility: 10, mobility: 3, weaponSlots: 1, fixedWeaponIds: ["zeonHeadVulcan", "zakuMarineRocketPod"], forbiddenWeaponKinds: ["beam"], mapTypes: ["ground"], terrainSuitability: terrain({ water: true }), tags: ["zaku", "aquatic"] }),
+    ms({ id: "zakuFlipper", name: "ザク・フリッパー", faction: "zeon", cost: 120, armor: 235, energy: 60, agility: 21, mobility: 6, fixedWeaponIds: [], forbiddenWeaponKinds: ["beam"], terrainSuitability: terrain({ debris: true }), tags: ["zaku", "reconMs"], specials: ["recon"] }),
     ms({ id: "psycommuZakuTest", name: "サイコミュ・システム高機動試験用ザク", faction: "zeon", cost: 235, armor: 250, energy: 130, agility: 27, mobility: 7, weaponSlots: 0, fixedWeaponIds: ["psycommuZakuWiredCannon", "psycommuZakuLegCannon"], mapTypes: ["space"], tags: ["zaku", "psycommu"] }),
     ms({ id: "zaku1Sniper", name: "ザクI・スナイパータイプ", faction: "zeon", cost: 135, armor: 195, energy: 105, agility: 7, mobility: 3, fixedWeaponIds: ["zeonHeadVulcan"], tags: ["zaku", "zaku1", "sniperMs"], specials: ["stationaryInterception"] }),
-    ms({ id: "prototypeGouf", name: "プロトタイプ・グフ", faction: "zeon", cost: 135, armor: 290, energy: 60, agility: 17, mobility: 4, fixedWeaponIds: ["heatHawk"], tags: ["zaku", "gouf"] }),
+    ms({ id: "prototypeGouf", name: "プロトタイプ・グフ", faction: "zeon", cost: 135, armor: 290, energy: 60, agility: 17, mobility: 4, fixedWeaponIds: ["heatHawk"], forbiddenWeaponKinds: ["beam"], tags: ["zaku", "gouf"] }),
     ms({ id: "goufHeavy", name: "グフ重装型", faction: "zeon", cost: 190, armor: 375, energy: 70, agility: 12, mobility: 3, weaponSlots: 0, fixedWeaponIds: ["enhancedFingerVulcan", "legTripleMissilePod"], mapTypes: ["ground"], tags: ["gouf"] }),
     ms({ id: "goufFlightTest", name: "グフ飛行試験型", faction: "zeon", cost: 185, armor: 300, energy: 75, agility: 19, mobility: 6, weaponSlots: 0, fixedWeaponIds: ["fingerVulcan", "legTripleMissilePod"], mapTypes: ["ground"], movementType: "flying", tags: ["gouf"] }),
     ms({ id: "domTropicalTest", name: "ドム・トロピカルテストタイプ", faction: "zeon", cost: 200, armor: 345, energy: 75, agility: 17, mobility: 5, fixedWeaponIds: ["heatSaber"], mapTypes: ["ground"], terrainSuitability: terrain({ desert: true }), tags: ["dom", "desert"] }),

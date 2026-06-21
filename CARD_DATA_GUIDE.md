@@ -18,7 +18,7 @@
 - `weaponSlots`: 手持ち武器をいくつ装備できるか。
 - `optionSlots`: オプションパーツをいくつ装備できるか。現在の編成UIは1枠まで対応です。
 - `fixedWeaponIds`: バルカン、サーベル、内蔵キャノンなど、機体に固定された武装。
-- `equipCategories`: 手持ち武器として装備できるカテゴリ。
+- `forbiddenWeaponKinds`: 原作設定上どうしても必要な場合だけ指定する携行武器種別の禁止リスト。通常は省略し、勢力と武器スロットだけで装備可否を決めます。例: `["beam"]`。
 - `mapTypes`: `ground` と `space` の出撃可否。コロニーマップは内部的に地上/宇宙どちらも出撃できます。
 - `movementType`: `normal` または `flying`。飛行は地上の地形ペナルティを無視します。
 - `terrainSuitability`: 水中、森林、砂漠、デブリ帯への適性。
