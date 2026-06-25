@@ -458,10 +458,8 @@ function createChecker(data) {
         }
       }
 
-      const drop = stage.dropRewards;
-      if (drop) {
-        if (drop.rolls !== undefined) expectNumber(`${scope}.dropRewards`, drop, "rolls", { integer: true });
-        list(drop.entries).forEach((reward, rewardIndex) => validateReward(reward, `${scope}.dropRewards.entries[${rewardIndex}]`));
+      if (stage.dropRewards !== undefined) {
+        error(scope, "ステージ別 dropRewards は廃止済みです。全体ランダム報酬 commonDropRewards を使います。");
       }
     });
 

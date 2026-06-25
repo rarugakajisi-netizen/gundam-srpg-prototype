@@ -7,7 +7,8 @@
   "scripts": {
     "start": "python -m http.server 8765",
     "serve": "python -m http.server 8765",
-    "check": "npm run check:data",
+    "check": "npm run check:js && npm run check:data",
+    "check:js": "node --check main.js && node --check src/core.js && node --check src/detail-renderers.js && node --check src/setup-flow.js && node --check src/battle-render.js && node --check src/dialogue.js && node --check src/battle-rules.js && node --check src/events.js",
     "check:data": "node work/check-game-data.js",
     "check:data:strict": "node work/check-game-data.js --warnings-as-errors",
     "report:balance": "node work/card-balance-report.js",

@@ -1,0 +1,1405 @@
+"use strict";
+
+// Title, stage selection, collection screens, setup UI, formation editing, and battle launch.
+
+function characterKeyFor(characterId) {
+  const character = lookup().characters[characterId];
+  return character?.characterKey ?? characterId;
+}
+
+function usedCharacterKeys(options = {}) {
+  const keys = new Set();
+  state.formation.forEach((entry, index) => {
+    if (index !== options.excludeFormationIndex) {
+      entry.characterIds.forEach((id) => keys.add(characterKeyFor(id)));
+    }
+  });
+  if (options.includeSelectedCharacter && state.selectedCharacterId) keys.add(characterKeyFor(state.selectedCharacterId));
+  if (options.includeBridge !== false) {
+    if (options.excludeBridgeSlot !== "captain" && state.selectedCaptainId) keys.add(characterKeyFor(state.selectedCaptainId));
+    if (options.excludeBridgeSlot !== "firstOfficer" && state.selectedFirstOfficerId) keys.add(characterKeyFor(state.selectedFirstOfficerId));
+  }
+  return keys;
+}
+
+function clearCharacterConflicts(characterId, owner) {
+  const key = characterKeyFor(characterId);
+  if (!key) return;
+  if (owner !== "captain" && state.selectedCaptainId && characterKeyFor(state.selectedCaptainId) === key) state.selectedCaptainId = "";
+  if (owner !== "firstOfficer" && state.selectedFirstOfficerId && characterKeyFor(state.selectedFirstOfficerId) === key) state.selectedFirstOfficerId = "";
+  if (owner !== "mobileSuit" && state.selectedCharacterId && characterKeyFor(state.selectedCharacterId) === key) state.selectedCharacterId = "";
+}
+
+function defaultBridgeSelection(faction) {
+  const candidates = state.data.characters.filter((character) => character.faction === faction && hasCard("characters", character.id));
+  const captain = [...candidates].sort((a, b) => b.command - a.command || b.support - a.support)[0];
+  const firstOfficer = [...candidates]
+    .filter((character) => character.characterKey !== captain?.characterKey)
+    .sort((a, b) => (b.support + b.maintenance) - (a.support + a.maintenance) || b.command - a.command)[0];
+  return {
+    captainId: captain?.id ?? "",
+    firstOfficerId: firstOfficer?.id ?? ""
+  };
+}
+
+function defaultEnemyBridgeSelection(faction) {
+  const factionCharacters = state.data.characters.filter((character) => character.faction === faction);
+  const namedCharacters = factionCharacters.filter((character) => character.selectable !== false);
+  const candidates = namedCharacters.length > 0 ? namedCharacters : factionCharacters;
+  const captain = [...candidates].sort((a, b) => b.command - a.command || b.support - a.support)[0];
+  const firstOfficer = [...candidates]
+    .filter((character) => character.characterKey !== captain?.characterKey)
+    .sort((a, b) => (b.support + b.maintenance) - (a.support + a.maintenance) || b.command - a.command)[0];
+  return {
+    captainId: captain?.id ?? "",
+    firstOfficerId: firstOfficer?.id ?? ""
+  };
+}
+
+function enemyBridgeForStage(mapId, faction) {
+  const stage = stageConfig(mapId);
+  if (stage.enemyCaptainId !== undefined || stage.enemyFirstOfficerId !== undefined) {
+    return {
+      captainId: stage.enemyCaptainId ?? "",
+      firstOfficerId: stage.enemyFirstOfficerId ?? ""
+    };
+  }
+  return defaultEnemyBridgeSelection(faction);
+}
+
+function firstAvailableCharacter(faction, options = {}) {
+  const used = usedCharacterKeys(options);
+  return state.data.characters.find((character) => character.faction === faction && hasCard("characters", character.id) && !used.has(character.characterKey ?? character.id));
+}
+
+function normalizeSelections() {
+  const { ms, characters, maps, battleships } = lookup();
+  if (!maps[state.selectedMapId]) state.selectedMapId = state.data.maps[0].id;
+  const currentMap = selectedMap();
+  const selectedBattleship = battleships[state.selectedBattleshipId];
+  if (!selectedBattleship || !hasCard("battleships", selectedBattleship.id) || selectedBattleship.faction !== state.faction || !battleshipCanDeployOnMap(selectedBattleship, currentMap)) {
+    state.selectedBattleshipId = state.data.battleships.find((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, currentMap))?.id ?? "";
+  }
+  const selectedMs = ms[state.selectedMsId];
+  const selectedMsInvalid = !selectedMs || !hasCard("mobileSuits", selectedMs.id) || selectedMs.faction !== state.faction || !mobileSuitCanDeployOnMap(selectedMs, currentMap);
+  if (selectedMsInvalid) {
+    state.selectedMsId = state.data.mobileSuits.find((item) => item.faction === state.faction && hasCard("mobileSuits", item.id) && mobileSuitCanDeployOnMap(item, currentMap))?.id ?? "";
+  }
+  const normalizedMs = ms[state.selectedMsId];
+  if (normalizedMs) {
+    const availableWeaponIds = state.data.weapons
+      .filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && weaponEquippableByMs(normalizedMs, weapon))
+      .map((weapon) => weapon.id);
+    state.selectedWeaponIds = fitWeaponIdsToSlots(state.selectedWeaponIds.filter((id) => availableWeaponIds.includes(id)), normalizedMs);
+  }
+  const selectedOption = lookup().options[state.selectedOptionId];
+  if (state.selectedOptionId && (!selectedOption || remainingCardCopies("options", selectedOption.id) < 1 || !optionUsableByFaction(selectedOption, state.faction) || (normalizedMs?.optionSlots ?? 1) < 1)) {
+    state.selectedOptionId = "";
+  }
+
+  const captain = characters[state.selectedCaptainId];
+  const captainUsed = captain && usedCharacterKeys({ excludeBridgeSlot: "captain", includeSelectedCharacter: true }).has(captain.characterKey ?? captain.id);
+  if (state.selectedCaptainId && (!captain || !hasCard("characters", captain.id) || captain.faction !== state.faction || captainUsed)) {
+    state.selectedCaptainId = "";
+  }
+
+  const firstOfficer = characters[state.selectedFirstOfficerId];
+  const firstOfficerUsed = firstOfficer && usedCharacterKeys({ excludeBridgeSlot: "firstOfficer", includeSelectedCharacter: true }).has(firstOfficer.characterKey ?? firstOfficer.id);
+  if (state.selectedFirstOfficerId && (!firstOfficer || !hasCard("characters", firstOfficer.id) || firstOfficer.faction !== state.faction || firstOfficerUsed)) {
+    state.selectedFirstOfficerId = "";
+  }
+
+  const selectedCharacter = characters[state.selectedCharacterId];
+  const selectedUsed = selectedCharacter && usedCharacterKeys().has(selectedCharacter.characterKey ?? selectedCharacter.id);
+  if (state.selectedCharacterId && (!selectedCharacter || !hasCard("characters", selectedCharacter.id) || selectedCharacter.faction !== state.faction || selectedUsed)) {
+    state.selectedCharacterId = "";
+  }
+}
+
+function formationCost(entry) {
+  return formationEntryCost(entry);
+}
+
+function formationEntryCost(entry) {
+  const { ms, weapons, characters, options } = lookup();
+  return (ms[entry.msId]?.cost ?? 0)
+    + (entry.characterIds ?? []).reduce((sum, id) => sum + (characters[id]?.cost ?? 0), 0)
+    + (entry.weaponIds ?? []).reduce((sum, id) => sum + (weapons[id]?.cost ?? 0), 0)
+    + (entry.optionIds ?? []).reduce((sum, id) => sum + (options[id]?.cost ?? 0), 0);
+}
+
+function bridgeCost() {
+  const { characters } = lookup();
+  return [state.selectedCaptainId, state.selectedFirstOfficerId].reduce((sum, id) => sum + (characters[id]?.cost ?? 0), 0);
+}
+
+function crewCost(characterIds) {
+  const { characters } = lookup();
+  return (characterIds ?? []).reduce((sum, id) => sum + (characters[id]?.cost ?? 0), 0);
+}
+
+function currentCost() {
+  const { battleships } = lookup();
+  const battleshipCost = battleships[state.selectedBattleshipId]?.cost ?? 0;
+  return battleshipCost + bridgeCost() + state.formation.reduce((sum, entry) => sum + formationCost(entry), 0);
+}
+
+function fallbackEnemyFormationForMap(map, faction) {
+  if (faction === "zeon") {
+    if (map.type === "space") {
+      return [
+        { msId: "zaku2", characterIds: ["gene"], weaponIds: ["zakuMachineGun", "zakuBazooka"], optionIds: [] },
+        { msId: "rickDom", characterIds: ["ramba"], weaponIds: ["zakuBazooka", "cracker"], optionIds: [] }
+      ];
+    }
+    return [
+      { msId: "zaku2", characterIds: ["gene"], weaponIds: ["zakuMachineGun", "zakuBazooka"], optionIds: [] },
+      { msId: "gouf", characterIds: ["ramba"], weaponIds: ["zakuBazooka"], optionIds: [] }
+    ];
+  }
+  if (map.type === "space") {
+    return [
+      { msId: "gm", characterIds: ["hayato"], weaponIds: ["beamRifle", "shield"], optionIds: [] },
+      { msId: "ball", characterIds: ["kai"], weaponIds: [], optionIds: [] }
+    ];
+  }
+  return [
+    { msId: "gm", characterIds: ["hayato"], weaponIds: ["beamRifle", "shield"], optionIds: [] },
+    { msId: "guncannon", characterIds: ["kai"], weaponIds: ["shield"], optionIds: [] }
+  ];
+}
+
+function enemyFormationForStage(mapId, faction) {
+  const stageEntries = stageConfig(mapId).enemyFormations?.[faction];
+  const map = lookup().maps[mapId] ?? selectedMap();
+  const entries = stageEntries?.length ? stageEntries : fallbackEnemyFormationForMap(map, faction);
+  return entries.map((entry) => ({
+    msId: entry.msId,
+    characterIds: [...(entry.characterIds ?? [])],
+    weaponIds: [...(entry.weaponIds ?? [])],
+    optionIds: [...(entry.optionIds ?? [])]
+  }));
+}
+
+function enemyBattleshipForStage(mapId, faction) {
+  const stage = stageConfig(mapId);
+  if (stage.enemyBattleshipId === null) return null;
+  const map = lookup().maps[mapId] ?? selectedMap();
+  if (stage.enemyBattleshipId) {
+    const configured = lookup().battleships[stage.enemyBattleshipId];
+    return configured?.faction === faction && battleshipCanDeployOnMap(configured, map) ? configured : null;
+  }
+  return state.data.battleships.find((ship) => ship.faction === faction && battleshipCanDeployOnMap(ship, map));
+}
+
+function enemyTotalCostForStage(mapId = state.selectedMapId) {
+  const faction = stageEnemyFaction(mapId);
+  const enemyEntries = enemyFormationForStage(mapId, faction);
+  const enemyShip = enemyBattleshipForStage(mapId, faction);
+  const enemyBridge = enemyShip ? enemyBridgeForStage(mapId, faction) : {};
+  return (enemyShip?.cost ?? 0)
+    + crewCost([enemyBridge.captainId, enemyBridge.firstOfficerId])
+    + enemyEntries.reduce((sum, entry) => sum + formationEntryCost(entry), 0);
+}
+
+function stageCostCap(mapId = state.selectedMapId) {
+  const stage = stageConfig(mapId);
+  if (Number.isFinite(stage.costCap)) return stage.costCap;
+  const enemyCost = enemyTotalCostForStage(mapId);
+  if (enemyCost <= 0) return state.data.costCap ?? 1200;
+  const margin = Math.max(COST_CAP_MIN_MARGIN, Math.ceil(enemyCost * COST_CAP_MARGIN_RATE));
+  return Math.ceil((enemyCost + margin) / 10) * 10;
+}
+
+function stagePlayable(map) {
+  return playableFactionsOnMap(map).length > 0;
+}
+
+function renderTitle() {
+  state.screen = "title";
+  phaseLabel.textContent = "タイトル";
+  setupScreen.className = "screen title-layout";
+  setupScreen.innerHTML = `
+    <section class="title-panel">
+      <p class="eyebrow">Card Tactical SRPG</p>
+      <h2>${state.data.campaign?.title ?? "カードタクティクス"}</h2>
+      <p>手持ちカードで部隊を組み、ステージ報酬で戦力を広げていく試作版です。</p>
+      <div class="title-actions">
+        <button class="primary-button" data-action="stage-select">ステージ選択</button>
+        <button data-action="card-list">カード一覧</button>
+        <button data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換</button>
+      </div>
+    </section>
+    <section class="panel stack">
+      <h2>現在の進行</h2>
+      ${campaignSummaryStats()}
+      <p class="small">連邦はマチルダのガンペリーとジム2機、ジオンはドレンのパプアとザクII／ザクIで開始します。</p>
+      <button class="danger-button" data-action="reset-save">進行を初期化</button>
+    </section>
+  `;
+  setupScreen.classList.remove("hidden");
+  battleScreen.classList.add("hidden");
+}
+
+function campaignSummaryStats() {
+  const currentCap = stageCostCap(state.selectedMapId);
+  return statItems([
+    ["クリア", `${state.collection.clearedStages.length} / ${state.data.maps.length}`],
+    ["機体", `${ownedUniqueCount("mobileSuits")}種 / ${ownedTotalCount("mobileSuits")}枚`],
+    ["戦艦", `${state.collection.battleships.length} / ${state.data.battleships.filter((ship) => ship.selectable !== false).length}`],
+    ["武器", `${ownedUniqueCount("weapons")}種 / ${ownedTotalCount("weapons")}枚`],
+    ["OP", `${ownedUniqueCount("options")}種 / ${ownedTotalCount("options")}枚`],
+    ["キャラ", `${state.collection.characters.length} / ${state.data.characters.filter((character) => character.selectable !== false).length}`],
+    ["引換券", `${choiceTicketCount()}枚`],
+    ["現在コスト枠", currentCap]
+  ]);
+}
+
+function renderStageSelect() {
+  state.screen = "stage";
+  phaseLabel.textContent = "ステージ選択";
+  setupScreen.className = "screen stage-layout";
+  setupScreen.innerHTML = `
+    <section class="panel stack">
+      <div class="panel-heading">
+        <h2>ステージ選択</h2>
+        <button data-action="title">タイトルへ</button>
+      </div>
+      <div class="stage-grid">
+        ${state.data.maps.map((map) => stageCard(map)).join("")}
+      </div>
+    </section>
+    <aside class="panel stack">
+      <h2>カード状況</h2>
+      ${campaignSummaryStats()}
+      <button data-action="card-list">カード一覧を見る</button>
+      <button class="primary-button" data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換券を使う</button>
+    </aside>
+  `;
+  setupScreen.classList.remove("hidden");
+  battleScreen.classList.add("hidden");
+}
+
+function stageCard(map) {
+  const stage = stageConfig(map.id);
+  const playable = stagePlayable(map);
+  const cleared = stageCleared(map.id);
+  const enemyFaction = stageEnemyFaction(map.id);
+  const enemyCost = enemyTotalCostForStage(map.id);
+  const cap = stageCostCap(map.id);
+  const rewardText = renderCommonDropSummary();
+  const rollText = commonDropRolls() > 0 ? ` / ${commonDropRolls()}回抽選` : "";
+  return `
+    <article class="stage-card ${cleared ? "cleared" : ""}">
+      <div class="stage-card-head">
+        <div>
+          <p class="eyebrow">${mapTypeName(map.type)} / 敵:${factionName(enemyFaction)} / 敵${enemyCost} / 上限${cap}</p>
+          <h3>${map.name}</h3>
+        </div>
+        <span class="status-pill ${playable ? "ready" : ""}">${cleared ? "CLEAR" : playable ? "出撃可" : "未解禁"}</span>
+      </div>
+      <p class="small">${stage.summary ?? "ステージ説明は未設定です。"}</p>
+      ${renderMapDetails(map)}
+      <p class="small">全体ランダムドロップ${rollText}</p>
+      <div class="reward-list">${rewardText || `<span class="reward-chip">報酬未設定</span>`}</div>
+      <button class="primary-button" data-action="select-stage" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このステージへ</button>
+    </article>
+  `;
+}
+
+function commonDropCounts() {
+  const entries = commonDropEntries();
+  return ["mobileSuits", "battleships", "weapons", "options", "characters"].map((type) => ({
+    type,
+    count: entries.filter((entry) => entry.type === type).length
+  }));
+}
+
+function renderCommonDropSummary() {
+  const limit = commonDropConfig().copyLimit;
+  const choice = choiceRewardConfig();
+  const chips = commonDropCounts()
+    .filter((item) => item.count > 0)
+    .map((item) => `<span class="reward-chip">${cardTypeLabel(item.type)}: 候補${item.count}</span>`);
+  chips.push(`<span class="reward-chip owned">武器/OP上限 ${limit}枚</span>`);
+  if (choice.firstClearTickets > 0) chips.push(`<span class="reward-chip">初回クリア: 引換券${choice.firstClearTickets}枚</span>`);
+  if (choice.repeatClearTickets > 0 && choice.repeatClearChance > 0) chips.push(`<span class="reward-chip owned">再クリア: 引換券${Math.round(choice.repeatClearChance * 100)}%</span>`);
+  return chips.join("") || `<span class="reward-chip owned">追加報酬候補なし</span>`;
+}
+
+function renderDropRewardChip(reward) {
+  const owned = hasCard(reward.type, reward.id);
+  const countText = isCountedCardType(reward.type) ? ` x${Math.max(1, Number(reward.count) || 1)} / 所持${cardCount(reward.type, reward.id)}枚` : owned ? " 所持済み" : "";
+  const weightText = reward.weight ? ` / 重み${reward.weight}` : "";
+  return `<span class="reward-chip ${owned ? "owned" : ""}">${cardTypeLabel(reward.type)}: ${cardName(reward.type, reward.id)}${countText}${weightText}</span>`;
+}
+
+function normalizeSearchText(value) {
+  return String(value ?? "").toLowerCase();
+}
+
+function cardTypeValue(type) {
+  return {
+    battleships: "battleships",
+    mobileSuits: "mobileSuits",
+    weapons: "weapons",
+    options: "options",
+    characters: "characters"
+  }[type] ?? type;
+}
+
+function itemFactionIds(item) {
+  if (item.faction) return [item.faction];
+  if (Array.isArray(item.factions)) return item.factions;
+  return [];
+}
+
+function itemSearchText(type, item) {
+  return normalizeSearchText([
+    item.id,
+    item.name,
+    cardTypeLabel(type),
+    ...itemFactionIds(item).map((faction) => state.data.factions[faction] ?? faction),
+    ...(item.mapTypes ?? []),
+    ...(item.tags ?? []),
+    ...(item.roles ?? []),
+    ...(item.specials ?? []),
+    item.category,
+    item.effectType,
+    item.effectText
+  ].filter(Boolean).join(" "));
+}
+
+function itemPrimaryPower(item) {
+  return item.power ?? item.armor ?? item.shooting ?? item.command ?? item.cost ?? 0;
+}
+
+function itemSortValue(type, item, sort) {
+  if (sort === "costAsc" || sort === "costDesc") return item.cost ?? 0;
+  if (sort === "armorDesc") return item.armor ?? item.durability ?? 0;
+  if (sort === "powerDesc") return itemPrimaryPower(item);
+  if (sort === "mobilityDesc") return item.mobility ?? item.reaction ?? 0;
+  return item.name ?? item.id;
+}
+
+function sortedItems(type, items, sort = "name") {
+  return [...items].sort((a, b) => {
+    if (sort === "name") return String(a.name ?? a.id).localeCompare(String(b.name ?? b.id), "ja");
+    const aValue = itemSortValue(type, a, sort);
+    const bValue = itemSortValue(type, b, sort);
+    const desc = sort.endsWith("Desc");
+    if (aValue === bValue) return String(a.name ?? a.id).localeCompare(String(b.name ?? b.id), "ja");
+    return desc ? bValue - aValue : aValue - bValue;
+  });
+}
+
+function libraryFilteredItems(type, items, options = {}) {
+  const filter = state.libraryFilter;
+  const query = normalizeSearchText(filter.query).trim();
+  return sortedItems(type, items.filter((item) => {
+    const visibleForSearch = hasCard(type, item.id) || state.revealAllCards || options.forceReveal;
+    if (filter.type !== "all" && cardTypeValue(type) !== filter.type) return false;
+    if (filter.faction !== "all" && !itemFactionIds(item).includes(filter.faction)) return false;
+    if (filter.ownership === "owned" && !hasCard(type, item.id)) return false;
+    if (filter.ownership === "missing" && hasCard(type, item.id)) return false;
+    if (query && (!visibleForSearch || !itemSearchText(type, item).includes(query))) return false;
+    return true;
+  }), filter.sort);
+}
+
+function pickerFilteredItems(kind, items) {
+  const query = normalizeSearchText(state.pickerFilter.query).trim();
+  const type = kind === "battleship" ? "battleships" : kind === "mobileSuit" ? "mobileSuits" : "characters";
+  return sortedItems(type, items.filter((item) => !query || itemSearchText(type, item).includes(query)), state.pickerFilter.sort);
+}
+
+function filterOption(value, label, current) {
+  return `<option value="${value}" ${value === current ? "selected" : ""}>${label}</option>`;
+}
+
+function renderLibraryControls() {
+  const filter = state.libraryFilter;
+  return `
+    <div class="filter-bar">
+      <label>検索<input class="library-control" data-filter-key="query" type="search" value="${escapeAttr(filter.query)}" placeholder="名前・タグ" /></label>
+      <label>種別<select class="library-control" data-filter-key="type">
+        ${[
+          ["all", "すべて"],
+          ["battleships", "戦艦"],
+          ["mobileSuits", "機体"],
+          ["weapons", "武器"],
+          ["options", "OP"],
+          ["characters", "キャラ"]
+        ].map(([value, label]) => filterOption(value, label, filter.type)).join("")}
+      </select></label>
+      <label>勢力<select class="library-control" data-filter-key="faction">
+        ${filterOption("all", "すべて", filter.faction)}
+        ${Object.entries(state.data.factions).map(([value, label]) => filterOption(value, label, filter.faction)).join("")}
+      </select></label>
+      <label>所持<select class="library-control" data-filter-key="ownership">
+        ${[
+          ["all", "すべて"],
+          ["owned", "所持"],
+          ["missing", "未入手"]
+        ].map(([value, label]) => filterOption(value, label, filter.ownership)).join("")}
+      </select></label>
+      <label>ソート<select class="library-control" data-filter-key="sort">
+        ${[
+          ["name", "名前"],
+          ["costAsc", "コスト低い順"],
+          ["costDesc", "コスト高い順"],
+          ["armorDesc", "耐久高い順"],
+          ["powerDesc", "火力高い順"],
+          ["mobilityDesc", "移動/反応高い順"]
+        ].map(([value, label]) => filterOption(value, label, filter.sort)).join("")}
+      </select></label>
+      <button data-action="reset-library-filter">リセット</button>
+    </div>
+  `;
+}
+
+function renderPickerControls(kind) {
+  const filter = state.pickerFilter;
+  const sortLabels = kind === "character"
+    ? [["costAsc", "コスト低い順"], ["costDesc", "コスト高い順"], ["mobilityDesc", "反応高い順"], ["powerDesc", "主能力高い順"], ["name", "名前"]]
+    : [["costAsc", "コスト低い順"], ["costDesc", "コスト高い順"], ["armorDesc", "耐久高い順"], ["mobilityDesc", "移動高い順"], ["name", "名前"]];
+  return `
+    <div class="filter-bar">
+      <label>検索<input class="picker-control" data-filter-key="query" type="search" value="${escapeAttr(filter.query)}" placeholder="名前・タグ" /></label>
+      <label>ソート<select class="picker-control" data-filter-key="sort">
+        ${sortLabels.map(([value, label]) => filterOption(value, label, filter.sort)).join("")}
+      </select></label>
+      <button data-action="reset-picker-filter">リセット</button>
+    </div>
+  `;
+}
+
+function choiceFilteredEntries() {
+  const filter = state.choiceFilter;
+  const query = normalizeSearchText(filter.query).trim();
+  return choiceCandidateEntries()
+    .filter(({ type, item }) => {
+      if (filter.type !== "all" && cardTypeValue(type) !== filter.type) return false;
+      if (filter.faction !== "all" && !itemFactionIds(item).includes(filter.faction)) return false;
+      if (query && !itemSearchText(type, item).includes(query)) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const sort = filter.sort;
+      if (sort === "type") {
+        const typeCompare = cardTypeLabel(a.type).localeCompare(cardTypeLabel(b.type), "ja");
+        if (typeCompare !== 0) return typeCompare;
+      }
+      if (sort === "name" || sort === "type") {
+        return String(a.item.name ?? a.item.id).localeCompare(String(b.item.name ?? b.item.id), "ja");
+      }
+      const aValue = itemSortValue(a.type, a.item, sort);
+      const bValue = itemSortValue(b.type, b.item, sort);
+      const desc = sort.endsWith("Desc");
+      if (aValue === bValue) return String(a.item.name ?? a.item.id).localeCompare(String(b.item.name ?? b.item.id), "ja");
+      return desc ? bValue - aValue : aValue - bValue;
+    });
+}
+
+function renderChoiceControls() {
+  const filter = state.choiceFilter;
+  return `
+    <div class="filter-bar">
+      <label>検索<input class="choice-control" data-filter-key="query" type="search" value="${escapeAttr(filter.query)}" placeholder="名前・タグ" /></label>
+      <label>種別<select class="choice-control" data-filter-key="type">
+        ${[
+          ["all", "すべて"],
+          ["battleships", "戦艦"],
+          ["mobileSuits", "機体"],
+          ["weapons", "武器"],
+          ["options", "OP"],
+          ["characters", "キャラ"]
+        ].map(([value, label]) => filterOption(value, label, filter.type)).join("")}
+      </select></label>
+      <label>勢力<select class="choice-control" data-filter-key="faction">
+        ${filterOption("all", "すべて", filter.faction)}
+        ${Object.entries(state.data.factions).map(([value, label]) => filterOption(value, label, filter.faction)).join("")}
+      </select></label>
+      <label>ソート<select class="choice-control" data-filter-key="sort">
+        ${[
+          ["costDesc", "コスト高い順"],
+          ["costAsc", "コスト低い順"],
+          ["powerDesc", "火力高い順"],
+          ["armorDesc", "耐久高い順"],
+          ["mobilityDesc", "移動/反応高い順"],
+          ["type", "種別"],
+          ["name", "名前"]
+        ].map(([value, label]) => filterOption(value, label, filter.sort)).join("")}
+      </select></label>
+      <button data-action="reset-choice-filter">リセット</button>
+    </div>
+  `;
+}
+
+function focusFilterControl(selector, key, value) {
+  const control = setupScreen.querySelector(`${selector}[data-filter-key="${key}"]`);
+  if (!control) return;
+  control.focus();
+  if (control.type === "search") {
+    const position = String(value ?? "").length;
+    control.setSelectionRange(position, position);
+  }
+}
+
+function renderChoiceCardSelect() {
+  state.screen = "choice";
+  phaseLabel.textContent = "カード引換";
+  setupScreen.className = "screen card-library-layout";
+  const entries = choiceFilteredEntries();
+  const total = choiceCandidateEntries().length;
+  setupScreen.innerHTML = `
+    <section class="panel stack">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Choice Reward</p>
+          <h2>カード引換</h2>
+        </div>
+        <div class="toolbar-actions">
+          <button data-action="card-list">カード一覧</button>
+          <button data-action="stage-select">ステージ選択</button>
+          <button data-action="title">タイトルへ</button>
+        </div>
+      </div>
+      <p class="support-hint ${choiceTicketCount() > 0 ? "ready" : ""}">
+        カード引換券: ${choiceTicketCount()}枚 / 入手候補: ${total}件。武器とオプションは所持上限まで選べます。
+      </p>
+      ${renderChoiceControls()}
+      ${entries.length > 0 ? `
+        <section class="library-section">
+          <h3>引換候補 <span class="section-count">${entries.length} / ${total}</span></h3>
+          <div class="card-grid">
+            ${entries.map(({ type, item }) => renderChoiceCandidateCard(type, item)).join("")}
+          </div>
+        </section>
+      ` : `<p class="support-hint">条件に合う引換候補がありません。</p>`}
+    </section>
+  `;
+  setupScreen.classList.remove("hidden");
+  battleScreen.classList.add("hidden");
+}
+
+function renderChoiceCandidateCard(type, item) {
+  const countText = isCountedCardType(type) ? `現在 x${cardCount(type, item.id)} / ${countedCardLimit(type)}` : "未所持";
+  return `
+    <article class="collection-card revealed">
+      <div class="collection-card-head">
+        <strong>${item.name}</strong>
+        <span class="status-pill preview">${cardTypeLabel(type)} / ${countText}</span>
+      </div>
+      ${renderChoiceCandidateDetails(type, item)}
+      <button class="primary-button" data-action="claim-choice-card" data-card-type="${type}" data-id="${item.id}" ${choiceTicketCount() > 0 ? "" : "disabled"}>このカードを入手</button>
+    </article>
+  `;
+}
+
+function renderChoiceCandidateDetails(type, item) {
+  if (type === "battleships") return renderBattleshipDataDetails(item);
+  if (type === "mobileSuits") return renderMobileSuitDetails(item);
+  if (type === "weapons") return renderWeaponDetails(item);
+  if (type === "options") return renderOptionDetails(item);
+  if (type === "characters") return renderCharacterDetails(item);
+  return "";
+}
+
+function claimChoiceCard(type, id) {
+  if (choiceTicketCount() <= 0) return false;
+  const candidate = choiceCandidateEntries().find((entry) => entry.type === type && entry.item.id === id);
+  if (!candidate) return false;
+  state.collection.choiceTickets = choiceTicketCount() - 1;
+  unlockCard({ type, id, count: 1 });
+  saveCollection();
+  return true;
+}
+
+function battleshipWeaponIdSet() {
+  return new Set(state.data.battleships.flatMap((ship) => ship.weaponIds ?? []));
+}
+
+function revealMobileSuitFixedWeapons() {
+  const shipWeaponIds = battleshipWeaponIdSet();
+  return state.data.weapons.filter((weapon) => weapon.fixedOnly && weapon.category !== "ship-gun" && !shipWeaponIds.has(weapon.id));
+}
+
+function revealBattleshipFixedWeapons() {
+  const shipWeaponIds = battleshipWeaponIdSet();
+  return state.data.weapons.filter((weapon) => weapon.fixedOnly && (weapon.category === "ship-gun" || shipWeaponIds.has(weapon.id)));
+}
+
+function renderCardList() {
+  state.screen = "cards";
+  phaseLabel.textContent = "カード一覧";
+  setupScreen.className = "screen card-library-layout";
+  setupScreen.innerHTML = `
+    <section class="panel stack">
+      <div class="panel-heading">
+        <h2>カード一覧</h2>
+        <div class="toolbar-actions">
+          <button class="${state.revealAllCards ? "primary-button" : ""}" data-action="toggle-card-reveal">${state.revealAllCards ? "通常表示に戻す" : "確認用: 情報全開放"}</button>
+          <button data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換</button>
+          <button data-action="stage-select">ステージ選択</button>
+          <button data-action="title">タイトルへ</button>
+        </div>
+      </div>
+      ${state.revealAllCards ? `<p class="support-hint ready">確認用表示中: 未入手カードと固定武装の詳細を表示しています。所持状況やセーブデータは変わりません。</p>` : ""}
+      ${renderLibraryControls()}
+      ${cardLibrarySection("battleships", "戦艦", state.data.battleships.filter((ship) => ship.selectable !== false), renderBattleshipDataDetails)}
+      ${cardLibrarySection("mobileSuits", "機体", state.data.mobileSuits, renderMobileSuitDetails)}
+      ${cardLibrarySection("weapons", "武器", state.data.weapons.filter((weapon) => !weapon.fixedOnly), renderWeaponDetails)}
+      ${state.revealAllCards ? cardLibrarySection("weapons", "機体固定・付属武装（確認用）", revealMobileSuitFixedWeapons(), renderWeaponDetails, { forceReveal: true }) : ""}
+      ${state.revealAllCards ? cardLibrarySection("weapons", "戦艦固定武装（確認用）", revealBattleshipFixedWeapons(), renderWeaponDetails, { forceReveal: true }) : ""}
+      ${cardLibrarySection("options", "オプション", state.data.options ?? [], renderOptionDetails)}
+      ${cardLibrarySection("characters", "キャラ", state.data.characters.filter((character) => character.selectable !== false), renderCharacterDetails)}
+      ${state.revealAllCards ? cardLibrarySection("characters", "敵専用キャラ（確認用）", state.data.characters.filter((character) => character.selectable === false), renderCharacterDetails, { forceReveal: true }) : ""}
+      ${skillLibrarySection()}
+    </section>
+  `;
+  setupScreen.classList.remove("hidden");
+  battleScreen.classList.add("hidden");
+}
+
+function cardLibrarySection(type, title, items, detailRenderer, options = {}) {
+  const filteredItems = libraryFilteredItems(type, items, options);
+  if (filteredItems.length === 0) return "";
+  return `
+    <section class="library-section">
+      <h3>${title} <span class="section-count">${filteredItems.length} / ${items.length}</span></h3>
+      <div class="card-grid">
+        ${filteredItems.map((item) => {
+          const actuallyOwned = hasCard(type, item.id);
+          const revealed = state.revealAllCards || options.forceReveal;
+          const visible = actuallyOwned || revealed;
+          const countLabel = isCountedCardType(type) && actuallyOwned ? `所持 x${cardCount(type, item.id)}` : actuallyOwned ? "所持" : "確認用";
+          return `
+            <article class="collection-card ${actuallyOwned ? "owned" : visible ? "revealed" : "locked"}">
+              <div class="collection-card-head">
+                <strong>${visible ? item.name : "未入手カード"}</strong>
+                <span class="status-pill ${actuallyOwned ? "ready" : visible ? "preview" : ""}">${visible ? countLabel : "未入手"}</span>
+              </div>
+              ${visible ? detailRenderer(item) : `<p class="small">ステージ報酬などで入手すると詳細を確認できます。</p>`}
+            </article>
+          `;
+        }).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function allSkillIds() {
+  return uniqueSkillIds([
+    ...(state.data.skills ?? []).map((skill) => skill.id),
+    ...state.data.mobileSuits.flatMap((ms) => ms.specials ?? []),
+    ...state.data.weapons.flatMap((weapon) => weapon.specials ?? []),
+    ...state.data.characters.flatMap((character) => character.specials ?? []),
+    ...(state.data.options ?? []).map((option) => option.grantsSkill).filter(Boolean)
+  ]).sort((a, b) => skillName(a).localeCompare(skillName(b), "ja"));
+}
+
+function skillSourceSummary(skillId) {
+  const sources = [
+    ...state.data.mobileSuits.filter((ms) => (ms.specials ?? []).includes(skillId)).map((ms) => ms.name),
+    ...state.data.weapons.filter((weapon) => (weapon.specials ?? []).includes(skillId)).map((weapon) => weapon.name),
+    ...state.data.characters.filter((character) => (character.specials ?? []).includes(skillId)).map((character) => character.name),
+    ...(state.data.options ?? []).filter((option) => option.grantsSkill === skillId).map((option) => option.name)
+  ];
+  return sources.length > 0 ? sources.join(" / ") : "現状カードなし";
+}
+
+function skillLibrarySection() {
+  const filter = state.libraryFilter;
+  if (filter.type !== "all" || filter.ownership !== "all" || filter.faction !== "all") return "";
+  const query = normalizeSearchText(filter.query).trim();
+  const skillIds = allSkillIds().filter((id) => {
+    if (!query) return true;
+    const skill = skillDefinition(id);
+    return normalizeSearchText([id, skill.name, skill.type, skill.timing, skill.effect, skillSourceSummary(id)].join(" ")).includes(query);
+  });
+  if (skillIds.length === 0) return "";
+  return `
+    <section class="library-section">
+      <h3>スキル辞典 <span class="section-count">${skillIds.length} / ${allSkillIds().length}</span></h3>
+      <div class="skill-library-grid">
+        ${skillIds.map((id) => {
+          const skill = skillDefinition(id);
+          return `
+            <article class="collection-card owned skill-library-card">
+              <div class="collection-card-head">
+                <strong>${skill.name}</strong>
+                <span class="status-pill ${skill.implemented ? "ready" : ""}">${skill.implemented ? "反映済" : "表示のみ"}</span>
+              </div>
+              ${statItems([
+                ["分類", skill.type],
+                ["発動", skill.timing]
+              ])}
+              <p class="small">${skill.effect}</p>
+              <p class="small">付与カード: ${skillSourceSummary(id)}</p>
+            </article>
+          `;
+        }).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderFormationPicker(kind, owner = "") {
+  state.screen = "picker";
+  state.picker = { kind, owner };
+  phaseLabel.textContent = kind === "mobileSuit" ? "機体選択" : kind === "battleship" ? "戦艦選択" : "キャラ選択";
+  setupScreen.className = "screen card-library-layout";
+  const selectedMapData = selectedMap();
+  const title = kind === "mobileSuit" ? "機体を一覧から選ぶ" : kind === "battleship" ? "戦艦を一覧から選ぶ" : `${ownerLabel(owner)}を一覧から選ぶ`;
+  const items = kind === "mobileSuit"
+    ? state.data.mobileSuits.filter((item) => item.faction === state.faction && hasCard("mobileSuits", item.id) && mobileSuitCanDeployOnMap(item, selectedMapData))
+    : kind === "battleship"
+      ? state.data.battleships.filter((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, selectedMapData))
+    : state.data.characters.filter((item) => item.faction === state.faction && hasCard("characters", item.id));
+  const visibleItems = pickerFilteredItems(kind, items);
+  setupScreen.innerHTML = `
+    <section class="panel stack">
+      <div class="panel-heading">
+        <h2>${title}</h2>
+        <button data-action="back-setup">編成へ戻る</button>
+      </div>
+      <p class="small">${selectedMapData.name} / ${factionName(state.faction)}の所持カードから選択中です。</p>
+      ${renderPickerControls(kind)}
+      <p class="small">表示 ${visibleItems.length} / ${items.length}</p>
+      <div class="picker-grid">
+        ${kind === "mobileSuit"
+          ? visibleItems.map((item) => mobileSuitPickerCard(item)).join("")
+          : kind === "battleship"
+            ? visibleItems.map((item) => battleshipPickerCard(item)).join("")
+            : blankCharacterCard(owner) + visibleItems.map((item) => characterPickerCard(item, owner)).join("")}
+      </div>
+    </section>
+  `;
+  setupScreen.classList.remove("hidden");
+  battleScreen.classList.add("hidden");
+}
+
+function ownerLabel(owner) {
+  return {
+    mobileSuit: "MS搭乗キャラ",
+    captain: "艦長",
+    firstOfficer: "副長"
+  }[owner] ?? "キャラ";
+}
+
+function mobileSuitPickerCard(ms) {
+  const remaining = remainingCardCopies("mobileSuits", ms.id);
+  return `
+    <article class="picker-card ${ms.id === state.selectedMsId ? "selected" : ""}">
+      <div class="collection-card-head">
+        <strong>${ms.name}</strong>
+        <span class="status-pill ${remaining > 0 ? "ready" : ""}">所持${cardCount("mobileSuits", ms.id)} / 残り${remaining}</span>
+      </div>
+      ${statItems([
+        ["コスト", ms.cost],
+        ["装甲", ms.armor],
+        ["EN", ms.energy],
+        ["運動", ms.agility],
+        ["移動", ms.mobility],
+        ["装備枠", `武器${ms.weaponSlots ?? 2} / OP${ms.optionSlots ?? 1}`]
+      ])}
+      ${renderMobileSuitDetails(ms)}
+      <button class="primary-button" data-action="choose-ms" data-id="${ms.id}">この機体にする</button>
+    </article>
+  `;
+}
+
+function battleshipPickerCard(ship) {
+  return `
+    <article class="picker-card ${ship.id === state.selectedBattleshipId ? "selected" : ""}">
+      <div class="collection-card-head">
+        <strong>${ship.name}</strong>
+        <span class="status-pill ready">所持</span>
+      </div>
+      ${statItems([
+        ["コスト", ship.cost],
+        ["耐久", ship.armor],
+        ["EN", ship.energy],
+        ["回避基礎", ship.agility],
+        ["移動", ship.mobility],
+        ["補給", `装甲${ship.support.armor} / EN${ship.support.energy} / 弾${ship.support.ammo}`]
+      ])}
+      ${renderBattleshipDataDetails(ship)}
+      <button class="primary-button" data-action="choose-battleship" data-id="${ship.id}">この戦艦にする</button>
+    </article>
+  `;
+}
+
+function blankCharacterCard(owner) {
+  return `
+    <article class="picker-card blank-card">
+      <div class="collection-card-head">
+        <strong>未配置</strong>
+        <span class="status-pill">空欄</span>
+      </div>
+      <p class="small">いったん枠を空にして、あとから選び直せます。</p>
+      <button data-action="clear-character" data-owner="${owner}">未配置にする</button>
+    </article>
+  `;
+}
+
+function characterPickerCard(character, owner) {
+  const key = character.characterKey ?? character.id;
+  const used = usedCharacterKeys({
+    excludeBridgeSlot: owner,
+    includeSelectedCharacter: owner !== "mobileSuit"
+  }).has(key);
+  const current = character.id === characterIdForOwner(owner);
+  const disabled = used && !current;
+  return `
+    <article class="picker-card ${current ? "selected" : ""} ${disabled ? "disabled-card" : ""}">
+      <div class="collection-card-head">
+        <strong>${character.name}</strong>
+        <span class="status-pill ${disabled ? "" : "ready"}">${disabled ? "編成済み" : "選択可"}</span>
+      </div>
+      ${statItems([
+        ["コスト", character.cost],
+        ["射撃", character.shooting],
+        ["格闘", character.melee],
+        ["反応", character.reaction],
+        ["指揮", character.command],
+        ["整備", character.maintenance]
+      ])}
+      ${renderCharacterDetails(character)}
+      <button class="primary-button" data-action="choose-character" data-owner="${owner}" data-id="${character.id}" ${disabled ? "disabled" : ""}>このキャラにする</button>
+    </article>
+  `;
+}
+
+function characterIdForOwner(owner) {
+  if (owner === "captain") return state.selectedCaptainId;
+  if (owner === "firstOfficer") return state.selectedFirstOfficerId;
+  return state.selectedCharacterId;
+}
+
+function renderFavoriteFormationControls() {
+  const favorite = selectedFavoriteFormation();
+  const compatible = favorite && playableFactionsOnMap().includes(favorite.faction);
+  const defaultName = favorite?.name ?? `お気に入り${String(state.selectedFavoriteSlot + 1).padStart(2, "0")}`;
+  const slotOptions = Array.from({ length: FAVORITE_FORMATION_SLOTS }, (_, index) => {
+    const saved = state.favoriteFormations[index];
+    const number = String(index + 1).padStart(2, "0");
+    const label = saved
+      ? `${number}: ${saved.name}（${factionName(saved.faction)}）`
+      : `${number}: 未登録`;
+    return `<option value="${index}" ${index === state.selectedFavoriteSlot ? "selected" : ""}>${escapeAttr(label)}</option>`;
+  }).join("");
+  return `
+    <section class="favorite-formation-box">
+      <div class="favorite-formation-heading">
+        <strong>お気に入り編成</strong>
+        <span class="small">20枠</span>
+      </div>
+      <select id="favoriteFormationSlot" aria-label="お気に入り編成の枠">${slotOptions}</select>
+      <input id="favoriteFormationName" aria-label="お気に入り編成名" maxlength="30" value="${escapeAttr(defaultName)}" />
+      <div class="favorite-formation-actions">
+        <button data-action="save-favorite-formation">この編成を登録</button>
+        <button data-action="load-favorite-formation" ${compatible ? "" : "disabled"}>呼び出す</button>
+        <button data-action="delete-favorite-formation" ${favorite ? "" : "disabled"}>削除</button>
+      </div>
+      ${favorite && !compatible ? `<p class="small">このステージでは${factionName(favorite.faction)}編成を使用できません。</p>` : ""}
+    </section>
+  `;
+}
+
+function renderSetup() {
+  normalizeSelections();
+  state.phase = "setup";
+  phaseLabel.textContent = "編成";
+  state.screen = "setup";
+  const { ms, characters, weapons, battleships, maps, options } = lookup();
+  const cost = currentCost();
+  const selectedMapData = maps[state.selectedMapId] ?? state.data.maps[0];
+  const cap = stageCostCap(selectedMapData.id);
+  const enemyCost = enemyTotalCostForStage(selectedMapData.id);
+  const availableBattleships = state.data.battleships.filter((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, selectedMapData));
+  const availableMs = state.data.mobileSuits.filter((item) => item.faction === state.faction && hasCard("mobileSuits", item.id) && mobileSuitCanDeployOnMap(item, selectedMapData));
+  const availableCharacters = state.data.characters.filter((item) => item.faction === state.faction && hasCard("characters", item.id));
+  const selectedBattleship = battleships[state.selectedBattleshipId] ?? availableBattleships[0];
+  const selectedMs = ms[state.selectedMsId] ?? availableMs[0];
+  const selectedWeaponSlots = weaponSlotCount(selectedMs);
+  const usedWeaponSlots = selectedWeaponSlotCost(state.selectedWeaponIds);
+  const availableWeapons = state.data.weapons.filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && weaponEquippableByMs(selectedMs, weapon));
+  const availableOptions = (state.data.options ?? []).filter((option) => remainingCardCopies("options", option.id) > 0 && optionUsableByFaction(option, state.faction));
+  const selectedOption = options[state.selectedOptionId];
+  const selectedCharacter = characters[state.selectedCharacterId];
+  const selectedMsRemaining = selectedMs ? remainingCardCopies("mobileSuits", selectedMs.id) : 0;
+  const addCost = selectedMs.cost + (selectedCharacter?.cost ?? 0) + (selectedOption?.cost ?? 0) + state.selectedWeaponIds.reduce((sum, id) => sum + weapons[id].cost, 0);
+  const projectedCost = cost + addCost;
+
+  setupScreen.className = "screen setup-layout";
+  setupScreen.innerHTML = `
+    <aside class="panel stack">
+      <div class="panel-heading">
+        <h2>編成</h2>
+        <button data-action="stage-select">ステージへ</button>
+      </div>
+      <div class="segmented">
+        ${Object.entries(state.data.factions).map(([id, name]) => `<button data-action="faction" data-faction="${id}" class="${state.faction === id ? "active" : ""}" ${playableFactionsOnMap(selectedMapData).includes(id) ? "" : "disabled"}>${name}</button>`).join("")}
+      </div>
+      ${renderFavoriteFormationControls()}
+      <div class="meter ${cost > cap ? "over" : ""}">
+        <div class="meter-line"><div class="meter-fill" style="width: ${clamp((cost / cap) * 100, 0, 100)}%"></div></div>
+        <p class="small">総コスト ${cost} / ${cap}（敵総コスト${enemyCost}）</p>
+      </div>
+      <p class="small">${selectedMapData.name}へ出撃します。キャラクターはMSにも戦艦にも配置できます。同じ人物は1人だけ編成できます。</p>
+      <div class="form-row">
+        <label>ステージ</label>
+        <div class="readonly-field">${selectedMapData.name} / ${mapTypeName(selectedMapData.type)}</div>
+      </div>
+      ${renderMapDetails(selectedMapData, { open: true })}
+      <div class="form-row">
+        <label for="battleshipSelect">戦艦（1隻のみ）</label>
+        <div class="select-with-action">
+          <select id="battleshipSelect">
+            ${availableBattleships.map((item) => `<option value="${item.id}" ${item.id === selectedBattleship.id ? "selected" : ""}>${item.name} / コスト${item.cost} / 耐久${item.armor} / 移動${item.mobility}</option>`).join("")}
+          </select>
+          <button data-action="open-picker" data-picker-kind="battleship">一覧</button>
+        </div>
+      </div>
+      ${renderBattleshipDataDetails(selectedBattleship)}
+      ${renderBridgeSelectors()}
+      <p class="small">戦艦+ブリッジコスト: ${selectedBattleship.cost + bridgeCost()}。撃沈されると即敗北です。</p>
+    </aside>
+
+    <section class="panel stack">
+      <h2>出撃メンバー追加</h2>
+      <div class="form-row">
+        <label for="msSelect">MS</label>
+        <div class="select-with-action">
+          <select id="msSelect">
+            ${availableMs.map((item) => `<option value="${item.id}" ${item.id === state.selectedMsId ? "selected" : ""}>${item.name} / 残り${remainingCardCopies("mobileSuits", item.id)}枚 / コスト${item.cost} / 装甲${item.armor}</option>`).join("")}
+          </select>
+          <button data-action="open-picker" data-picker-kind="mobileSuit">一覧</button>
+        </div>
+      </div>
+      ${renderMobileSuitDetails(selectedMs, { open: true })}
+      <div class="form-row">
+        <label for="characterSelect">キャラクター</label>
+        <div class="select-with-action">
+          <select id="characterSelect">
+            <option value="" ${state.selectedCharacterId ? "" : "selected"}>未配置</option>
+            ${availableCharacters.map((item) => {
+              const key = item.characterKey ?? item.id;
+              const disabled = usedCharacterKeys({ includeBridge: false }).has(key) && item.id !== state.selectedCharacterId;
+              return `<option value="${item.id}" ${item.id === state.selectedCharacterId ? "selected" : ""} ${disabled ? "disabled" : ""}>${item.name} / ${characterRolesLabel(item)} / コスト${item.cost}${disabled ? " / 編成済み" : ""}</option>`;
+            }).join("")}
+          </select>
+          <button data-action="open-picker" data-picker-kind="character" data-owner="mobileSuit">一覧</button>
+          <button data-action="clear-character" data-owner="mobileSuit">未配置</button>
+        </div>
+      </div>
+      ${selectedCharacter ? renderCharacterDetails(selectedCharacter, { open: true }) : `<p class="support-hint">キャラクター未配置です。一覧から選ぶか、プルダウンで選択してください。</p>`}
+      <div>
+        <h3>手持ち武装</h3>
+        <p class="small">装備枠: ${usedWeaponSlots} / ${selectedWeaponSlots}</p>
+        <div class="weapon-list">
+          ${availableWeapons.length === 0 ? `<p class="small">この機体は手持ち武器を装備できません。</p>` : availableWeapons.map((weapon) => `
+            <div class="choice-card">
+              <label>
+                <input type="checkbox" value="${weapon.id}" ${state.selectedWeaponIds.includes(weapon.id) ? "checked" : ""} ${usedWeaponSlots + weaponSlotCost(weapon) > selectedWeaponSlots && !state.selectedWeaponIds.includes(weapon.id) ? "disabled" : ""} />
+                <strong>${weapon.name}</strong>
+              </label>
+              <span class="small">使用枠${weaponSlotCost(weapon)} / 残り${remainingCardCopies("weapons", weapon.id)}枚 / コスト${weapon.cost} / ${weapon.kind === "shield" ? `盾耐久${weapon.durability}${weaponCanAttack(weapon) ? ` / 盾攻撃 威力${weapon.power} 命中${weapon.accuracy}` : ""}` : `威力${weapon.power} 命中${weapon.accuracy} ${weaponRangeLabel(weapon)}`}</span>
+              ${renderWeaponDetails(weapon)}
+            </div>
+          `).join("")}
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="optionSelect">オプション</label>
+        <select id="optionSelect" ${(selectedMs.optionSlots ?? 1) > 0 ? "" : "disabled"}>
+          <option value="" ${state.selectedOptionId ? "" : "selected"}>なし</option>
+          ${availableOptions.map((option) => `<option value="${option.id}" ${option.id === state.selectedOptionId ? "selected" : ""}>${option.name} / 残り${remainingCardCopies("options", option.id)}枚 / コスト${option.cost}</option>`).join("")}
+        </select>
+        ${selectedOption ? renderOptionDetails(selectedOption, { open: true }) : `<p class="small">${(selectedMs.optionSlots ?? 1) > 0 ? "オプションなし" : "この機体はオプションを装備できません。"}</p>`}
+      </div>
+      <button class="primary-button" data-action="add" ${projectedCost > cap || selectedMsRemaining < 1 ? "disabled" : ""}>この組み合わせを追加（+${addCost}）</button>
+      ${selectedMsRemaining < 1 ? `<p class="support-hint">この機体カードの残り枚数がありません。</p>` : ""}
+    </section>
+
+    <aside class="panel stack setup-roster-panel">
+      <h2>現在の部隊</h2>
+      <button type="button" class="primary-button setup-launch-button" data-action="launch" ${state.formation.length === 0 || cost > cap ? "disabled" : ""}>出撃</button>
+      <div class="roster-list">
+        ${battleshipRosterCard(selectedBattleship)}
+        ${state.formation.length === 0 ? `<p class="small">MSはまだ追加されていません。</p>` : state.formation.map((entry, index) => rosterCard(entry, index)).join("")}
+      </div>
+    </aside>
+  `;
+
+  setupScreen.classList.remove("hidden");
+  battleScreen.classList.add("hidden");
+}
+
+function crewRoleLabel(role) {
+  return {
+    captain: "艦長",
+    firstOfficer: "副長"
+  }[role] ?? role;
+}
+
+function renderBridgeSelectors() {
+  const charactersById = lookup().characters;
+  return [
+    ["captain", "selectedCaptainId"],
+    ["firstOfficer", "selectedFirstOfficerId"]
+  ].map(([role, stateKey]) => {
+    const candidates = state.data.characters.filter((character) => character.faction === state.faction && hasCard("characters", character.id));
+    const used = usedCharacterKeys({ excludeBridgeSlot: role, includeSelectedCharacter: false });
+    return `
+      <div class="form-row">
+        <label for="bridge-${role}">${crewRoleLabel(role)}</label>
+        <div class="select-with-action">
+          <select id="bridge-${role}" data-bridge-slot="${role}">
+            <option value="" ${state[stateKey] ? "" : "selected"}>未配置</option>
+            ${candidates.map((character) => {
+              const key = character.characterKey ?? character.id;
+              const disabled = used.has(key) && character.id !== state[stateKey];
+              return `<option value="${character.id}" ${character.id === state[stateKey] ? "selected" : ""} ${disabled ? "disabled" : ""}>${character.name} / ${characterRolesLabel(character)} / コスト${character.cost}${disabled ? " / 編成済み" : ""}</option>`;
+            }).join("")}
+          </select>
+          <button data-action="open-picker" data-picker-kind="character" data-owner="${role}">一覧</button>
+          <button data-action="clear-character" data-owner="${role}">未配置</button>
+        </div>
+        <p class="small">${charactersById[state[stateKey]] ? characterSummary(charactersById[state[stateKey]]) : "未配置"}</p>
+        ${charactersById[state[stateKey]] ? renderCharacterDetails(charactersById[state[stateKey]]) : ""}
+      </div>
+    `;
+  }).join("");
+}
+
+function characterSummary(character) {
+  return `${characterRolesLabel(character)} / 射撃${character.shooting} / 格闘${character.melee} / 反応${character.reaction} / 指揮${character.command} / 支援${character.support} / 整備${character.maintenance}`;
+}
+
+function rosterCard(entry, index) {
+  const { ms, characters, weapons, options } = lookup();
+  const unitMs = ms[entry.msId];
+  const unitCharacter = characters[entry.characterIds[0]] ?? NO_CHARACTER;
+  const weaponNames = entry.weaponIds.map((id) => weapons[id].name).join(" / ") || "手持ちなし";
+  const optionNames = (entry.optionIds ?? []).map((id) => options[id]?.name).filter(Boolean).join(" / ") || "OPなし";
+  const sortieNumber = index + 1;
+  return `
+    <div class="unit-card">
+      <div class="portrait ${unitMs.faction}">${sortieNumber}</div>
+      <div>
+        <strong>${sortieNumber}. ${unitMs.name} + ${unitCharacter.name}</strong>
+        <div class="small">${weaponNames} / ${optionNames} / コスト${formationCost(entry)}</div>
+        <div class="inline-details">
+          ${renderMobileSuitDetails(unitMs)}
+          ${renderCharacterDetails(unitCharacter)}
+          ${entry.weaponIds.map((id) => renderWeaponDetails(weapons[id])).join("")}
+          ${(entry.optionIds ?? []).map((id) => renderOptionDetails(options[id])).join("")}
+        </div>
+      </div>
+      <button data-action="remove" data-index="${index}">外す</button>
+    </div>
+  `;
+}
+
+function battleshipRosterCard(ship) {
+  const { characters } = lookup();
+  const captain = characters[state.selectedCaptainId];
+  const firstOfficer = characters[state.selectedFirstOfficerId];
+  return `
+    <div class="unit-card flagship-card">
+      <div class="portrait ${ship.faction}">艦</div>
+      <div>
+        <strong>${ship.name}</strong>
+        <div class="small">艦長: ${captain?.name ?? "未配置"} / 副長: ${firstOfficer?.name ?? "未配置"} / コスト${ship.cost + bridgeCost()}</div>
+        <div class="inline-details">
+          ${renderBattleshipDataDetails(ship)}
+          ${captain ? renderCharacterDetails(captain) : ""}
+          ${firstOfficer ? renderCharacterDetails(firstOfficer) : ""}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function chooseMobileSuit(msId) {
+  const ms = lookup().ms[msId];
+  if (!ms || !hasCard("mobileSuits", ms.id) || !mobileSuitCanDeployOnMap(ms)) return;
+  state.selectedMsId = ms.id;
+  state.selectedWeaponIds = defaultLoadout(ms);
+  renderSetup();
+}
+
+function chooseBattleship(shipId) {
+  const ship = lookup().battleships[shipId];
+  if (!ship || !hasCard("battleships", ship.id) || !battleshipCanDeployOnMap(ship)) return;
+  state.selectedBattleshipId = ship.id;
+  rememberFormation();
+  renderSetup();
+}
+
+function setCharacterForOwner(owner, characterId) {
+  if (owner === "captain") state.selectedCaptainId = characterId;
+  if (owner === "firstOfficer") state.selectedFirstOfficerId = characterId;
+  if (owner === "mobileSuit") state.selectedCharacterId = characterId;
+  if (characterId) clearCharacterConflicts(characterId, owner);
+  if (owner === "captain" || owner === "firstOfficer") rememberFormation();
+  renderSetup();
+}
+
+function changeFaction(faction) {
+  if (!playableFactionsOnMap().includes(faction)) return;
+  rememberFormation();
+  state.faction = faction;
+  state.formation = [];
+  const factionBattleship = state.data.battleships.find((ship) => ship.faction === faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship));
+  const factionMs = state.data.mobileSuits.find((ms) => ms.faction === faction && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms));
+  const factionCharacter = state.data.characters.find((character) => character.faction === faction && hasCard("characters", character.id));
+  state.selectedBattleshipId = factionBattleship?.id ?? "";
+  const bridge = defaultBridgeSelection(faction);
+  state.selectedCaptainId = bridge.captainId;
+  state.selectedFirstOfficerId = bridge.firstOfficerId;
+  state.selectedMsId = factionMs?.id ?? "";
+  state.selectedCharacterId = firstAvailableCharacter(faction)?.id ?? factionCharacter?.id ?? "";
+  state.selectedWeaponIds = factionMs ? defaultLoadout(factionMs) : [];
+  state.selectedOptionId = "";
+  if (!restoreRememberedFormation()) applyStarterFormation();
+  renderSetup();
+}
+
+function addFormationEntry() {
+  normalizeSelections();
+  if (!state.selectedMsId) return;
+  if (!selectionWithinOwnedCounts("mobileSuits", [state.selectedMsId])) return;
+  if (selectedWeaponSlotCost(state.selectedWeaponIds) > weaponSlotCount(lookup().ms[state.selectedMsId])) return;
+  if (!selectionWithinOwnedCounts("weapons", state.selectedWeaponIds)) return;
+  if (state.selectedOptionId && !selectionWithinOwnedCounts("options", [state.selectedOptionId])) return;
+  state.formation.push({
+    msId: state.selectedMsId,
+    characterIds: state.selectedCharacterId ? [state.selectedCharacterId] : [],
+    weaponIds: [...state.selectedWeaponIds],
+    optionIds: state.selectedOptionId ? [state.selectedOptionId] : []
+  });
+  state.selectedCharacterId = firstAvailableCharacter(state.faction)?.id ?? "";
+  state.selectedOptionId = "";
+  rememberFormation();
+  renderSetup();
+}
+
+function makeUnit(entry, side, x, y, index) {
+  const { ms } = lookup();
+  const unitMs = ms[entry.msId];
+  const weaponIds = [...unitMs.fixedWeaponIds, ...entry.weaponIds];
+  const optionIds = [...(entry.optionIds ?? [])];
+  const runtimeWeapons = runtimeWeaponsForIds(weaponIds, optionIds);
+  const maxEnergy = unitMs.energy + (optionIds.includes("externalGenerator") ? 25 : 0);
+
+  return {
+    id: `${side}-${index}-${makeId()}`,
+    type: "mobileSuit",
+    side,
+    sortieNumber: index + 1,
+    msId: entry.msId,
+    characterIds: [...entry.characterIds],
+    optionIds,
+    weaponIds,
+    runtimeWeapons,
+    armor: unitMs.armor,
+    energy: maxEnergy,
+    maxArmor: unitMs.armor,
+    maxEnergy,
+    x,
+    y,
+    usedWeaponIds: [],
+    acted: false,
+    moved: false
+  };
+}
+
+function makeBattleship(battleshipId, crewIds, side, x, y) {
+  const { battleships } = lookup();
+  const ship = battleships[battleshipId];
+  const runtimeWeapons = runtimeWeaponsForIds(ship.weaponIds);
+
+  return {
+    id: `${side}-battleship-${makeId()}`,
+    type: "battleship",
+    side,
+    battleshipId,
+    characterIds: [...crewIds],
+    faction: ship.faction,
+    armor: ship.armor,
+    maxArmor: ship.armor,
+    energy: ship.energy,
+    maxEnergy: ship.energy,
+    x,
+    y,
+    weaponIds: [...ship.weaponIds],
+    runtimeWeapons,
+    usedWeaponIds: [],
+    acted: false,
+    moved: false
+  };
+}
+
+function defaultDeploymentPosition(side, kind, index = 0, map = selectedMap()) {
+  const width = boardWidth(map);
+  const height = boardHeight(map);
+  if (kind === "battleship") {
+    return { x: Math.floor(width / 2), y: side === "player" ? height - 1 : 0 };
+  }
+  const center = Math.floor(width / 2);
+  const lanes = [center - 1, center + 1, center - 2, center + 2, center, center - 3, center + 3]
+    .filter((x, laneIndex, values) => x >= 0 && x < width && values.indexOf(x) === laneIndex);
+  const rowOffset = Math.floor(index / Math.max(1, lanes.length));
+  return {
+    x: lanes[index % Math.max(1, lanes.length)] ?? center,
+    y: side === "player" ? Math.max(0, height - 2 - rowOffset) : Math.min(height - 1, 1 + rowOffset)
+  };
+}
+
+function configuredDeploymentPosition(side, kind, index = 0, map = selectedMap()) {
+  const sideConfig = map.deployment?.[side];
+  const configured = kind === "battleship" ? sideConfig?.battleship : sideConfig?.units?.[index];
+  return configured ? { x: configured.x, y: configured.y } : defaultDeploymentPosition(side, kind, index, map);
+}
+
+function nearestOpenDeploymentCell(origin, occupied, canStandAt, map = selectedMap()) {
+  const cells = Array.from({ length: boardWidth(map) * boardHeight(map) }, (_, index) => ({
+    x: index % boardWidth(map),
+    y: Math.floor(index / boardWidth(map))
+  }));
+  return cells
+    .filter((cell) => canStandAt(cell.x, cell.y) && !occupied.has(positionKey(cell.x, cell.y)))
+    .sort((a, b) => distance(origin, a) - distance(origin, b))[0];
+}
+
+function reserveDeploymentCell(side, kind, index, occupied, card = null) {
+  const map = selectedMap();
+  const origin = configuredDeploymentPosition(side, kind, index, map);
+  const validOrigin = inBounds(origin.x, origin.y, map) ? origin : defaultDeploymentPosition(side, kind, index, map);
+  const canStandAt = (x, y) => cardCanStandAt(card, x, y, map);
+  const key = positionKey(validOrigin.x, validOrigin.y);
+  const cell = canStandAt(validOrigin.x, validOrigin.y) && !occupied.has(key)
+    ? validOrigin
+    : nearestOpenDeploymentCell(validOrigin, occupied, canStandAt, map);
+  if (cell) occupied.add(positionKey(cell.x, cell.y));
+  return cell ?? validOrigin;
+}
+
+function deploymentRows(side, map = selectedMap()) {
+  return Math.max(1, Number(map.deploymentZone?.[side]?.rows) || 3);
+}
+
+function deploymentZoneContains(side, x, y, map = selectedMap()) {
+  if (!inBounds(x, y, map)) return false;
+  const rows = Math.min(boardHeight(map), deploymentRows(side, map));
+  return side === "player" ? y >= boardHeight(map) - rows : y < rows;
+}
+
+function canDeployUnitTo(unit, x, y) {
+  if (!isCombatUnit(unit) || unit.side !== "player") return false;
+  const occupiedByOther = state.units.some((candidate) =>
+    candidate.id !== unit.id && candidate.x === x && candidate.y === y && isAlive(candidate)
+  );
+  return deploymentZoneContains("player", x, y)
+    && unitCanStandAt(unit, x, y)
+    && !occupiedByOther;
+}
+
+function deploymentCellsFor(unit) {
+  if (!isCombatUnit(unit)) return new Set();
+  const width = boardWidth();
+  const height = boardHeight();
+  return new Set(Array.from({ length: width * height }, (_, index) => {
+    const x = index % width;
+    const y = Math.floor(index / width);
+    return canDeployUnitTo(unit, x, y) ? positionKey(x, y) : null;
+  }).filter(Boolean));
+}
+
+function moveDeploymentUnit(unit, x, y) {
+  if (state.outcome || state.phase !== "deployment") return;
+  if (!canDeployUnitTo(unit, x, y)) return;
+  unit.x = x;
+  unit.y = y;
+  state.log.push(`${unitName(unit)}の出撃位置を変更。`);
+  renderBattle();
+}
+
+function finishDeployment() {
+  if (state.outcome || state.phase !== "deployment") return;
+  tickTurnStartEffects("player");
+  state.phase = "player";
+  state.selectedUnitId = state.units.find((unit) => unit.side === "player" && isCombatUnit(unit))?.id ?? null;
+  state.selectedTargetId = null;
+  state.log.push("配置完了。自軍ターン開始。");
+  renderBattle();
+}
+
+function phaseName() {
+  if (state.outcome) return state.outcome;
+  if (state.phase === "deployment") return "配置フェイズ";
+  if (state.phase === "player") return "自軍ターン";
+  return "敵軍ターン";
+}
+
+function launchBattle() {
+  if (state.screen === "battle") return;
+  const cap = stageCostCap(state.selectedMapId);
+  if (currentCost() > cap) {
+    state.log.push(`総コストが上限を超えています（${currentCost()} / ${cap}）。`);
+    renderSetup();
+    return;
+  }
+  const enemyFaction = stageEnemyFaction();
+  const enemyEntries = buildEnemyFormation(enemyFaction);
+  const enemyBattleship = enemyBattleshipForStage(state.selectedMapId, enemyFaction);
+  const occupied = new Set();
+  const playerShip = lookup().battleships[state.selectedBattleshipId];
+  const playerShipPosition = reserveDeploymentCell("player", "battleship", 0, occupied, playerShip);
+  const enemyShipPosition = enemyBattleship ? reserveDeploymentCell("enemy", "battleship", 0, occupied, enemyBattleship) : null;
+  const playerUnits = state.formation.map((entry, index) => {
+    const position = reserveDeploymentCell("player", "unit", index, occupied, lookup().ms[entry.msId]);
+    return makeUnit(entry, "player", position.x, position.y, index);
+  });
+  const enemyUnits = enemyEntries.map((entry, index) => {
+    const position = reserveDeploymentCell("enemy", "unit", index, occupied, lookup().ms[entry.msId]);
+    return makeUnit(entry, "enemy", position.x, position.y, index);
+  });
+  const enemyBridge = enemyBattleship ? enemyBridgeForStage(state.selectedMapId, enemyFaction) : {};
+  const enemyCrewIds = [enemyBridge.captainId, enemyBridge.firstOfficerId].filter(Boolean);
+  const battleships = [
+    makeBattleship(state.selectedBattleshipId, [state.selectedCaptainId, state.selectedFirstOfficerId].filter(Boolean), "player", playerShipPosition.x, playerShipPosition.y)
+  ];
+  if (enemyBattleship && enemyShipPosition) {
+    battleships.push(makeBattleship(enemyBattleship.id, enemyCrewIds, "enemy", enemyShipPosition.x, enemyShipPosition.y));
+  }
+
+  state.units = [...battleships, ...playerUnits, ...enemyUnits];
+  state.phase = "deployment";
+  state.outcome = null;
+  state.selectedUnitId = battleships.find((unit) => unit.side === "player")?.id ?? playerUnits[0]?.id ?? null;
+  state.selectedTargetId = null;
+  state.enemyQueue = [];
+  state.mines = [];
+  state.sacrificialBoostSides = {};
+  state.resultRewards = [];
+  state.log = [`${factionName(state.faction)}部隊、出撃。敵は${factionName(enemyFaction)}です。`];
+  state.log.push(`${selectedMap().name}で配置フェイズ開始。手前${deploymentRows("player")}列に自軍を配置できます。`);
+  renderBattle();
+}
+
+function safeLaunchBattle() {
+  try {
+    launchBattle();
+  } catch (error) {
+    console.error(error);
+    phaseLabel.textContent = "出撃エラー";
+    state.log.push(`出撃準備でエラー: ${error.message}`);
+  }
+}
+
+window.safeLaunchBattle = safeLaunchBattle;

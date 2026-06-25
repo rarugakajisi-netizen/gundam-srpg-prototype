@@ -1,6 +1,6 @@
 "use strict";
 
-// Campaign, starting collection, stages, and faction labels.
+// Campaign, starting collection, stages, global random rewards, and faction labels.
 window.GAME_DATA = window.GAME_DATA ?? {};
 window.GAME_DATA.campaign = {
   "title": "一年戦争カードタクティクス",
@@ -137,54 +137,6 @@ window.GAME_DATA.campaign = {
               "zakuMachineGun"
             ],
             "optionIds": []
-          }
-        ]
-      },
-      "dropRewards": {
-        "rolls": 3,
-        "entries": [
-          {
-            "type": "mobileSuits",
-            "id": "guncannon",
-            "weight": 13
-          },
-          {
-            "type": "mobileSuits",
-            "id": "guntank",
-            "weight": 13
-          },
-          {
-            "type": "weapons",
-            "id": "beamRifle",
-            "weight": 16,
-            "count": 1
-          },
-          {
-            "type": "weapons",
-            "id": "hyperBazooka",
-            "weight": 14,
-            "count": 1
-          },
-          {
-            "type": "options",
-            "id": "spareMagazine",
-            "weight": 14,
-            "count": 1
-          },
-          {
-            "type": "characters",
-            "id": "amuro",
-            "weight": 8
-          },
-          {
-            "type": "characters",
-            "id": "sayla",
-            "weight": 8
-          },
-          {
-            "type": "characters",
-            "id": "shin",
-            "weight": 10
           }
         ]
       }

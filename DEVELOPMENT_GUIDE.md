@@ -8,9 +8,16 @@
 
 - `index.html`: 画面の土台。
 - `styles.css`: 画面レイアウトと見た目。
-- `main.js`: ゲーム状態、編成UI、戦闘処理、AI、セーブ処理。
+- `main.js`: 旧入口の案内だけを残したファイル。実装本体は `src/` 配下。
+- `src/core.js`: 定数、状態、セーブ、所持カード、報酬、編成復元。
+- `src/detail-renderers.js`: 共通ラベル、地形/射程/スキル判定、カード詳細表示。
+- `src/setup-flow.js`: タイトル、ステージ選択、カード一覧、引換、編成画面、出撃開始。
+- `src/battle-render.js`: 戦闘画面、盤面、ユニット詳細、武装/OP表示。
+- `src/dialogue.js`: キャラクターの戦闘セリフデータ。
+- `src/battle-rules.js`: 戦闘ルール、移動、攻撃、ターン処理、敵AI。
+- `src/events.js`: 勝敗判定、UIイベントハンドラ、起動処理。
 - `data/game-data.js`: `window.GAME_DATA` の器を作る入口ファイル。実データは下記の種類別ファイルで管理する。
-- `data/system/campaign.js`: キャンペーン、初期コレクション、スターター編成、ステージ、勢力表示名。
+- `data/system/campaign.js`: キャンペーン、初期コレクション、スターター編成、ステージ、全体ランダム報酬、勢力表示名。
 - `data/rules/skills.js`: スキル定義。
 - `data/rules/compatibility.js`: キャラと機体、機体と武器の相性ボーナス。
 - `data/maps/maps.js`: マップ定義。
@@ -29,7 +36,7 @@
 - プレイヤーに見える説明は `README.md`、開発判断やデータ仕様はこのファイルに書く。
 - 実装済みの仕様と古い予定を混ぜない。未実装案は、必要最小限のバックログとして残す。
 - データ追加は、`data/cards/`、`data/rules/`、`data/maps/`、`data/system/` の該当ファイルへ追加する。`data/game-data.js` は基本的に触らない。
-- 新しいスキルIDや新しいルールを追加する場合は、`main.js` 側の処理とカード詳細表示の説明も合わせて更新する。
+- 新しいスキルIDや新しいルールを追加する場合は、`src/` 側の処理とカード詳細表示の説明も合わせて更新する。
 - 画像やアイコンはまだ仮。数値、役割、操作性を優先する。
 - 既存のユーザー変更がある前提で、無関係なファイルは触らない。
 
@@ -52,8 +59,8 @@
 ## データ追加の基本手順
 
 1. カードは `data/cards/`、スキルや相性は `data/rules/`、マップは `data/maps/`、ステージや報酬は `data/system/campaign.js` に追加する。
-2. 必要なら `campaign.stages` の報酬や敵編成へ追加する。
-3. 新しいスキルや特殊処理が必要な場合は `main.js` に実装する。
+2. 必要なら `campaign.stages` の敵編成へ追加する。ステージ別ドロップは使わない。
+3. 新しいスキルや特殊処理が必要な場合は、内容に応じて `src/detail-renderers.js`、`src/setup-flow.js`、`src/battle-rules.js`、`src/battle-render.js` へ実装する。
 4. プレイヤー向けに説明が必要なルールなら `README.md` を更新する。
 5. `npm run check` で、最終データとして壊れていないか確認する。
 6. バランスを見る場合は `npm run report:balance` を実行する。
@@ -133,7 +140,7 @@
 - `enemyFormations`: 敵勢力ごとの編成。
 - `enemyBattleshipId`: 敵戦艦を固定したい時に指定する。`null` なら敵戦艦なし。
 - `costCap`: ステージ固有の出撃上限。未指定なら敵総コストをもとに自動計算。
-- `dropRewards`: 個別ドロップ候補。
+- 報酬はステージ別には持たせず、`campaign.commonDropRewards` による全体ランダムドロップを使います。
 
 敵編成の例:
 
@@ -178,7 +185,7 @@ enemyFormations: {
 - 機雷散布。
 - 特定タグや隣接条件による補助効果。
 
-新しい `specials` や `grantsSkill` を追加するだけでは効果は発動しません。効果を持たせる場合は、`main.js` の戦闘、移動、表示、AI評価のどこに影響するかを確認して実装します。
+新しい `specials` や `grantsSkill` を追加するだけでは効果は発動しません。効果を持たせる場合は、`src/battle-rules.js` の戦闘・移動・AI評価、`src/battle-render.js` の戦闘表示、`src/detail-renderers.js` のカード詳細表示のどこに影響するかを確認して実装します。
 
 ## カード案を受け取る時のテンプレート
 
@@ -225,7 +232,7 @@ npm run check
 
 - 各カード、マップ、スキルのID重複。
 - 機体、戦艦、武器、キャラクター、オプション、スキルの参照切れ。
-- 初期コレクション、スターター編成、ステージ敵編成、報酬の参照切れ。
+- 初期コレクション、スターター編成、ステージ敵編成、全体報酬設定の参照切れ。
 - 武器スロット、オプションスロット、装備可否、勢力不一致。
 - ステージ上の敵編成がマップへ出撃可能か。
 - マップの `width * height` と `terrain` 配列長の一致。
