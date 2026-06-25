@@ -144,6 +144,219 @@ function currentCost() {
   return battleshipCost + bridgeCost() + state.formation.reduce((sum, entry) => sum + formationCost(entry), 0);
 }
 
+function randomChoice(items) {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function shuffled(items) {
+  return [...items].sort(() => Math.random() - 0.5);
+}
+
+function weightedRandomChoice(items, weightForItem) {
+  const weighted = items
+    .map((item) => ({ item, weight: Math.max(0, Number(weightForItem(item)) || 0) }))
+    .filter((entry) => entry.weight > 0);
+  if (weighted.length === 0) return randomChoice(items);
+  const total = weighted.reduce((sum, entry) => sum + entry.weight, 0);
+  let roll = Math.random() * total;
+  for (const entry of weighted) {
+    roll -= entry.weight;
+    if (roll <= 0) return entry.item;
+  }
+  return weighted[weighted.length - 1].item;
+}
+
+function costWithBridge(ship, bridge) {
+  return (ship?.cost ?? 0) + crewCost([bridge?.captainId, bridge?.firstOfficerId]);
+}
+
+function formationEntriesCost(entries) {
+  return entries.reduce((sum, entry) => sum + formationEntryCost(entry), 0);
+}
+
+function freeBattleEnemyCost(enemy) {
+  return costWithBridge(lookup().battleships[enemy?.battleshipId], enemy?.bridge)
+    + formationEntriesCost(enemy?.formation ?? []);
+}
+
+function freeBattleEnemyFaction() {
+  return state.freeBattleEnemy?.faction ?? otherFaction(state.faction);
+}
+
+function freeBattleEnemyFormation() {
+  return (state.freeBattleEnemy?.formation ?? []).map((entry) => ({
+    msId: entry.msId,
+    characterIds: [...(entry.characterIds ?? [])],
+    weaponIds: [...(entry.weaponIds ?? [])],
+    optionIds: [...(entry.optionIds ?? [])]
+  }));
+}
+
+function freeBattleEnemyBattleship() {
+  const id = state.freeBattleEnemy?.battleshipId;
+  return id ? lookup().battleships[id] : null;
+}
+
+function freeBattleEnemyBridge() {
+  return state.freeBattleEnemy?.bridge ?? {};
+}
+
+function enemyFactionForCurrentBattle(mapId = state.selectedMapId) {
+  return isFreeBattle() ? freeBattleEnemyFaction() : stageEnemyFaction(mapId);
+}
+
+function enemyFormationForCurrentBattle(mapId = state.selectedMapId, faction = enemyFactionForCurrentBattle(mapId)) {
+  return isFreeBattle() ? freeBattleEnemyFormation() : enemyFormationForStage(mapId, faction);
+}
+
+function enemyBattleshipForCurrentBattle(mapId = state.selectedMapId, faction = enemyFactionForCurrentBattle(mapId)) {
+  return isFreeBattle() ? freeBattleEnemyBattleship() : enemyBattleshipForStage(mapId, faction);
+}
+
+function enemyBridgeForCurrentBattle(mapId = state.selectedMapId, faction = enemyFactionForCurrentBattle(mapId)) {
+  return isFreeBattle() ? freeBattleEnemyBridge() : enemyBridgeForStage(mapId, faction);
+}
+
+function freeBattleCandidateCharacters(faction, usedKeys) {
+  return state.data.characters
+    .filter((character) => character.faction === faction && !usedKeys.has(character.characterKey ?? character.id));
+}
+
+function freeBattleRandomCharacter(faction, usedKeys, preferPilot = true) {
+  const candidates = freeBattleCandidateCharacters(faction, usedKeys);
+  if (candidates.length === 0) return "";
+  const sorted = [...candidates].sort((a, b) => {
+    const aScore = preferPilot ? a.shooting + a.melee + a.reaction : a.command + a.support + a.maintenance;
+    const bScore = preferPilot ? b.shooting + b.melee + b.reaction : b.command + b.support + b.maintenance;
+    return bScore - aScore || b.cost - a.cost;
+  });
+  const picked = randomChoice(sorted.slice(0, Math.min(10, sorted.length)));
+  usedKeys.add(picked.characterKey ?? picked.id);
+  return picked.id;
+}
+
+function freeBattleRandomWeapons(ms, remainingBudget) {
+  const slots = weaponSlotCount(ms);
+  let usedSlots = 0;
+  const weapons = [];
+  const candidates = state.data.weapons.filter((weapon) => weaponEquippableByMs(ms, weapon));
+  const attackWeapons = candidates.filter((weapon) => weapon.kind !== "shield");
+  const shields = candidates.filter((weapon) => weapon.kind === "shield");
+  const attack = weightedRandomChoice(attackWeapons, (weapon) => {
+    const target = Math.max(20, remainingBudget * 0.18);
+    return 1 / (1 + Math.abs((weapon.cost ?? 0) - target));
+  });
+  if (attack && usedSlots + weaponSlotCost(attack) <= slots) {
+    weapons.push(attack.id);
+    usedSlots += weaponSlotCost(attack);
+  }
+  if (Math.random() < 0.55) {
+    const shield = randomChoice(shields.filter((weapon) => usedSlots + weaponSlotCost(weapon) <= slots));
+    if (shield) {
+      weapons.push(shield.id);
+      usedSlots += weaponSlotCost(shield);
+    }
+  }
+  for (const weapon of shuffled(candidates.filter((item) => !weapons.includes(item.id)))) {
+    if (Math.random() > 0.35) continue;
+    const cost = weaponSlotCost(weapon);
+    if (usedSlots + cost > slots) continue;
+    weapons.push(weapon.id);
+    usedSlots += cost;
+    if (usedSlots >= slots) break;
+  }
+  return fitWeaponIdsToSlots(weapons, ms);
+}
+
+function freeBattleRandomOptions(ms, faction, remainingBudget) {
+  const slots = Math.max(0, Number(ms.optionSlots ?? 1) || 0);
+  if (slots <= 0 || Math.random() > 0.35) return [];
+  return shuffled(state.data.options ?? [])
+    .filter((option) => optionUsableByFaction(option, faction) && (option.cost ?? 0) <= Math.max(35, remainingBudget * 0.2))
+    .slice(0, slots)
+    .map((option) => option.id);
+}
+
+function freeBattleRandomEntry(faction, map, usedKeys, remainingBudget) {
+  const candidates = state.data.mobileSuits.filter((ms) => ms.faction === faction && mobileSuitCanDeployOnMap(ms, map));
+  if (candidates.length === 0) return null;
+  const ms = weightedRandomChoice(candidates, (item) => {
+    const target = Math.max(60, remainingBudget * 0.55);
+    return 1 / (1 + Math.abs((item.cost ?? 0) - target));
+  });
+  const optionIds = freeBattleRandomOptions(ms, faction, remainingBudget);
+  const weaponIds = freeBattleRandomWeapons(ms, Math.max(0, remainingBudget - ms.cost));
+  const characterId = freeBattleRandomCharacter(faction, usedKeys, true);
+  return {
+    msId: ms.id,
+    characterIds: characterId ? [characterId] : [],
+    weaponIds,
+    optionIds
+  };
+}
+
+function freeBattleRandomBridge(faction, usedKeys) {
+  return {
+    captainId: freeBattleRandomCharacter(faction, usedKeys, false),
+    firstOfficerId: freeBattleRandomCharacter(faction, usedKeys, false)
+  };
+}
+
+function freeBattleRandomBattleship(faction, map, targetCost, usedKeys) {
+  const candidates = state.data.battleships.filter((ship) =>
+    ship.faction === faction
+    && battleshipCanDeployOnMap(ship, map)
+    && (ship.cost ?? 0) <= targetCost * 0.65
+  );
+  if (candidates.length === 0 || Math.random() > 0.55) return { battleshipId: "", bridge: {} };
+  const ship = weightedRandomChoice(candidates, (item) => 1 / (1 + Math.abs((item.cost ?? 0) - targetCost * 0.35)));
+  const bridge = freeBattleRandomBridge(faction, usedKeys);
+  return { battleshipId: ship.id, bridge };
+}
+
+function generateFreeBattleEnemySample(faction, map, targetCost) {
+  const usedKeys = new Set();
+  const shipSelection = freeBattleRandomBattleship(faction, map, targetCost, usedKeys);
+  const formation = [];
+  const slots = Math.max(1, map.deployment?.enemy?.units?.length ?? 4);
+  for (let index = 0; index < slots; index += 1) {
+    const current = costWithBridge(lookup().battleships[shipSelection.battleshipId], shipSelection.bridge) + formationEntriesCost(formation);
+    const remaining = Math.max(80, targetCost - current);
+    if (index > 0 && current >= targetCost * 0.85 && Math.random() > 0.45) break;
+    const entry = freeBattleRandomEntry(faction, map, usedKeys, remaining / Math.max(1, slots - index));
+    if (!entry) break;
+    formation.push(entry);
+  }
+  return {
+    faction,
+    targetCost,
+    ...shipSelection,
+    formation
+  };
+}
+
+function prepareFreeBattleEnemy() {
+  const map = selectedMap();
+  const faction = otherFaction(state.faction);
+  const targetCost = Math.max(100, currentCost());
+  let best = null;
+  for (let index = 0; index < 80; index += 1) {
+    const sample = generateFreeBattleEnemySample(faction, map, targetCost);
+    if (sample.formation.length === 0) continue;
+    const score = Math.abs(freeBattleEnemyCost(sample) - targetCost);
+    if (!best || score < Math.abs(freeBattleEnemyCost(best) - targetCost)) best = sample;
+  }
+  state.freeBattleEnemy = best ?? {
+    faction,
+    targetCost,
+    battleshipId: "",
+    bridge: {},
+    formation: [freeBattleRandomEntry(faction, map, new Set(), targetCost)].filter(Boolean)
+  };
+  state.freeBattleEnemy.actualCost = freeBattleEnemyCost(state.freeBattleEnemy);
+  return state.freeBattleEnemy;
+}
+
 function fallbackEnemyFormationForMap(map, faction) {
   if (faction === "zeon") {
     if (map.type === "space") {
@@ -226,6 +439,7 @@ function renderTitle() {
       <p>手持ちカードで部隊を組み、ステージ報酬で戦力を広げていく試作版です。</p>
       <div class="title-actions">
         <button class="primary-button" data-action="stage-select">ステージ選択</button>
+        <button class="primary-button" data-action="free-battle-select">フリー対戦</button>
         <button data-action="card-list">カード一覧</button>
         <button data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換</button>
       </div>
@@ -256,6 +470,7 @@ function campaignSummaryStats() {
 }
 
 function renderStageSelect() {
+  state.battleMode = "campaign";
   state.screen = "stage";
   phaseLabel.textContent = "ステージ選択";
   setupScreen.className = "screen stage-layout";
@@ -315,6 +530,55 @@ function commonDropCounts() {
     count: entries.filter((entry) => entry.type === type).length,
     weight: categoryWeights[type] ?? 0
   }));
+}
+
+function renderFreeBattleSelect() {
+  state.battleMode = "free";
+  state.screen = "freeBattleSelect";
+  phaseLabel.textContent = "フリー対戦";
+  setupScreen.className = "screen stage-layout";
+  setupScreen.innerHTML = `
+    <section class="panel stack">
+      <div class="panel-heading">
+        <h2>フリー対戦</h2>
+        <button data-action="title">タイトルへ</button>
+      </div>
+      <p class="small">所持カード内でコスト上限なしに編成し、敵は反対勢力の全カードから近いコスト帯でランダム編成されます。勝利報酬は全体ランダムドロップ1枚です。</p>
+      <div class="stage-grid">
+        ${state.data.maps.map((map) => freeBattleMapCard(map)).join("")}
+      </div>
+    </section>
+    <aside class="panel stack">
+      <h2>カード状況</h2>
+      ${campaignSummaryStats()}
+      <button data-action="card-list">カード一覧を見る</button>
+      <button class="primary-button" data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換券を使う</button>
+    </aside>
+  `;
+  setupScreen.classList.remove("hidden");
+  battleScreen.classList.add("hidden");
+}
+
+function freeBattleMapCard(map) {
+  const playable = stagePlayable(map);
+  return `
+    <article class="stage-card">
+      <div class="stage-card-head">
+        <div>
+          <p class="eyebrow">${mapTypeName(map.type)} / 報酬1枚 / コスト上限なし</p>
+          <h3>${map.name}</h3>
+        </div>
+        <span class="status-pill ${playable ? "ready" : ""}">${playable ? "対戦可" : "未解禁"}</span>
+      </div>
+      ${renderMapDetails(map)}
+      <p class="small">敵は出撃時の自軍総コストを基準に、反対勢力の全カードからランダム編成されます。</p>
+      <div class="reward-list">
+        <span class="reward-chip">勝利: 全体ランダム1枚</span>
+        <span class="reward-chip owned">クリア状況・引換券には影響なし</span>
+      </div>
+      <button class="primary-button" data-action="select-free-battle-map" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このマップでフリー対戦</button>
+    </article>
+  `;
 }
 
 function renderCommonDropSummary() {
@@ -919,8 +1183,14 @@ function renderSetup() {
   const { ms, characters, weapons, battleships, maps, options } = lookup();
   const cost = currentCost();
   const selectedMapData = maps[state.selectedMapId] ?? state.data.maps[0];
+  const free = isFreeBattle();
   const cap = stageCostCap(selectedMapData.id);
   const enemyCost = enemyTotalCostForStage(selectedMapData.id);
+  const costOverCap = !free && cost > cap;
+  const meterPercent = free ? 100 : clamp((cost / cap) * 100, 0, 100);
+  const battleSummaryText = free
+    ? `総コスト ${cost} / 上限なし（敵は出撃時に近いコスト帯でランダム生成）`
+    : `総コスト ${cost} / ${cap}（敵総コスト${enemyCost}）`;
   const availableBattleships = state.data.battleships.filter((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, selectedMapData));
   const availableMs = state.data.mobileSuits.filter((item) => item.faction === state.faction && hasCard("mobileSuits", item.id) && mobileSuitCanDeployOnMap(item, selectedMapData));
   const availableCharacters = state.data.characters.filter((item) => characterUsableByFaction(item, state.faction) && hasCard("characters", item.id));
@@ -941,20 +1211,24 @@ function renderSetup() {
     <aside class="panel stack">
       <div class="panel-heading">
         <h2>編成</h2>
-        <button data-action="stage-select">ステージへ</button>
+        <button data-action="${free ? "free-battle-select" : "stage-select"}">${free ? "フリー対戦へ" : "ステージへ"}</button>
       </div>
       <div class="segmented">
         ${Object.entries(state.data.factions).map(([id, name]) => `<button data-action="faction" data-faction="${id}" class="${state.faction === id ? "active" : ""}" ${playableFactionsOnMap(selectedMapData).includes(id) ? "" : "disabled"}>${name}</button>`).join("")}
       </div>
       ${renderFavoriteFormationControls()}
-      <div class="meter ${cost > cap ? "over" : ""}">
-        <div class="meter-line"><div class="meter-fill" style="width: ${clamp((cost / cap) * 100, 0, 100)}%"></div></div>
-        <p class="small">総コスト ${cost} / ${cap}（敵総コスト${enemyCost}）</p>
+      <div class="meter ${costOverCap ? "over" : ""}">
+        <div class="meter-line"><div class="meter-fill" style="width: ${meterPercent}%"></div></div>
+        <p class="small">${battleSummaryText}</p>
       </div>
-      <p class="small">${selectedMapData.name}へ出撃します。キャラクターはMSにも戦艦にも配置できます。同じ人物は1人だけ編成できます。</p>
+      <p class="small">${selectedMapData.name}へ出撃します。${free ? "フリー対戦では所持カード内ならコストに縛られません。勝利報酬は1枚です。" : "キャラクターはMSにも戦艦にも配置できます。同じ人物は1人だけ編成できます。"}</p>
       <div class="form-row">
-        <label>ステージ</label>
-        <div class="readonly-field">${selectedMapData.name} / ${mapTypeName(selectedMapData.type)}</div>
+        <label>${free ? "マップ" : "ステージ"}</label>
+        ${free ? `
+          <select id="mapSelect">
+            ${state.data.maps.filter((map) => stagePlayable(map)).map((map) => `<option value="${map.id}" ${map.id === selectedMapData.id ? "selected" : ""}>${map.name} / ${mapTypeName(map.type)}</option>`).join("")}
+          </select>
+        ` : `<div class="readonly-field">${selectedMapData.name} / ${mapTypeName(selectedMapData.type)}</div>`}
       </div>
       ${renderMapDetails(selectedMapData, { open: true })}
       <div class="form-row">
@@ -1023,13 +1297,13 @@ function renderSetup() {
         </select>
         ${selectedOption ? renderOptionDetails(selectedOption, { open: true }) : `<p class="small">${(selectedMs.optionSlots ?? 1) > 0 ? "オプションなし" : "この機体はオプションを装備できません。"}</p>`}
       </div>
-      <button class="primary-button" data-action="add" ${projectedCost > cap || selectedMsRemaining < 1 ? "disabled" : ""}>この組み合わせを追加（+${addCost}）</button>
+      <button class="primary-button" data-action="add" ${(!free && projectedCost > cap) || selectedMsRemaining < 1 ? "disabled" : ""}>この組み合わせを追加（+${addCost}）</button>
       ${selectedMsRemaining < 1 ? `<p class="support-hint">この機体カードの残り枚数がありません。</p>` : ""}
     </section>
 
     <aside class="panel stack setup-roster-panel">
       <h2>現在の部隊</h2>
-      <button type="button" class="primary-button setup-launch-button" data-action="launch" ${state.formation.length === 0 || cost > cap ? "disabled" : ""}>出撃</button>
+      <button type="button" class="primary-button setup-launch-button" data-action="launch" ${state.formation.length === 0 || costOverCap ? "disabled" : ""}>出撃</button>
       <div class="roster-list">
         ${battleshipRosterCard(selectedBattleship)}
         ${state.formation.length === 0 ? `<p class="small">MSはまだ追加されていません。</p>` : state.formation.map((entry, index) => rosterCard(entry, index)).join("")}
@@ -1354,14 +1628,15 @@ function phaseName() {
 function launchBattle() {
   if (state.screen === "battle") return;
   const cap = stageCostCap(state.selectedMapId);
-  if (currentCost() > cap) {
+  if (!isFreeBattle() && currentCost() > cap) {
     state.log.push(`総コストが上限を超えています（${currentCost()} / ${cap}）。`);
     renderSetup();
     return;
   }
-  const enemyFaction = stageEnemyFaction();
+  if (isFreeBattle()) prepareFreeBattleEnemy();
+  const enemyFaction = enemyFactionForCurrentBattle();
   const enemyEntries = buildEnemyFormation(enemyFaction);
-  const enemyBattleship = enemyBattleshipForStage(state.selectedMapId, enemyFaction);
+  const enemyBattleship = enemyBattleshipForCurrentBattle(state.selectedMapId, enemyFaction);
   const occupied = new Set();
   const playerShip = lookup().battleships[state.selectedBattleshipId];
   const playerShipPosition = reserveDeploymentCell("player", "battleship", 0, occupied, playerShip);
@@ -1374,7 +1649,7 @@ function launchBattle() {
     const position = reserveDeploymentCell("enemy", "unit", index, occupied, lookup().ms[entry.msId]);
     return makeUnit(entry, "enemy", position.x, position.y, index);
   });
-  const enemyBridge = enemyBattleship ? enemyBridgeForStage(state.selectedMapId, enemyFaction) : {};
+  const enemyBridge = enemyBattleship ? enemyBridgeForCurrentBattle(state.selectedMapId, enemyFaction) : {};
   const enemyCrewIds = [enemyBridge.captainId, enemyBridge.firstOfficerId].filter(Boolean);
   const battleships = [
     makeBattleship(state.selectedBattleshipId, [state.selectedCaptainId, state.selectedFirstOfficerId].filter(Boolean), "player", playerShipPosition.x, playerShipPosition.y)
@@ -1393,6 +1668,9 @@ function launchBattle() {
   state.sacrificialBoostSides = {};
   state.resultRewards = [];
   state.log = [`${factionName(state.faction)}部隊、出撃。敵は${factionName(enemyFaction)}です。`];
+  if (isFreeBattle()) {
+    state.log.push(`フリー対戦: 自軍${currentCost()} / 敵${state.freeBattleEnemy?.actualCost ?? freeBattleEnemyCost(state.freeBattleEnemy)}のランダム編成です。`);
+  }
   state.log.push(`${selectedMap().name}で配置フェイズ開始。手前${deploymentRows("player")}列に自軍を配置できます。`);
   renderBattle();
 }

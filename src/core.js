@@ -33,6 +33,8 @@ const state = {
   favoriteFormations: [],
   selectedFavoriteSlot: 0,
   picker: null,
+  battleMode: "campaign",
+  freeBattleEnemy: null,
   faction: "federation",
   formation: [],
   selectedMapId: "",
@@ -347,6 +349,10 @@ function stageConfig(mapId) {
   return state.data.campaign?.stages?.find((stage) => stage.mapId === mapId) ?? { mapId };
 }
 
+function isFreeBattle() {
+  return state.battleMode === "free";
+}
+
 function commonDropConfig() {
   const config = state.data.campaign?.commonDropRewards ?? {};
   return {
@@ -499,18 +505,7 @@ function rollChoiceTickets(wasCleared) {
 function claimStageRewards(mapId) {
   if (!state.collection) return [];
   const wasCleared = stageCleared(mapId);
-  const rewards = [];
-  for (let index = 0; index < commonDropRolls(); index += 1) {
-    const reward = pickCommonDropReward();
-    if (!reward) break;
-    const claimed = {
-      ...reward,
-      count: Math.max(1, Number(reward.count) || 1),
-      name: cardName(reward.type, reward.id)
-    };
-    claimed.newlyOwned = unlockCard(claimed);
-    rewards.push(claimed);
-  }
+  const rewards = claimCommonDropRewards(commonDropRolls());
   const ticketCount = rollChoiceTickets(wasCleared);
   if (ticketCount > 0) {
     state.collection.choiceTickets = choiceTicketCount() + ticketCount;
@@ -523,6 +518,29 @@ function claimStageRewards(mapId) {
     });
   }
   if (!wasCleared) state.collection.clearedStages.push(mapId);
+  saveCollection();
+  return rewards;
+}
+
+function claimCommonDropRewards(rolls) {
+  if (!state.collection) return [];
+  const rewards = [];
+  for (let index = 0; index < Math.max(0, Number(rolls) || 0); index += 1) {
+    const reward = pickCommonDropReward();
+    if (!reward) break;
+    const claimed = {
+      ...reward,
+      count: Math.max(1, Number(reward.count) || 1),
+      name: cardName(reward.type, reward.id)
+    };
+    claimed.newlyOwned = unlockCard(claimed);
+    rewards.push(claimed);
+  }
+  return rewards;
+}
+
+function claimFreeBattleRewards() {
+  const rewards = claimCommonDropRewards(1);
   saveCollection();
   return rewards;
 }

@@ -15,7 +15,7 @@ function checkOutcome() {
     phaseLabel.textContent = state.outcome;
   } else if ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive) {
     state.outcome = "勝利";
-    state.resultRewards = claimStageRewards(state.selectedMapId);
+    state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
     phaseLabel.textContent = state.outcome;
   }
 }
@@ -55,6 +55,7 @@ setupScreen.addEventListener("change", (event) => {
   }
   if (event.target.id === "mapSelect") {
     state.selectedMapId = event.target.value;
+    state.freeBattleEnemy = null;
     state.formation = [];
     const factionBattleship = state.data.battleships.find((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, selectedMap()));
     state.selectedBattleshipId = factionBattleship?.id ?? "";
@@ -114,6 +115,7 @@ setupScreen.addEventListener("click", (event) => {
   const action = button.dataset.action;
   if (action === "title") renderTitle();
   if (action === "stage-select") renderStageSelect();
+  if (action === "free-battle-select") renderFreeBattleSelect();
   if (action === "card-list") renderCardList();
   if (action === "choice-card") renderChoiceCardSelect();
   if (action === "toggle-card-reveal") {
@@ -150,6 +152,17 @@ setupScreen.addEventListener("click", (event) => {
     renderTitle();
   }
   if (action === "select-stage") {
+    state.battleMode = "campaign";
+    state.freeBattleEnemy = null;
+    state.selectedMapId = button.dataset.mapId;
+    state.formation = [];
+    initializeSelections();
+    if (!restoreRememberedFormation()) applyStarterFormation();
+    renderSetup();
+  }
+  if (action === "select-free-battle-map") {
+    state.battleMode = "free";
+    state.freeBattleEnemy = null;
     state.selectedMapId = button.dataset.mapId;
     state.formation = [];
     initializeSelections();
@@ -171,6 +184,7 @@ battleScreen.addEventListener("click", (event) => {
   const cell = event.target.closest(".cell");
   if (button?.dataset.action === "back") renderSetup();
   if (button?.dataset.action === "stage-select") renderStageSelect();
+  if (button?.dataset.action === "free-battle-select") renderFreeBattleSelect();
   if (button?.dataset.action === "card-list") renderCardList();
   if (button?.dataset.action === "choice-card") renderChoiceCardSelect();
   if (button?.dataset.action === "finish-deployment") finishDeployment();

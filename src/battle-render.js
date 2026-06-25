@@ -4,7 +4,7 @@
 
 
 function buildEnemyFormation(faction) {
-  return enemyFormationForStage(state.selectedMapId, faction);
+  return enemyFormationForCurrentBattle(state.selectedMapId, faction);
 }
 
 function renderBattle() {
@@ -62,14 +62,14 @@ function renderBattleResultPanel() {
       <div>
         <p class="eyebrow">Result</p>
         <h2>${state.outcome}</h2>
-        <p>${victory ? "ステージ報酬を獲得しました。カード一覧と次のステージに反映されています。" : "戦艦または全機を失いました。編成を見直して再挑戦できます。"}</p>
+        <p>${victory ? (isFreeBattle() ? "フリー対戦報酬としてカードを1枚獲得しました。" : "ステージ報酬を獲得しました。カード一覧と次のステージに反映されています。") : "戦艦または全機を失いました。編成を見直して再挑戦できます。"}</p>
       </div>
       ${victory ? `<div class="reward-list result-rewards">
         ${state.resultRewards.map((reward) => renderResultRewardChip(reward)).join("") || `<span class="reward-chip owned">追加報酬なし</span>`}
       </div>` : ""}
       <div class="title-actions">
         ${victory && choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? `<button class="primary-button" data-action="choice-card">カード引換へ</button>` : ""}
-        <button class="primary-button" data-action="stage-select">ステージ選択へ</button>
+        <button class="primary-button" data-action="${isFreeBattle() ? "free-battle-select" : "stage-select"}">${isFreeBattle() ? "フリー対戦へ" : "ステージ選択へ"}</button>
         <button data-action="card-list">カード一覧</button>
       </div>
     </section>
