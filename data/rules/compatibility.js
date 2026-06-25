@@ -583,23 +583,13 @@ window.GAME_DATA.compatibility = {
     },
     {
       "msTag": "gm",
-      "category": "bazooka",
+      "weaponId": "hyperBazooka",
       "accuracyBonus": 5
     },
     {
       "msTag": "gm",
       "weaponId": "beamGun",
       "accuracyBonus": 6
-    },
-    {
-      "msId": "gmCommandSpace",
-      "weaponId": "bullpupMachineGun",
-      "accuracyBonus": 7
-    },
-    {
-      "msId": "gmCommandGround",
-      "weaponId": "bullpupMachineGun",
-      "accuracyBonus": 7
     },
     {
       "msId": "gmKai",
@@ -663,7 +653,7 @@ window.GAME_DATA.compatibility = {
     },
     {
       "msTag": "gundam",
-      "category": "bazooka",
+      "weaponId": "hyperBazooka",
       "accuracyBonus": 5
     },
     {
@@ -678,7 +668,12 @@ window.GAME_DATA.compatibility = {
     },
     {
       "msTag": "cannonMs",
-      "category": "cannon",
+      "weaponId": "cannon180mm",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "cannonMs",
+      "weaponId": "railCannon",
       "accuracyBonus": 8
     },
     {
@@ -744,6 +739,11 @@ window.GAME_DATA.compatibility = {
     {
       "msId": "johnnyHighMobilityZaku",
       "weaponId": "giantBazooka",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gelgoogCannon",
+      "weaponId": "magellaTopCannon",
       "accuracyBonus": 8
     },
     {
@@ -890,6 +890,11 @@ window.GAME_DATA.compatibility = {
       "msId": "gassha",
       "weaponId": "specialHammerGun",
       "accuracyBonus": 10
+    },
+    {
+      "msId": "gigan",
+      "weaponId": "magellaTopCannon",
+      "accuracyBonus": 8
     },
     {
       "msId": "earlyGm",

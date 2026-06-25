@@ -1251,7 +1251,7 @@ window.GAME_DATA.characters = [
     "name": "クラウレ・ハモン",
     "characterKey": "hamon",
     "faction": "zeon",
-    "cost": 75,
+    "cost": 65,
     "shooting": 7,
     "melee": 5,
     "reaction": 10,
@@ -1265,7 +1265,7 @@ window.GAME_DATA.characters = [
       "commander"
     ],
     "specials": [
-      "sacrificialBoost"
+      "mourningResolve"
     ],
     "imagePath": ""
   },

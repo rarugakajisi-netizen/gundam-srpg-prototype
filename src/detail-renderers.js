@@ -612,13 +612,32 @@ function statItems(items) {
 function weaponCategoryLabel(category) {
   return {
     "beam-rifle": "ビームライフル系",
+    "beam-saber": "ビームサーベル系",
     bazooka: "バズーカ系",
     "beam-bazooka": "ビームバズーカ系",
     cannon: "キャノン系",
     "machine-gun": "マシンガン系",
+    bullpup: "ブルパップ系",
     grenade: "投擲系",
     missile: "ミサイル系",
-    shield: "盾"
+    shield: "盾",
+    melee: "格闘系",
+    hammer: "ハンマー系",
+    harpoon: "水中銛系",
+    claw: "クロー系",
+    torpedo: "魚雷系",
+    psycommu: "サイコミュ兵器",
+    "mega-particle": "メガ粒子砲系",
+    "heavy-launcher": "重ランチャー系",
+    "support-rocket": "支援ロケット系",
+    "aircraft-gun": "航空機銃系",
+    "aircraft-missile": "航空ミサイル系",
+    "aircraft-bomb": "航空爆弾系",
+    "aircraft-beam": "航空ビーム系",
+    "ship-gun": "艦砲系",
+    vulcan: "バルカン系",
+    bomb: "爆弾系",
+    special: "特殊兵装"
   }[category] ?? category;
 }
 
@@ -645,14 +664,21 @@ function msTagLabel(tag) {
     gundam: "ガンダム系",
     vProject: "V作戦系",
     gm: "ジム系",
+    gmCommand: "ジム・コマンド系",
+    gmSniper: "ジム・スナイパー系",
+    groundGm: "陸戦型ジム系",
     guncannon: "ガンキャノン系",
+    cannonMs: "キャノン系MS",
     guntank: "ガンタンク系",
     gFighter: "Gファイター系",
+    groundGundam: "陸戦型ガンダム系",
     zaku: "ザク系",
     zaku1: "ザクI系",
     zaku2: "ザクII系",
+    highMobilityZaku: "高機動型ザク系",
     gouf: "グフ系",
     dom: "ドム系",
+    rickDom: "リック・ドム系",
     gelgoog: "ゲルググ系",
     gyan: "ギャン系",
     aquatic: "水陸両用MS",
@@ -664,10 +690,13 @@ function msTagLabel(tag) {
     gogg: "ゴッグ系",
     zeong: "ジオング系",
     bigZam: "ビグ・ザム系",
+    apsaras: "アプサラス系",
     charCustom: "シャア専用機",
     red: "赤い機体",
     black: "黒い機体",
-    supportPod: "支援ポッド"
+    supportPod: "支援ポッド",
+    tank: "戦車系",
+    desert: "砂漠戦仕様"
   }[tag] ?? tag;
 }
 
@@ -823,7 +852,8 @@ function renderWeaponDetails(weapon, options = {}) {
         ["コスト", weapon.cost],
         ["盾耐久", weapon.durability],
         ["攻撃", shieldCanAttack ? `威力${weapon.power} / 命中${weapon.accuracy} / ${weaponRangeLabel(weapon)} / 耐久消費${shieldAttackCost(weapon)}` : "不可"],
-        ["使用勢力", factions]
+        ["使用勢力", factions],
+        ["機体相性", weaponCompatibilityText(weapon)]
       ]) : statItems([
         ["コスト", weapon.cost],
         ["威力", weapon.power],
