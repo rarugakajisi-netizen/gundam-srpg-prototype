@@ -35,7 +35,19 @@ window.GAME_DATA.campaign = {
   },
   "commonDropRewards": {
     "rolls": 3,
-    "copyLimit": 4
+    "copyLimit": 4,
+    "categoryWeights": {
+      "mobileSuits": 45,
+      "characters": 25,
+      "weapons": 15,
+      "options": 10,
+      "battleships": 5
+    },
+    "ownershipBias": {
+      "newCard": 3,
+      "ownedFew": 1.5,
+      "ownedMany": 0.5
+    }
   },
   "choiceRewards": {
     "firstClearTickets": 1,

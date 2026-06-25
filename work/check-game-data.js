@@ -467,6 +467,8 @@ function createChecker(data) {
     if (commonDrop) {
       if (commonDrop.rolls !== undefined) expectNumber("campaign.commonDropRewards", commonDrop, "rolls", { integer: true });
       if (commonDrop.copyLimit !== undefined) expectNumber("campaign.commonDropRewards", commonDrop, "copyLimit", { integer: true });
+      validateDropWeights(commonDrop.categoryWeights, "campaign.commonDropRewards.categoryWeights", COLLECTION_TYPES);
+      validateDropWeights(commonDrop.ownershipBias, "campaign.commonDropRewards.ownershipBias", ["newCard", "ownedFew", "ownedMany"]);
     }
 
     const choice = campaign.choiceRewards;
@@ -474,6 +476,21 @@ function createChecker(data) {
       ["firstClearTickets", "repeatClearTickets"].forEach((key) => expectNumber("campaign.choiceRewards", choice, key, { integer: true, required: false }));
       expectNumber("campaign.choiceRewards", choice, "repeatClearChance", { required: false });
       if (choice.repeatClearChance !== undefined && choice.repeatClearChance > 1) error("campaign.choiceRewards", "repeatClearChance は 0〜1 の範囲である必要があります。");
+    }
+  }
+
+  function validateDropWeights(weights, scope, allowedKeys) {
+    if (weights === undefined) return;
+    if (!isPlainObject(weights)) {
+      error(scope, "重み設定がオブジェクトではありません。");
+      return;
+    }
+    for (const key of allowedKeys) {
+      if (weights[key] === undefined) warning(scope, `${key} が未設定です。未設定の場合は既定値を使います。`);
+      else if (!Number.isFinite(weights[key]) || weights[key] <= 0) error(`${scope}.${key}`, "重みは0より大きい数値である必要があります。");
+    }
+    for (const key of Object.keys(weights)) {
+      if (!allowedKeys.includes(key)) error(`${scope}.${key}`, "未対応の重みキーです。");
     }
   }
 

@@ -87,6 +87,19 @@ const isMobileSuit = (unit) => unit?.type === "mobileSuit";
 const isCombatUnit = (unit) => isAlive(unit) && (isMobileSuit(unit) || isBattleship(unit));
 const makeId = () => Math.random().toString(36).slice(2, 8);
 const COUNTED_CARD_TYPES = new Set(["mobileSuits", "weapons", "options"]);
+const COMMON_DROP_CATEGORIES = ["mobileSuits", "characters", "weapons", "options", "battleships"];
+const DEFAULT_COMMON_DROP_CATEGORY_WEIGHTS = {
+  mobileSuits: 45,
+  characters: 25,
+  weapons: 15,
+  options: 10,
+  battleships: 5
+};
+const DEFAULT_COMMON_DROP_OWNERSHIP_BIAS = {
+  newCard: 3,
+  ownedFew: 1.5,
+  ownedMany: 0.5
+};
 const NO_CHARACTER = {
   id: "",
   name: "未配置",
@@ -327,10 +340,20 @@ function stageConfig(mapId) {
 }
 
 function commonDropConfig() {
+  const config = state.data.campaign?.commonDropRewards ?? {};
   return {
-    rolls: Math.max(0, Number(state.data.campaign?.commonDropRewards?.rolls) || 3),
-    copyLimit: Math.max(1, Number(state.data.campaign?.commonDropRewards?.copyLimit) || 4)
+    rolls: Math.max(0, Number(config.rolls) || 3),
+    copyLimit: Math.max(1, Number(config.copyLimit) || 4),
+    categoryWeights: normalizeDropWeights(config.categoryWeights, DEFAULT_COMMON_DROP_CATEGORY_WEIGHTS),
+    ownershipBias: normalizeDropWeights(config.ownershipBias, DEFAULT_COMMON_DROP_OWNERSHIP_BIAS)
   };
+}
+
+function normalizeDropWeights(config, defaults) {
+  return Object.fromEntries(Object.entries(defaults).map(([key, fallback]) => {
+    const value = Number(config?.[key]);
+    return [key, value > 0 ? value : fallback];
+  }));
 }
 
 function choiceRewardConfig() {
@@ -366,31 +389,62 @@ function rewardPoolItem(type, item) {
   return {
     type,
     id: item.id,
-    weight: 1,
+    weight: commonDropItemWeight(type, item.id),
     count: isCountedCardType(type) ? 1 : undefined
   };
 }
 
-function commonDropEntries() {
+function commonDropEntriesByCategory() {
   const limit = commonDropConfig().copyLimit;
-  const entries = [
-    ...state.data.mobileSuits
+  return {
+    mobileSuits: state.data.mobileSuits
       .filter((item) => cardCount("mobileSuits", item.id) < limit)
       .map((item) => rewardPoolItem("mobileSuits", item)),
-    ...state.data.battleships
+    battleships: state.data.battleships
       .filter((item) => item.selectable !== false && !hasCard("battleships", item.id))
       .map((item) => rewardPoolItem("battleships", item)),
-    ...state.data.weapons
+    weapons: state.data.weapons
       .filter((item) => !item.fixedOnly && cardCount("weapons", item.id) < limit)
       .map((item) => rewardPoolItem("weapons", item)),
-    ...(state.data.options ?? [])
+    options: (state.data.options ?? [])
       .filter((item) => cardCount("options", item.id) < limit)
       .map((item) => rewardPoolItem("options", item)),
-    ...state.data.characters
+    characters: state.data.characters
       .filter((item) => item.selectable !== false && !hasCard("characters", item.id))
       .map((item) => rewardPoolItem("characters", item))
-  ];
-  return entries;
+  };
+}
+
+function commonDropEntries() {
+  const entriesByCategory = commonDropEntriesByCategory();
+  return COMMON_DROP_CATEGORIES.flatMap((type) => entriesByCategory[type] ?? []);
+}
+
+function commonDropItemWeight(type, id) {
+  const { copyLimit, ownershipBias } = commonDropConfig();
+  if (!isCountedCardType(type)) return ownershipBias.newCard;
+  const count = cardCount(type, id);
+  if (count <= 0) return ownershipBias.newCard;
+  if (count < Math.ceil(copyLimit / 2)) return ownershipBias.ownedFew;
+  return ownershipBias.ownedMany;
+}
+
+function commonDropCategoryEntries() {
+  const entriesByCategory = commonDropEntriesByCategory();
+  const { categoryWeights } = commonDropConfig();
+  return COMMON_DROP_CATEGORIES
+    .map((type) => ({
+      type,
+      weight: categoryWeights[type],
+      entries: entriesByCategory[type] ?? []
+    }))
+    .filter((category) => category.entries.length > 0 && (Number(category.weight) || 0) > 0);
+}
+
+function pickCommonDropReward() {
+  const category = weightedRewardPick(commonDropCategoryEntries());
+  if (!category) return null;
+  return weightedRewardPick(category.entries);
 }
 
 function weightedRewardPick(entries) {
@@ -439,7 +493,7 @@ function claimStageRewards(mapId) {
   const wasCleared = stageCleared(mapId);
   const rewards = [];
   for (let index = 0; index < commonDropRolls(); index += 1) {
-    const reward = weightedRewardPick(commonDropEntries());
+    const reward = pickCommonDropReward();
     if (!reward) break;
     const claimed = {
       ...reward,

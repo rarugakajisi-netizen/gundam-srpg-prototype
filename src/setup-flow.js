@@ -309,9 +309,11 @@ function stageCard(map) {
 
 function commonDropCounts() {
   const entries = commonDropEntries();
+  const { categoryWeights } = commonDropConfig();
   return ["mobileSuits", "battleships", "weapons", "options", "characters"].map((type) => ({
     type,
-    count: entries.filter((entry) => entry.type === type).length
+    count: entries.filter((entry) => entry.type === type).length,
+    weight: categoryWeights[type] ?? 0
   }));
 }
 
@@ -320,8 +322,9 @@ function renderCommonDropSummary() {
   const choice = choiceRewardConfig();
   const chips = commonDropCounts()
     .filter((item) => item.count > 0)
-    .map((item) => `<span class="reward-chip">${cardTypeLabel(item.type)}: 候補${item.count}</span>`);
+    .map((item) => `<span class="reward-chip">${cardTypeLabel(item.type)}: 抽選${item.weight}% / 候補${item.count}</span>`);
   chips.push(`<span class="reward-chip owned">武器/OP上限 ${limit}枚</span>`);
+  chips.push(`<span class="reward-chip owned">未所持・低所持ほど出やすい</span>`);
   if (choice.firstClearTickets > 0) chips.push(`<span class="reward-chip">初回クリア: 引換券${choice.firstClearTickets}枚</span>`);
   if (choice.repeatClearTickets > 0 && choice.repeatClearChance > 0) chips.push(`<span class="reward-chip owned">再クリア: 引換券${Math.round(choice.repeatClearChance * 100)}%</span>`);
   return chips.join("") || `<span class="reward-chip owned">追加報酬候補なし</span>`;
