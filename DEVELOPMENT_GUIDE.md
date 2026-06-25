@@ -20,6 +20,7 @@
 - `data/cards/characters.js`: キャラクターカード。
 - `data/cards/options.js`: オプションカード。
 - `assets/ms-token.svg`: マップ上の仮トークン画像。
+- `package.json`: ローカル起動、データチェック、バランス診断の npm scripts。
 - `work/check-game-data.js`: 最終状態のゲームデータ整合性チェック。参照切れや編成不能など、壊れているデータを失敗扱いにする。
 - `work/card-balance-report.js`: カード枚数、コスト帯、ステージ敵総コストなどのバランス確認用スクリプト。強弱の再確認候補を出すための診断で、失敗判定用ではない。
 
@@ -54,8 +55,8 @@
 2. 必要なら `campaign.stages` の報酬や敵編成へ追加する。
 3. 新しいスキルや特殊処理が必要な場合は `main.js` に実装する。
 4. プレイヤー向けに説明が必要なルールなら `README.md` を更新する。
-5. `node work/check-game-data.js` で、最終データとして壊れていないか確認する。
-6. バランスを見る場合は `node work/card-balance-report.js` を実行する。
+5. `npm run check` で、最終データとして壊れていないか確認する。
+6. バランスを見る場合は `npm run report:balance` を実行する。
 
 ## カードデータの設計メモ
 
@@ -197,14 +198,14 @@ enemyFormations: {
 備考:
 ```
 
-セリフや口調が必要なキャラクターは、公式文章の長い引用ではなく、短い口調メモや言い回しの方向性として扱います。
+セリフや口調が必要なキャラクターは、公式文章を使用しつつ、長台詞は短い口調メモや言い回しの方向性として扱います。
 
 ## 確認方法
 
 データや編成ルールを触った後は、まず最終データの整合性チェックを実行します。
 
 ```bash
-node work/check-game-data.js
+npm run check
 ```
 
 このチェックは、ブラウザで読み込まれる順序に合わせて次のデータを合成します。
@@ -233,19 +234,19 @@ node work/check-game-data.js
 エラーがある場合は終了コード1で失敗します。警告だけの場合は通常成功します。警告も失敗扱いにしたい時は次を使います。
 
 ```bash
-node work/check-game-data.js --warnings-as-errors
+npm run check:data:strict
 ```
 
 機械的に読みたい場合はJSON出力もできます。
 
 ```bash
-node work/check-game-data.js --json
+npm run check:data -- --json
 ```
 
 構造が通った後、バランスの再確認候補を見たい場合は次を実行します。
 
 ```bash
-node work/card-balance-report.js
+npm run report:balance
 ```
 
 `card-balance-report.js` は、カード枚数、コスト帯、ステージ敵総コスト、ルール依存カードなどを確認するための静的診断です。強弱の候補を絞る用途なので、基本的にはエラー判定ではなくレビュー材料として扱います。

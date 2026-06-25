@@ -1,0 +1,22 @@
+{
+  "name": "gundam-srpg-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A browser-based card tactical SRPG prototype.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "python -m http.server 8765",
+    "serve": "python -m http.server 8765",
+    "check": "npm run check:data",
+    "check:data": "node work/check-game-data.js",
+    "check:data:strict": "node work/check-game-data.js --warnings-as-errors",
+    "report:balance": "node work/card-balance-report.js",
+    "report:balance:json": "node work/card-balance-report.js --json"
+  },
+  "keywords": [
+    "srpg",
+    "prototype",
+    "browser-game"
+  ],
+  "license": "UNLICENSED"
+}
