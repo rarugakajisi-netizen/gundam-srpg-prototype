@@ -60,8 +60,8 @@
     weapon({ id: "railCannon", name: "レール・キャノン", cost: 50, power: 125, accuracy: 76, range: 3, minRange: 2, consume: 1, ammo: 5, category: "cannon", factions: ["federation"] }),
     weapon({ id: "longRangeBeamRifle", name: "ロングレンジ・ビーム・ライフル", cost: 75, power: 160, accuracy: 70, range: 6, minRange: 3, consume: 28, kind: "beam", category: "beam-rifle", slotCost: 2, factions: ["federation"] }),
     weapon({ id: "subrocGun", name: "サブロック・ガン", cost: 40, power: 105, accuracy: 78, range: 4, minRange: 2, consume: 1, ammo: 6, category: "missile", specials: ["antiSubmarine"], factions: ["zeon"] }),
-    weapon({ id: "tripleGatlingGun", name: "3連装ガトリング砲", cost: 45, power: 100, accuracy: 84, range: 3, consume: 1, ammo: 8, category: "machine-gun", factions: ["zeon"] }),
-    weapon({ id: "gatlingShield", name: "ガトリング・シールド", cost: 60, power: 90, accuracy: 80, range: 3, consume: 0, kind: "shield", category: "shield", attackType: "shooting", durability: 125, shieldAttackCost: 25, factions: ["zeon"] }),
+    weapon({ id: "tripleGatlingGun", name: "3連装ガトリング砲", cost: 60, power: 100, accuracy: 84, range: 3, consume: 1, ammo: 8, category: "machine-gun", factions: ["zeon"] }),
+    weapon({ id: "gatlingShield", name: "ガトリング・シールド", cost: 80, power: 90, accuracy: 80, range: 3, consume: 0, kind: "shield", category: "shield", attackType: "shooting", durability: 125, shieldAttackCost: 25, factions: ["zeon"] }),
     weapon({ id: "beamSniperRifle", name: "ビーム・スナイパー・ライフル", cost: 70, power: 150, accuracy: 72, range: 6, minRange: 3, consume: 26, kind: "beam", category: "beam-rifle", slotCost: 2, factions: ["zeon"] })
   ]);
 

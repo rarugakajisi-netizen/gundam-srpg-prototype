@@ -10,12 +10,13 @@ const AI_KILL_BONUS = 130;
 const AI_BATTLESHIP_TARGET_BONUS = 85;
 const AI_ATTACK_POSITION_BONUS = 180;
 const AI_SUPPORT_POSITION_BONUS = 70;
-const I_FIELD_EN_COST = 12;
+const I_FIELD_EN_COST = 30;
 const FREEZY_YARD_TURNS = 2;
 const FREEZY_YARD_REDUCTION = 45;
 const REPEAT_ATTACK_ACCURACY_PENALTY = 15;
 const GUERRILLA_TERRAINS = new Set(["desert", "forest", "water", "debris"]);
 const SAVE_KEY = "gundamSrpgPrototypeSaveV1";
+const FAVORITE_FORMATION_SLOTS = 20;
 const setupScreen = document.querySelector("#setupScreen");
 const battleScreen = document.querySelector("#battleScreen");
 const phaseLabel = document.querySelector("#phaseLabel");
@@ -25,6 +26,8 @@ const state = {
   screen: "title",
   collection: null,
   formationProfiles: {},
+  favoriteFormations: [],
+  selectedFavoriteSlot: 0,
   picker: null,
   faction: "federation",
   formation: [],
@@ -214,7 +217,8 @@ function loadCollection() {
 function saveCollection() {
   localStorage.setItem(SAVE_KEY, JSON.stringify({
     collection: state.collection,
-    formationProfiles: state.formationProfiles
+    formationProfiles: state.formationProfiles,
+    favoriteFormations: state.favoriteFormations
   }));
 }
 
@@ -230,8 +234,21 @@ function loadFormationProfiles() {
   }
 }
 
-function rememberFormation() {
-  state.formationProfiles[state.faction] = {
+function loadFavoriteFormations() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SAVE_KEY));
+    return Array.isArray(saved?.favoriteFormations)
+      ? saved.favoriteFormations.slice(0, FAVORITE_FORMATION_SLOTS)
+      : [];
+  } catch (error) {
+    console.warn("Favorite formation data could not be loaded.", error);
+    return [];
+  }
+}
+
+function currentFormationSnapshot() {
+  return {
+    faction: state.faction,
     battleshipId: state.selectedBattleshipId,
     captainId: state.selectedCaptainId,
     firstOfficerId: state.selectedFirstOfficerId,
@@ -242,6 +259,10 @@ function rememberFormation() {
       optionIds: [...(entry.optionIds ?? [])]
     }))
   };
+}
+
+function rememberFormation() {
+  state.formationProfiles[state.faction] = currentFormationSnapshot();
   saveCollection();
 }
 
@@ -250,6 +271,8 @@ function resetCollection() {
   state.selectedMapId = state.data.maps[0].id;
   state.formation = [];
   state.formationProfiles = {};
+  state.favoriteFormations = [];
+  state.selectedFavoriteSlot = 0;
   saveCollection();
   initializeSelections();
   applyStarterFormation();
@@ -451,6 +474,7 @@ async function boot() {
   }
   state.collection = loadCollection();
   state.formationProfiles = loadFormationProfiles();
+  state.favoriteFormations = loadFavoriteFormations();
   initializeSelections();
   if (!restoreRememberedFormation()) applyStarterFormation();
   renderTitle();
@@ -617,7 +641,11 @@ function applyStarterFormation() {
 
 function restoreRememberedFormation() {
   if (!Object.prototype.hasOwnProperty.call(state.formationProfiles, state.faction)) return false;
-  const profile = state.formationProfiles[state.faction] ?? {};
+  restoreFormationSnapshot(state.formationProfiles[state.faction] ?? {});
+  return true;
+}
+
+function restoreFormationSnapshot(profile) {
   const map = selectedMap();
   const data = lookup();
   const usedCharacters = new Set();
@@ -666,7 +694,40 @@ function restoreRememberedFormation() {
     characterIds.forEach((id) => usedCharacters.add(id));
     return [restored];
   });
-  return true;
+}
+
+function selectedFavoriteFormation() {
+  return state.favoriteFormations[state.selectedFavoriteSlot] ?? null;
+}
+
+function saveFavoriteFormation() {
+  const nameInput = setupScreen.querySelector("#favoriteFormationName");
+  const fallbackName = `お気に入り${String(state.selectedFavoriteSlot + 1).padStart(2, "0")}`;
+  const name = String(nameInput?.value ?? "").trim().slice(0, 30) || fallbackName;
+  state.favoriteFormations[state.selectedFavoriteSlot] = {
+    ...currentFormationSnapshot(),
+    name
+  };
+  saveCollection();
+  renderSetup();
+}
+
+function loadFavoriteFormation() {
+  const favorite = selectedFavoriteFormation();
+  if (!favorite || !playableFactionsOnMap().includes(favorite.faction)) return;
+  state.faction = favorite.faction;
+  state.formation = [];
+  initializeSelections();
+  restoreFormationSnapshot(favorite);
+  rememberFormation();
+  renderSetup();
+}
+
+function deleteFavoriteFormation() {
+  if (!selectedFavoriteFormation()) return;
+  state.favoriteFormations[state.selectedFavoriteSlot] = null;
+  saveCollection();
+  renderSetup();
 }
 
 const roleLabels = {
@@ -760,7 +821,16 @@ function optionUsableByFaction(option, faction) {
 function weaponEquippableByMs(ms, weapon) {
   return !weapon.fixedOnly
     && weaponUsableByFaction(weapon, ms.faction)
-    && !(ms.forbiddenWeaponKinds ?? []).includes(weapon.kind);
+    && !(ms.forbiddenWeaponKinds ?? []).includes(weapon.kind)
+    && (!(ms.allowedWeaponIds?.length) || ms.allowedWeaponIds.includes(weapon.id));
+}
+
+function mobileSuitWeaponRestrictionText(ms) {
+  if (ms.allowedWeaponIds?.length) {
+    return `指定武器のみ: ${ms.allowedWeaponIds.map((id) => lookup().weapons[id]?.name ?? id).join(" / ")}`;
+  }
+  if ((ms.forbiddenWeaponKinds ?? []).includes("beam")) return "ビーム兵器不可";
+  return "なし";
 }
 
 function weaponMinRange(weapon) {
@@ -1136,6 +1206,36 @@ function hinderedByStopMovement(unit) {
   );
 }
 
+function jinxEvasionPenalty(unit) {
+  if (!isMobileSuit(unit)) return 0;
+  return state.units.some((other) =>
+    other.id !== unit.id
+    && other.side === unit.side
+    && isMobileSuit(other)
+    && isAlive(other)
+    && unitHasSkill(other, "jinx")
+    && distance(other, unit) <= 2
+  ) ? 6 : 0;
+}
+
+function retreatSupportActive(unit) {
+  if (!isMobileSuit(unit) || unit.armor > unit.maxArmor / 3) return false;
+  return state.units.some((other) =>
+    other.side === unit.side
+    && isCombatUnit(other)
+    && unitHasSkill(other, "retreatSupport")
+  );
+}
+
+function repeatedTargetAttack(unit, defender) {
+  return (unit.attackTargetCounts?.[defender.id] ?? 0) > 0;
+}
+
+function recordAttackTarget(unit, defender) {
+  if (!unit.attackTargetCounts) unit.attackTargetCounts = {};
+  unit.attackTargetCounts[defender.id] = (unit.attackTargetCounts[defender.id] ?? 0) + 1;
+}
+
 function guardMissionProtector(defender, attacker) {
   if (!isMobileSuit(defender)) return null;
   return alliedMobileSuits(defender).find((other) =>
@@ -1194,6 +1294,8 @@ function activateFreezyYard(unit, renderAfter = true) {
 function tickTurnStartEffects(side) {
   state.units.filter((unit) => unit.side === side && isCombatUnit(unit)).forEach((unit) => {
     if ((unit.freezyYardActiveTurns ?? 0) > 0) unit.freezyYardActiveTurns -= 1;
+    advanceLearningComputer(unit);
+    unit.attackTargetCounts = {};
   });
 }
 
@@ -1353,7 +1455,7 @@ function renderMobileSuitDetails(ms, options = {}) {
         ["運動", ms.agility],
         ["移動", ms.mobility],
         ["装備枠", `武器${ms.weaponSlots ?? 2} / OP${ms.optionSlots ?? 1}`],
-        ["携行武器制限", (ms.forbiddenWeaponKinds ?? []).includes("beam") ? "ビーム兵器不可" : "なし"],
+        ["携行武器制限", mobileSuitWeaponRestrictionText(ms)],
         ["特殊", specialsLabel(ms.specials)],
         ["脱出先", (ms.specials ?? []).includes("coreSystem") ? (lookup().ms[ms.escapeMsId ?? "coreFighter"]?.name ?? ms.escapeMsId ?? "コア・ファイター") : "なし"],
         ["地形適性", mapSuitabilityLabel(ms)]
@@ -2356,6 +2458,36 @@ function characterIdForOwner(owner) {
   return state.selectedCharacterId;
 }
 
+function renderFavoriteFormationControls() {
+  const favorite = selectedFavoriteFormation();
+  const compatible = favorite && playableFactionsOnMap().includes(favorite.faction);
+  const defaultName = favorite?.name ?? `お気に入り${String(state.selectedFavoriteSlot + 1).padStart(2, "0")}`;
+  const slotOptions = Array.from({ length: FAVORITE_FORMATION_SLOTS }, (_, index) => {
+    const saved = state.favoriteFormations[index];
+    const number = String(index + 1).padStart(2, "0");
+    const label = saved
+      ? `${number}: ${saved.name}（${factionName(saved.faction)}）`
+      : `${number}: 未登録`;
+    return `<option value="${index}" ${index === state.selectedFavoriteSlot ? "selected" : ""}>${escapeAttr(label)}</option>`;
+  }).join("");
+  return `
+    <section class="favorite-formation-box">
+      <div class="favorite-formation-heading">
+        <strong>お気に入り編成</strong>
+        <span class="small">20枠</span>
+      </div>
+      <select id="favoriteFormationSlot" aria-label="お気に入り編成の枠">${slotOptions}</select>
+      <input id="favoriteFormationName" aria-label="お気に入り編成名" maxlength="30" value="${escapeAttr(defaultName)}" />
+      <div class="favorite-formation-actions">
+        <button data-action="save-favorite-formation">この編成を登録</button>
+        <button data-action="load-favorite-formation" ${compatible ? "" : "disabled"}>呼び出す</button>
+        <button data-action="delete-favorite-formation" ${favorite ? "" : "disabled"}>削除</button>
+      </div>
+      ${favorite && !compatible ? `<p class="small">このステージでは${factionName(favorite.faction)}編成を使用できません。</p>` : ""}
+    </section>
+  `;
+}
+
 function renderSetup() {
   normalizeSelections();
   state.phase = "setup";
@@ -2391,6 +2523,7 @@ function renderSetup() {
       <div class="segmented">
         ${Object.entries(state.data.factions).map(([id, name]) => `<button data-action="faction" data-faction="${id}" class="${state.faction === id ? "active" : ""}" ${playableFactionsOnMap(selectedMapData).includes(id) ? "" : "disabled"}>${name}</button>`).join("")}
       </div>
+      ${renderFavoriteFormationControls()}
       <div class="meter ${cost > cap ? "over" : ""}">
         <div class="meter-line"><div class="meter-fill" style="width: ${clamp((cost / cap) * 100, 0, 100)}%"></div></div>
         <p class="small">総コスト ${cost} / ${cap}（敵総コスト${enemyCost}）</p>
@@ -2779,6 +2912,7 @@ function moveDeploymentUnit(unit, x, y) {
 
 function finishDeployment() {
   if (state.outcome || state.phase !== "deployment") return;
+  tickTurnStartEffects("player");
   state.phase = "player";
   state.selectedUnitId = state.units.find((unit) => unit.side === "player" && isCombatUnit(unit))?.id ?? null;
   state.selectedTargetId = null;
@@ -4288,6 +4422,7 @@ function skillEvasionBonus(unit) {
   if (!isMobileSuit(unit)) return 0;
   let bonus = 0;
   if (unitHasSkill(unit, "educationalComputer")) bonus += Math.min(9, unit.learningStacks ?? 0);
+  if (retreatSupportActive(unit)) bonus += 10;
   return bonus;
 }
 
@@ -4309,7 +4444,7 @@ function evasion(unit) {
   if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
-  return Math.max(0, ms.agility + character.reaction + Math.floor(character.awakening / 2) + characterMsBonus(unit) + skillEvasionBonus(unit) - unitTerrainPenalty(unit).evasion);
+  return Math.max(0, ms.agility + character.reaction + Math.floor(character.awakening / 2) + characterMsBonus(unit) + skillEvasionBonus(unit) - jinxEvasionPenalty(unit) - unitTerrainPenalty(unit).evasion);
 }
 
 function hitRate(attacker, defender, weapon, options = {}) {
@@ -4338,11 +4473,11 @@ function activateIField(defender, weapon) {
   return true;
 }
 
-function incrementLearningComputer(unit) {
+function advanceLearningComputer(unit) {
   if (!isMobileSuit(unit) || !unitHasSkill(unit, "educationalComputer")) return;
   const before = unit.learningStacks ?? 0;
   unit.learningStacks = Math.min(9, before + 1);
-  if (unit.learningStacks > before) state.log.push(`${unitName(unit)}の教育型コンピューターが戦闘データを蓄積（補正+${unit.learningStacks}）。`);
+  if (unit.learningStacks > before) state.log.push(`${unitName(unit)}の教育型コンピューターがターン経過データを蓄積（補正+${unit.learningStacks}）。`);
 }
 
 function damageFor(attacker, defender, weapon, options = {}) {
@@ -4359,6 +4494,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) damage += 20;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) damage += 8;
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) damage += 8;
+  if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) damage += 15;
   if (weapon.kind === "beam" && (attacker.beamDisruptedTurns ?? 0) > 0) damage -= 25;
   if (options.iFieldActive ?? canUseIField(defender, weapon)) damage = Math.floor(damage / 2);
   if (isMobileSuit(defender) && weapon.kind === "beam" && (unitHasSkill(defender, "antiBeamCoating") || shieldHasSkill(defender, "antiBeamCoating"))) damage -= 15;
@@ -4384,6 +4520,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(defender) && msFor(defender).movementType === "flying" && weaponHasSkill(weapon, "antiAir")) notes.push("対空中");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
+  if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
   if (options.iFieldActive) notes.push("Iフィールド");
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) notes.push("対水中");
   if (weapon.kind === "ammo" && freezyYardActive(defender)) notes.push("フリージーヤード");
@@ -4582,9 +4719,9 @@ function attack(attacker, defender, weapon, renderAfter = true) {
     if (!isAlive(defender)) state.log.push(`${defenderName}を撃破。`);
   }
 
-  incrementLearningComputer(attacker);
   scatterMines(attacker, defender, weapon);
   applyBeamDisruption(attacker, defender, weapon);
+  recordAttackTarget(attacker, defender);
   checkOutcome();
   attacker.acted = allAttackWeaponsUsed(attacker);
   attacker.moved = true;
@@ -4911,6 +5048,11 @@ function checkOutcome() {
 }
 
 setupScreen.addEventListener("change", (event) => {
+  if (event.target.id === "favoriteFormationSlot") {
+    state.selectedFavoriteSlot = clamp(Number(event.target.value) || 0, 0, FAVORITE_FORMATION_SLOTS - 1);
+    renderSetup();
+    return;
+  }
   if (event.target.matches(".library-control")) {
     state.libraryFilter[event.target.dataset.filterKey] = event.target.value;
     renderCardList();
@@ -5017,6 +5159,9 @@ setupScreen.addEventListener("click", (event) => {
     state.choiceFilter = { query: "", type: "all", faction: "all", sort: "costDesc" };
     renderChoiceCardSelect();
   }
+  if (action === "save-favorite-formation") saveFavoriteFormation();
+  if (action === "load-favorite-formation") loadFavoriteFormation();
+  if (action === "delete-favorite-formation") deleteFavoriteFormation();
   if (action === "claim-choice-card") {
     claimChoiceCard(button.dataset.cardType, button.dataset.id);
     renderChoiceCardSelect();

@@ -307,7 +307,7 @@
       "name": "Iフィールド",
       "type": "機体",
       "timing": "被弾時",
-      "effect": "EN12を消費してビーム攻撃の被ダメージを半減する。EN不足時は発動しない。",
+      "effect": "EN30を消費してビーム攻撃の被ダメージを半減する。EN不足時は発動しない。",
       "implemented": true
     },
     {
@@ -330,7 +330,7 @@
       "id": "guerrillaTactics",
       "name": "ゲリラ戦術",
       "type": "キャラ/OP",
-      "timing": "被射撃時",
+      "timing": "特殊地形で被射撃時",
       "effect": "砂漠・森林・水・デブリ上にいる時、敵から2マス以内に近づかれるまで射撃武装の対象にならない。",
       "implemented": true
     },
@@ -514,8 +514,8 @@
       "id": "educationalComputer",
       "name": "教育型コンピューター",
       "type": "OP",
-      "timing": "攻撃後",
-      "effect": "攻撃するたびに戦闘データを蓄積し、命中・回避+1。最大+9。",
+      "timing": "自軍ターン開始時",
+      "effect": "ターン開始ごとに戦闘データを蓄積し、命中・回避+1。最大+9。",
       "implemented": true
     },
     {
@@ -572,6 +572,30 @@
       "type": "キャラ/OP",
       "timing": "常時",
       "effect": "2マス以内にいる敵MSの移動力-1。重複しない。",
+      "implemented": true
+    },
+    {
+      "id": "jinx",
+      "name": "ジンクス",
+      "type": "キャラ",
+      "timing": "常時",
+      "effect": "2マス以内にいる自分以外の味方MSの回避-6。",
+      "implemented": true
+    },
+    {
+      "id": "retreatSupport",
+      "name": "撤退支援",
+      "type": "キャラ",
+      "timing": "常時",
+      "effect": "このスキル持ちが自軍にいる間、装甲が最大値の3分の1以下の味方MSは回避+10。",
+      "implemented": true
+    },
+    {
+      "id": "madness",
+      "name": "狂気",
+      "type": "キャラ",
+      "timing": "攻撃時",
+      "effect": "同じターンに同じ敵を攻撃する場合、2回目以降の与ダメージ+15。",
       "implemented": true
     }
   ],
@@ -2779,7 +2803,7 @@
       "energy": 82,
       "agility": 22,
       "mobility": 5,
-      "weaponSlots": 1,
+      "weaponSlots": 2,
       "optionSlots": 1,
       "fixedWeaponIds": [
         "headVulcan",
@@ -4241,13 +4265,13 @@
       "id": "zakuMineLayer",
       "name": "ザク・マインレイヤー",
       "faction": "zeon",
-      "forbiddenWeaponKinds": [
-        "beam"
-      ],
       "cost": 115,
       "armor": 260,
       "agility": 12,
-      "mobility": 4
+      "mobility": 4,
+      "forbiddenWeaponKinds": [
+        "beam"
+      ]
     },
     {
       "energy": 45,
@@ -4276,13 +4300,13 @@
       "id": "zakuMarine",
       "name": "ザク・マリンタイプ",
       "faction": "zeon",
-      "forbiddenWeaponKinds": [
-        "beam"
-      ],
       "cost": 90,
       "armor": 235,
       "agility": 10,
-      "mobility": 3
+      "mobility": 3,
+      "forbiddenWeaponKinds": [
+        "beam"
+      ]
     },
     {
       "energy": 60,
@@ -4311,13 +4335,13 @@
       "id": "zakuFlipper",
       "name": "ザク・フリッパー",
       "faction": "zeon",
-      "forbiddenWeaponKinds": [
-        "beam"
-      ],
       "cost": 120,
       "armor": 235,
       "agility": 21,
-      "mobility": 6
+      "mobility": 6,
+      "forbiddenWeaponKinds": [
+        "beam"
+      ]
     },
     {
       "energy": 130,
@@ -4413,13 +4437,13 @@
       "id": "prototypeGouf",
       "name": "プロトタイプ・グフ",
       "faction": "zeon",
-      "forbiddenWeaponKinds": [
-        "beam"
-      ],
       "cost": 135,
       "armor": 290,
       "agility": 17,
-      "mobility": 4
+      "mobility": 4,
+      "forbiddenWeaponKinds": [
+        "beam"
+      ]
     },
     {
       "energy": 70,
@@ -4609,6 +4633,544 @@
       "armor": 355,
       "agility": 32,
       "mobility": 8
+    },
+    {
+      "energy": 100,
+      "weaponSlots": 2,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "beamSaber",
+        "chestVulcan"
+      ],
+      "mapTypes": [
+        "ground"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "gundam",
+        "groundGundam",
+        "ez8"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "gundamEz8",
+      "name": "ガンダムEz-8",
+      "faction": "federation",
+      "cost": 245,
+      "armor": 365,
+      "agility": 22,
+      "mobility": 5
+    },
+    {
+      "energy": 55,
+      "weaponSlots": 0,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "guntankLowRecoilCannon",
+        "massProductionGuntankGunLauncher"
+      ],
+      "mapTypes": [
+        "ground"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "guntank",
+        "tank",
+        "federationMassProduction"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "massProductionGuntank",
+      "name": "量産型ガンタンク",
+      "faction": "federation",
+      "cost": 155,
+      "armor": 340,
+      "agility": 6,
+      "mobility": 3
+    },
+    {
+      "energy": 35,
+      "weaponSlots": 0,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "hoverTruckMachineGun"
+      ],
+      "mapTypes": [
+        "ground"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": true,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "supportVehicle",
+        "reconMs"
+      ],
+      "specials": [
+        "recon"
+      ],
+      "imagePath": "",
+      "id": "hoverTruck",
+      "name": "ホバー・トラック",
+      "faction": "federation",
+      "cost": 55,
+      "armor": 120,
+      "agility": 12,
+      "mobility": 5
+    },
+    {
+      "energy": 75,
+      "weaponSlots": 1,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "massProductionGuncannonCannon",
+        "headVulcan"
+      ],
+      "mapTypes": [
+        "ground",
+        "space"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "guncannon",
+        "cannonMs",
+        "federationMassProduction"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "massProductionGuncannon",
+      "name": "量産型ガンキャノン",
+      "faction": "federation",
+      "cost": 180,
+      "armor": 320,
+      "agility": 10,
+      "mobility": 3
+    },
+    {
+      "energy": 82,
+      "weaponSlots": 1,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "massProductionGuncannonCannon",
+        "headVulcan"
+      ],
+      "mapTypes": [
+        "ground",
+        "space"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "guncannon",
+        "cannonMs",
+        "federationMassProduction",
+        "lydoCustom"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "massProductionGuncannonLydo",
+      "name": "量産型ガンキャノン（リド専用機）",
+      "faction": "federation",
+      "cost": 215,
+      "armor": 350,
+      "agility": 16,
+      "mobility": 4
+    },
+    {
+      "energy": 70,
+      "weaponSlots": 2,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "gmCannonCannon",
+        "headVulcan"
+      ],
+      "mapTypes": [
+        "ground"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": true,
+        "debris": false
+      },
+      "tags": [
+        "gm",
+        "cannonMs",
+        "federationMassProduction",
+        "desert"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "gmCannonAfrica",
+      "name": "ジム・キャノン（アフリカ戦線仕様）",
+      "faction": "federation",
+      "cost": 165,
+      "armor": 260,
+      "agility": 11,
+      "mobility": 3
+    },
+    {
+      "energy": 110,
+      "weaponSlots": 2,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "beamSaber"
+      ],
+      "mapTypes": [
+        "ground",
+        "space"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "gm",
+        "gmCommand",
+        "gmSniper",
+        "federationMassProduction"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "gmSniper2",
+      "name": "ジム・スナイパーII",
+      "faction": "federation",
+      "cost": 255,
+      "armor": 310,
+      "agility": 28,
+      "mobility": 6
+    },
+    {
+      "energy": 115,
+      "weaponSlots": 2,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "beamSaber"
+      ],
+      "mapTypes": [
+        "ground",
+        "space"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "gm",
+        "gmCommand",
+        "gmSniper",
+        "lydoCustom"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "gmSniper2Lydo",
+      "name": "ジム・スナイパーII（リド専用機）",
+      "faction": "federation",
+      "cost": 290,
+      "armor": 350,
+      "agility": 30,
+      "mobility": 6
+    },
+    {
+      "energy": 85,
+      "weaponSlots": 2,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "heatSword"
+      ],
+      "mapTypes": [
+        "ground"
+      ],
+      "movementType": "flying",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "gouf",
+        "flightMs"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "goufFlightType",
+      "name": "グフ・フライトタイプ",
+      "faction": "zeon",
+      "cost": 230,
+      "armor": 325,
+      "agility": 25,
+      "mobility": 7,
+      "forbiddenWeaponKinds": [
+        "beam"
+      ]
+    },
+    {
+      "energy": 80,
+      "weaponSlots": 2,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "heatSword",
+        "heatRod"
+      ],
+      "mapTypes": [
+        "ground"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "gouf",
+        "meleeMs"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "goufCustom",
+      "name": "グフ・カスタム",
+      "faction": "zeon",
+      "cost": 235,
+      "armor": 370,
+      "agility": 24,
+      "mobility": 5,
+      "forbiddenWeaponKinds": [
+        "beam"
+      ]
+    },
+    {
+      "energy": 100,
+      "weaponSlots": 0,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "apsarasShockWave"
+      ],
+      "mapTypes": [
+        "ground"
+      ],
+      "movementType": "flying",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "mobileArmor",
+        "apsaras"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "apsaras1",
+      "name": "アプサラスI",
+      "faction": "zeon",
+      "cost": 180,
+      "armor": 300,
+      "agility": 16,
+      "mobility": 5
+    },
+    {
+      "energy": 150,
+      "weaponSlots": 0,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "apsaras2MegaParticleCannon",
+        "apsaras2ScatterMegaParticleCannon"
+      ],
+      "mapTypes": [
+        "ground"
+      ],
+      "movementType": "flying",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "mobileArmor",
+        "heavyMa",
+        "apsaras"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "apsaras2",
+      "name": "アプサラスII",
+      "faction": "zeon",
+      "cost": 340,
+      "armor": 520,
+      "agility": 14,
+      "mobility": 4
+    },
+    {
+      "energy": 185,
+      "weaponSlots": 0,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "apsaras3MegaParticleCannon",
+        "apsaras3ScatterMegaParticleCannon"
+      ],
+      "mapTypes": [
+        "ground"
+      ],
+      "movementType": "flying",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "mobileArmor",
+        "heavyMa",
+        "apsaras"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "apsaras3",
+      "name": "アプサラスIII",
+      "faction": "zeon",
+      "cost": 500,
+      "armor": 720,
+      "agility": 10,
+      "mobility": 3
+    },
+    {
+      "energy": 110,
+      "weaponSlots": 2,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "actZakuDoubleHeatHawk"
+      ],
+      "mapTypes": [
+        "ground",
+        "space"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "zaku",
+        "actZaku",
+        "highMobilityMs"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "actZaku",
+      "name": "アクトザク",
+      "faction": "zeon",
+      "cost": 265,
+      "armor": 330,
+      "agility": 28,
+      "mobility": 6
+    },
+    {
+      "energy": 65,
+      "weaponSlots": 0,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "gigan180mmCannon",
+        "giganFourBarrelGun"
+      ],
+      "mapTypes": [
+        "ground",
+        "space"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": false
+      },
+      "tags": [
+        "cannonMs",
+        "tank",
+        "zeonMassProduction"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "gigan",
+      "name": "ギガン",
+      "faction": "zeon",
+      "cost": 155,
+      "armor": 340,
+      "agility": 9,
+      "mobility": 4
+    },
+    {
+      "energy": 65,
+      "weaponSlots": 1,
+      "optionSlots": 1,
+      "fixedWeaponIds": [
+        "ironNail",
+        "gasshaMissilePod"
+      ],
+      "mapTypes": [
+        "space"
+      ],
+      "movementType": "normal",
+      "terrainSuitability": {
+        "water": false,
+        "forest": false,
+        "desert": false,
+        "debris": true
+      },
+      "tags": [
+        "aquatic",
+        "spaceMs"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "gassha",
+      "name": "ガッシャ",
+      "faction": "zeon",
+      "cost": 170,
+      "armor": 300,
+      "agility": 14,
+      "mobility": 4,
+      "allowedWeaponIds": [
+        "specialHammerGun"
+      ]
     }
   ],
   "battleships": [
@@ -8606,7 +9168,7 @@
       ]
     },
     {
-      "cost": 45,
+      "cost": 60,
       "power": 100,
       "accuracy": 84,
       "range": 3,
@@ -8625,7 +9187,7 @@
       ]
     },
     {
-      "cost": 60,
+      "cost": 80,
       "power": 90,
       "accuracy": 80,
       "range": 3,
@@ -8660,6 +9222,308 @@
       "id": "beamSniperRifle",
       "name": "ビーム・スナイパー・ライフル",
       "slotCost": 2,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 82,
+      "accuracy": 78,
+      "range": 3,
+      "minRange": 2,
+      "consume": 1,
+      "kind": "ammo",
+      "ammo": 6,
+      "category": "missile",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "massProductionGuntankGunLauncher",
+      "name": "ガン・ランチャー",
+      "fixedOnly": true,
+      "factions": [
+        "federation"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 42,
+      "accuracy": 84,
+      "range": 2,
+      "minRange": 1,
+      "consume": 1,
+      "kind": "ammo",
+      "ammo": 8,
+      "category": "machine-gun",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "hoverTruckMachineGun",
+      "name": "ホバー・トラック機関砲",
+      "fixedOnly": true,
+      "factions": [
+        "federation"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 122,
+      "accuracy": 70,
+      "range": 5,
+      "minRange": 2,
+      "consume": 1,
+      "kind": "ammo",
+      "ammo": 6,
+      "category": "cannon",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "massProductionGuncannonCannon",
+      "name": "量産型240mmキャノン",
+      "fixedOnly": true,
+      "ignoresObstacles": true,
+      "factions": [
+        "federation"
+      ]
+    },
+    {
+      "cost": 50,
+      "power": 125,
+      "accuracy": 77,
+      "range": 4,
+      "minRange": 1,
+      "consume": 19,
+      "kind": "beam",
+      "ammo": 0,
+      "category": "beam-rifle",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "groundGundamBeamRifle",
+      "name": "ビーム・ライフル（陸戦型ガンダム）",
+      "factions": [
+        "federation"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 92,
+      "accuracy": 76,
+      "range": 2,
+      "minRange": 1,
+      "consume": 18,
+      "kind": "special",
+      "ammo": 0,
+      "category": "special",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "apsarasShockWave",
+      "name": "ミノフスキークラフト衝撃波",
+      "fixedOnly": true,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 175,
+      "accuracy": 58,
+      "range": 6,
+      "minRange": 3,
+      "consume": 36,
+      "kind": "beam",
+      "ammo": 0,
+      "category": "cannon",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "apsaras2MegaParticleCannon",
+      "name": "大型メガ粒子砲",
+      "fixedOnly": true,
+      "ignoresObstacles": true,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 132,
+      "accuracy": 72,
+      "range": 3,
+      "minRange": 1,
+      "consume": 24,
+      "kind": "beam",
+      "ammo": 0,
+      "category": "cannon",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "apsaras2ScatterMegaParticleCannon",
+      "name": "拡散メガ粒子砲",
+      "fixedOnly": true,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 195,
+      "accuracy": 64,
+      "range": 7,
+      "minRange": 3,
+      "consume": 40,
+      "kind": "beam",
+      "ammo": 0,
+      "category": "cannon",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "apsaras3MegaParticleCannon",
+      "name": "大型メガ粒子砲（完成型）",
+      "fixedOnly": true,
+      "ignoresObstacles": true,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 152,
+      "accuracy": 76,
+      "range": 4,
+      "minRange": 1,
+      "consume": 28,
+      "kind": "beam",
+      "ammo": 0,
+      "category": "cannon",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "apsaras3ScatterMegaParticleCannon",
+      "name": "大型メガ粒子砲（拡散）",
+      "fixedOnly": true,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 138,
+      "accuracy": 88,
+      "range": 1,
+      "minRange": 1,
+      "consume": 0,
+      "kind": "free",
+      "ammo": 0,
+      "category": "melee",
+      "attackType": "melee",
+      "durability": 0,
+      "imagePath": "",
+      "id": "actZakuDoubleHeatHawk",
+      "name": "専用ヒート・ホーク×2",
+      "fixedOnly": true,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 45,
+      "power": 118,
+      "accuracy": 78,
+      "range": 4,
+      "minRange": 1,
+      "consume": 17,
+      "kind": "beam",
+      "ammo": 0,
+      "category": "beam-rifle",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "actZakuBeamRifle",
+      "name": "ビーム・ライフル（アクトザク）",
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 128,
+      "accuracy": 68,
+      "range": 5,
+      "minRange": 2,
+      "consume": 1,
+      "kind": "ammo",
+      "ammo": 6,
+      "category": "cannon",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "gigan180mmCannon",
+      "name": "180mm砲",
+      "fixedOnly": true,
+      "ignoresObstacles": true,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 72,
+      "accuracy": 82,
+      "range": 3,
+      "minRange": 1,
+      "consume": 1,
+      "kind": "ammo",
+      "ammo": 8,
+      "category": "machine-gun",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "giganFourBarrelGun",
+      "name": "4連装砲",
+      "fixedOnly": true,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 0,
+      "power": 92,
+      "accuracy": 74,
+      "range": 4,
+      "minRange": 2,
+      "consume": 1,
+      "kind": "ammo",
+      "ammo": 6,
+      "category": "missile",
+      "attackType": "shooting",
+      "durability": 0,
+      "imagePath": "",
+      "id": "gasshaMissilePod",
+      "name": "ミサイル・ポッド",
+      "fixedOnly": true,
+      "factions": [
+        "zeon"
+      ]
+    },
+    {
+      "cost": 45,
+      "power": 132,
+      "accuracy": 76,
+      "range": 3,
+      "minRange": 1,
+      "consume": 0,
+      "kind": "melee",
+      "ammo": 0,
+      "category": "hammer",
+      "attackType": "melee",
+      "durability": 0,
+      "imagePath": "",
+      "id": "specialHammerGun",
+      "name": "特殊ハンマー・ガン",
+      "ignoresObstacles": true,
       "factions": [
         "zeon"
       ]
@@ -9019,7 +9883,7 @@
       "name": "テム・レイ",
       "characterKey": "temRay",
       "faction": "federation",
-      "cost": 45,
+      "cost": 75,
       "shooting": 2,
       "melee": 1,
       "reaction": 4,
@@ -10652,6 +11516,248 @@
       "command": 15,
       "support": 9,
       "maintenance": 4
+    },
+    {
+      "characterKey": "shiroAmada",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "pilot",
+        "commander"
+      ],
+      "specials": [
+        "teamwork"
+      ],
+      "imagePath": "",
+      "id": "shiroAmada",
+      "name": "シロー・アマダ",
+      "faction": "federation",
+      "cost": 95,
+      "shooting": 16,
+      "melee": 16,
+      "reaction": 18,
+      "command": 13,
+      "support": 10,
+      "maintenance": 5
+    },
+    {
+      "characterKey": "karenJoshua",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "pilot"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "karenJoshua",
+      "name": "カレン・ジョシュワ",
+      "faction": "federation",
+      "cost": 75,
+      "shooting": 14,
+      "melee": 17,
+      "reaction": 16,
+      "command": 8,
+      "support": 8,
+      "maintenance": 3
+    },
+    {
+      "characterKey": "terrySandersJr",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "pilot"
+      ],
+      "specials": [
+        "jinx"
+      ],
+      "imagePath": "",
+      "id": "terrySandersJr",
+      "name": "テリー・サンダースJr.",
+      "faction": "federation",
+      "cost": 75,
+      "shooting": 16,
+      "melee": 14,
+      "reaction": 17,
+      "command": 8,
+      "support": 9,
+      "maintenance": 4
+    },
+    {
+      "characterKey": "micheleNinorich",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "operator",
+        "pilot"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "micheleNinorich",
+      "name": "ミケル・ニノリッチ",
+      "faction": "federation",
+      "cost": 25,
+      "shooting": 5,
+      "melee": 3,
+      "reaction": 7,
+      "command": 4,
+      "support": 8,
+      "maintenance": 2
+    },
+    {
+      "characterKey": "eledoreMassis",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "operator",
+        "pilot"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "eledoreMassis",
+      "name": "エレドア・マシス",
+      "faction": "federation",
+      "cost": 55,
+      "shooting": 7,
+      "melee": 4,
+      "reaction": 15,
+      "command": 6,
+      "support": 16,
+      "maintenance": 4
+    },
+    {
+      "characterKey": "kojima08",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "captain",
+        "commander"
+      ],
+      "specials": [
+        "retreatSupport"
+      ],
+      "imagePath": "",
+      "id": "kojima08",
+      "name": "コジマ",
+      "faction": "federation",
+      "cost": 85,
+      "shooting": 6,
+      "melee": 4,
+      "reaction": 8,
+      "command": 17,
+      "support": 14,
+      "maintenance": 7
+    },
+    {
+      "characterKey": "ainaSahalin",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "pilot",
+        "mechanic"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "ainaSahalin",
+      "name": "アイナ・サハリン",
+      "faction": "zeon",
+      "cost": 85,
+      "shooting": 15,
+      "melee": 9,
+      "reaction": 17,
+      "command": 9,
+      "support": 10,
+      "maintenance": 8
+    },
+    {
+      "characterKey": "ghiniusSahalin",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "pilot",
+        "mechanic",
+        "commander"
+      ],
+      "specials": [
+        "madness"
+      ],
+      "imagePath": "",
+      "id": "ghiniusSahalin",
+      "name": "ギニアス・サハリン",
+      "faction": "zeon",
+      "cost": 95,
+      "shooting": 17,
+      "melee": 5,
+      "reaction": 11,
+      "command": 14,
+      "support": 8,
+      "maintenance": 18
+    },
+    {
+      "characterKey": "norrisPackard",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "pilot",
+        "commander"
+      ],
+      "specials": [
+        "sacrificialBoost"
+      ],
+      "imagePath": "",
+      "id": "norrisPackard",
+      "name": "ノリス・パッカード",
+      "faction": "zeon",
+      "cost": 110,
+      "shooting": 16,
+      "melee": 21,
+      "reaction": 20,
+      "command": 13,
+      "support": 10,
+      "maintenance": 5
+    },
+    {
+      "characterKey": "yuriKellarny",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "captain",
+        "commander"
+      ],
+      "specials": [
+        "retreatSupport"
+      ],
+      "imagePath": "",
+      "id": "yuriKellarny",
+      "name": "ユーリ・ケラーネ",
+      "faction": "zeon",
+      "cost": 100,
+      "shooting": 8,
+      "melee": 5,
+      "reaction": 10,
+      "command": 21,
+      "support": 16,
+      "maintenance": 8
+    },
+    {
+      "characterKey": "cynthia08",
+      "selectable": true,
+      "awakening": 0,
+      "roles": [
+        "operator",
+        "mechanic"
+      ],
+      "specials": [],
+      "imagePath": "",
+      "id": "cynthia08",
+      "name": "シンシア",
+      "faction": "zeon",
+      "cost": 65,
+      "shooting": 5,
+      "melee": 3,
+      "reaction": 9,
+      "command": 8,
+      "support": 14,
+      "maintenance": 13
     }
   ],
   "options": [
@@ -10814,7 +11920,7 @@
       "cost": 85,
       "effectType": "skill",
       "grantsSkill": "iField",
-      "effectText": "EN12を消費してビーム攻撃の被ダメージを半減する。高コストの防御OP。",
+      "effectText": "EN30を消費してビーム攻撃の被ダメージを半減する。高コストの防御OP。",
       "uniqueSkill": true,
       "factions": [
         "federation",
@@ -10926,7 +12032,7 @@
       "cost": 70,
       "effectType": "skill",
       "grantsSkill": "educationalComputer",
-      "effectText": "攻撃するたびに命中・回避補正が+1される。最大+9。",
+      "effectText": "自軍ターン開始ごとに命中・回避補正が+1される。最大+9。",
       "uniqueSkill": true,
       "factions": [
         "federation",
@@ -11438,6 +12544,56 @@
         "characterId": "johnnyRidden",
         "msId": "johnnyHighMobilityGelgoog",
         "evasionBonus": 12
+      },
+      {
+        "characterId": "shiroAmada",
+        "msTag": "groundGundam",
+        "evasionBonus": 10
+      },
+      {
+        "characterId": "karenJoshua",
+        "msTag": "groundGundam",
+        "evasionBonus": 8
+      },
+      {
+        "characterId": "terrySandersJr",
+        "msTag": "groundGundam",
+        "evasionBonus": 8
+      },
+      {
+        "characterId": "micheleNinorich",
+        "msId": "hoverTruck",
+        "evasionBonus": 6
+      },
+      {
+        "characterId": "eledoreMassis",
+        "msId": "hoverTruck",
+        "evasionBonus": 8
+      },
+      {
+        "characterId": "ainaSahalin",
+        "msTag": "apsaras",
+        "evasionBonus": 9
+      },
+      {
+        "characterId": "ghiniusSahalin",
+        "msTag": "apsaras",
+        "evasionBonus": 7
+      },
+      {
+        "characterId": "norrisPackard",
+        "msTag": "gouf",
+        "evasionBonus": 12
+      },
+      {
+        "characterId": "lydoWolf",
+        "msId": "massProductionGuncannonLydo",
+        "evasionBonus": 12
+      },
+      {
+        "characterId": "lydoWolf",
+        "msId": "gmSniper2Lydo",
+        "evasionBonus": 12
       }
     ],
     "msWeapon": [
@@ -11764,6 +12920,26 @@
       {
         "msId": "zaku1Sniper",
         "weaponId": "beamSniperRifle",
+        "accuracyBonus": 10
+      },
+      {
+        "msTag": "groundGundam",
+        "weaponId": "groundGundamBeamRifle",
+        "accuracyBonus": 8
+      },
+      {
+        "msTag": "gmCommand",
+        "weaponId": "bullpupMachineGun",
+        "accuracyBonus": 7
+      },
+      {
+        "msId": "actZaku",
+        "weaponId": "actZakuBeamRifle",
+        "accuracyBonus": 9
+      },
+      {
+        "msId": "gassha",
+        "weaponId": "specialHammerGun",
         "accuracyBonus": 10
       }
     ]
@@ -12217,6 +13393,336 @@
       "damaged": [
         "感謝と屈辱は別物だ！",
         "まだ兵たちを逃がす時間は残っている！"
+      ]
+    },
+    "shiroAmada": {
+      "attack": [
+        "全員で仕掛ける、突出するな！",
+        "第08小隊、攻撃開始！"
+      ],
+      "hit": [
+        "よし、連携を崩すな！",
+        "このまま押し切る！"
+      ],
+      "miss": [
+        "焦るな、次は合わせる！",
+        "くそっ、狙いが甘かった！"
+      ],
+      "move": [
+        "みんな、生きて帰るぞ！",
+        "俺が先に道を開く！"
+      ],
+      "wait": [
+        "周囲を警戒、無理はするな！",
+        "今は隊列を立て直す！"
+      ],
+      "evade": [
+        "仲間を置いて倒れられるか！",
+        "その動きなら読める！"
+      ],
+      "damaged": [
+        "まだ動ける、諦めるな！",
+        "この程度で隊長が退けるか！"
+      ]
+    },
+    "karenJoshua": {
+      "attack": [
+        "ぼさっとしない、援護しな！",
+        "こいつは私が片づける！"
+      ],
+      "hit": [
+        "手間をかけさせるんじゃないよ！",
+        "次、さっさと行くよ！"
+      ],
+      "miss": [
+        "ちっ、次は外さないよ！",
+        "動き回るんじゃない！"
+      ],
+      "move": [
+        "背中は任せたよ！",
+        "先にいい場所を取る！"
+      ],
+      "wait": [
+        "新人じゃないんだ、指示は分かってる！",
+        "周りをよく見な！"
+      ],
+      "evade": [
+        "そんな大振りが当たるかい！",
+        "甘く見られたもんだね！"
+      ],
+      "damaged": [
+        "心配する暇があったら敵を見な！",
+        "まだ腕は動くよ！"
+      ]
+    },
+    "terrySandersJr": {
+      "attack": [
+        "狙いは確実に定める！",
+        "俺が引き受ける、下がれ！"
+      ],
+      "hit": [
+        "命中を確認、次へ移る！",
+        "まだジンクスは終わっていない！"
+      ],
+      "miss": [
+        "外したか……嫌な流れだ！",
+        "次弾で修正する！"
+      ],
+      "move": [
+        "隊長、前へ出すぎです！",
+        "援護位置へ移動する！"
+      ],
+      "wait": [
+        "俺のそばは危険かもしれない……",
+        "それでも仲間を守る！"
+      ],
+      "evade": [
+        "死神はそう簡単には死なない！",
+        "この程度なら避けられる！"
+      ],
+      "damaged": [
+        "また仲間を失うわけには……！",
+        "俺が引きつける、今のうちに！"
+      ]
+    },
+    "micheleNinorich": {
+      "attack": [
+        "ええい、当たってくれ！",
+        "僕だってやる時はやる！"
+      ],
+      "hit": [
+        "やった、当たったぞ！",
+        "見たか、僕にもできた！"
+      ],
+      "miss": [
+        "うそだろ、外れた！",
+        "照準がずれてるのか！？"
+      ],
+      "move": [
+        "置いていかないでくださいよ！",
+        "急いで支援位置へ！"
+      ],
+      "wait": [
+        "敵影なし……たぶん！",
+        "通信と索敵を続けます！"
+      ],
+      "evade": [
+        "危なっ！　本当に撃ってきた！",
+        "今のは心臓に悪い！"
+      ],
+      "damaged": [
+        "こんなの聞いてないですよ！",
+        "まだ通信は生きてます！"
+      ]
+    },
+    "eledoreMassis": {
+      "attack": [
+        "座標は出した、後は当てな！",
+        "耳障りな音を止めてやる！"
+      ],
+      "hit": [
+        "いい響きだ、命中だぜ！",
+        "索敵屋を甘く見るなよ！"
+      ],
+      "miss": [
+        "ちっ、リズムが狂った！",
+        "次はちゃんと合わせる！"
+      ],
+      "move": [
+        "電波の通りがいい場所へ行く！",
+        "先に敵の音を拾うぞ！"
+      ],
+      "wait": [
+        "静かすぎる戦場は嫌いでね！",
+        "索敵は続けてる、焦るな！"
+      ],
+      "evade": [
+        "その音じゃ当たらないぜ！",
+        "来る方向は聞こえてた！"
+      ],
+      "damaged": [
+        "機材は無事だ、まだ探れる！",
+        "くそっ、派手にやりやがる！"
+      ]
+    },
+    "kojima08": {
+      "attack": [
+        "全隊、無理に戦線を広げるな！",
+        "現場の判断を信じる、攻撃せよ！"
+      ],
+      "hit": [
+        "よし、撤収路を確保しろ！",
+        "敵の圧力を抑えたぞ！"
+      ],
+      "miss": [
+        "深追いはするな、立て直せ！",
+        "次の射撃に備えろ！"
+      ],
+      "move": [
+        "負傷者の収容を優先する！",
+        "部隊を安全な位置へ移す！"
+      ],
+      "wait": [
+        "生きて戻ることも任務のうちだ！",
+        "各隊、損害を報告せよ！"
+      ],
+      "evade": [
+        "指揮所を甘く見るな！",
+        "被害は最小限に抑えた！"
+      ],
+      "damaged": [
+        "まだ部下を帰していない！",
+        "ここで指揮を止めるわけにはいかん！"
+      ]
+    },
+    "ainaSahalin": {
+      "attack": [
+        "これ以上、戦いを広げないために！",
+        "私は私の意志で戦います！"
+      ],
+      "hit": [
+        "止められた……次の目標へ！",
+        "どうか、これで退いて！"
+      ],
+      "miss": [
+        "迷っている場合ではないのに……！",
+        "照準を立て直します！"
+      ],
+      "move": [
+        "この機体なら道を開ける！",
+        "みんなを巻き込ませない！"
+      ],
+      "wait": [
+        "戦わずに済む道はないの……？",
+        "兄様の計画を確かめなくては！"
+      ],
+      "evade": [
+        "私はここで終われない！",
+        "その攻撃は見えています！"
+      ],
+      "damaged": [
+        "まだアプサラスは動けます！",
+        "こんなことで意志を曲げはしない！"
+      ]
+    },
+    "ghiniusSahalin": {
+      "attack": [
+        "私の理想を阻む者は消えろ！",
+        "アプサラスの力を見せてやる！"
+      ],
+      "hit": [
+        "素晴らしい……これこそ完成形だ！",
+        "見たか、私の理論は正しい！"
+      ],
+      "miss": [
+        "計算が狂っただと……！？",
+        "次こそ完全に捉える！"
+      ],
+      "move": [
+        "実験を次の段階へ移す！",
+        "邪魔者を射界へ収めろ！"
+      ],
+      "wait": [
+        "完成まで、誰にも止めさせん！",
+        "全てはアプサラスのためだ！"
+      ],
+      "evade": [
+        "凡俗の攻撃など届かん！",
+        "私の計画を侮ったな！"
+      ],
+      "damaged": [
+        "機体を守れ、研究を失うな！",
+        "まだだ、完成は目前なのだ！"
+      ]
+    },
+    "norrisPackard": {
+      "attack": [
+        "アイナ様のため、道を開く！",
+        "敵の主力は私が引き受ける！"
+      ],
+      "hit": [
+        "一機……次の脅威を排除する！",
+        "役目はまだ終わっていない！"
+      ],
+      "miss": [
+        "見事だ、だが次は捉える！",
+        "焦りは禁物ということか！"
+      ],
+      "move": [
+        "こちらへ注意を引きつける！",
+        "退路を確保する、続け！"
+      ],
+      "wait": [
+        "兵を帰すのが指揮官の務めだ！",
+        "好機を待つ、油断するな！"
+      ],
+      "evade": [
+        "その程度では止められん！",
+        "戦場の呼吸が乱れているぞ！"
+      ],
+      "damaged": [
+        "まだ倒れるわけにはいかん！",
+        "この命、使う時は今ではない！"
+      ]
+    },
+    "yuriKellarny": {
+      "attack": [
+        "全部隊、撤収を援護せよ！",
+        "無益な戦闘を長引かせるな！"
+      ],
+      "hit": [
+        "よし、今のうちに負傷者を下げろ！",
+        "敵の進撃を止めたぞ！"
+      ],
+      "miss": [
+        "砲撃点を修正しろ！",
+        "慌てるな、次で当てればよい！"
+      ],
+      "move": [
+        "民間人の避難路を空けろ！",
+        "部隊を後退させる、続け！"
+      ],
+      "wait": [
+        "兵を捨てる作戦など認めん！",
+        "生き残るための準備を急げ！"
+      ],
+      "evade": [
+        "この程度で司令部は崩れん！",
+        "敵も焦っているようだな！"
+      ],
+      "damaged": [
+        "損害を確認、まだ指揮はできる！",
+        "ここを抜かせるわけにはいかん！"
+      ]
+    },
+    "cynthia08": {
+      "attack": [
+        "邪魔をするなら、こちらも撃ちます！",
+        "私だって戦場を渡ってきたの！"
+      ],
+      "hit": [
+        "損傷は軽微、大丈夫です。",
+        "やるべきことは分かっています。"
+      ],
+      "miss": [
+        "照準が乱れた……次で合わせます！",
+        "落ち着いて、状況を読み直すわ。"
+      ],
+      "move": [
+        "通信線を確保します。ついてきて。",
+        "ユーリ様の部隊を孤立させません。"
+      ],
+      "wait": [
+        "貴方は私の趣味じゃないの。ごめんなさいね。",
+        "情報は渡せない。ここで食い止めます。"
+      ],
+      "evade": [
+        "その程度で崩れると思った？",
+        "尋問よりはずっと優しいわね。"
+      ],
+      "damaged": [
+        "損傷は軽微……まだ大丈夫です。",
+        "何をすればいいか位わかる！"
       ]
     }
   }

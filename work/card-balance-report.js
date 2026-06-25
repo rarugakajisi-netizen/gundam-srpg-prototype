@@ -11,7 +11,8 @@ const vm = require("node:vm");
 const ROOT = path.resolve(__dirname, "..");
 const DATA_PATHS = [
   path.join(ROOT, "data", "game-data.js"),
-  path.join(ROOT, "data", "jissou4-data.js")
+  path.join(ROOT, "data", "jissou4-data.js"),
+  path.join(ROOT, "data", "jissou5-data.js")
 ];
 
 function loadGameData() {
@@ -170,7 +171,7 @@ function collectWarnings() {
     addWarning("high", "weapon-dominated", weaker, `${stronger.name}が同分類で全主要数値を上回っています。`, { strongerId: stronger.id, strongerName: stronger.name });
   }
 
-  const perAttackSkills = new Set(["ace", "aiSenshi", "outstandingTalent", "enhancedWarhead", "highOutputGenerator", "precisionMeleeProgram", "teamwork"]);
+  const perAttackSkills = new Set(["ace", "aiSenshi", "outstandingTalent", "enhancedWarhead", "highOutputGenerator", "precisionMeleeProgram", "teamwork", "madness"]);
   for (const character of data.characters.filter((item) => item.selectable !== false)) {
     const matching = (character.specials ?? []).filter((id) => perAttackSkills.has(id));
     if (matching.length) addWarning("medium", "per-attack-scaling", character, "複数武装攻撃の回数に比例して効果が増えます。", { skills: matching });
@@ -179,7 +180,7 @@ function collectWarnings() {
 
   const sensitiveOptions = {
     guerrillaTactics: "特殊地形上で射撃対象不可になるため、地形配置と接近手段を確認します。",
-    educationalComputer: "攻撃ごとに成長するため、複数武装で1ターンに複数成長します。",
+    educationalComputer: "ターン開始ごとに成長するため、長期戦での最大補正到達速度を確認します。",
     iField: "ビーム被弾ごとに自動発動し、回数制限がありません。",
     massProductionFormation: "同型機複数へ攻防・命中の複合効果を与えます。",
     barrageSupport: "周囲の味方全体を支援し、重複しません。"

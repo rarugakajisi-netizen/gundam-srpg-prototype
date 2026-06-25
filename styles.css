@@ -348,6 +348,36 @@ select {
   white-space: nowrap;
 }
 
+.favorite-formation-box {
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f9f6ef;
+}
+
+.favorite-formation-heading,
+.favorite-formation-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.favorite-formation-heading {
+  justify-content: space-between;
+}
+
+.favorite-formation-actions {
+  flex-wrap: wrap;
+}
+
+.favorite-formation-actions button {
+  flex: 1 1 auto;
+  min-height: 36px;
+  padding: 6px 9px;
+}
+
 .readonly-field {
   min-height: 40px;
   border: 1px solid var(--line);
