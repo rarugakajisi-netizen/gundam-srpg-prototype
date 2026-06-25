@@ -11,8 +11,15 @@ const vm = require("node:vm");
 const ROOT = path.resolve(__dirname, "..");
 const DATA_PATHS = [
   path.join(ROOT, "data", "game-data.js"),
-  path.join(ROOT, "data", "jissou4-data.js"),
-  path.join(ROOT, "data", "jissou5-data.js")
+  path.join(ROOT, "data", "system", "campaign.js"),
+  path.join(ROOT, "data", "rules", "skills.js"),
+  path.join(ROOT, "data", "maps", "maps.js"),
+  path.join(ROOT, "data", "cards", "mobile-suits.js"),
+  path.join(ROOT, "data", "cards", "battleships.js"),
+  path.join(ROOT, "data", "cards", "weapons.js"),
+  path.join(ROOT, "data", "cards", "characters.js"),
+  path.join(ROOT, "data", "cards", "options.js"),
+  path.join(ROOT, "data", "rules", "compatibility.js")
 ];
 
 function loadGameData() {
