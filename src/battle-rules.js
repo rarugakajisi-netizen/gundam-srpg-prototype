@@ -69,6 +69,22 @@ function unitFaction(unit) {
   return isBattleship(unit) ? battleshipFor(unit).faction : msFor(unit).faction;
 }
 
+function combatUnitTotalCost(unit) {
+  if (Number.isFinite(unit.totalCost)) return unit.totalCost;
+  if (isMobileSuit(unit)) return msFor(unit).cost;
+  if (isBattleship(unit)) {
+    return battleshipFor(unit).cost
+      + battleshipCrew(unit).reduce((sum, character) => sum + (character.cost ?? 0), 0);
+  }
+  return 0;
+}
+
+function rivalryActive(attacker, defender) {
+  return isMobileSuit(attacker)
+    && unitHasSkill(attacker, "rivalry")
+    && combatUnitTotalCost(defender) > combatUnitTotalCost(attacker);
+}
+
 function mobilityFor(unit) {
   if (isBattleship(unit)) return battleshipFor(unit).mobility;
   const optionBonus = unitOptions(unit)
@@ -421,6 +437,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) damage += 8;
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) damage += 8;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) damage += 15;
+  if (rivalryActive(attacker, defender)) damage += 12;
   if (sideHasSkill(attacker.side, "forcedMarch")) damage += 10;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) damage -= 8;
   if (isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence")) damage -= 5;
@@ -454,6 +471,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
+  if (rivalryActive(attacker, defender)) notes.push("対抗心");
   if (sideHasSkill(attacker.side, "forcedMarch")) notes.push("強行軍攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) notes.push("要警護人物攻撃抑制");
   if (sideHasSkill(attacker.side, "peaceWill")) notes.push("講和の意志攻撃抑制");

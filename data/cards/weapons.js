@@ -3766,5 +3766,347 @@ window.GAME_DATA.weapons = [
     "factions": [
       "zeon"
     ]
+  },
+  {
+    "id": "gunnerGundamBeamRifle",
+    "name": "ビーム・ライフル（ガンナーガンダム）",
+    "cost": 70,
+    "power": 145,
+    "accuracy": 74,
+    "range": 5,
+    "minRange": 2,
+    "consume": 26,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "alexBeamRifle",
+    "name": "ビーム・ライフル（アレックス）",
+    "cost": 75,
+    "power": 148,
+    "accuracy": 78,
+    "range": 4,
+    "minRange": 1,
+    "consume": 30,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "alexShield",
+    "name": "シールド（アレックス）",
+    "cost": 70,
+    "power": 0,
+    "accuracy": 0,
+    "range": 0,
+    "minRange": 0,
+    "consume": 0,
+    "kind": "shield",
+    "ammo": 0,
+    "category": "shield",
+    "attackType": "guard",
+    "durability": 200,
+    "specials": [
+      "antiBeamCoating"
+    ],
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "coldClimateMachineGun",
+    "name": "マシンガン（寒冷地仕様）",
+    "cost": 55,
+    "power": 84,
+    "accuracy": 82,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "extraAttackIds": [
+      "coldClimateGrenadeLauncher"
+    ],
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "coldClimateGrenadeLauncher",
+    "name": "付属グレネード・ランチャー",
+    "cost": 0,
+    "power": 110,
+    "accuracy": 68,
+    "range": 3,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 2,
+    "category": "grenade",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "alexArmGatling",
+    "name": "腕部ガトリング・ガン",
+    "cost": 0,
+    "power": 82,
+    "accuracy": 84,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 7,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "mmp80MachineGun",
+    "name": "MMP-80マシンガン",
+    "cost": 50,
+    "power": 88,
+    "accuracy": 80,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 7,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "giantBazooka2",
+    "name": "ジャイアント・バズII",
+    "cost": 75,
+    "power": 160,
+    "accuracy": 68,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "bazooka",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "beamMachineGun",
+    "name": "ビーム・マシンガン",
+    "cost": 85,
+    "power": 135,
+    "accuracy": 80,
+    "range": 5,
+    "minRange": 1,
+    "consume": 24,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "shotgun",
+    "name": "ショット・ガン",
+    "cost": 55,
+    "power": 105,
+    "accuracy": 88,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "shotgun",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "chainMine",
+    "name": "チェーン・マイン",
+    "cost": 70,
+    "power": 185,
+    "accuracy": 72,
+    "range": 1,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 1,
+    "category": "mine",
+    "attackType": "melee",
+    "durability": 0,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "kampferHeadVulcan",
+    "name": "頭部バルカン（ケンプファー）",
+    "cost": 0,
+    "power": 42,
+    "accuracy": 84,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 8,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "viceClaw",
+    "name": "バイス・クロウ",
+    "cost": 0,
+    "power": 130,
+    "accuracy": 80,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "claw",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "hyGoggBeamCannon",
+    "name": "腕部ビーム・カノン",
+    "cost": 0,
+    "power": 118,
+    "accuracy": 76,
+    "range": 4,
+    "minRange": 2,
+    "consume": 18,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "zgokEBeamCannon",
+    "name": "ビーム・カノン（ズゴックE）",
+    "cost": 0,
+    "power": 124,
+    "accuracy": 76,
+    "range": 4,
+    "minRange": 2,
+    "consume": 18,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "aquaticTorpedo",
+    "name": "魚雷",
+    "cost": 0,
+    "power": 108,
+    "accuracy": 74,
+    "range": 4,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "torpedo",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "specials": [
+      "antiSubmarine"
+    ],
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "handMissileUnit",
+    "name": "ハンド・ミサイル・ユニット",
+    "cost": 0,
+    "power": 155,
+    "accuracy": 68,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 1,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "gelgoogJBeamSpotGun",
+    "name": "腕部ビーム・スポットガン",
+    "cost": 0,
+    "power": 92,
+    "accuracy": 82,
+    "range": 3,
+    "minRange": 1,
+    "consume": 12,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
   }
 ];

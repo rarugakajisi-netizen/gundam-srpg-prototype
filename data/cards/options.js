@@ -449,5 +449,19 @@ window.GAME_DATA.options = [
       "zeon"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "rivalryOption",
+    "name": "対抗心",
+    "cost": 45,
+    "effectType": "skill",
+    "grantsSkill": "rivalry",
+    "effectText": "攻撃対象のユニット総コストが自分より高い時、与ダメージ+12。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
   }
 ];

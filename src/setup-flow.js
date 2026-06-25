@@ -1466,13 +1466,17 @@ function addFormationEntry() {
 }
 
 function makeUnit(entry, side, x, y, index) {
-  const { ms } = lookup();
+  const { ms, characters, weapons, options } = lookup();
   const unitMs = ms[entry.msId];
   const optionIds = [...(entry.optionIds ?? [])];
-  const optionWeaponIds = optionIds.flatMap((id) => lookup().options[id]?.weaponIds ?? []);
+  const optionWeaponIds = optionIds.flatMap((id) => options[id]?.weaponIds ?? []);
   const weaponIds = [...unitMs.fixedWeaponIds, ...entry.weaponIds, ...optionWeaponIds];
   const runtimeWeapons = runtimeWeaponsForIds(weaponIds, optionIds);
   const maxEnergy = unitMs.energy + (optionIds.includes("externalGenerator") ? 25 : 0);
+  const totalCost = unitMs.cost
+    + (entry.characterIds ?? []).reduce((sum, id) => sum + (characters[id]?.cost ?? 0), 0)
+    + (entry.weaponIds ?? []).reduce((sum, id) => sum + (weapons[id]?.cost ?? 0), 0)
+    + optionIds.reduce((sum, id) => sum + (options[id]?.cost ?? 0), 0);
 
   return {
     id: `${side}-${index}-${makeId()}`,
@@ -1483,6 +1487,7 @@ function makeUnit(entry, side, x, y, index) {
     characterIds: [...entry.characterIds],
     optionIds,
     weaponIds,
+    totalCost,
     runtimeWeapons,
     armor: unitMs.armor,
     energy: maxEnergy,

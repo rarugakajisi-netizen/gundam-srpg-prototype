@@ -543,6 +543,46 @@ window.GAME_DATA.compatibility = {
       "characterId": "lydoWolf",
       "msId": "gmSniper2Lydo",
       "evasionBonus": 12
+    },
+    {
+      "characterId": "christinaMackenzie",
+      "msTag": "alex",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "bernardWiseman",
+      "msId": "zaku2Kai",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "hardieSteiner",
+      "msId": "zgokE",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "hardieSteiner",
+      "msId": "hyGogg",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "mikhailKaminsky",
+      "msId": "hyGogg",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "mikhailKaminsky",
+      "msTag": "kampfer",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "gabrielRamirezGarcia",
+      "msId": "hyGogg",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "andyStrauss",
+      "msId": "hyGogg",
+      "evasionBonus": 7
     }
   ],
   "msWeapon": [
@@ -905,6 +945,61 @@ window.GAME_DATA.compatibility = {
       "msId": "zakuHighMobilityTestType",
       "weaponId": "zakuMachineGun",
       "accuracyBonus": 7
+    },
+    {
+      "msId": "gunnerGundam",
+      "weaponId": "gunnerGundamBeamRifle",
+      "accuracyBonus": 10
+    },
+    {
+      "msTag": "alex",
+      "weaponId": "alexBeamRifle",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "alex",
+      "weaponId": "alexShield",
+      "accuracyBonus": 5
+    },
+    {
+      "msId": "gmColdClimate",
+      "weaponId": "coldClimateMachineGun",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "zaku2Kai",
+      "weaponId": "mmp80MachineGun",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "rickDom2",
+      "weaponId": "mmp80MachineGun",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "rickDom2",
+      "weaponId": "giantBazooka2",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gelgoogJ",
+      "weaponId": "beamMachineGun",
+      "accuracyBonus": 10
+    },
+    {
+      "msTag": "kampfer",
+      "weaponId": "shotgun",
+      "accuracyBonus": 10
+    },
+    {
+      "msTag": "kampfer",
+      "weaponId": "giantBazooka2",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "kampfer",
+      "weaponId": "chainMine",
+      "accuracyBonus": 8
     }
   ]
 };

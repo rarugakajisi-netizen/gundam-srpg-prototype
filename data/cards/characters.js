@@ -2635,5 +2635,128 @@ window.GAME_DATA.characters = [
     "command": 10,
     "support": 12,
     "maintenance": 2
+  },
+  {
+    "id": "christinaMackenzie",
+    "name": "クリスチーナ・マッケンジー",
+    "characterKey": "christinaMackenzie",
+    "faction": "federation",
+    "cost": 75,
+    "shooting": 14,
+    "melee": 10,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 5,
+    "support": 8,
+    "maintenance": 13,
+    "roles": [
+      "pilot",
+      "mechanic"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "bernardWiseman",
+    "name": "バーナード・ワイズマン",
+    "characterKey": "bernardWiseman",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 10,
+    "melee": 13,
+    "reaction": 12,
+    "awakening": 0,
+    "command": 4,
+    "support": 6,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "rivalry"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "hardieSteiner",
+    "name": "ハーディ・シュタイナー",
+    "characterKey": "hardieSteiner",
+    "faction": "zeon",
+    "cost": 105,
+    "shooting": 18,
+    "melee": 13,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 17,
+    "support": 9,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "aiSenshi"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "mikhailKaminsky",
+    "name": "ミハイル・カミンスキー",
+    "characterKey": "mikhailKaminsky",
+    "faction": "zeon",
+    "cost": 90,
+    "shooting": 15,
+    "melee": 17,
+    "reaction": 19,
+    "awakening": 0,
+    "command": 7,
+    "support": 8,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gabrielRamirezGarcia",
+    "name": "ガブリエル・ラミレス・ガルシア",
+    "characterKey": "gabrielRamirezGarcia",
+    "faction": "zeon",
+    "cost": 70,
+    "shooting": 15,
+    "melee": 11,
+    "reaction": 13,
+    "awakening": 0,
+    "command": 6,
+    "support": 8,
+    "maintenance": 10,
+    "roles": [
+      "pilot",
+      "mechanic"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "andyStrauss",
+    "name": "アンディ・ストロース",
+    "characterKey": "andyStrauss",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 12,
+    "melee": 11,
+    "reaction": 12,
+    "awakening": 0,
+    "command": 5,
+    "support": 5,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "sacrificialBoost"
+    ],
+    "imagePath": ""
   }
 ];

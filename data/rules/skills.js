@@ -434,5 +434,13 @@ window.GAME_DATA.skills = [
     "timing": "常時/被弾時",
     "effect": "移動力を大きく上げる。効果中は格闘武器を使えない。被ダメージまたは任意切り離しで効果を失う。",
     "implemented": true
+  },
+  {
+    "id": "rivalry",
+    "name": "対抗心",
+    "type": "キャラ/OP",
+    "timing": "攻撃時",
+    "effect": "攻撃対象のユニット総コストが自分より高い時、与ダメージ+12。",
+    "implemented": true
   }
 ];

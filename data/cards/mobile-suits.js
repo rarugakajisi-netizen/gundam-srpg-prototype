@@ -4267,5 +4267,466 @@ window.GAME_DATA.mobileSuits = [
     "armor": 105,
     "agility": 16,
     "mobility": 6
+  },
+  {
+    "id": "gunnerGundam",
+    "name": "ガンナーガンダム",
+    "faction": "federation",
+    "cost": 305,
+    "armor": 340,
+    "energy": 125,
+    "agility": 25,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "gunnerGundam",
+      "reconMs"
+    ],
+    "specials": [
+      "recon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "alex",
+    "name": "アレックス",
+    "faction": "federation",
+    "cost": 310,
+    "armor": 320,
+    "energy": 135,
+    "agility": 34,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "alexArmGatling"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "alex",
+      "magnetCoating",
+      "highMobility"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "alexChobam",
+    "name": "アレックス（チョバム・アーマー）",
+    "faction": "federation",
+    "cost": 345,
+    "armor": 180,
+    "energy": 115,
+    "agility": 27,
+    "mobility": 5,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "alex",
+      "armorPack"
+    ],
+    "specials": [
+      "coreSystem"
+    ],
+    "escapeMsId": "alex",
+    "imagePath": ""
+  },
+  {
+    "id": "fullArmorAlex",
+    "name": "フルアーマー・アレックス",
+    "faction": "federation",
+    "cost": 415,
+    "armor": 620,
+    "energy": 140,
+    "agility": 21,
+    "mobility": 4,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "faTwinBeamGun",
+      "faRocketCannon360mm",
+      "simpleSmallShield",
+      "alexArmGatling"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "alex",
+      "heavyMs",
+      "armorPack",
+      "fullArmor"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmColdClimate",
+    "name": "ジム寒冷地仕様",
+    "faction": "federation",
+    "cost": 160,
+    "armor": 270,
+    "energy": 80,
+    "agility": 21,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "gmCommand",
+      "federationMassProduction",
+      "reconMs"
+    ],
+    "specials": [
+      "recon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gmCommandLightArmor",
+    "name": "ジム・コマンド・ライトアーマー",
+    "faction": "federation",
+    "cost": 165,
+    "armor": 220,
+    "energy": 78,
+    "agility": 30,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gm",
+      "gmCommand",
+      "lightArmor",
+      "highMobility",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "zaku2Kai",
+    "name": "ザクII改",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 210,
+    "armor": 315,
+    "energy": 78,
+    "agility": 22,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk",
+      "zakuShoulderShield"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zaku2",
+      "zaku2Kai"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "rickDom2",
+    "name": "リック・ドムII",
+    "faction": "zeon",
+    "cost": 285,
+    "armor": 390,
+    "energy": 95,
+    "agility": 23,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatSaber",
+      "spreadBeam"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "dom",
+      "rickDom",
+      "rickDom2"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gelgoogJ",
+    "name": "ゲルググJ",
+    "faction": "zeon",
+    "cost": 315,
+    "armor": 350,
+    "energy": 130,
+    "agility": 30,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "gelgoogJBeamSpotGun"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gelgoog",
+      "gelgoogJ",
+      "sniperMs",
+      "highMobility"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "hyGogg",
+    "name": "ハイゴッグ",
+    "faction": "zeon",
+    "cost": 230,
+    "armor": 300,
+    "energy": 105,
+    "agility": 27,
+    "mobility": 5,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "viceClaw",
+      "hyGoggBeamCannon",
+      "aquaticTorpedo",
+      "handMissileUnit"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "aquatic",
+      "gogg",
+      "hyGogg"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "zgokE",
+    "name": "ズゴックE",
+    "faction": "zeon",
+    "cost": 260,
+    "armor": 360,
+    "energy": 110,
+    "agility": 25,
+    "mobility": 5,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "viceClaw",
+      "zgokEBeamCannon",
+      "aquaticTorpedo"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "aquatic",
+      "zgok",
+      "zgokE"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "kampfer",
+    "name": "ケンプファー",
+    "faction": "zeon",
+    "cost": 310,
+    "armor": 230,
+    "energy": 95,
+    "agility": 36,
+    "mobility": 7,
+    "weaponSlots": 3,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "kampferHeadVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "kampfer",
+      "highMobility",
+      "assaultMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "prototypeKampfer",
+    "name": "プロトタイプ・ケンプファー",
+    "faction": "zeon",
+    "cost": 260,
+    "armor": 210,
+    "energy": 85,
+    "agility": 33,
+    "mobility": 7,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "kampferHeadVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "kampfer",
+      "prototypeKampfer",
+      "highMobility",
+      "assaultMs"
+    ],
+    "specials": [],
+    "imagePath": ""
   }
 ];
