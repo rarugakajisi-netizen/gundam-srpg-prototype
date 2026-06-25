@@ -4163,5 +4163,109 @@ window.GAME_DATA.mobileSuits = [
     "allowedWeaponIds": [
       "specialHammerGun"
     ]
+  },
+  {
+    "energy": 55,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "earlyBeamSaber"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gm",
+      "earlyGm",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": "",
+    "id": "earlyGm",
+    "name": "初期型ジム",
+    "faction": "federation",
+    "cost": 120,
+    "armor": 235,
+    "agility": 13,
+    "mobility": 4
+  },
+  {
+    "energy": 58,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "zaku",
+      "zaku2",
+      "highMobilityMs",
+      "testMs"
+    ],
+    "specials": [],
+    "imagePath": "",
+    "id": "zakuHighMobilityTestType",
+    "name": "宇宙用高機動試験型ザク",
+    "faction": "zeon",
+    "cost": 145,
+    "armor": 230,
+    "agility": 22,
+    "mobility": 6,
+    "forbiddenWeaponKinds": [
+      "beam"
+    ]
+  },
+  {
+    "energy": 25,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "wiredHelicopterMissile",
+      "helicopterVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "flying",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zeonAircraft",
+      "helicopter",
+      "reconMs"
+    ],
+    "specials": [
+      "recon"
+    ],
+    "imagePath": "",
+    "id": "battleHelicopter08",
+    "name": "戦闘ヘリコプター",
+    "faction": "zeon",
+    "cost": 65,
+    "armor": 105,
+    "agility": 16,
+    "mobility": 6
   }
 ];

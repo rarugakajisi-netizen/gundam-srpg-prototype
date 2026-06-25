@@ -322,5 +322,117 @@ window.GAME_DATA.skills = [
     "timing": "攻撃時",
     "effect": "同じターンに同じ敵を攻撃する場合、2回目以降の与ダメージ+15。",
     "implemented": true
+  },
+  {
+    "id": "pilotSupply",
+    "name": "パイロットへの補給",
+    "type": "キャラ",
+    "timing": "戦艦隣接時",
+    "effect": "このスキル持ちが乗る味方戦艦に隣接している味方MSは、命中・回避+5。",
+    "implemented": true
+  },
+  {
+    "id": "internalAudit",
+    "name": "内部監査",
+    "type": "キャラ",
+    "timing": "常時",
+    "effect": "このスキル持ちから2マス以内にいる味方MSの回避+4。",
+    "implemented": true
+  },
+  {
+    "id": "forcedMarch",
+    "name": "強行軍",
+    "type": "キャラ/OP",
+    "timing": "常時",
+    "effect": "このスキル持ちが自軍にいる間、味方全体の与ダメージ+10、被ダメージ+12。",
+    "implemented": true
+  },
+  {
+    "id": "haroSupport",
+    "name": "ハロのサポート",
+    "type": "OP",
+    "timing": "常時",
+    "effect": "MS搭乗時、回避+6。",
+    "implemented": true
+  },
+  {
+    "id": "innocentPresence",
+    "name": "無垢な存在",
+    "type": "OP",
+    "timing": "被攻撃時",
+    "effect": "攻撃してきた敵の命中-4、与ダメージ-5。",
+    "implemented": true
+  },
+  {
+    "id": "guardedPersons",
+    "name": "要警護人物",
+    "type": "OP",
+    "timing": "常時",
+    "effect": "被ダメージ-10。代わりに自分の与ダメージ-8。",
+    "implemented": true
+  },
+  {
+    "id": "infiltrationIntel",
+    "name": "潜入情報",
+    "type": "OP",
+    "timing": "戦闘開始時",
+    "effect": "敵MS1機のステルス、ゲリラ戦術、煙幕などの隠密系効果をこの戦闘中無効化する。",
+    "implemented": true
+  },
+  {
+    "id": "peaceWill",
+    "name": "講和の意志",
+    "type": "キャラ",
+    "timing": "常時",
+    "effect": "自軍MSが最大装甲の3分の1以下の時、被ダメージ-8。代わりに自軍全体の与ダメージ-4。",
+    "implemented": true
+  },
+  {
+    "id": "mourningResolve",
+    "name": "弔いの決意",
+    "type": "OP",
+    "timing": "味方MS撃破後",
+    "effect": "味方MSが撃破済みなら命中+5、回避-4。",
+    "implemented": true
+  },
+  {
+    "id": "breakthroughSupport",
+    "name": "突破支援",
+    "type": "OP",
+    "timing": "常時",
+    "effect": "自軍にこのスキル持ちがいる間、装甲が最大値の3分の1以下の味方MSは移動+1。",
+    "implemented": true
+  },
+  {
+    "id": "spyConduct",
+    "name": "スパイ行為",
+    "type": "キャラ",
+    "timing": "戦闘開始時",
+    "effect": "敵MS1機に初期ステルスを与えてしまう。低コスト化の代償として使う。",
+    "implemented": true
+  },
+  {
+    "id": "marineSpaceSupport",
+    "name": "水中・宇宙援護",
+    "type": "キャラ",
+    "timing": "常時",
+    "effect": "水中適性機体、潜水艦、宇宙専用MSの命中・回避+5。",
+    "implemented": true
+  },
+  {
+    "id": "commanderStealth",
+    "name": "隊長機潜入支援",
+    "type": "キャラ",
+    "timing": "戦闘開始時",
+    "effect": "味方MS1機に初期ステルスを与える。",
+    "implemented": true
+  },
+  {
+    "id": "subFlightSystem",
+    "name": "サブフライトシステム",
+    "type": "OP",
+    "timing": "常時/被弾時",
+    "effect": "移動力を大きく上げる。効果中は格闘武器を使えない。被ダメージまたは任意切り離しで効果を失う。",
+    "implemented": true
   }
 ];

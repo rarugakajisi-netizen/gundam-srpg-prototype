@@ -236,6 +236,56 @@ window.GAME_DATA.campaign = {
           }
         ]
       }
+    },
+    {
+      "mapId": "vs07thPlatoon",
+      "enemyFaction": "federation",
+      "enemyBattleshipId": null,
+      "summary": "森と低い丘陵が入り組む前線地帯で、第07小隊の陸戦型ジム隊と交戦します。両軍側の平地に簡易拠点があり、中央の森林をどう抜けるかが焦点です。",
+      "enemyFormations": {
+        "federation": [
+          {
+            "msId": "groundGm",
+            "characterIds": [
+              "rob07"
+            ],
+            "weaponIds": [
+              "federationMachineGun100mm",
+              "smallShield"
+            ],
+            "optionIds": []
+          },
+          {
+            "msId": "groundGm",
+            "characterIds": [
+              "mike07"
+            ],
+            "weaponIds": [
+              "federationMachineGun100mm",
+              "smallShield"
+            ],
+            "optionIds": []
+          },
+          {
+            "msId": "groundGm",
+            "characterIds": [
+              "sally07"
+            ],
+            "weaponIds": [
+              "rocketLauncher"
+            ],
+            "optionIds": []
+          },
+          {
+            "msId": "hoverTruck",
+            "characterIds": [
+              "federationSoldier"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
     }
   ]
 };

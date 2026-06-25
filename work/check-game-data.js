@@ -114,6 +114,10 @@ function optionUsableByFaction(option, faction) {
   return !option.factions || option.factions.includes(faction);
 }
 
+function characterUsableByFaction(character, faction) {
+  return !character.factions || character.factions.includes(faction) || character.faction === faction;
+}
+
 function weaponEquippableByMs(ms, weapon) {
   return !weapon.fixedOnly
     && weaponUsableByFaction(weapon, ms.faction)
@@ -252,7 +256,7 @@ function createChecker(data) {
     characterIds.forEach((id) => {
       const character = expectId(`${scope}.characterIds`, "characters", id);
       if (!character) return;
-      if (character.faction !== faction) error(scope, `キャラクター勢力が編成勢力と一致しません: ${character.id}`);
+      if (!characterUsableByFaction(character, faction)) error(scope, `キャラクター勢力が編成勢力と一致しません: ${character.id}`);
       if (usedCharacters.has(character.characterKey)) error(scope, `同一人物が同一ユニット内で重複しています: ${character.characterKey}`);
       usedCharacters.add(character.characterKey);
     });
@@ -369,6 +373,7 @@ function createChecker(data) {
     data.characters.forEach((character) => {
       const scope = `characters.${character.id}`;
       expectFaction(scope, character.faction);
+      expectFactions(scope, character.factions, true);
       ["cost", "shooting", "melee", "reaction", "awakening", "command", "support", "maintenance"].forEach((key) => expectNumber(scope, character, key));
       if (!character.characterKey || typeof character.characterKey !== "string") error(scope, "characterKey が文字列ではありません。");
       if (!Array.isArray(character.roles) || character.roles.length === 0) warning(scope, "roles が未設定です。");
@@ -380,6 +385,7 @@ function createChecker(data) {
       expectNumber(scope, option, "cost");
       expectFactions(scope, option.factions, true);
       expectId(`${scope}.grantsSkill`, "skills", option.grantsSkill, true);
+      list(option.weaponIds).forEach((id) => expectId(`${scope}.weaponIds`, "weapons", id));
       if (!option.effectText || typeof option.effectText !== "string") warning(scope, "effectText が未設定です。");
     });
   }
@@ -428,7 +434,7 @@ function createChecker(data) {
       const captain = expectId(`${scope}.captainId`, "characters", formation.captainId, true);
       const firstOfficer = expectId(`${scope}.firstOfficerId`, "characters", formation.firstOfficerId, true);
       [captain, firstOfficer].filter(Boolean).forEach((character) => {
-        if (character.faction !== faction) error(scope, `ブリッジ要員の勢力が一致しません: ${character.id}`);
+        if (!characterUsableByFaction(character, faction)) error(scope, `ブリッジ要員の勢力が一致しません: ${character.id}`);
       });
       list(formation.units).forEach((entry, index) => validateFormationEntry(entry, `${scope}.units[${index}]`, faction));
 

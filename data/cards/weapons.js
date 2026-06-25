@@ -3686,5 +3686,85 @@ window.GAME_DATA.weapons = [
     "factions": [
       "zeon"
     ]
+  },
+  {
+    "cost": 0,
+    "power": 92,
+    "accuracy": 90,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "beam-saber",
+    "attackType": "melee",
+    "durability": 0,
+    "imagePath": "",
+    "id": "earlyBeamSaber",
+    "name": "初期型ビーム・サーベル",
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "cost": 0,
+    "power": 84,
+    "accuracy": 76,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "imagePath": "",
+    "id": "wiredHelicopterMissile",
+    "name": "有線式ミサイル",
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "cost": 0,
+    "power": 55,
+    "accuracy": 82,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 8,
+    "category": "vulcan",
+    "attackType": "shooting",
+    "durability": 0,
+    "imagePath": "",
+    "id": "helicopterVulcan",
+    "name": "ヘリコプター・バルカン砲",
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "cost": 0,
+    "power": 88,
+    "accuracy": 74,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "imagePath": "",
+    "id": "dodaiYsMissile",
+    "name": "ド・ダイYSミサイル",
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
   }
 ];

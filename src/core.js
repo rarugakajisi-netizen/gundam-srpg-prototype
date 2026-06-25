@@ -125,6 +125,14 @@ function factionName(faction) {
   return state.data.factions[faction];
 }
 
+function cardUsableByFaction(card, faction) {
+  return !card.factions || card.factions.includes(faction) || card.faction === faction;
+}
+
+function characterUsableByFaction(character, faction) {
+  return cardUsableByFaction(character, faction);
+}
+
 function lookup() {
   return {
     ms: byId(state.data.mobileSuits),
@@ -602,7 +610,7 @@ function playableFactions() {
   return Object.keys(state.data.factions).filter((faction) => {
     const hasShip = state.data.battleships.some((ship) => ship.faction === faction && hasCard("battleships", ship.id));
     const hasMs = state.data.mobileSuits.some((ms) => ms.faction === faction && hasCard("mobileSuits", ms.id));
-    const hasCharacter = state.data.characters.some((character) => character.faction === faction && hasCard("characters", character.id));
+    const hasCharacter = state.data.characters.some((character) => characterUsableByFaction(character, faction) && hasCard("characters", character.id));
     return hasShip && hasMs && hasCharacter;
   });
 }
@@ -624,7 +632,7 @@ function initializeSelections() {
     : mapFactions.includes(initialFaction) ? initialFaction : mapFactions[0] ?? initialFaction;
   const factionBattleship = state.data.battleships.find((ship) => ship.faction === state.faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship));
   const factionMs = state.data.mobileSuits.find((ms) => ms.faction === state.faction && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms));
-  const factionCharacter = state.data.characters.find((character) => character.faction === state.faction && hasCard("characters", character.id));
+  const factionCharacter = state.data.characters.find((character) => characterUsableByFaction(character, state.faction) && hasCard("characters", character.id));
   state.selectedBattleshipId = factionBattleship?.id ?? "";
   const bridge = defaultBridgeSelection(state.faction);
   state.selectedCaptainId = bridge.captainId;
@@ -710,7 +718,7 @@ function restoreFormationSnapshot(profile) {
 
   const restoreBridgeCharacter = (id) => {
     const character = data.characters[id];
-    if (!character || character.faction !== state.faction || !hasCard("characters", id) || usedCharacters.has(id)) return "";
+    if (!character || !characterUsableByFaction(character, state.faction) || !hasCard("characters", id) || usedCharacters.has(id)) return "";
     usedCharacters.add(id);
     return id;
   };
@@ -724,7 +732,7 @@ function restoreFormationSnapshot(profile) {
     const weaponIds = Array.isArray(entry?.weaponIds) ? entry.weaponIds : [];
     const optionIds = Array.isArray(entry?.optionIds) ? entry.optionIds : [];
     const charactersValid = characterIds.every((id) => data.characters[id]
-      && data.characters[id].faction === state.faction
+      && characterUsableByFaction(data.characters[id], state.faction)
       && hasCard("characters", id)
       && !usedCharacters.has(id));
     const weaponsValid = Boolean(ms) && weaponIds.every((id) => data.weapons[id]

@@ -2231,5 +2231,409 @@ window.GAME_DATA.characters = [
     "command": 8,
     "support": 14,
     "maintenance": 13
+  },
+  {
+    "characterKey": "tamura",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "operator"
+    ],
+    "specials": [
+      "pilotSupply"
+    ],
+    "imagePath": "",
+    "id": "tamura",
+    "name": "タムラ",
+    "faction": "federation",
+    "cost": 25,
+    "shooting": 2,
+    "melee": 1,
+    "reaction": 4,
+    "command": 4,
+    "support": 11,
+    "maintenance": 2
+  },
+  {
+    "characterKey": "gopp",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [
+      "pilotSupply"
+    ],
+    "imagePath": "",
+    "id": "gopp",
+    "name": "ゴップ",
+    "faction": "federation",
+    "cost": 70,
+    "shooting": 3,
+    "melee": 2,
+    "reaction": 5,
+    "command": 11,
+    "support": 19,
+    "maintenance": 5
+  },
+  {
+    "characterKey": "uragan",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "captain",
+      "operator",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": "",
+    "id": "uragan",
+    "name": "ウラガン",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 7,
+    "melee": 5,
+    "reaction": 8,
+    "command": 12,
+    "support": 12,
+    "maintenance": 4
+  },
+  {
+    "characterKey": "asakura",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "mechanic",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": "",
+    "id": "asakura",
+    "name": "アサクラ",
+    "faction": "zeon",
+    "cost": 70,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 6,
+    "command": 13,
+    "support": 9,
+    "maintenance": 16
+  },
+  {
+    "characterKey": "aliceMiller",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "operator",
+      "commander"
+    ],
+    "specials": [
+      "internalAudit"
+    ],
+    "imagePath": "",
+    "id": "aliceMiller",
+    "name": "アリス・ミラー",
+    "faction": "federation",
+    "cost": 65,
+    "shooting": 6,
+    "melee": 4,
+    "reaction": 10,
+    "command": 12,
+    "support": 13,
+    "maintenance": 3
+  },
+  {
+    "characterKey": "ethanLyer",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [
+      "forcedMarch"
+    ],
+    "imagePath": "",
+    "id": "ethanLyer",
+    "name": "イーサン・ライヤー",
+    "faction": "federation",
+    "cost": 100,
+    "shooting": 6,
+    "melee": 3,
+    "reaction": 7,
+    "command": 21,
+    "support": 9,
+    "maintenance": 4
+  },
+  {
+    "characterKey": "kikiRosita",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "guerrillaTactics"
+    ],
+    "imagePath": "",
+    "id": "kikiRosita",
+    "name": "キキ・ロジータ",
+    "faction": "federation",
+    "cost": 45,
+    "shooting": 8,
+    "melee": 5,
+    "reaction": 13,
+    "command": 8,
+    "support": 11,
+    "maintenance": 2
+  },
+  {
+    "characterKey": "gidanNickard",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "operator",
+      "mechanic"
+    ],
+    "specials": [
+      "pilotSupply"
+    ],
+    "imagePath": "",
+    "id": "gidanNickard",
+    "name": "ジダン・ニッカード",
+    "faction": "federation",
+    "cost": 55,
+    "shooting": 4,
+    "melee": 3,
+    "reaction": 8,
+    "command": 7,
+    "support": 17,
+    "maintenance": 9
+  },
+  {
+    "characterKey": "johnnyNakamizo",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "mechanic"
+    ],
+    "specials": [],
+    "imagePath": "",
+    "id": "johnnyNakamizo",
+    "name": "ジョニー・ナカミゾ",
+    "faction": "federation",
+    "cost": 35,
+    "shooting": 4,
+    "melee": 3,
+    "reaction": 6,
+    "command": 3,
+    "support": 8,
+    "maintenance": 14
+  },
+  {
+    "characterKey": "nieva",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "mechanic"
+    ],
+    "specials": [],
+    "imagePath": "",
+    "id": "nieva",
+    "name": "ニエーバ",
+    "faction": "zeon",
+    "cost": 35,
+    "shooting": 4,
+    "melee": 3,
+    "reaction": 7,
+    "command": 3,
+    "support": 7,
+    "maintenance": 14
+  },
+  {
+    "characterKey": "masad",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": "",
+    "id": "masad",
+    "name": "マサド",
+    "faction": "zeon",
+    "cost": 35,
+    "shooting": 10,
+    "melee": 4,
+    "reaction": 11,
+    "command": 6,
+    "support": 7,
+    "maintenance": 2
+  },
+  {
+    "characterKey": "barry08",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": "",
+    "id": "barry08",
+    "name": "バリー",
+    "faction": "zeon",
+    "cost": 35,
+    "shooting": 11,
+    "melee": 5,
+    "reaction": 7,
+    "command": 4,
+    "support": 5,
+    "maintenance": 2
+  },
+  {
+    "characterKey": "runen08",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": "",
+    "id": "runen08",
+    "name": "ルネン",
+    "faction": "zeon",
+    "cost": 35,
+    "shooting": 8,
+    "melee": 6,
+    "reaction": 10,
+    "command": 5,
+    "support": 5,
+    "maintenance": 2
+  },
+  {
+    "characterKey": "deginZabi",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [
+      "peaceWill"
+    ],
+    "imagePath": "",
+    "id": "deginZabi",
+    "name": "デギン・ソド・ザビ",
+    "faction": "zeon",
+    "cost": 115,
+    "shooting": 3,
+    "melee": 2,
+    "reaction": 5,
+    "command": 22,
+    "support": 15,
+    "maintenance": 4
+  },
+  {
+    "characterKey": "elran",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [
+      "spyConduct"
+    ],
+    "imagePath": "",
+    "id": "elran",
+    "name": "エルラン",
+    "faction": "federation",
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "cost": 15,
+    "shooting": 2,
+    "melee": 1,
+    "reaction": 3,
+    "command": 9,
+    "support": 6,
+    "maintenance": 2
+  },
+  {
+    "characterKey": "judock",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "pilot",
+      "operator"
+    ],
+    "specials": [
+      "spyConduct"
+    ],
+    "imagePath": "",
+    "id": "judock",
+    "name": "ジュダック",
+    "faction": "zeon",
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "cost": 10,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 7,
+    "command": 2,
+    "support": 5,
+    "maintenance": 1
+  },
+  {
+    "characterKey": "mulligan",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "captain",
+      "operator",
+      "commander"
+    ],
+    "specials": [
+      "marineSpaceSupport"
+    ],
+    "imagePath": "",
+    "id": "mulligan",
+    "name": "マリガン",
+    "faction": "zeon",
+    "cost": 65,
+    "shooting": 6,
+    "melee": 3,
+    "reaction": 8,
+    "command": 13,
+    "support": 14,
+    "maintenance": 4
+  },
+  {
+    "characterKey": "barestRosita",
+    "selectable": true,
+    "awakening": 0,
+    "roles": [
+      "commander",
+      "operator"
+    ],
+    "specials": [
+      "commanderStealth"
+    ],
+    "imagePath": "",
+    "id": "barestRosita",
+    "name": "バレスト・ロジータ",
+    "faction": "federation",
+    "cost": 45,
+    "shooting": 4,
+    "melee": 4,
+    "reaction": 8,
+    "command": 10,
+    "support": 12,
+    "maintenance": 2
   }
 ];

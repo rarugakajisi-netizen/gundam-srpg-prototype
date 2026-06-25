@@ -380,7 +380,8 @@ function unitSpecials(unit) {
   return [
     ...(msFor(unit).specials ?? []),
     ...(primaryCharacterFor(unit).specials ?? []),
-    ...unitOptions(unit).map((option) => option.grantsSkill).filter(Boolean)
+    ...unitOptions(unit).map((option) => option.grantsSkill).filter(Boolean),
+    ...(unit.temporarySkills ?? [])
   ];
 }
 
@@ -390,6 +391,7 @@ function unitHasSkill(unit, skillId) {
 
 function unitIsConcealedFrom(defender, attacker) {
   if (!isMobileSuit(defender)) return false;
+  if (defender.infiltrationExposed) return false;
   if (unitHasSkill(attacker, "recon")) return false;
   const nearbyScout = state.units.some((unit) => unit.side === attacker.side && isCombatUnit(unit) && distance(unit, defender) <= 2);
   const smokeConcealed = (defender.smokeConcealedTurns ?? 0) > 0;
@@ -782,10 +784,14 @@ function renderBattleshipDataDetails(ship, options = {}) {
 }
 
 function renderCharacterDetails(character, options = {}) {
+  const factions = character.factions?.map((faction) => state.data.factions[faction]).join(" / ")
+    ?? state.data.factions[character.faction]
+    ?? character.faction;
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
       <summary>${character.name} 詳細</summary>
       ${statItems([
+        ["使用勢力", factions],
         ["コスト", character.cost],
         ["射撃", character.shooting],
         ["格闘", character.melee],

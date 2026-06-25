@@ -192,6 +192,10 @@ battleScreen.addEventListener("click", (event) => {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) useSmokeSkill(unit);
   }
+  if (button?.dataset.action === "discard-vehicle") {
+    const unit = state.units.find((item) => item.id === state.selectedUnitId);
+    if (unit) discardVehicleOption(unit);
+  }
   if (button?.dataset.action === "attack") {
     const attacker = state.units.find((unit) => unit.id === state.selectedUnitId);
     const defender = state.units.find((unit) => unit.id === state.selectedTargetId);

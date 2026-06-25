@@ -670,5 +670,30 @@ window.GAME_DATA.battleships = [
       "ammo": 2
     },
     "imagePath": ""
+  },
+  {
+    "id": "dolos",
+    "name": "ドロス級空母",
+    "faction": "zeon",
+    "cost": 420,
+    "armor": 2100,
+    "energy": 260,
+    "agility": 0,
+    "mobility": 1,
+    "mapTypes": [
+      "space"
+    ],
+    "weaponIds": [
+      "tenBarrelMegaParticleSubGun",
+      "tripleMegaParticleCannon",
+      "antiAirGun"
+    ],
+    "support": {
+      "armor": 48,
+      "shield": 24,
+      "energy": 52,
+      "ammo": 4
+    },
+    "imagePath": ""
   }
 ];

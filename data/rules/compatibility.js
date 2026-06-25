@@ -456,7 +456,7 @@ window.GAME_DATA.compatibility = {
     },
     {
       "characterId": "boneAbust",
-      "msId": "magellaAttack",
+      "msTag": "tank",
       "evasionBonus": 8
     },
     {
@@ -480,6 +480,11 @@ window.GAME_DATA.compatibility = {
       "evasionBonus": 8
     },
     {
+      "characterId": "terrySandersJr",
+      "msId": "earlyGm",
+      "evasionBonus": 8
+    },
+    {
       "characterId": "micheleNinorich",
       "msId": "hoverTruck",
       "evasionBonus": 6
@@ -495,6 +500,11 @@ window.GAME_DATA.compatibility = {
       "evasionBonus": 9
     },
     {
+      "characterId": "ainaSahalin",
+      "msId": "zakuHighMobilityTestType",
+      "evasionBonus": 8
+    },
+    {
       "characterId": "ghiniusSahalin",
       "msTag": "apsaras",
       "evasionBonus": 7
@@ -503,6 +513,26 @@ window.GAME_DATA.compatibility = {
       "characterId": "norrisPackard",
       "msTag": "gouf",
       "evasionBonus": 12
+    },
+    {
+      "characterId": "uragan",
+      "msId": "gyan",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "masad",
+      "msId": "battleHelicopter08",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "barry08",
+      "msTag": "tank",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "runen08",
+      "msTag": "tank",
+      "evasionBonus": 6
     },
     {
       "characterId": "lydoWolf",
@@ -860,6 +890,16 @@ window.GAME_DATA.compatibility = {
       "msId": "gassha",
       "weaponId": "specialHammerGun",
       "accuracyBonus": 10
+    },
+    {
+      "msId": "earlyGm",
+      "weaponId": "bullpupMachineGun",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "zakuHighMobilityTestType",
+      "weaponId": "zakuMachineGun",
+      "accuracyBonus": 7
     }
   ]
 };

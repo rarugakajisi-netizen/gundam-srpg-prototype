@@ -170,6 +170,7 @@ function renderUnitDetail(unit, target) {
       ${freezyYardButton(unit)}
       ${mineScatterButtons(unit)}
       ${smokeDischargerButtons(unit)}
+      ${vehicleOptionButton(unit)}
       ${attackButtons(unit, target)}
     </div>
     ${renderBattleshipSupportHint(unit)}
@@ -376,6 +377,17 @@ function smokeDischargerButtons(unit) {
     </button>
   ` : "";
   return `${weaponButtons}${skillButton}`;
+}
+
+function vehicleOptionButton(unit) {
+  if (!isMobileSuit(unit)) return "";
+  const vehicleOption = activeVehicleOption(unit);
+  if (!vehicleOption) return "";
+  return `
+    <button data-action="discard-vehicle" ${state.outcome || state.phase !== "player" || unit.side !== "player" ? "disabled" : ""}>
+      切り離し<br><span class="button-detail">${vehicleOption.name} / 移動+${vehicleOption.value ?? 0}${vehicleOption.forbidsMelee ? " / 格闘不可" : ""}</span>
+    </button>
+  `;
 }
 
 function renderWeaponInventory(unit) {

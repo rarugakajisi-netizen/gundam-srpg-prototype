@@ -74,8 +74,10 @@ function mobilityFor(unit) {
   const optionBonus = unitOptions(unit)
     .filter((option) => option.effectType === "mobility")
     .reduce((total, option) => total + (option.value ?? 1), 0);
+  const vehicleBonus = activeVehicleOptions(unit).reduce((total, option) => total + (option.value ?? 0), 0);
   const stopMovementPenalty = hinderedByStopMovement(unit) ? 1 : 0;
-  return Math.max(1, msFor(unit).mobility + optionBonus - unitTerrainPenalty(unit).mobility - stopMovementPenalty);
+  const retreatBonus = retreatMobilitySupportActive(unit) ? 1 : 0;
+  return Math.max(1, msFor(unit).mobility + optionBonus + vehicleBonus + retreatBonus - unitTerrainPenalty(unit).mobility - stopMovementPenalty);
 }
 
 function runtimeWeapon(unit, weaponId) {
@@ -88,6 +90,68 @@ function activeShield(unit) {
 
 function alliedBattleship(side) {
   return state.units.find((unit) => unit.side === side && isBattleship(unit) && isAlive(unit));
+}
+
+function sideHasSkill(side, skillId) {
+  return state.units.some((unit) => unit.side === side && isCombatUnit(unit) && isAlive(unit) && unitHasSkill(unit, skillId));
+}
+
+function mobileSuitIsAquaticOrSpaceOnly(unit) {
+  if (!isMobileSuit(unit)) return false;
+  const ms = msFor(unit);
+  const mapTypes = ms.mapTypes ?? ["ground", "space"];
+  return ms.movementType === "submarine"
+    || ms.terrainSuitability?.water === true
+    || (mapTypes.length === 1 && mapTypes[0] === "space");
+}
+
+function marineSpaceSupportActive(unit) {
+  return isMobileSuit(unit) && mobileSuitIsAquaticOrSpaceOnly(unit) && sideHasSkill(unit.side, "marineSpaceSupport");
+}
+
+function peaceWillDefensiveActive(unit) {
+  return isMobileSuit(unit)
+    && unit.maxArmor > 0
+    && unit.armor <= Math.floor(unit.maxArmor / 3)
+    && sideHasSkill(unit.side, "peaceWill");
+}
+
+function retreatMobilitySupportActive(unit) {
+  return isMobileSuit(unit)
+    && unit.maxArmor > 0
+    && unit.armor <= Math.floor(unit.maxArmor / 3)
+    && sideHasSkill(unit.side, "breakthroughSupport");
+}
+
+function activeVehicleOptions(unit) {
+  if (!isMobileSuit(unit) || unit.vehicleOptionDisabled) return [];
+  return unitOptions(unit).filter((option) => option.effectType === "vehicle");
+}
+
+function activeVehicleOption(unit) {
+  return activeVehicleOptions(unit)[0] ?? null;
+}
+
+function vehicleWeaponIds(unit, options = unitOptions(unit)) {
+  return new Set(options.flatMap((option) => option.weaponIds ?? []));
+}
+
+function pilotSupplyActive(unit) {
+  if (!isMobileSuit(unit)) return false;
+  const battleship = alliedBattleship(unit.side);
+  return Boolean(battleship && isAdjacent(unit, battleship) && unitHasSkill(battleship, "pilotSupply"));
+}
+
+function internalAuditActive(unit) {
+  if (!isMobileSuit(unit)) return false;
+  return state.units.some((other) =>
+    other.id !== unit.id
+    && other.side === unit.side
+    && isCombatUnit(other)
+    && isAlive(other)
+    && unitHasSkill(other, "internalAudit")
+    && distance(other, unit) <= 2
+  );
 }
 
 function isAdjacent(a, b) {
@@ -105,13 +169,17 @@ function weaponCanAttack(weapon) {
 }
 
 function unitWeaponObjects(unit) {
-  return [...new Set(unit.weaponIds.flatMap((id) => [id, ...(weaponFor(id).extraAttackIds ?? [])]))]
+  const disabledVehicleWeapons = unit.vehicleOptionDisabled ? vehicleWeaponIds(unit) : new Set();
+  return [...new Set(unit.weaponIds
+    .filter((id) => !disabledVehicleWeapons.has(id))
+    .flatMap((id) => [id, ...(weaponFor(id).extraAttackIds ?? [])]))]
     .map((id) => weaponFor(id));
 }
 
 function attackWeapons(unit) {
   return unitWeaponObjects(unit)
-    .filter((weapon) => weaponCanAttack(weapon));
+    .filter((weapon) => weaponCanAttack(weapon))
+    .filter((weapon) => !(activeVehicleOption(unit)?.forbidsMelee && weapon.attackType === "melee"));
 }
 
 function weaponUsed(unit, weaponId) {
@@ -255,6 +323,9 @@ function skillAccuracyBonus(unit, defender, weapon) {
   if (unitHasSkill(unit, "stationaryInterception") && !unit.moved) bonus += 8;
   if (unitHasSkill(unit, "highPerformanceSight") && weapon?.attackType === "shooting" && defender && distance(unit, defender) >= 4) bonus += 8;
   if (unitHasSkill(unit, "allyBackup") && hasAllyAhead(unit)) bonus += 6;
+  if (pilotSupplyActive(unit)) bonus += 5;
+  if (marineSpaceSupportActive(unit)) bonus += 5;
+  if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus += 5;
   const supportedByCommander = state.units.some((other) =>
     other.id !== unit.id
     && other.side === unit.side
@@ -272,6 +343,11 @@ function skillEvasionBonus(unit) {
   let bonus = 0;
   if (unitHasSkill(unit, "educationalComputer")) bonus += Math.min(9, unit.learningStacks ?? 0);
   if (retreatSupportActive(unit)) bonus += 10;
+  if (unitHasSkill(unit, "haroSupport")) bonus += 6;
+  if (pilotSupplyActive(unit)) bonus += 5;
+  if (internalAuditActive(unit)) bonus += 4;
+  if (marineSpaceSupportActive(unit)) bonus += 5;
+  if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus -= 4;
   return bonus;
 }
 
@@ -298,14 +374,15 @@ function evasion(unit) {
 
 function hitRate(attacker, defender, weapon, options = {}) {
   const panicPenalty = unitHasSkill(attacker, "panic") ? 8 : 0;
+  const innocentPenalty = isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence") ? 4 : 0;
   if (isBattleship(attacker)) {
-    const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + barrageSupportPenalty(defender, attacker) - panicPenalty - evasion(defender);
+    const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + barrageSupportPenalty(defender, attacker) - panicPenalty - innocentPenalty - evasion(defender);
     return clamp(raw, MIN_HIT_RATE, MAX_HIT_RATE);
   }
   const character = primaryCharacterFor(attacker);
   const ability = weapon.attackType === "melee" ? character.melee : character.shooting;
   const repeatPenalty = repeatAttackAccuracyPenalty(attacker, options.attackOrdinal);
-  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - repeatPenalty - evasion(defender);
+  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - innocentPenalty - repeatPenalty - evasion(defender);
   return clamp(raw, MIN_HIT_RATE, MAX_HIT_RATE);
 }
 
@@ -344,6 +421,10 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) damage += 8;
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) damage += 8;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) damage += 15;
+  if (sideHasSkill(attacker.side, "forcedMarch")) damage += 10;
+  if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) damage -= 8;
+  if (isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence")) damage -= 5;
+  if (sideHasSkill(attacker.side, "peaceWill")) damage -= 4;
   if (weapon.kind === "beam" && (attacker.beamDisruptedTurns ?? 0) > 0) damage -= 25;
   if (options.iFieldActive ?? canUseIField(defender, weapon)) damage = Math.floor(damage / 2);
   if (isMobileSuit(defender) && weapon.kind === "beam" && (unitHasSkill(defender, "antiBeamCoating") || shieldHasSkill(defender, "antiBeamCoating"))) damage -= 15;
@@ -352,6 +433,9 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(defender) && weapon.attackType === "melee" && unitHasSkill(defender, "impactDiffusionArmor")) damage -= 15;
   if (isMobileSuit(defender) && unitHasSkill(defender, "aiSenshi") && alliedMobileSuitDestroyed(defender.side)) damage -= 10;
   if (isMobileSuit(defender) && massProductionFormationActive(defender)) damage -= 8;
+  if (isMobileSuit(defender) && unitHasSkill(defender, "guardedPersons")) damage -= 10;
+  if (peaceWillDefensiveActive(defender)) damage -= 8;
+  if (sideHasSkill(defender.side, "forcedMarch")) damage += 12;
   if (guardMissionProtector(defender, attacker)) damage -= 10;
   return Math.max(10, damage);
 }
@@ -370,10 +454,17 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
+  if (sideHasSkill(attacker.side, "forcedMarch")) notes.push("強行軍攻撃");
+  if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) notes.push("要警護人物攻撃抑制");
+  if (sideHasSkill(attacker.side, "peaceWill")) notes.push("講和の意志攻撃抑制");
   if (options.iFieldActive) notes.push("Iフィールド");
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) notes.push("対水中");
   if (weapon.kind === "ammo" && freezyYardActive(defender)) notes.push("フリージーヤード");
   if (isMobileSuit(defender) && massProductionFormationActive(defender)) notes.push("量産機編成防御");
+  if (isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence")) notes.push("無垢な存在");
+  if (isMobileSuit(defender) && unitHasSkill(defender, "guardedPersons")) notes.push("要警護人物防御");
+  if (peaceWillDefensiveActive(defender)) notes.push("講和の意志防御");
+  if (sideHasSkill(defender.side, "forcedMarch")) notes.push("強行軍被害");
   const protector = guardMissionProtector(defender, attacker);
   if (protector) notes.push(`護衛任務:${unitName(protector)}`);
   return notes;
@@ -579,6 +670,11 @@ function attack(attacker, defender, weapon, renderAfter = true) {
 }
 
 function applyDamage(unit, amount) {
+  const vehicleOption = activeVehicleOption(unit);
+  if (amount > 0 && isMobileSuit(unit) && vehicleOption && !unit.vehicleOptionDisabled) {
+    unit.vehicleOptionDisabled = true;
+    state.log.push(`${unitName(unit)}の${vehicleOption.name ?? "乗り物"}が損傷し、効果を失った。`);
+  }
   let remaining = amount;
   const shield = activeShield(unit);
   if (shield) {
@@ -591,6 +687,60 @@ function applyDamage(unit, amount) {
   if (unit.armor === 0 && canUseEscapeShip(unit)) transformToEscapeShip(unit);
   if (unit.armor === 0 && canUseCoreSystem(unit)) transformToCoreFighter(unit);
   if (unit.armor === 0) triggerSacrificialBoost(unit);
+}
+
+function discardVehicleOption(unit, renderAfter = true) {
+  const vehicleOption = activeVehicleOption(unit);
+  if (!isMobileSuit(unit) || !vehicleOption || unit.vehicleOptionDisabled) return false;
+  unit.vehicleOptionDisabled = true;
+  state.log.push(`${unitName(unit)}が${vehicleOption.name ?? "乗り物"}を切り離した。`);
+  if (renderAfter) renderBattle();
+  return true;
+}
+
+function addTemporarySkill(unit, skillId) {
+  if (!unit.temporarySkills) unit.temporarySkills = [];
+  if (!unit.temporarySkills.includes(skillId)) unit.temporarySkills.push(skillId);
+}
+
+function firstMobileSuitForSide(side, predicate = () => true) {
+  return state.units.find((unit) => unit.side === side && isMobileSuit(unit) && isAlive(unit) && predicate(unit));
+}
+
+function applyInfiltrationIntel(side) {
+  if (!sideHasSkill(side, "infiltrationIntel")) return;
+  const target = firstMobileSuitForSide(otherFaction(side), (unit) =>
+    unitHasSkill(unit, "stealth")
+    || unitHasSkill(unit, "guerrillaTactics")
+    || (unit.smokeConcealedTurns ?? 0) > 0
+  );
+  if (!target) return;
+  target.infiltrationExposed = true;
+  state.log.push(`${unitName(target)}の隠密情報が漏洩。隠密系効果がこの戦闘中無効化された。`);
+}
+
+function applySpyConduct(side) {
+  if (!sideHasSkill(side, "spyConduct")) return;
+  const target = firstMobileSuitForSide(otherFaction(side), (unit) => !unitHasSkill(unit, "stealth"));
+  if (!target) return;
+  addTemporarySkill(target, "stealth");
+  state.log.push(`スパイ行為により、敵側の${unitName(target)}が初期ステルス状態になった。`);
+}
+
+function applyCommanderStealth(side) {
+  if (!sideHasSkill(side, "commanderStealth")) return;
+  const target = firstMobileSuitForSide(side);
+  if (!target) return;
+  addTemporarySkill(target, "stealth");
+  state.log.push(`${unitName(target)}が現地協力者の誘導で初期ステルス状態になった。`);
+}
+
+function applyPreBattleSkillEffects() {
+  for (const side of ["player", "enemy"]) {
+    applyInfiltrationIntel(side);
+    applySpyConduct(side);
+    applyCommanderStealth(side);
+  }
 }
 
 function moveUnit(unit, x, y) {

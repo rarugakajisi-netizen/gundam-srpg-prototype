@@ -323,5 +323,131 @@ window.GAME_DATA.options = [
       "zeon"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "haro",
+    "name": "ハロ",
+    "cost": 35,
+    "effectType": "skill",
+    "grantsSkill": "haroSupport",
+    "effectText": "パイロットの反応補助として、MS搭乗時の回避+6。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "katzLetzKikka",
+    "name": "カツ・レツ・キッカ",
+    "cost": 40,
+    "effectType": "skill",
+    "grantsSkill": "innocentPresence",
+    "effectText": "攻撃してきた敵の命中-4、与ダメージ-5。子どもたちを戦場で見た動揺を表現する防御寄りOP。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "forcedMarchOption",
+    "name": "強行軍",
+    "cost": 50,
+    "effectType": "skill",
+    "grantsSkill": "forcedMarch",
+    "effectText": "味方全体の与ダメージ+10、被ダメージ+12。攻勢用のリスク付き作戦OP。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zenaAndMineva",
+    "name": "ゼナ＆ミネバ",
+    "cost": 45,
+    "effectType": "skill",
+    "grantsSkill": "guardedPersons",
+    "effectText": "被ダメージ-10。代わりに自分の与ダメージ-8。要警護人物を守る慎重な運用を表現する。",
+    "uniqueSkill": true,
+    "factions": [
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "miharuIntel",
+    "name": "ミハル・ラトキエ",
+    "cost": 45,
+    "effectType": "skill",
+    "grantsSkill": "infiltrationIntel",
+    "effectText": "戦闘開始時、敵MS1機の隠密系効果をこの戦闘中無効化する。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "iserinaResolve",
+    "name": "イセリナ・エッシェンバッハ",
+    "cost": 35,
+    "effectType": "skill",
+    "grantsSkill": "mourningResolve",
+    "effectText": "味方MSが撃破済みなら命中+5、回避-4。弔いの決意を攻勢寄りに表現する。",
+    "uniqueSkill": true,
+    "factions": [
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "camranSupport",
+    "name": "カムラン・ブルーム",
+    "cost": 50,
+    "effectType": "skill",
+    "grantsSkill": "breakthroughSupport",
+    "effectText": "自軍にこのスキル持ちがいる間、装甲が最大値の3分の1以下の味方MSは移動+1。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "dodaiYs",
+    "name": "ド・ダイYS",
+    "cost": 85,
+    "effectType": "vehicle",
+    "grantsSkill": "subFlightSystem",
+    "effectText": "移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。ミサイルを追加する。",
+    "value": 2,
+    "forbidsMelee": true,
+    "weaponIds": [
+      "dodaiYsMissile"
+    ],
+    "uniqueSkill": true,
+    "factions": [
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "dodai2",
+    "name": "ド・ダイII",
+    "cost": 50,
+    "effectType": "vehicle",
+    "grantsSkill": "subFlightSystem",
+    "effectText": "移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。武装なしの運搬専門。",
+    "value": 2,
+    "forbidsMelee": true,
+    "uniqueSkill": true,
+    "factions": [
+      "zeon"
+    ],
+    "imagePath": ""
   }
 ];
