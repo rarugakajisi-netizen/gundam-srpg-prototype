@@ -12,9 +12,15 @@ function checkOutcome() {
 
   if (!playerBattleshipAlive || !playerAlive) {
     state.outcome = "敗北";
+    state.outcomeMessage = "戦艦または全機を失いました。編成を見直して再挑戦できます。";
+    phaseLabel.textContent = state.outcome;
+  } else if (stageTurnLimit() !== null && state.phase === "player" && state.turnNumber > stageTurnLimit()) {
+    state.outcome = "敗北";
+    state.outcomeMessage = `敵の時間稼ぎを許しました。${stageTurnLimit()}ターン以内に敵を撃破してください。`;
     phaseLabel.textContent = state.outcome;
   } else if ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive) {
     state.outcome = "勝利";
+    state.outcomeMessage = "";
     state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
     phaseLabel.textContent = state.outcome;
   }

@@ -515,12 +515,20 @@ function stageCard(map) {
         <span class="status-pill ${playable ? "ready" : ""}">${cleared ? "CLEAR" : playable ? "出撃可" : "未解禁"}</span>
       </div>
       <p class="small">${stage.summary ?? "ステージ説明は未設定です。"}</p>
+      ${renderStageRuleChips(stage)}
       ${renderMapDetails(map)}
       <p class="small">全体ランダムドロップ${rollText}</p>
       <div class="reward-list">${rewardText || `<span class="reward-chip">報酬未設定</span>`}</div>
       <button class="primary-button" data-action="select-stage" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このステージへ</button>
     </article>
   `;
+}
+
+function renderStageRuleChips(stage) {
+  const chips = [];
+  const turnLimit = Number(stage.turnLimit);
+  if (Number.isFinite(turnLimit) && turnLimit > 0) chips.push(`敗北条件: ${Math.floor(turnLimit)}ターン経過`);
+  return chips.length > 0 ? `<div class="reward-list">${chips.map((text) => `<span class="reward-chip">${text}</span>`).join("")}</div>` : "";
 }
 
 function commonDropCounts() {
@@ -576,6 +584,7 @@ function freeBattleMapCard(map) {
       <div class="reward-list">
         <span class="reward-chip">勝利: 全体ランダム1枚</span>
         <span class="reward-chip owned">クリア状況・引換券には影響なし</span>
+        <span class="reward-chip owned">ステージ特殊ルールなし</span>
       </div>
       <button class="primary-button" data-action="select-free-battle-map" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このマップでフリー対戦</button>
     </article>
@@ -1617,6 +1626,7 @@ function finishDeployment() {
   if (state.outcome || state.phase !== "deployment") return;
   applyPreBattleSkillEffects();
   tickTurnStartEffects("player");
+  state.turnNumber = 1;
   state.phase = "player";
   state.selectedUnitId = state.units.find((unit) => unit.side === "player" && isCombatUnit(unit))?.id ?? null;
   state.selectedTargetId = null;
@@ -1667,6 +1677,8 @@ function launchBattle() {
   state.units = [...battleships, ...playerUnits, ...enemyUnits];
   state.phase = "deployment";
   state.outcome = null;
+  state.outcomeMessage = "";
+  state.turnNumber = 1;
   state.selectedUnitId = battleships.find((unit) => unit.side === "player")?.id ?? playerUnits[0]?.id ?? null;
   state.selectedTargetId = null;
   state.enemyQueue = [];

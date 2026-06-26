@@ -50,6 +50,8 @@ const state = {
   units: [],
   phase: "setup",
   outcome: null,
+  outcomeMessage: "",
+  turnNumber: 1,
   selectedUnitId: null,
   selectedTargetId: null,
   enemyQueue: [],
@@ -353,6 +355,12 @@ function stageConfig(mapId) {
 
 function isFreeBattle() {
   return state.battleMode === "free";
+}
+
+function stageTurnLimit(mapId = state.selectedMapId) {
+  if (isFreeBattle()) return null;
+  const limit = Number(stageConfig(mapId).turnLimit);
+  return Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : null;
 }
 
 function commonDropConfig() {

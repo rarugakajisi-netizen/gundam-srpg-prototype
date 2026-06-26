@@ -451,6 +451,7 @@ function createChecker(data) {
       expectId(`${scope}.enemyCaptainId`, "characters", stage.enemyCaptainId, true);
       expectId(`${scope}.enemyFirstOfficerId`, "characters", stage.enemyFirstOfficerId, true);
       if (stage.costCap !== undefined) expectNumber(scope, stage, "costCap");
+      if (stage.turnLimit !== undefined) expectNumber(scope, stage, "turnLimit", { integer: true });
 
       const formations = stage.enemyFormations ?? {};
       if (!isPlainObject(formations)) {

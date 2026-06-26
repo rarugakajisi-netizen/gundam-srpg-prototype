@@ -85,6 +85,15 @@ function rivalryActive(attacker, defender) {
     && combatUnitTotalCost(defender) > combatUnitTotalCost(attacker);
 }
 
+function enemyIntelAccuracyPenalty(attacker) {
+  const opposingSide = attacker.side === "player" ? "enemy" : "player";
+  return state.turnNumber === 1
+    && state.phase === "enemy"
+    && sideHasSkill(opposingSide, "enemyIntel")
+    ? 8
+    : 0;
+}
+
 function mobilityFor(unit) {
   if (isBattleship(unit)) return battleshipFor(unit).mobility;
   const optionBonus = unitOptions(unit)
@@ -397,16 +406,17 @@ function evasion(unit) {
 function hitRate(attacker, defender, weapon, options = {}) {
   const panicPenalty = unitHasSkill(attacker, "panic") ? 8 : 0;
   const innocentPenalty = isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence") ? 4 : 0;
+  const enemyIntelPenalty = enemyIntelAccuracyPenalty(attacker);
   const attackOrdinal = options.attackOrdinal ?? ((attacker.usedWeaponIds?.length ?? 0) + 1);
   const minHitRate = minimumHitRate(attacker, attackOrdinal);
   if (isBattleship(attacker)) {
-    const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + barrageSupportPenalty(defender, attacker) - panicPenalty - innocentPenalty - evasion(defender);
+    const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + barrageSupportPenalty(defender, attacker) - panicPenalty - innocentPenalty - enemyIntelPenalty - evasion(defender);
     return clamp(raw, minHitRate, MAX_HIT_RATE);
   }
   const character = primaryCharacterFor(attacker);
   const ability = weapon.attackType === "melee" ? character.melee : character.shooting;
   const repeatPenalty = repeatAttackAccuracyPenalty(attacker, attackOrdinal);
-  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - innocentPenalty - repeatPenalty - evasion(defender);
+  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - innocentPenalty - enemyIntelPenalty - repeatPenalty - evasion(defender);
   return clamp(raw, minHitRate, MAX_HIT_RATE);
 }
 
@@ -1033,6 +1043,7 @@ function finishEnemyTurn() {
     if ((unit.smokeConcealedTurns ?? 0) > 0) unit.smokeConcealedTurns -= 1;
   });
   tickTurnStartEffects("player");
+  state.turnNumber += 1;
   state.phase = "player";
   state.enemyQueue = [];
   state.selectedUnitId = state.units.find((unit) => unit.side === "player" && isCombatUnit(unit))?.id ?? null;

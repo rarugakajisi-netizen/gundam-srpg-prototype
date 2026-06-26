@@ -286,6 +286,41 @@ window.GAME_DATA.campaign = {
           }
         ]
       }
+    },
+    {
+      "mapId": "frontline",
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "turnLimit": 8,
+      "summary": "周囲をジャングルに囲まれた平地で、時間稼ぎを狙うマゼラ・アタック隊を追撃する08小隊向けの低難易度ステージ。岩と古い遺跡の石柱が射線を切ります。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "magellaAttack",
+            "characterIds": [
+              "boneAbust"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "magellaAttack",
+            "characterIds": [
+              "barry08"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "magellaAttack",
+            "characterIds": [
+              "runen08"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
     }
   ]
 };

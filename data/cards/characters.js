@@ -2758,5 +2758,88 @@ window.GAME_DATA.characters = [
       "sacrificialBoost"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "killing",
+    "name": "キリング",
+    "characterKey": "killing",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 4,
+    "melee": 3,
+    "reaction": 5,
+    "awakening": 0,
+    "command": 18,
+    "support": 8,
+    "maintenance": 2,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [
+      "forcedMarch"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "vonHellsing",
+    "name": "フォン・ヘルシング",
+    "characterKey": "vonHellsing",
+    "faction": "zeon",
+    "cost": 65,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 7,
+    "awakening": 0,
+    "command": 13,
+    "support": 12,
+    "maintenance": 5,
+    "roles": [
+      "captain",
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "stuart",
+    "name": "スチュアート",
+    "characterKey": "stuart",
+    "faction": "federation",
+    "cost": 75,
+    "shooting": 6,
+    "melee": 4,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 15,
+    "support": 9,
+    "maintenance": 4,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "ayaSwanport",
+    "name": "アヤ・スワンポート",
+    "characterKey": "ayaSwanport",
+    "faction": "federation",
+    "cost": 55,
+    "shooting": 4,
+    "melee": 3,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 7,
+    "support": 15,
+    "maintenance": 8,
+    "roles": [
+      "operator"
+    ],
+    "specials": [
+      "retreatSupport"
+    ],
+    "imagePath": ""
   }
 ];

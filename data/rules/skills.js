@@ -442,5 +442,13 @@ window.GAME_DATA.skills = [
     "timing": "攻撃時",
     "effect": "攻撃対象のユニット総コストが自分より高い時、与ダメージ+12。",
     "implemented": true
+  },
+  {
+    "id": "enemyIntel",
+    "name": "敵情提供",
+    "type": "OP",
+    "timing": "最初の敵ターン",
+    "effect": "最初の敵ターンのみ、相手全体の命中-8。",
+    "implemented": true
   }
 ];

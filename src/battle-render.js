@@ -34,6 +34,7 @@ function renderBattle() {
           <p class="small">自軍ユニットを選び、手前${deploymentRows("player")}列の明るいマスへ置き直せます。配置を終えたら「配置完了」で戦闘開始です。</p>
         </div>
       </section>` : ""}
+      ${renderBattleRuleStatus()}
       ${state.outcome ? renderBattleResultPanel() : ""}
       <div class="board" style="--board-width: ${boardWidth()}; --board-height: ${boardHeight()};">
         ${renderCells(selected)}
@@ -55,6 +56,20 @@ function renderBattle() {
 
 }
 
+function renderBattleRuleStatus() {
+  const limit = stageTurnLimit();
+  if (limit === null || state.outcome) return "";
+  const remaining = Math.max(0, limit - state.turnNumber + 1);
+  return `
+    <section class="panel deployment-panel">
+      <div>
+        <h2>特殊ルール: 時間稼ぎ</h2>
+        <p class="small">第${limit}ターン終了までに敵を撃破してください。現在${state.turnNumber}ターン目 / 残り${remaining}ターン。</p>
+      </div>
+    </section>
+  `;
+}
+
 function renderBattleResultPanel() {
   const victory = state.outcome === "勝利";
   return `
@@ -62,7 +77,7 @@ function renderBattleResultPanel() {
       <div>
         <p class="eyebrow">Result</p>
         <h2>${state.outcome}</h2>
-        <p>${victory ? (isFreeBattle() ? "フリー対戦報酬としてカードを1枚獲得しました。" : "ステージ報酬を獲得しました。カード一覧と次のステージに反映されています。") : "戦艦または全機を失いました。編成を見直して再挑戦できます。"}</p>
+        <p>${victory ? (isFreeBattle() ? "フリー対戦報酬としてカードを1枚獲得しました。" : "ステージ報酬を獲得しました。カード一覧と次のステージに反映されています。") : (state.outcomeMessage || "戦艦または全機を失いました。編成を見直して再挑戦できます。")}</p>
       </div>
       ${victory ? `<div class="reward-list result-rewards">
         ${state.resultRewards.map((reward) => renderResultRewardChip(reward)).join("") || `<span class="reward-chip owned">追加報酬なし</span>`}

@@ -695,5 +695,30 @@ window.GAME_DATA.battleships = [
       "ammo": 4
     },
     "imagePath": ""
+  },
+  {
+    "id": "grayPhantom",
+    "name": "グレイファントム",
+    "faction": "federation",
+    "cost": 240,
+    "armor": 1120,
+    "energy": 145,
+    "agility": 3,
+    "mobility": 3,
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "weaponIds": [
+      "dualMegaParticleCannon",
+      "federationShipMissile"
+    ],
+    "support": {
+      "armor": 28,
+      "shield": 14,
+      "energy": 28,
+      "ammo": 1
+    },
+    "imagePath": ""
   }
 ];

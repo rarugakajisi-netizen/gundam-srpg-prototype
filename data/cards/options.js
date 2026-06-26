@@ -463,5 +463,18 @@ window.GAME_DATA.options = [
       "zeon"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "alfredIzuruha",
+    "name": "アルフレッド・イズルハ",
+    "cost": 45,
+    "effectType": "skill",
+    "grantsSkill": "enemyIntel",
+    "effectText": "最初の敵ターンのみ、相手全体の命中-8。敵情を伝えて初動を乱すジオン専用OP。",
+    "uniqueSkill": true,
+    "factions": [
+      "zeon"
+    ],
+    "imagePath": ""
   }
 ];
