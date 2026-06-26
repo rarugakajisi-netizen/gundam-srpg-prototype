@@ -303,12 +303,13 @@ function freeBattleRandomBridge(faction, usedKeys) {
 }
 
 function freeBattleRandomBattleship(faction, map, targetCost, usedKeys) {
-  const candidates = state.data.battleships.filter((ship) =>
+  const deployableCandidates = state.data.battleships.filter((ship) =>
     ship.faction === faction
     && battleshipCanDeployOnMap(ship, map)
-    && (ship.cost ?? 0) <= targetCost * 0.65
   );
-  if (candidates.length === 0 || Math.random() > 0.55) return { battleshipId: "", bridge: {} };
+  const costMatchedCandidates = deployableCandidates.filter((ship) => (ship.cost ?? 0) <= targetCost * 0.65);
+  const candidates = costMatchedCandidates.length > 0 ? costMatchedCandidates : deployableCandidates;
+  if (candidates.length === 0) return { battleshipId: "", bridge: {} };
   const ship = weightedRandomChoice(candidates, (item) => 1 / (1 + Math.abs((item.cost ?? 0) - targetCost * 0.35)));
   const bridge = freeBattleRandomBridge(faction, usedKeys);
   return { battleshipId: ship.id, bridge };

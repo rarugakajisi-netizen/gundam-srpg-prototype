@@ -381,6 +381,12 @@ function repeatAttackAccuracyPenalty(unit, attackOrdinal = (unit.usedWeaponIds?.
   return Math.max(0, attackOrdinal - 2) * REPEAT_ATTACK_ACCURACY_PENALTY;
 }
 
+function minimumHitRate(unit, attackOrdinal = (unit.usedWeaponIds?.length ?? 0) + 1) {
+  if (!isMobileSuit(unit)) return MIN_HIT_RATE;
+  const repeatPenalty = Math.max(0, attackOrdinal - 2) * REPEAT_ATTACK_MIN_HIT_PENALTY;
+  return Math.max(MIN_REPEAT_ATTACK_HIT_RATE, MIN_HIT_RATE - repeatPenalty);
+}
+
 function evasion(unit) {
   if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit);
   const ms = msFor(unit);
@@ -391,15 +397,17 @@ function evasion(unit) {
 function hitRate(attacker, defender, weapon, options = {}) {
   const panicPenalty = unitHasSkill(attacker, "panic") ? 8 : 0;
   const innocentPenalty = isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence") ? 4 : 0;
+  const attackOrdinal = options.attackOrdinal ?? ((attacker.usedWeaponIds?.length ?? 0) + 1);
+  const minHitRate = minimumHitRate(attacker, attackOrdinal);
   if (isBattleship(attacker)) {
     const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + barrageSupportPenalty(defender, attacker) - panicPenalty - innocentPenalty - evasion(defender);
-    return clamp(raw, MIN_HIT_RATE, MAX_HIT_RATE);
+    return clamp(raw, minHitRate, MAX_HIT_RATE);
   }
   const character = primaryCharacterFor(attacker);
   const ability = weapon.attackType === "melee" ? character.melee : character.shooting;
-  const repeatPenalty = repeatAttackAccuracyPenalty(attacker, options.attackOrdinal);
+  const repeatPenalty = repeatAttackAccuracyPenalty(attacker, attackOrdinal);
   const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - innocentPenalty - repeatPenalty - evasion(defender);
-  return clamp(raw, MIN_HIT_RATE, MAX_HIT_RATE);
+  return clamp(raw, minHitRate, MAX_HIT_RATE);
 }
 
 function canUseIField(defender, weapon) {
