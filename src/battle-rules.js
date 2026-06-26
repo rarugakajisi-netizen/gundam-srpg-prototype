@@ -539,14 +539,6 @@ function canUseMineScatter(unit, weapon) {
     && mineScatterCells(unit).length > 0;
 }
 
-function canUseSmokeDischarger(unit, weapon) {
-  return isMobileSuit(unit)
-    && weaponHasSkill(weapon, "smokeDischarger")
-    && !unit.acted
-    && !weaponUsed(unit, weapon.id)
-    && canPayCost(unit, weapon);
-}
-
 function useMineScatter(unit, weapon, renderAfter = true) {
   if (!canUseMineScatter(unit, weapon)) return false;
   if (!state.mines) state.mines = [];
@@ -560,20 +552,6 @@ function useMineScatter(unit, weapon, renderAfter = true) {
   revealStealth(unit, "機雷散布");
   pushDialogue(unit, "wait");
   state.log.push(`${unitName(unit)}が${weapon.name}で周囲に機雷を散布。`);
-  if (renderAfter) renderBattle();
-  return true;
-}
-
-function useSmokeDischarger(unit, weapon, renderAfter = true) {
-  if (!canUseSmokeDischarger(unit, weapon)) return false;
-  payCost(unit, weapon);
-  markWeaponUsed(unit, weapon);
-  unit.moved = true;
-  unit.smokeConcealedTurns = 2;
-  unit.acted = true;
-  revealStealth(unit, "煙幕展開");
-  pushDialogue(unit, "wait");
-  state.log.push(`${unitName(unit)}が${weapon.name}を展開。射撃対象から外れやすくなった。`);
   if (renderAfter) renderBattle();
   return true;
 }

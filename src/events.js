@@ -204,10 +204,6 @@ battleScreen.addEventListener("click", (event) => {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) useMineScatter(unit, weaponFor(button.dataset.weaponId));
   }
-  if (button?.dataset.action === "smoke-discharger") {
-    const unit = state.units.find((item) => item.id === state.selectedUnitId);
-    if (unit) useSmokeDischarger(unit, weaponFor(button.dataset.weaponId));
-  }
   if (button?.dataset.action === "smoke-skill") {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) useSmokeSkill(unit);

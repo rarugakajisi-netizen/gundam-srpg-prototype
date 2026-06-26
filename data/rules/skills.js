@@ -222,7 +222,7 @@ window.GAME_DATA.skills = [
   {
     "id": "smokeDischarger",
     "name": "スモークディスチャージャー",
-    "type": "機体/武器/OP",
+    "type": "機体/OP",
     "timing": "行動時",
     "effect": "行動として発動し、2ターンの間、偵察を持たない敵の射撃対象にならない。",
     "implemented": true

@@ -371,27 +371,12 @@ function mineScatterButtons(unit) {
 
 function smokeDischargerButtons(unit) {
   if (!isMobileSuit(unit)) return "";
-  const weaponButtons = unitWeaponObjects(unit)
-    .filter((weapon) => weaponHasSkill(weapon, "smokeDischarger"))
-    .map((weapon) => {
-      const usable = canUseSmokeDischarger(unit, weapon);
-      const status = [
-        weaponStatus(unit, weapon),
-        "射撃対象化を防ぐ",
-        weaponUsed(unit, weapon.id) ? "使用済み" : ""
-      ].filter(Boolean).join(" / ");
-      return `
-        <button data-action="smoke-discharger" data-weapon-id="${weapon.id}" ${state.outcome || state.phase !== "player" || unit.side !== "player" || !usable ? "disabled" : ""}>
-          スモーク<br><span class="button-detail">${weapon.name} / ${status}</span>
-        </button>
-      `;
-    }).join("");
   const skillButton = unitHasSkill(unit, "smokeDischarger") ? `
     <button data-action="smoke-skill" ${state.outcome || state.phase !== "player" || unit.side !== "player" || unit.acted || unit.moved || unit.smokeSkillUsed ? "disabled" : ""}>
-      スモーク<br><span class="button-detail">OP / 射撃対象化を防ぐ${unit.smokeSkillUsed ? " / 使用済み" : ""}</span>
+      スモーク<br><span class="button-detail">スキル / 射撃対象化を防ぐ${unit.smokeSkillUsed ? " / 使用済み" : ""}</span>
     </button>
   ` : "";
-  return `${weaponButtons}${skillButton}`;
+  return skillButton;
 }
 
 function vehicleOptionButton(unit) {

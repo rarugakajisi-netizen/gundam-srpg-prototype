@@ -953,29 +953,6 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
-    "id": "smokeDischargerWeapon",
-    "name": "スモークディスチャージャー",
-    "cost": 0,
-    "power": 0,
-    "accuracy": 100,
-    "range": 1,
-    "minRange": 1,
-    "consume": 1,
-    "kind": "ammo",
-    "ammo": 1,
-    "category": "support",
-    "attackType": "shooting",
-    "durability": 0,
-    "fixedOnly": true,
-    "utilityOnly": true,
-    "specials": [
-      "smokeDischarger"
-    ],
-    "factions": [
-      "zeon"
-    ]
-  },
-  {
     "id": "garmaHeadVulcan",
     "name": "頭部連装バルカン",
     "cost": 0,

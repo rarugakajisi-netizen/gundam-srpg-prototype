@@ -2441,8 +2441,7 @@ window.GAME_DATA.mobileSuits = [
     "optionSlots": 1,
     "fixedWeaponIds": [
       "zakuCannonGun",
-      "zakuShoulderShield",
-      "smokeDischargerWeapon"
+      "zakuShoulderShield"
     ],
     "mapTypes": [
       "ground"
@@ -2460,7 +2459,9 @@ window.GAME_DATA.mobileSuits = [
       "cannonMs",
       "smokeMs"
     ],
-    "specials": [],
+    "specials": [
+      "smokeDischarger"
+    ],
     "imagePath": ""
   },
   {
