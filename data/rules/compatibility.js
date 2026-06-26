@@ -653,6 +653,26 @@ window.GAME_DATA.compatibility = {
       "characterId": "henryBoone",
       "msId": "efreet",
       "evasionBonus": 10
+    },
+    {
+      "characterId": "rayHamilton",
+      "msId": "zaku2",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "lesterCarrot",
+      "msId": "zaku2",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "sakiGraham",
+      "msId": "zaku2",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "martinHagar",
+      "msId": "zaku2",
+      "evasionBonus": 6
     }
   ],
   "msWeapon": [

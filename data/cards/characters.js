@@ -3268,16 +3268,16 @@ window.GAME_DATA.characters = [
     "name": "サキ・グラハム",
     "characterKey": "sakiGraham",
     "faction": "zeon",
-    "cost": 45,
-    "shooting": 7,
-    "melee": 5,
-    "reaction": 8,
+    "cost": 55,
+    "shooting": 12,
+    "melee": 9,
+    "reaction": 12,
     "awakening": 0,
     "command": 5,
-    "support": 12,
-    "maintenance": 6,
+    "support": 8,
+    "maintenance": 3,
     "roles": [
-      "operator"
+      "pilot"
     ],
     "specials": [],
     "imagePath": ""
@@ -3287,16 +3287,16 @@ window.GAME_DATA.characters = [
     "name": "マーチン・ハガー",
     "characterKey": "martinHagar",
     "faction": "zeon",
-    "cost": 65,
-    "shooting": 8,
-    "melee": 5,
-    "reaction": 7,
+    "cost": 70,
+    "shooting": 12,
+    "melee": 9,
+    "reaction": 10,
     "awakening": 0,
-    "command": 15,
-    "support": 9,
+    "command": 13,
+    "support": 8,
     "maintenance": 4,
     "roles": [
-      "captain",
+      "pilot",
       "commander"
     ],
     "specials": [
