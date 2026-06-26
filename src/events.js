@@ -208,6 +208,10 @@ battleScreen.addEventListener("click", (event) => {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) useSmokeSkill(unit);
   }
+  if (button?.dataset.action === "charge-weapon") {
+    const unit = state.units.find((item) => item.id === state.selectedUnitId);
+    if (unit) chargeWeapon(unit, weaponFor(button.dataset.weaponId));
+  }
   if (button?.dataset.action === "discard-vehicle") {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) discardVehicleOption(unit);

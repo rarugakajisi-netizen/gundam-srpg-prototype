@@ -4729,5 +4729,221 @@ window.GAME_DATA.mobileSuits = [
     ],
     "specials": [],
     "imagePath": ""
+  },
+  {
+    "id": "gundamUnit4",
+    "name": "ガンダム4号機",
+    "faction": "federation",
+    "cost": 270,
+    "armor": 340,
+    "energy": 135,
+    "agility": 26,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "handBeamGun",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "unit4",
+      "secondLotGundam"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gundamUnit4Bst",
+    "name": "ガンダム4号機［Bst］",
+    "faction": "federation",
+    "cost": 295,
+    "armor": 340,
+    "energy": 155,
+    "agility": 30,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "handBeamGun",
+      "beamSaber",
+      "megaBeamLauncher"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gundam",
+      "unit4",
+      "secondLotGundam",
+      "bst",
+      "spaceAssault"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gundamUnit5",
+    "name": "ガンダム5号機",
+    "faction": "federation",
+    "cost": 270,
+    "armor": 350,
+    "energy": 115,
+    "agility": 26,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "handBeamGun",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "unit5",
+      "secondLotGundam"
+    ],
+    "specials": [
+      "spareMagazine"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gundamUnit5Bst",
+    "name": "ガンダム5号機［Bst］",
+    "faction": "federation",
+    "cost": 295,
+    "armor": 350,
+    "energy": 120,
+    "agility": 30,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "handBeamGun",
+      "beamSaber",
+      "giantGatling"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gundam",
+      "unit5",
+      "secondLotGundam",
+      "bst",
+      "spaceAssault"
+    ],
+    "specials": [
+      "spareMagazine"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gundamPixy",
+    "name": "ガンダム・ピクシー",
+    "faction": "federation",
+    "cost": 215,
+    "armor": 250,
+    "energy": 80,
+    "agility": 32,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamDagger"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "pixy",
+      "meleeMs",
+      "stealthMs"
+    ],
+    "specials": [
+      "stealth"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "efreet",
+    "name": "イフリート",
+    "faction": "zeon",
+    "cost": 210,
+    "armor": 310,
+    "energy": 75,
+    "agility": 25,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "efreetHeatSaber"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "efreet",
+      "gouf",
+      "dom",
+      "assaultMs",
+      "smokeMs"
+    ],
+    "specials": [
+      "smokeDischarger"
+    ],
+    "imagePath": ""
   }
 ];

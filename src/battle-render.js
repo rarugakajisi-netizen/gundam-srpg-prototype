@@ -185,6 +185,7 @@ function renderUnitDetail(unit, target) {
       ${freezyYardButton(unit)}
       ${mineScatterButtons(unit)}
       ${smokeDischargerButtons(unit)}
+      ${chargeWeaponButtons(unit)}
       ${vehicleOptionButton(unit)}
       ${attackButtons(unit, target)}
     </div>
@@ -316,6 +317,7 @@ function attackButtons(attacker, target) {
     const reachable = weaponReachableByRange(attacker, target, weapon);
     const blocked = reachable && weaponBlockedByObstacle(attacker, target, weapon);
     const inRange = reachable && !blocked;
+    const charged = !weaponNeedsCharge(weapon) || weaponCharged(attacker, weapon);
     const usable = canPayCost(attacker, weapon);
     const compatibilityBonus = msWeaponBonus(attacker, weapon);
     const repeatPenalty = repeatAttackAccuracyPenalty(attacker);
@@ -324,7 +326,7 @@ function attackButtons(attacker, target) {
       unitWeaponRangeLabel(attacker, weapon),
       compatibilityBonus > 0 ? `相性+${compatibilityBonus}` : "",
       repeatPenalty > 0 ? `連続攻撃-${repeatPenalty}` : "",
-      inRange ? `命中${hitRate(attacker, target, weapon)}%` : cannotTarget ? "飛行不可" : concealed ? "隠蔽" : blocked ? "障害物" : "射程外",
+      !charged ? "チャージ不足" : inRange ? `命中${hitRate(attacker, target, weapon)}%` : cannotTarget ? "飛行不可" : concealed ? "隠蔽" : blocked ? "障害物" : "射程外",
       used ? "使用済み" : ""
     ].filter(Boolean).join(" / ");
     return `
@@ -333,6 +335,27 @@ function attackButtons(attacker, target) {
       </button>
     `;
   }).join("");
+}
+
+function chargeWeaponButtons(unit) {
+  if (!isMobileSuit(unit)) return "";
+  return attackWeapons(unit)
+    .filter((weapon) => weaponNeedsCharge(weapon) && !weaponCharged(unit, weapon))
+    .map((weapon) => {
+      const usable = canChargeWeapon(unit, weapon);
+      const status = [
+        `EN${weaponChargeCost(weapon)}`,
+        `チャージ${weaponChargeCount(unit, weapon)}/${weaponChargeRequired(weapon)}`,
+        "行動終了",
+        (unit.usedWeaponIds?.length ?? 0) > 0 ? "攻撃後不可" : "",
+        unit.moved ? "移動後不可" : ""
+      ].filter(Boolean).join(" / ");
+      return `
+        <button data-action="charge-weapon" data-weapon-id="${weapon.id}" ${state.outcome || state.phase !== "player" || unit.side !== "player" || !usable ? "disabled" : ""}>
+          チャージ<br><span class="button-detail">${weapon.name} / ${status}</span>
+        </button>
+      `;
+    }).join("");
 }
 
 function freezyYardButton(unit) {

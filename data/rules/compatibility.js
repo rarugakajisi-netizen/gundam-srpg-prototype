@@ -583,6 +583,76 @@ window.GAME_DATA.compatibility = {
       "characterId": "andyStrauss",
       "msId": "hyGogg",
       "evasionBonus": 7
+    },
+    {
+      "characterId": "fordRomfellow",
+      "msId": "gundamUnit5",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "fordRomfellow",
+      "msId": "gundamUnit5Bst",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "luceKassel",
+      "msId": "gundamUnit4",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "luceKassel",
+      "msId": "gundamUnit4Bst",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "borkCry",
+      "msId": "gundamPixy",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "elliottRem",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "elliottRem",
+      "msTag": "highMobilityMs",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "malletSanguine",
+      "msId": "actZaku",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "malletSanguine",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "yuimanCarlile",
+      "msId": "actZaku",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "liliaFlobert",
+      "msId": "actZaku",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "gusterPiper",
+      "msId": "actZaku",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "mayKerwin",
+      "msTag": "zaku",
+      "evasionBonus": 5
+    },
+    {
+      "characterId": "henryBoone",
+      "msId": "efreet",
+      "evasionBonus": 10
     }
   ],
   "msWeapon": [
@@ -1000,6 +1070,56 @@ window.GAME_DATA.compatibility = {
       "msTag": "kampfer",
       "weaponId": "chainMine",
       "accuracyBonus": 8
+    },
+    {
+      "msTag": "unit4",
+      "weaponId": "handBeamGun",
+      "accuracyBonus": 6
+    },
+    {
+      "msTag": "unit4",
+      "weaponId": "hyperBeamRifle",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "unit4",
+      "weaponId": "megaBeamLauncher",
+      "accuracyBonus": 10
+    },
+    {
+      "msTag": "unit5",
+      "weaponId": "handBeamGun",
+      "accuracyBonus": 6
+    },
+    {
+      "msTag": "unit5",
+      "weaponId": "hyperBeamRifle",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "unit5",
+      "weaponId": "giantGatling",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "gundamPixy",
+      "weaponId": "beamDagger",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "gundamPixy",
+      "weaponId": "submachineGun90mm",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "efreet",
+      "weaponId": "efreetHeatSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "efreet",
+      "weaponId": "shotgun",
+      "accuracyBonus": 10
     }
   ]
 };

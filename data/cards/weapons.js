@@ -4085,5 +4085,120 @@ window.GAME_DATA.weapons = [
     "factions": [
       "zeon"
     ]
+  },
+  {
+    "id": "handBeamGun",
+    "name": "ハンド・ビーム・ガン",
+    "cost": 0,
+    "power": 92,
+    "accuracy": 80,
+    "range": 3,
+    "minRange": 1,
+    "consume": 14,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "hyperBeamRifle",
+    "name": "ハイパー・ビーム・ライフル",
+    "cost": 80,
+    "power": 160,
+    "accuracy": 72,
+    "range": 4,
+    "minRange": 1,
+    "consume": 34,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "megaBeamLauncher",
+    "name": "メガ・ビーム・ランチャー",
+    "cost": 120,
+    "power": 295,
+    "accuracy": 64,
+    "range": 7,
+    "minRange": 3,
+    "consume": 55,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "slotCost": 2,
+    "chargeRequired": 2,
+    "chargeCost": 35,
+    "chargeResetOnFire": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "giantGatling",
+    "name": "ジャイアント・ガトリング",
+    "cost": 95,
+    "power": 152,
+    "accuracy": 74,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "gatling",
+    "attackType": "shooting",
+    "durability": 0,
+    "slotCost": 2,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "submachineGun90mm",
+    "name": "90mmサブマシンガン",
+    "cost": 20,
+    "power": 75,
+    "accuracy": 80,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 7,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "efreetHeatSaber",
+    "name": "ヒート・サーベル（イフリート）",
+    "cost": 0,
+    "power": 132,
+    "accuracy": 82,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
   }
 ];

@@ -617,6 +617,7 @@ function weaponCategoryLabel(category) {
     "beam-bazooka": "ビームバズーカ系",
     cannon: "キャノン系",
     "machine-gun": "マシンガン系",
+    gatling: "ガトリング系",
     bullpup: "ブルパップ系",
     grenade: "投擲系",
     missile: "ミサイル系",
@@ -662,6 +663,12 @@ function msTagLabel(tag) {
     mobileArmor: "モビルアーマー",
     psycommu: "サイコミュ機",
     gundam: "ガンダム系",
+    unit4: "ガンダム4号機系",
+    unit5: "ガンダム5号機系",
+    secondLotGundam: "セカンドロット系ガンダム",
+    bst: "Bst仕様",
+    spaceAssault: "宇宙強襲仕様",
+    pixy: "ピクシー系",
     vProject: "V作戦系",
     gm: "ジム系",
     gmCommand: "ジム・コマンド系",
@@ -676,8 +683,10 @@ function msTagLabel(tag) {
     zaku1: "ザクI系",
     zaku2: "ザクII系",
     highMobilityZaku: "高機動型ザク系",
+    highMobilityMs: "高機動MS",
     gouf: "グフ系",
     dom: "ドム系",
+    efreet: "イフリート系",
     rickDom: "リック・ドム系",
     gelgoog: "ゲルググ系",
     gyan: "ギャン系",
@@ -696,7 +705,11 @@ function msTagLabel(tag) {
     black: "黒い機体",
     supportPod: "支援ポッド",
     tank: "戦車系",
-    desert: "砂漠戦仕様"
+    desert: "砂漠戦仕様",
+    meleeMs: "格闘型MS",
+    stealthMs: "ステルスMS",
+    smokeMs: "煙幕装備MS",
+    assaultMs: "強襲型MS"
   }[tag] ?? tag;
 }
 
@@ -860,6 +873,7 @@ function renderWeaponDetails(weapon, options = {}) {
         ["命中", weapon.accuracy],
         ["射程", weaponRangeLabel(weapon).replace("射程", "")],
         ["消費", weaponConsumptionLabel(weapon)],
+        ["チャージ", weapon.chargeRequired ? `${weapon.chargeRequired}回 / EN${weapon.chargeCost ?? 0}` : "不要"],
         ["弾数", weapon.kind === "ammo" ? weapon.ammo : "-"],
         ["覚醒条件", weapon.requiredAwakening ? `${weapon.requiredAwakening}以上` : "なし"],
         ["種別", weapon.attackType === "melee" ? "格闘" : "射撃"],

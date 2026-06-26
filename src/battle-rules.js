@@ -229,8 +229,9 @@ function attackWeaponsForTarget(attacker, defender) {
 function weaponStatus(unit, weapon) {
   const runtime = runtimeWeapon(unit, weapon.id);
   const awakeningText = weapon.requiredAwakening ? ` / 覚醒${weapon.requiredAwakening}必要` : "";
+  const chargeText = weaponNeedsCharge(weapon) ? ` / チャージ${weaponChargeCount(unit, weapon)}/${weaponChargeRequired(weapon)}` : "";
   if (weapon.kind === "ammo") return `残弾 ${runtime.ammo} / ${runtime.maxAmmo ?? weapon.ammo}${awakeningText}`;
-  if (weapon.kind === "beam") return `EN消費 ${weapon.consume}${awakeningText}`;
+  if (weapon.kind === "beam") return `EN消費 ${weapon.consume}${chargeText}${awakeningText}`;
   if (weapon.kind === "special") return `EN消費 ${weapon.consume}${awakeningText}`;
   if (weapon.kind === "shield") return weaponCanAttack(weapon)
     ? `盾耐久 ${runtime.durability} / ${weapon.durability}（攻撃消費${shieldAttackCost(weapon)}）`
@@ -298,8 +299,31 @@ function applyGundamPassion(side) {
   });
 }
 
+function applyZakuPassion(side) {
+  const sources = state.units.filter((unit) => unit.side === side && isCombatUnit(unit) && isAlive(unit) && unitHasSkill(unit, "zakuPassion"));
+  if (sources.length === 0) return;
+  const targets = state.units.filter((unit) =>
+    unit.side === side
+    && isMobileSuit(unit)
+    && isAlive(unit)
+    && mobileSuitTags(msFor(unit)).includes("zaku")
+    && sources.some((source) => source.id !== unit.id && isAdjacent(source, unit))
+  );
+  targets.forEach((unit) => {
+    const changes = [];
+    const beforeArmor = unit.armor;
+    unit.armor = Math.min(unit.maxArmor, unit.armor + 20);
+    if (unit.armor > beforeArmor) changes.push(`装甲+${unit.armor - beforeArmor}`);
+    const beforeEnergy = unit.energy;
+    unit.energy = Math.min(unit.maxEnergy, unit.energy + 10);
+    if (unit.energy > beforeEnergy) changes.push(`EN+${unit.energy - beforeEnergy}`);
+    if (changes.length > 0) state.log.push(`${unitName(unit)}がザクへの情熱で整備を受けた（${changes.join("、")}）。`);
+  });
+}
+
 function canPayCost(unit, weapon) {
   if (isMobileSuit(unit) && weapon.requiredAwakening && primaryCharacterFor(unit).awakening < weapon.requiredAwakening) return false;
+  if (weaponNeedsCharge(weapon) && !weaponCharged(unit, weapon)) return false;
   const runtime = runtimeWeapon(unit, weapon.id);
   if (weapon.kind === "beam") return unit.energy >= weapon.consume;
   if (weapon.kind === "special") return unit.energy >= weapon.consume;
@@ -314,6 +338,56 @@ function payCost(unit, weapon) {
   if (weapon.kind === "special") unit.energy -= weapon.consume;
   if (weapon.kind === "ammo") runtime.ammo -= weapon.consume;
   if (weapon.kind === "shield") runtime.durability = Math.max(0, runtime.durability - shieldAttackCost(weapon));
+  if (weaponNeedsCharge(weapon) && weapon.chargeResetOnFire !== false) setWeaponCharge(unit, weapon, 0);
+}
+
+function weaponNeedsCharge(weapon) {
+  return (weaponChargeRequired(weapon) > 0);
+}
+
+function weaponChargeRequired(weapon) {
+  return Math.max(0, Number(weapon.chargeRequired) || 0);
+}
+
+function weaponChargeCost(weapon) {
+  return Math.max(0, Number(weapon.chargeCost) || 0);
+}
+
+function weaponChargeCount(unit, weapon) {
+  return Math.max(0, Number(unit.weaponCharges?.[weapon.id]) || 0);
+}
+
+function setWeaponCharge(unit, weapon, value) {
+  if (!unit.weaponCharges) unit.weaponCharges = {};
+  unit.weaponCharges[weapon.id] = clamp(Math.floor(value), 0, weaponChargeRequired(weapon));
+}
+
+function weaponCharged(unit, weapon) {
+  return weaponChargeCount(unit, weapon) >= weaponChargeRequired(weapon);
+}
+
+function canChargeWeapon(unit, weapon) {
+  return isMobileSuit(unit)
+    && weaponNeedsCharge(weapon)
+    && !weaponCharged(unit, weapon)
+    && !unit.acted
+    && !unit.moved
+    && (unit.usedWeaponIds?.length ?? 0) === 0
+    && unit.energy >= weaponChargeCost(weapon);
+}
+
+function chargeWeapon(unit, weapon, renderAfter = true) {
+  if (!canChargeWeapon(unit, weapon)) return false;
+  const before = weaponChargeCount(unit, weapon);
+  unit.energy -= weaponChargeCost(weapon);
+  setWeaponCharge(unit, weapon, before + 1);
+  unit.moved = true;
+  unit.acted = true;
+  revealStealth(unit, "チャージ");
+  pushDialogue(unit, "wait");
+  state.log.push(`${unitName(unit)}が${weapon.name}をチャージ（${weaponChargeCount(unit, weapon)}/${weaponChargeRequired(weapon)}）。`);
+  if (renderAfter) renderBattle();
+  return true;
 }
 
 function markWeaponUsed(unit, weapon) {
@@ -780,6 +854,7 @@ function endPlayerTurn() {
   if (state.phase !== "player") return;
   applyBattleshipSupport("player");
   applyGundamPassion("player");
+  applyZakuPassion("player");
   state.units.filter((unit) => unit.side === "player" && isCombatUnit(unit)).forEach((unit) => {
     unit.acted = false;
     unit.moved = false;
@@ -1013,6 +1088,7 @@ function finishEnemyTurn() {
   }
   applyBattleshipSupport("enemy");
   applyGundamPassion("enemy");
+  applyZakuPassion("enemy");
   state.units.filter((unit) => unit.side === "enemy" && isCombatUnit(unit)).forEach((unit) => {
     unit.acted = false;
     unit.moved = false;

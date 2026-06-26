@@ -1506,6 +1506,7 @@ function makeUnit(entry, side, x, y, index) {
     x,
     y,
     usedWeaponIds: [],
+    weaponCharges: {},
     acted: false,
     moved: false
   };

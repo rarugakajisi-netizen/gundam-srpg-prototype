@@ -2841,5 +2841,467 @@ window.GAME_DATA.characters = [
       "retreatSupport"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "fordRomfellow",
+    "name": "フォルド・ロムフェロー",
+    "characterKey": "fordRomfellow",
+    "faction": "federation",
+    "cost": 85,
+    "shooting": 16,
+    "melee": 14,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 10,
+    "support": 8,
+    "maintenance": 4,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "luceKassel",
+    "name": "ルース・カッセル",
+    "characterKey": "luceKassel",
+    "faction": "federation",
+    "cost": 85,
+    "shooting": 18,
+    "melee": 11,
+    "reaction": 14,
+    "awakening": 0,
+    "command": 8,
+    "support": 7,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "miyuTakizawa",
+    "name": "ミユ・タキザワ",
+    "characterKey": "miyuTakizawa",
+    "faction": "federation",
+    "cost": 55,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 6,
+    "support": 16,
+    "maintenance": 12,
+    "roles": [
+      "operator",
+      "mechanic"
+    ],
+    "specials": [
+      "pilotSupply"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "kirstenLombard",
+    "name": "キルスティン・ロンバート",
+    "characterKey": "kirstenLombard",
+    "faction": "federation",
+    "cost": 70,
+    "shooting": 6,
+    "melee": 4,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 16,
+    "support": 13,
+    "maintenance": 5,
+    "roles": [
+      "captain",
+      "commander",
+      "operator"
+    ],
+    "specials": [
+      "retreatSupport"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "annieBrevig",
+    "name": "アニー・ブレビッグ",
+    "characterKey": "annieBrevig",
+    "faction": "federation",
+    "cost": 50,
+    "shooting": 4,
+    "melee": 3,
+    "reaction": 7,
+    "awakening": 0,
+    "command": 5,
+    "support": 13,
+    "maintenance": 16,
+    "roles": [
+      "mechanic",
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "borkCry",
+    "name": "ボルク・クライ",
+    "characterKey": "borkCry",
+    "faction": "federation",
+    "cost": 85,
+    "shooting": 15,
+    "melee": 16,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 11,
+    "support": 8,
+    "maintenance": 3,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "guardMission"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "sanaNima",
+    "name": "サナ・ニマ",
+    "characterKey": "sanaNima",
+    "faction": "federation",
+    "cost": 45,
+    "shooting": 10,
+    "melee": 7,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 4,
+    "support": 9,
+    "maintenance": 4,
+    "roles": [
+      "operator",
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "dabaSoy",
+    "name": "ダバ・ソイ",
+    "characterKey": "dabaSoy",
+    "faction": "federation",
+    "cost": 55,
+    "shooting": 13,
+    "melee": 9,
+    "reaction": 11,
+    "awakening": 0,
+    "command": 6,
+    "support": 7,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "noctGadish",
+    "name": "ノクト・ガディッシュ",
+    "characterKey": "noctGadish",
+    "faction": "federation",
+    "cost": 65,
+    "shooting": 7,
+    "melee": 4,
+    "reaction": 7,
+    "awakening": 0,
+    "command": 15,
+    "support": 9,
+    "maintenance": 2,
+    "roles": [
+      "commander",
+      "captain"
+    ],
+    "specials": [
+      "forcedMarch"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "elliottRem",
+    "name": "エリオット・レム",
+    "characterKey": "elliottRem",
+    "faction": "zeon",
+    "cost": 75,
+    "shooting": 12,
+    "melee": 10,
+    "reaction": 11,
+    "awakening": 0,
+    "command": 11,
+    "support": 9,
+    "maintenance": 18,
+    "roles": [
+      "pilot",
+      "mechanic",
+      "commander"
+    ],
+    "specials": [
+      "zakuPassion"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "malletSanguine",
+    "name": "マレット・サンギーヌ",
+    "characterKey": "malletSanguine",
+    "faction": "zeon",
+    "cost": 100,
+    "shooting": 18,
+    "melee": 17,
+    "reaction": 19,
+    "awakening": 0,
+    "command": 10,
+    "support": 5,
+    "maintenance": 2,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "madness"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "yuimanCarlile",
+    "name": "ユイマン・カーライル",
+    "characterKey": "yuimanCarlile",
+    "faction": "zeon",
+    "cost": 75,
+    "shooting": 13,
+    "melee": 12,
+    "reaction": 13,
+    "awakening": 0,
+    "command": 12,
+    "support": 11,
+    "maintenance": 4,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "guardMission"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "liliaFlobert",
+    "name": "リリア・フローベール",
+    "characterKey": "liliaFlobert",
+    "faction": "zeon",
+    "cost": 80,
+    "shooting": 17,
+    "melee": 10,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 7,
+    "support": 9,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "allyBackup"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gusterPiper",
+    "name": "ギュスター・パイパー",
+    "characterKey": "gusterPiper",
+    "faction": "zeon",
+    "cost": 65,
+    "shooting": 15,
+    "melee": 12,
+    "reaction": 13,
+    "awakening": 0,
+    "command": 6,
+    "support": 8,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "allyBackup"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "nordLangel",
+    "name": "ノルド・ランゲル",
+    "characterKey": "nordLangel",
+    "faction": "zeon",
+    "cost": 105,
+    "shooting": 8,
+    "melee": 5,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 22,
+    "support": 15,
+    "maintenance": 5,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [
+      "peaceWill"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "mayKerwin",
+    "name": "メイ・カーウィン",
+    "characterKey": "mayKerwin",
+    "faction": "zeon",
+    "cost": 65,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 8,
+    "support": 16,
+    "maintenance": 22,
+    "roles": [
+      "operator",
+      "mechanic"
+    ],
+    "specials": [
+      "zakuPassion"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "jakeGuns",
+    "name": "ジェイク・ガンス",
+    "characterKey": "jakeGuns",
+    "faction": "zeon",
+    "cost": 60,
+    "shooting": 13,
+    "melee": 11,
+    "reaction": 12,
+    "awakening": 0,
+    "command": 6,
+    "support": 6,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "henryBoone",
+    "name": "ヘンリー・ブーン",
+    "characterKey": "henryBoone",
+    "faction": "zeon",
+    "cost": 80,
+    "shooting": 15,
+    "melee": 14,
+    "reaction": 14,
+    "awakening": 0,
+    "command": 13,
+    "support": 7,
+    "maintenance": 3,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "forcedMarch"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "rayHamilton",
+    "name": "レイ・ハミルトン",
+    "characterKey": "rayHamilton",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 12,
+    "melee": 10,
+    "reaction": 12,
+    "awakening": 0,
+    "command": 5,
+    "support": 7,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "lesterCarrot",
+    "name": "レスタ・キャロット",
+    "characterKey": "lesterCarrot",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 11,
+    "melee": 12,
+    "reaction": 11,
+    "awakening": 0,
+    "command": 5,
+    "support": 6,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "sakiGraham",
+    "name": "サキ・グラハム",
+    "characterKey": "sakiGraham",
+    "faction": "zeon",
+    "cost": 45,
+    "shooting": 7,
+    "melee": 5,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 5,
+    "support": 12,
+    "maintenance": 6,
+    "roles": [
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "martinHagar",
+    "name": "マーチン・ハガー",
+    "characterKey": "martinHagar",
+    "faction": "zeon",
+    "cost": 65,
+    "shooting": 8,
+    "melee": 5,
+    "reaction": 7,
+    "awakening": 0,
+    "command": 15,
+    "support": 9,
+    "maintenance": 4,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [
+      "massProductionFormation"
+    ],
+    "imagePath": ""
   }
 ];

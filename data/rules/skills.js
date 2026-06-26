@@ -164,6 +164,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "zakuPassion",
+    "name": "ザクへの情熱",
+    "type": "キャラ",
+    "timing": "ターン終了時",
+    "effect": "隣接するザク系機体の装甲+20、EN+10。",
+    "implemented": true
+  },
+  {
     "id": "panic",
     "name": "狼狽",
     "type": "キャラ",
