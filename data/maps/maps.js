@@ -685,5 +685,144 @@ window.GAME_DATA.maps = [
       "forest",
       "forest"
     ]
+  },
+  {
+    "id": "rambaRalAssault",
+    "name": "ランバ・ラル特攻！",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          {
+            "x": 1,
+            "y": 8
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 4,
+            "y": 8
+          },
+          {
+            "x": 6,
+            "y": 8
+          }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
+            "x": 6,
+            "y": 2
+          }
+        ]
+      }
+    },
+    "terrain": [
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "rock",
+      "desert",
+      "desert",
+      "desert",
+      "rock",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "rock",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "rock",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "rock",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "rock",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "rock",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "rock",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert",
+      "desert"
+    ]
   }
 ];

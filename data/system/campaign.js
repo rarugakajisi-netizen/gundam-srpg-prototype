@@ -321,6 +321,59 @@ window.GAME_DATA.campaign = {
           }
         ]
       }
+    },
+    {
+      "mapId": "rambaRalAssault",
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "gallop",
+      "enemyCaptainId": "hamon",
+      "enemyFirstOfficerId": "",
+      "summary": "一面の砂漠地帯で、ハモンのギャロップを旗艦にランバ・ラル隊が特攻を仕掛けます。岩場で射線を切りながら、グフとザクII隊の接近を迎え撃ちます。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "gouf",
+            "characterIds": [
+              "ramba"
+            ],
+            "weaponIds": [
+              "goufShield"
+            ],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": [
+              "clamp"
+            ],
+            "weaponIds": [
+              "zakuMachineGun"
+            ],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": [
+              "cozunGraham"
+            ],
+            "weaponIds": [
+              "cracker"
+            ],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": [
+              "acous"
+            ],
+            "weaponIds": [
+              "zakuMachineGun",
+              "cracker"
+            ],
+            "optionIds": []
+          }
+        ]
+      }
     }
   ]
 };
