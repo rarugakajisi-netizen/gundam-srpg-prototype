@@ -4878,7 +4878,7 @@ window.GAME_DATA.mobileSuits = [
     "id": "gundamPixy",
     "name": "ガンダム・ピクシー",
     "faction": "federation",
-    "cost": 215,
+    "cost": 205,
     "armor": 250,
     "energy": 80,
     "agility": 32,
@@ -4895,7 +4895,7 @@ window.GAME_DATA.mobileSuits = [
     "movementType": "normal",
     "terrainSuitability": {
       "water": false,
-      "forest": true,
+      "forest": false,
       "desert": false,
       "debris": false
     },
@@ -4914,7 +4914,7 @@ window.GAME_DATA.mobileSuits = [
     "id": "efreet",
     "name": "イフリート",
     "faction": "zeon",
-    "cost": 210,
+    "cost": 200,
     "armor": 310,
     "energy": 75,
     "agility": 25,
@@ -4930,7 +4930,7 @@ window.GAME_DATA.mobileSuits = [
     "movementType": "normal",
     "terrainSuitability": {
       "water": false,
-      "forest": true,
+      "forest": false,
       "desert": false,
       "debris": false
     },
