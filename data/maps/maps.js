@@ -824,5 +824,132 @@ window.GAME_DATA.maps = [
       "desert",
       "desert"
     ]
+  },
+  {
+    "id": "shudderingMountainPart1",
+    "name": "震える山(前編)",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          {
+            "x": 1,
+            "y": 8
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 4,
+            "y": 8
+          },
+          {
+            "x": 6,
+            "y": 8
+          }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          {
+            "x": 4,
+            "y": 1
+          }
+        ]
+      }
+    },
+    "terrain": [
+      "urban",
+      "urban",
+      "ruin",
+      "urban",
+      "urban",
+      "ruin",
+      "urban",
+      "urban",
+      "urban",
+      "plain",
+      "plain",
+      "ruin",
+      "plain",
+      "plain",
+      "building",
+      "urban",
+      "urban",
+      "plain",
+      "urban",
+      "plain",
+      "plain",
+      "ruin",
+      "plain",
+      "urban",
+      "ruin",
+      "plain",
+      "plain",
+      "building",
+      "plain",
+      "urban",
+      "plain",
+      "ruin",
+      "urban",
+      "plain",
+      "ruin",
+      "plain",
+      "urban",
+      "plain",
+      "plain",
+      "urban",
+      "urban",
+      "plain",
+      "plain",
+      "urban",
+      "plain",
+      "building",
+      "plain",
+      "urban",
+      "ruin",
+      "plain",
+      "urban",
+      "plain",
+      "plain",
+      "ruin",
+      "plain",
+      "urban",
+      "urban",
+      "building",
+      "plain",
+      "plain",
+      "urban",
+      "plain",
+      "plain",
+      "urban",
+      "urban",
+      "plain",
+      "plain",
+      "ruin",
+      "plain",
+      "urban",
+      "building",
+      "urban",
+      "urban",
+      "urban",
+      "plain",
+      "plain",
+      "urban",
+      "ruin",
+      "urban",
+      "urban"
+    ]
   }
 ];

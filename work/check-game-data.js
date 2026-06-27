@@ -465,6 +465,19 @@ function createChecker(data) {
       expectId(`${scope}.enemyFirstOfficerId`, "characters", stage.enemyFirstOfficerId, true);
       if (stage.costCap !== undefined) expectNumber(scope, stage, "costCap");
       if (stage.turnLimit !== undefined) expectNumber(scope, stage, "turnLimit", { integer: true });
+      list(stage.defenseTargets).forEach((target, targetIndex) => {
+        const targetScope = `${scope}.defenseTargets[${targetIndex}]`;
+        if (!target.name || typeof target.name !== "string") warning(targetScope, "name が未設定です。");
+        ["x", "y", "armor"].forEach((key) => expectNumber(targetScope, target, key, { integer: true }));
+        if (target.mobility !== undefined) expectNumber(targetScope, target, "mobility", { integer: true });
+        if (map && Number.isInteger(target.x) && Number.isInteger(target.y)) {
+          if (target.x < 0 || target.y < 0 || target.x >= map.width || target.y >= map.height) {
+            error(targetScope, `マップ外です: ${target.x},${target.y}`);
+          } else if (terrainBlocksMovement(terrainAt(map, target.x, target.y))) {
+            error(targetScope, `配置不能地形です: ${target.x},${target.y}`);
+          }
+        }
+      });
 
       const formations = stage.enemyFormations ?? {};
       if (!isPlainObject(formations)) {

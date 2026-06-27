@@ -374,6 +374,50 @@ window.GAME_DATA.campaign = {
           }
         ]
       }
+    },
+    {
+      "mapId": "shudderingMountainPart1",
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "costCap": 900,
+      "summary": "廃都市でノリス・パッカードのグフ・カスタムを迎え撃つ防衛ステージ。散開した3機の量産型ガンタンクを守りながら、単機で突入してくるエースを止めます。",
+      "defenseTargets": [
+        {
+          "name": "量産型ガンタンクA",
+          "x": 1,
+          "y": 4,
+          "armor": 100,
+          "mobility": 2
+        },
+        {
+          "name": "量産型ガンタンクB",
+          "x": 6,
+          "y": 5,
+          "armor": 100,
+          "mobility": 2
+        },
+        {
+          "name": "量産型ガンタンクC",
+          "x": 3,
+          "y": 6,
+          "armor": 100,
+          "mobility": 2
+        }
+      ],
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "goufCustom",
+            "characterIds": [
+              "norrisPackard"
+            ],
+            "weaponIds": [
+              "gatlingShield"
+            ],
+            "optionIds": []
+          }
+        ]
+      }
     }
   ]
 };

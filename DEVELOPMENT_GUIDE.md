@@ -190,6 +190,7 @@ unit.weaponCharges = {
 - `enemyBattleshipId`: 敵戦艦を固定したい時に指定する。`null` なら敵戦艦なし。
 - `costCap`: ステージ固有の出撃上限。未指定なら敵総コストをもとに自動計算。
 - `turnLimit`: 通常ステージ専用の特殊敗北条件。指定ターン終了までに敵を撃破できないと敗北。フリー対戦では反映しない。
+- `defenseTargets`: 通常ステージ専用の防衛対象。`[{ name, x, y, armor, mobility }]` を指定し、すべて破壊されると敗北。敵AIは優先的に攻撃します。`mobility` は任意で、未指定なら移動不可。フリー対戦では反映しない。
 - 報酬はステージ別には持たせず、`campaign.commonDropRewards` による全体ランダムドロップを使います。
 - `commonDropRewards.categoryWeights` は、まずどの種別を抽選するかの重みです。機体やキャラが増えても、戦艦など少数カテゴリがカード枚数差で埋もれないようにここで調整します。
 - `commonDropRewards.ownershipBias` は、種別内での候補カード重みです。`newCard` は未所持、`ownedFew` は少数所持、`ownedMany` は上限に近い所持カードに使われます。

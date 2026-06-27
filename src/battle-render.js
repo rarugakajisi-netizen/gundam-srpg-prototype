@@ -58,13 +58,16 @@ function renderBattle() {
 
 function renderBattleRuleStatus() {
   const limit = stageTurnLimit();
-  if (limit === null || state.outcome) return "";
+  const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
+  if ((limit === null && defenseTargets.length === 0) || state.outcome) return "";
   const remaining = Math.max(0, limit - state.turnNumber + 1);
+  const aliveDefenseTargets = defenseTargets.filter((unit) => isAlive(unit)).length;
   return `
     <section class="panel deployment-panel">
       <div>
-        <h2>特殊ルール: 時間稼ぎ</h2>
-        <p class="small">第${limit}ターン終了までに敵を撃破してください。現在${state.turnNumber}ターン目 / 残り${remaining}ターン。</p>
+        <h2>特殊ルール</h2>
+        ${limit !== null ? `<p class="small">時間稼ぎ: 第${limit}ターン終了までに敵を撃破してください。現在${state.turnNumber}ターン目 / 残り${remaining}ターン。</p>` : ""}
+        ${defenseTargets.length > 0 ? `<p class="small">防衛対象: ${aliveDefenseTargets} / ${defenseTargets.length} 残存。すべて破壊されると敗北します。</p>` : ""}
       </div>
     </section>
   `;
@@ -119,7 +122,7 @@ function renderBattleLogPanel() {
 
 function renderCells(selected) {
   const activeAttacks = isCombatUnit(selected) ? usableAttackWeapons(selected) : [];
-  const reachable = isCombatUnit(selected) && state.phase === "player" && selected.side === "player" && !selected.moved ? reachableCells(selected) : new Set();
+  const reachable = isMovableUnit(selected) && state.phase === "player" && selected.side === "player" && !selected.moved ? reachableCells(selected) : new Set();
   const deployable = state.phase === "deployment" && selected?.side === "player" ? deploymentCellsFor(selected) : new Set();
   const width = boardWidth();
   const height = boardHeight();
@@ -130,7 +133,7 @@ function renderCells(selected) {
     const terrain = terrainAt(x, y);
     const canMove = !state.outcome && !unit && reachable.has(positionKey(x, y));
     const canDeploy = !state.outcome && deployable.has(positionKey(x, y));
-    const canTarget = !state.outcome && state.phase === "player" && isCombatUnit(selected) && isCombatUnit(unit) && unit.side !== selected.side && activeAttacks.some((weapon) => weaponInRange(selected, unit, weapon));
+    const canTarget = !state.outcome && state.phase === "player" && isCombatUnit(selected) && isAttackTarget(unit) && unit.side !== selected.side && activeAttacks.some((weapon) => weaponInRange(selected, unit, weapon));
     const mine = state.mines?.find((item) => item.x === x && item.y === y);
     const classes = ["cell", `terrain-${terrain}`, canMove ? "move-ok" : "", canDeploy ? "deploy-ok" : "", canTarget ? "target-ok" : ""].filter(Boolean).join(" ");
     return `<div class="${classes}" data-x="${x}" data-y="${y}" title="${terrainLabel(terrain)}">
@@ -146,11 +149,13 @@ function renderToken(unit) {
   const hp = clamp((unit.armor / unit.maxArmor) * 100, 0, 100);
   const selected = unit.id === state.selectedUnitId ? "selected" : "";
   const battleship = isBattleship(unit) ? "battleship" : "";
+  const defenseTarget = isDefenseTarget(unit) ? "defense-target" : "";
   const numberBadge = isMobileSuit(unit) && Number.isInteger(unit.sortieNumber)
     ? `<span class="token-number">${unit.sortieNumber}</span>`
+    : isDefenseTarget(unit) ? `<span class="token-number">守</span>`
     : "";
   return `
-    <button class="token ${faction} ${unit.side} ${battleship} ${selected}" data-unit-id="${unit.id}" title="${unitName(unit)}">
+    <button class="token ${faction} ${unit.side} ${battleship} ${defenseTarget} ${selected}" data-unit-id="${unit.id}" title="${unitName(unit)}">
       ${numberBadge}
       <span class="token-name">${unitName(unit)}</span>
       <span class="hp-bar"><span class="hp-fill" style="width:${hp}%"></span></span>
@@ -159,6 +164,7 @@ function renderToken(unit) {
 }
 
 function renderUnitDetail(unit, target) {
+  if (isDefenseTarget(unit)) return renderDefenseTargetDetail(unit);
   if (isBattleship(unit)) return renderBattleshipDetail(unit, target);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
@@ -203,6 +209,7 @@ function renderUnitDetail(unit, target) {
 }
 
 function renderTargetDetail(unit) {
+  if (isDefenseTarget(unit)) return renderDefenseTargetDetail(unit);
   if (isBattleship(unit)) return renderBattleshipTargetDetail(unit);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
@@ -335,6 +342,20 @@ function attackButtons(attacker, target) {
       </button>
     `;
   }).join("");
+}
+
+function renderDefenseTargetDetail(unit) {
+  return `
+    <h3>${unitName(unit)}</h3>
+    <div class="stat-grid side-stat-grid">
+      <div class="stat"><span>種別</span>防衛対象</div>
+      <div class="stat"><span>耐久</span>${unit.armor} / ${unit.maxArmor}</div>
+      <div class="stat"><span>移動</span>${mobilityFor(unit)}</div>
+      <div class="stat"><span>位置</span>${unit.x}, ${unit.y}</div>
+      <div class="stat"><span>回避補正</span>0</div>
+    </div>
+    <p class="support-hint ready">この対象を守ってください。複数ある場合は、すべて破壊されると敗北します。移動${mobilityFor(unit)}の範囲で退避できます。</p>
+  `;
 }
 
 function chargeWeaponButtons(unit) {

@@ -259,7 +259,7 @@ function occupiedAt(x, y, ignoreUnitId = null) {
 }
 
 function reachableCells(unit) {
-  if (!isCombatUnit(unit)) return new Set();
+  if (!isMovableUnit(unit)) return new Set();
   const maxSteps = mobilityFor(unit);
   const visited = new Map([[positionKey(unit.x, unit.y), 0]]);
   const queue = [{ x: unit.x, y: unit.y, steps: 0 }];

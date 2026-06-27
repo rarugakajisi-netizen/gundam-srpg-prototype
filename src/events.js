@@ -9,10 +9,18 @@ function checkOutcome() {
   const enemyBattleshipAlive = state.units.some((unit) => unit.side === "enemy" && isBattleship(unit) && isAlive(unit));
   const playerAlive = state.units.some((unit) => unit.side === "player" && isMobileSuit(unit) && isAlive(unit));
   const enemyAlive = state.units.some((unit) => unit.side === "enemy" && isMobileSuit(unit) && isAlive(unit));
+  const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
+  const defenseTargetsDestroyed = defenseTargets.length > 0 && defenseTargets.every((unit) => !isAlive(unit));
 
   if (!playerBattleshipAlive || !playerAlive) {
     state.outcome = "敗北";
     state.outcomeMessage = "戦艦または全機を失いました。編成を見直して再挑戦できます。";
+    phaseLabel.textContent = state.outcome;
+  } else if (defenseTargetsDestroyed) {
+    state.outcome = "敗北";
+    state.outcomeMessage = defenseTargets.length === 1
+      ? "防衛対象が破壊されました。敵の攻撃から守り切ってください。"
+      : "すべての防衛対象が破壊されました。最低1つは守り切ってください。";
     phaseLabel.textContent = state.outcome;
   } else if (stageTurnLimit() !== null && state.phase === "player" && state.turnNumber > stageTurnLimit()) {
     state.outcome = "敗北";

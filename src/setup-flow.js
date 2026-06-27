@@ -530,6 +530,8 @@ function renderStageRuleChips(stage) {
   const chips = [];
   const turnLimit = Number(stage.turnLimit);
   if (Number.isFinite(turnLimit) && turnLimit > 0) chips.push(`敗北条件: ${Math.floor(turnLimit)}ターン経過`);
+  const defenseTargets = Array.isArray(stage.defenseTargets) ? stage.defenseTargets : [];
+  if (defenseTargets.length > 0) chips.push(`防衛対象: ${defenseTargets.length}個 / 全破壊で敗北`);
   return chips.length > 0 ? `<div class="reward-list">${chips.map((text) => `<span class="reward-chip">${text}</span>`).join("")}</div>` : "";
 }
 
@@ -1196,9 +1198,9 @@ function renderSetup() {
   const cost = currentCost();
   const selectedMapData = maps[state.selectedMapId] ?? state.data.maps[0];
   const free = isFreeBattle();
-  const cap = stageCostCap(selectedMapData.id);
-  const enemyCost = enemyTotalCostForStage(selectedMapData.id);
-  const costOverCap = !free && cost > cap;
+  const cap = free ? null : stageCostCap(selectedMapData.id);
+  const enemyCost = free ? null : enemyTotalCostForStage(selectedMapData.id);
+  const costOverCap = cap !== null && cost > cap;
   const meterPercent = free ? 100 : clamp((cost / cap) * 100, 0, 100);
   const battleSummaryText = free
     ? `総コスト ${cost} / 上限なし（敵は出撃時に近いコスト帯でランダム生成）`
@@ -1543,6 +1545,21 @@ function makeBattleship(battleshipId, crewIds, side, x, y) {
   };
 }
 
+function makeDefenseTarget(config, index, x, y) {
+  const armor = Math.max(1, Number(config.armor) || 300);
+  return {
+    id: `defense-target-${index + 1}-${makeId()}`,
+    type: "defenseTarget",
+    side: "player",
+    name: config.name ?? `防衛対象${index + 1}`,
+    armor,
+    maxArmor: armor,
+    mobility: Math.max(0, Number(config.mobility) || 0),
+    x,
+    y
+  };
+}
+
 function defaultDeploymentPosition(side, kind, index = 0, map = selectedMap()) {
   const width = boardWidth(map);
   const height = boardHeight(map);
@@ -1580,6 +1597,20 @@ function reserveDeploymentCell(side, kind, index, occupied, card = null) {
   const origin = configuredDeploymentPosition(side, kind, index, map);
   const validOrigin = inBounds(origin.x, origin.y, map) ? origin : defaultDeploymentPosition(side, kind, index, map);
   const canStandAt = (x, y) => cardCanStandAt(card, x, y, map);
+  const key = positionKey(validOrigin.x, validOrigin.y);
+  const cell = canStandAt(validOrigin.x, validOrigin.y) && !occupied.has(key)
+    ? validOrigin
+    : nearestOpenDeploymentCell(validOrigin, occupied, canStandAt, map);
+  if (cell) occupied.add(positionKey(cell.x, cell.y));
+  return cell ?? validOrigin;
+}
+
+function reserveDefenseTargetCell(config, index, occupied) {
+  const map = selectedMap();
+  const origin = { x: Number(config.x), y: Number(config.y) };
+  const fallback = { x: Math.floor(boardWidth(map) / 2), y: Math.floor(boardHeight(map) / 2) };
+  const validOrigin = inBounds(origin.x, origin.y, map) ? origin : fallback;
+  const canStandAt = (x, y) => terrainWalkableAt(x, y);
   const key = positionKey(validOrigin.x, validOrigin.y);
   const cell = canStandAt(validOrigin.x, validOrigin.y) && !occupied.has(key)
     ? validOrigin
@@ -1649,7 +1680,7 @@ function phaseName() {
 
 function launchBattle() {
   if (state.screen === "battle") return;
-  const cap = stageCostCap(state.selectedMapId);
+  const cap = isFreeBattle() ? null : stageCostCap(state.selectedMapId);
   if (!isFreeBattle() && currentCost() > cap) {
     state.log.push(`総コストが上限を超えています（${currentCost()} / ${cap}）。`);
     renderSetup();
@@ -1679,8 +1710,12 @@ function launchBattle() {
   if (enemyBattleship && enemyShipPosition) {
     battleships.push(makeBattleship(enemyBattleship.id, enemyCrewIds, "enemy", enemyShipPosition.x, enemyShipPosition.y));
   }
+  const defenseTargets = stageDefenseTargets().map((target, index) => {
+    const position = reserveDefenseTargetCell(target, index, occupied);
+    return makeDefenseTarget(target, index, position.x, position.y);
+  });
 
-  state.units = [...battleships, ...playerUnits, ...enemyUnits];
+  state.units = [...battleships, ...playerUnits, ...defenseTargets, ...enemyUnits];
   state.phase = "deployment";
   state.outcome = null;
   state.outcomeMessage = "";

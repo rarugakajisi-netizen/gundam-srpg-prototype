@@ -61,11 +61,13 @@ function supportForBattleship(unit) {
 }
 
 function unitName(unit) {
+  if (isDefenseTarget(unit)) return unit.name ?? "防衛対象";
   if (isBattleship(unit)) return battleshipFor(unit).name;
   return msFor(unit).name;
 }
 
 function unitFaction(unit) {
+  if (isDefenseTarget(unit)) return unit.faction ?? "federation";
   return isBattleship(unit) ? battleshipFor(unit).faction : msFor(unit).faction;
 }
 
@@ -95,6 +97,7 @@ function enemyIntelAccuracyPenalty(attacker) {
 }
 
 function mobilityFor(unit) {
+  if (isDefenseTarget(unit)) return Math.max(0, Number(unit.mobility) || 0);
   if (isBattleship(unit)) return battleshipFor(unit).mobility;
   const optionBonus = unitOptions(unit)
     .filter((option) => option.effectType === "mobility")
@@ -110,6 +113,7 @@ function runtimeWeapon(unit, weaponId) {
 }
 
 function activeShield(unit) {
+  if (!isCombatUnit(unit)) return null;
   return unit.runtimeWeapons.find((runtime) => weaponFor(runtime.id).kind === "shield" && runtime.durability > 0);
 }
 
@@ -471,6 +475,7 @@ function minimumHitRate(unit, attackOrdinal = (unit.usedWeaponIds?.length ?? 0) 
 }
 
 function evasion(unit) {
+  if (isDefenseTarget(unit)) return 0;
   if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
@@ -718,7 +723,7 @@ function transformToEscapeShip(unit) {
 function attack(attacker, defender, weapon, renderAfter = true) {
   if (state.outcome) return;
   if ((attacker.side === "player" && state.phase !== "player") || (attacker.side === "enemy" && state.phase !== "enemy")) return;
-  if (!isCombatUnit(attacker) || !isCombatUnit(defender) || !weapon || weaponUsed(attacker, weapon.id)) return;
+  if (!isCombatUnit(attacker) || !isAttackTarget(defender) || !weapon || weaponUsed(attacker, weapon.id)) return;
   if (!weaponInRange(attacker, defender, weapon) || !canPayCost(attacker, weapon)) return;
 
   const attackerName = unitName(attacker);
@@ -833,18 +838,17 @@ function applyPreBattleSkillEffects() {
 
 function moveUnit(unit, x, y) {
   if (state.outcome) return;
-  if (!isCombatUnit(unit) || state.phase !== "player" || unit.side !== "player" || unit.moved) return;
+  if (!isMovableUnit(unit) || state.phase !== "player" || unit.side !== "player" || unit.moved) return;
   if (!canMoveTo(unit, x, y)) return;
   unit.x = x;
   unit.y = y;
   unit.moved = true;
-  revealStealth(unit, "移動");
+  if (isCombatUnit(unit)) revealStealth(unit, "移動");
   triggerMines(unit);
   if (!isAlive(unit) || state.outcome) {
     renderBattle();
     return;
   }
-  pushDialogue(unit, "move");
   state.log.push(`${unitName(unit)}が移動。`);
   renderBattle();
 }
@@ -880,6 +884,7 @@ function unitHealthRatio(unit) {
 }
 
 function targetPriority(unit) {
+  if (isDefenseTarget(unit)) return 220 + Math.round((1 - unitHealthRatio(unit)) * 80);
   const woundedBonus = Math.round((1 - unitHealthRatio(unit)) * 45);
   return woundedBonus + (isBattleship(unit) ? AI_BATTLESHIP_TARGET_BONUS : 0);
 }
@@ -1016,7 +1021,7 @@ function advanceEnemyTurn() {
       continue;
     }
 
-    const targets = state.units.filter((unit) => unit.side === "player" && isCombatUnit(unit));
+    const targets = state.units.filter((unit) => unit.side === "player" && isAttackTarget(unit));
     if (targets.length === 0) {
       checkOutcome();
       renderBattle();
@@ -1063,7 +1068,7 @@ function advanceEnemyTurn() {
         state.enemyQueue.shift();
         pushDialogue(enemy, "wait");
         state.log.push(`${unitName(enemy)}は移動できず待機。`);
-      } else if (movePlan.futureAttack && isCombatUnit(movePlan.futureAttack.target) && weaponInRange(enemy, movePlan.futureAttack.target, movePlan.futureAttack.weapon) && canPayCost(enemy, movePlan.futureAttack.weapon)) {
+      } else if (movePlan.futureAttack && isAttackTarget(movePlan.futureAttack.target) && weaponInRange(enemy, movePlan.futureAttack.target, movePlan.futureAttack.weapon) && canPayCost(enemy, movePlan.futureAttack.weapon)) {
         attack(enemy, movePlan.futureAttack.target, movePlan.futureAttack.weapon, false);
         if (enemy.acted || !isAlive(enemy) || state.outcome) state.enemyQueue.shift();
       } else {

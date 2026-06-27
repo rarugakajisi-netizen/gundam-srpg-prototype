@@ -89,8 +89,11 @@ const escapeAttr = (value) => String(value ?? "")
 const distance = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 const isAlive = (unit) => Boolean(unit) && unit.armor > 0;
 const isBattleship = (unit) => unit?.type === "battleship";
+const isDefenseTarget = (unit) => unit?.type === "defenseTarget";
 const isMobileSuit = (unit) => unit?.type === "mobileSuit";
 const isCombatUnit = (unit) => isAlive(unit) && (isMobileSuit(unit) || isBattleship(unit));
+const isAttackTarget = (unit) => isCombatUnit(unit) || (isAlive(unit) && isDefenseTarget(unit));
+const isMovableUnit = (unit) => isCombatUnit(unit) || (isAlive(unit) && isDefenseTarget(unit) && (unit.mobility ?? 0) > 0);
 const makeId = () => Math.random().toString(36).slice(2, 8);
 const COUNTED_CARD_TYPES = new Set(["mobileSuits", "weapons", "options"]);
 const COMMON_DROP_CATEGORIES = ["mobileSuits", "characters", "weapons", "options", "battleships"];
@@ -367,6 +370,11 @@ function stageTurnLimit(mapId = state.selectedMapId) {
   if (isFreeBattle()) return null;
   const limit = Number(stageConfig(mapId).turnLimit);
   return Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : null;
+}
+
+function stageDefenseTargets(mapId = state.selectedMapId) {
+  if (isFreeBattle()) return [];
+  return Array.isArray(stageConfig(mapId).defenseTargets) ? stageConfig(mapId).defenseTargets : [];
 }
 
 function commonDropConfig() {
