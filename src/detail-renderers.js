@@ -83,11 +83,11 @@ function characterBridgeContributionText(character) {
 }
 
 function weaponUsableByFaction(weapon, faction) {
-  return !weapon.factions || weapon.factions.includes(faction);
+  return cardUsableByFaction(weapon, faction);
 }
 
 function optionUsableByFaction(option, faction) {
-  return !option.factions || option.factions.includes(faction);
+  return cardUsableByFaction(option, faction);
 }
 
 function weaponEquippableByMs(ms, weapon) {

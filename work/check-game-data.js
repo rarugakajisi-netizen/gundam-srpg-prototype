@@ -106,16 +106,26 @@ function weaponSlotCost(weapon) {
   return Math.max(1, weapon.slotCost ?? 1);
 }
 
+function cardUsableByFaction(card, faction) {
+  if (Array.isArray(card.factions)) return card.factions.includes(faction);
+  if (card.faction) return card.faction === faction;
+  return true;
+}
+
 function weaponUsableByFaction(weapon, faction) {
-  return !weapon.factions || weapon.factions.includes(faction);
+  return cardUsableByFaction(weapon, faction);
 }
 
 function optionUsableByFaction(option, faction) {
-  return !option.factions || option.factions.includes(faction);
+  return cardUsableByFaction(option, faction);
 }
 
 function characterUsableByFaction(character, faction) {
-  return !character.factions || character.factions.includes(faction) || character.faction === faction;
+  return cardUsableByFaction(character, faction);
+}
+
+function characterSelectable(character) {
+  return character?.selectable !== false;
 }
 
 function weaponEquippableByMs(ms, weapon) {
@@ -238,7 +248,8 @@ function createChecker(data) {
     }
   }
 
-  function validateFormationEntry(entry, scope, faction, map = null) {
+  function validateFormationEntry(entry, scope, faction, map = null, options = {}) {
+    const playerControlled = options.playerControlled !== false;
     if (!isPlainObject(entry)) {
       error(scope, "編成エントリがオブジェクトではありません。");
       return;
@@ -256,6 +267,7 @@ function createChecker(data) {
     characterIds.forEach((id) => {
       const character = expectId(`${scope}.characterIds`, "characters", id);
       if (!character) return;
+      if (playerControlled && !characterSelectable(character)) error(scope, `敵専用/非選択キャラがプレイヤー編成に含まれています: ${character.id}`);
       if (!characterUsableByFaction(character, faction)) error(scope, `キャラクター勢力が編成勢力と一致しません: ${character.id}`);
       if (usedCharacters.has(character.characterKey)) error(scope, `同一人物が同一ユニット内で重複しています: ${character.characterKey}`);
       usedCharacters.add(character.characterKey);
@@ -434,6 +446,7 @@ function createChecker(data) {
       const captain = expectId(`${scope}.captainId`, "characters", formation.captainId, true);
       const firstOfficer = expectId(`${scope}.firstOfficerId`, "characters", formation.firstOfficerId, true);
       [captain, firstOfficer].filter(Boolean).forEach((character) => {
+        if (!characterSelectable(character)) error(scope, `敵専用/非選択キャラがブリッジ要員に含まれています: ${character.id}`);
         if (!characterUsableByFaction(character, faction)) error(scope, `ブリッジ要員の勢力が一致しません: ${character.id}`);
       });
       list(formation.units).forEach((entry, index) => validateFormationEntry(entry, `${scope}.units[${index}]`, faction));
@@ -459,7 +472,7 @@ function createChecker(data) {
       } else {
         for (const [faction, entries] of Object.entries(formations)) {
           expectFaction(`${scope}.enemyFormations`, faction);
-          list(entries).forEach((entry, entryIndex) => validateFormationEntry(entry, `${scope}.enemyFormations.${faction}[${entryIndex}]`, faction, map));
+          list(entries).forEach((entry, entryIndex) => validateFormationEntry(entry, `${scope}.enemyFormations.${faction}[${entryIndex}]`, faction, map, { playerControlled: false }));
           const slots = list(map?.deployment?.enemy?.units).length;
           if (map && entries.length > slots) warning(`${scope}.enemyFormations.${faction}`, `敵配置枠よりユニット数が多いです: ${entries.length} > ${slots}`);
         }

@@ -31,7 +31,7 @@ function clearCharacterConflicts(characterId, owner) {
 }
 
 function defaultBridgeSelection(faction) {
-  const candidates = state.data.characters.filter((character) => characterUsableByFaction(character, faction) && hasCard("characters", character.id));
+  const candidates = state.data.characters.filter((character) => characterSelectable(character) && characterUsableByFaction(character, faction) && hasCard("characters", character.id));
   const captain = [...candidates].sort((a, b) => b.command - a.command || b.support - a.support)[0];
   const firstOfficer = [...candidates]
     .filter((character) => character.characterKey !== captain?.characterKey)
@@ -69,7 +69,7 @@ function enemyBridgeForStage(mapId, faction) {
 
 function firstAvailableCharacter(faction, options = {}) {
   const used = usedCharacterKeys(options);
-  return state.data.characters.find((character) => characterUsableByFaction(character, faction) && hasCard("characters", character.id) && !used.has(character.characterKey ?? character.id));
+  return state.data.characters.find((character) => characterSelectable(character) && characterUsableByFaction(character, faction) && hasCard("characters", character.id) && !used.has(character.characterKey ?? character.id));
 }
 
 function normalizeSelections() {
@@ -88,7 +88,9 @@ function normalizeSelections() {
   const normalizedMs = ms[state.selectedMsId];
   if (normalizedMs) {
     const availableWeaponIds = state.data.weapons
-      .filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && weaponEquippableByMs(normalizedMs, weapon))
+      .filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0
+        && weaponEquippableByMs(normalizedMs, weapon)
+        && weaponSlotCost(weapon) <= weaponSlotCount(normalizedMs))
       .map((weapon) => weapon.id);
     state.selectedWeaponIds = fitWeaponIdsToSlots(state.selectedWeaponIds.filter((id) => availableWeaponIds.includes(id)), normalizedMs);
   }
@@ -99,19 +101,19 @@ function normalizeSelections() {
 
   const captain = characters[state.selectedCaptainId];
   const captainUsed = captain && usedCharacterKeys({ excludeBridgeSlot: "captain", includeSelectedCharacter: true }).has(captain.characterKey ?? captain.id);
-  if (state.selectedCaptainId && (!captain || !hasCard("characters", captain.id) || !characterUsableByFaction(captain, state.faction) || captainUsed)) {
+  if (state.selectedCaptainId && (!captain || !characterSelectable(captain) || !hasCard("characters", captain.id) || !characterUsableByFaction(captain, state.faction) || captainUsed)) {
     state.selectedCaptainId = "";
   }
 
   const firstOfficer = characters[state.selectedFirstOfficerId];
   const firstOfficerUsed = firstOfficer && usedCharacterKeys({ excludeBridgeSlot: "firstOfficer", includeSelectedCharacter: true }).has(firstOfficer.characterKey ?? firstOfficer.id);
-  if (state.selectedFirstOfficerId && (!firstOfficer || !hasCard("characters", firstOfficer.id) || !characterUsableByFaction(firstOfficer, state.faction) || firstOfficerUsed)) {
+  if (state.selectedFirstOfficerId && (!firstOfficer || !characterSelectable(firstOfficer) || !hasCard("characters", firstOfficer.id) || !characterUsableByFaction(firstOfficer, state.faction) || firstOfficerUsed)) {
     state.selectedFirstOfficerId = "";
   }
 
   const selectedCharacter = characters[state.selectedCharacterId];
   const selectedUsed = selectedCharacter && usedCharacterKeys().has(selectedCharacter.characterKey ?? selectedCharacter.id);
-  if (state.selectedCharacterId && (!selectedCharacter || !hasCard("characters", selectedCharacter.id) || !characterUsableByFaction(selectedCharacter, state.faction) || selectedUsed)) {
+  if (state.selectedCharacterId && (!selectedCharacter || !characterSelectable(selectedCharacter) || !hasCard("characters", selectedCharacter.id) || !characterUsableByFaction(selectedCharacter, state.faction) || selectedUsed)) {
     state.selectedCharacterId = "";
   }
 }
@@ -626,8 +628,8 @@ function cardTypeValue(type) {
 }
 
 function itemFactionIds(item) {
-  if (item.faction) return [item.faction];
   if (Array.isArray(item.factions)) return item.factions;
+  if (item.faction) return [item.faction];
   return [];
 }
 
@@ -1033,7 +1035,7 @@ function renderFormationPicker(kind, owner = "") {
     ? state.data.mobileSuits.filter((item) => item.faction === state.faction && hasCard("mobileSuits", item.id) && mobileSuitCanDeployOnMap(item, selectedMapData))
     : kind === "battleship"
       ? state.data.battleships.filter((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, selectedMapData))
-    : state.data.characters.filter((item) => characterUsableByFaction(item, state.faction) && hasCard("characters", item.id));
+    : state.data.characters.filter((item) => characterSelectable(item) && characterUsableByFaction(item, state.faction) && hasCard("characters", item.id));
   const visibleItems = pickerFilteredItems(kind, items);
   setupScreen.innerHTML = `
     <section class="panel stack">
@@ -1203,12 +1205,14 @@ function renderSetup() {
     : `総コスト ${cost} / ${cap}（敵総コスト${enemyCost}）`;
   const availableBattleships = state.data.battleships.filter((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, selectedMapData));
   const availableMs = state.data.mobileSuits.filter((item) => item.faction === state.faction && hasCard("mobileSuits", item.id) && mobileSuitCanDeployOnMap(item, selectedMapData));
-  const availableCharacters = state.data.characters.filter((item) => characterUsableByFaction(item, state.faction) && hasCard("characters", item.id));
+  const availableCharacters = state.data.characters.filter((item) => characterSelectable(item) && characterUsableByFaction(item, state.faction) && hasCard("characters", item.id));
   const selectedBattleship = battleships[state.selectedBattleshipId] ?? availableBattleships[0];
   const selectedMs = ms[state.selectedMsId] ?? availableMs[0];
   const selectedWeaponSlots = weaponSlotCount(selectedMs);
   const usedWeaponSlots = selectedWeaponSlotCost(state.selectedWeaponIds);
-  const availableWeapons = state.data.weapons.filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0 && weaponEquippableByMs(selectedMs, weapon));
+  const availableWeapons = state.data.weapons.filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0
+    && weaponEquippableByMs(selectedMs, weapon)
+    && weaponSlotCost(weapon) <= selectedWeaponSlots);
   const availableOptions = (state.data.options ?? []).filter((option) => remainingCardCopies("options", option.id) > 0 && optionUsableByFaction(option, state.faction));
   const selectedOption = options[state.selectedOptionId];
   const selectedCharacter = characters[state.selectedCharacterId];
@@ -1338,7 +1342,7 @@ function renderBridgeSelectors() {
     ["captain", "selectedCaptainId"],
     ["firstOfficer", "selectedFirstOfficerId"]
   ].map(([role, stateKey]) => {
-    const candidates = state.data.characters.filter((character) => characterUsableByFaction(character, state.faction) && hasCard("characters", character.id));
+    const candidates = state.data.characters.filter((character) => characterSelectable(character) && characterUsableByFaction(character, state.faction) && hasCard("characters", character.id));
     const used = usedCharacterKeys({ excludeBridgeSlot: role, includeSelectedCharacter: false });
     return `
       <div class="form-row">
@@ -1413,7 +1417,7 @@ function battleshipRosterCard(ship) {
 
 function chooseMobileSuit(msId) {
   const ms = lookup().ms[msId];
-  if (!ms || !hasCard("mobileSuits", ms.id) || !mobileSuitCanDeployOnMap(ms)) return;
+  if (!ms || !hasCard("mobileSuits", ms.id) || !mobileSuitCanDeployOnMap(ms, selectedMap())) return;
   state.selectedMsId = ms.id;
   state.selectedWeaponIds = defaultLoadout(ms);
   renderSetup();
@@ -1421,7 +1425,7 @@ function chooseMobileSuit(msId) {
 
 function chooseBattleship(shipId) {
   const ship = lookup().battleships[shipId];
-  if (!ship || !hasCard("battleships", ship.id) || !battleshipCanDeployOnMap(ship)) return;
+  if (!ship || !hasCard("battleships", ship.id) || !battleshipCanDeployOnMap(ship, selectedMap())) return;
   state.selectedBattleshipId = ship.id;
   rememberFormation();
   renderSetup();
@@ -1437,13 +1441,14 @@ function setCharacterForOwner(owner, characterId) {
 }
 
 function changeFaction(faction) {
-  if (!playableFactionsOnMap().includes(faction)) return;
+  const currentMap = selectedMap();
+  if (!playableFactionsOnMap(currentMap).includes(faction)) return;
   rememberFormation();
   state.faction = faction;
   state.formation = [];
-  const factionBattleship = state.data.battleships.find((ship) => ship.faction === faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship));
-  const factionMs = state.data.mobileSuits.find((ms) => ms.faction === faction && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms));
-  const factionCharacter = state.data.characters.find((character) => characterUsableByFaction(character, faction) && hasCard("characters", character.id));
+  const factionBattleship = state.data.battleships.find((ship) => ship.faction === faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship, currentMap));
+  const factionMs = state.data.mobileSuits.find((ms) => ms.faction === faction && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms, currentMap));
+  const factionCharacter = state.data.characters.find((character) => characterSelectable(character) && characterUsableByFaction(character, faction) && hasCard("characters", character.id));
   state.selectedBattleshipId = factionBattleship?.id ?? "";
   const bridge = defaultBridgeSelection(faction);
   state.selectedCaptainId = bridge.captainId;
