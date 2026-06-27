@@ -132,7 +132,9 @@ function factionName(faction) {
 }
 
 function cardUsableByFaction(card, faction) {
-  return !card.factions || card.factions.includes(faction) || card.faction === faction;
+  if (Array.isArray(card.factions)) return card.factions.includes(faction);
+  if (card.faction) return card.faction === faction;
+  return true;
 }
 
 function characterUsableByFaction(character, faction) {
