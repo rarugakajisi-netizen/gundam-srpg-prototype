@@ -487,6 +487,10 @@ function campaignStageEntries() {
     .filter((entry) => entry.map);
 }
 
+function campaignStageEntryForMap(mapId) {
+  return campaignStageEntries().find((entry) => entry.map.id === mapId) ?? null;
+}
+
 function stageSeriesLabel(series) {
   return STAGE_SERIES_LABELS[series] ?? STAGE_SERIES_LABELS.other;
 }
@@ -550,6 +554,97 @@ function nextUnclearedStageEntry(entries = campaignStageEntries()) {
   return [...entries]
     .sort((a, b) => stageSortValue(a, "story") - stageSortValue(b, "story"))
     .find((entry) => !stageCleared(entry.map.id) && stagePlayable(entry.map));
+}
+
+function freeBattleMapEntries() {
+  const stageEntries = new Map(campaignStageEntries().map((entry) => [entry.map.id, entry]));
+  return state.data.maps.map((map, index) => {
+    const stageEntry = stageEntries.get(map.id);
+    return {
+      map,
+      stage: stageEntry?.stage ?? null,
+      index: stageEntry?.index ?? index
+    };
+  });
+}
+
+function freeBattleMapSearchText(entry) {
+  const { map, stage } = entry;
+  return normalizeSearchText([
+    map.id,
+    map.name,
+    mapTypeName(map.type),
+    stageSeriesLabel(stage?.series),
+    stage?.summary,
+    ...(Array.isArray(stage?.tags) ? stage.tags : []),
+    `${map.width}x${map.height}`
+  ].filter(Boolean).join(" "));
+}
+
+function freeBattleSortValue(entry, sort) {
+  const { stage, map, index } = entry;
+  if (sort === "sizeAsc" || sort === "sizeDesc") return Number(map.width) * Number(map.height);
+  return Number(stage?.order) || index + 1;
+}
+
+function filteredFreeBattleMapEntries() {
+  const filter = state.freeBattleFilter;
+  const query = normalizeSearchText(filter.query).trim();
+  return freeBattleMapEntries()
+    .filter((entry) => {
+      const { stage, map } = entry;
+      if (filter.series !== "all" && (stage?.series ?? "other") !== filter.series) return false;
+      if (filter.terrain !== "all" && map.type !== filter.terrain) return false;
+      if (filter.playable === "playable" && !stagePlayable(map)) return false;
+      if (query && !freeBattleMapSearchText(entry).includes(query)) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const sort = filter.sort;
+      if (sort === "name") return a.map.name.localeCompare(b.map.name, "ja");
+      const aValue = freeBattleSortValue(a, sort);
+      const bValue = freeBattleSortValue(b, sort);
+      const desc = sort.endsWith("Desc");
+      if (aValue === bValue) return a.map.name.localeCompare(b.map.name, "ja");
+      return desc ? bValue - aValue : aValue - bValue;
+    });
+}
+
+function renderFreeBattleControls(entries) {
+  const filter = state.freeBattleFilter;
+  const allEntries = freeBattleMapEntries();
+  const seriesIds = Array.from(new Set(allEntries.map((entry) => entry.stage?.series ?? "other")))
+    .sort((a, b) => stageSeriesSortValue(a) - stageSeriesSortValue(b) || stageSeriesLabel(a).localeCompare(stageSeriesLabel(b), "ja"));
+  const terrainIds = Array.from(new Set(allEntries.map((entry) => entry.map.type)));
+  return `
+    <div class="filter-bar stage-filter-bar">
+      <label>検索<input class="free-battle-control" data-filter-key="query" type="search" value="${escapeAttr(filter.query)}" placeholder="マップ名・タグ・地形" /></label>
+      <label>分類<select class="free-battle-control" data-filter-key="series">
+        ${filterOption("all", "すべて", filter.series)}
+        ${seriesIds.map((id) => filterOption(id, stageSeriesLabel(id), filter.series)).join("")}
+      </select></label>
+      <label>地形<select class="free-battle-control" data-filter-key="terrain">
+        ${filterOption("all", "すべて", filter.terrain)}
+        ${terrainIds.map((id) => filterOption(id, mapTypeName(id), filter.terrain)).join("")}
+      </select></label>
+      <label>出撃<select class="free-battle-control" data-filter-key="playable">
+        ${[
+          ["all", "すべて"],
+          ["playable", "出撃可のみ"]
+        ].map(([value, label]) => filterOption(value, label, filter.playable)).join("")}
+      </select></label>
+      <label>並び替え<select class="free-battle-control" data-filter-key="sort">
+        ${[
+          ["story", "物語順"],
+          ["sizeAsc", "狭い順"],
+          ["sizeDesc", "広い順"],
+          ["name", "名前"]
+        ].map(([value, label]) => filterOption(value, label, filter.sort)).join("")}
+      </select></label>
+      <button data-action="reset-free-battle-filter">リセット</button>
+    </div>
+    <p class="small">表示 ${entries.length} / ${allEntries.length}。検索はマップ名、分類、地形、タグ、説明文に対応しています。</p>
+  `;
 }
 
 function renderStageControls(entries) {
@@ -723,6 +818,8 @@ function renderFreeBattleSelect() {
   state.battleMode = "free";
   state.screen = "freeBattleSelect";
   phaseLabel.textContent = "フリー対戦";
+  const entries = filteredFreeBattleMapEntries();
+  const selectedEntry = entries.find((entry) => entry.map.id === state.selectedMapId) ?? entries[0] ?? null;
   setupScreen.className = "screen stage-layout";
   setupScreen.innerHTML = `
     <section class="panel stack">
@@ -731,11 +828,13 @@ function renderFreeBattleSelect() {
         <button data-action="title">タイトルへ</button>
       </div>
       <p class="small">所持カード内でコスト上限なしに編成し、敵は反対勢力の全カードから近いコスト帯でランダム編成されます。勝利報酬は全体ランダムドロップ1枚です。</p>
-      <div class="stage-grid">
-        ${state.data.maps.map((map) => freeBattleMapCard(map)).join("")}
+      ${renderFreeBattleControls(entries)}
+      <div class="stage-list">
+        ${entries.length === 0 ? `<p class="support-hint">条件に合うマップがありません。検索やフィルタをリセットしてください。</p>` : entries.map((entry) => freeBattleMapCard(entry, selectedEntry?.map.id === entry.map.id)).join("")}
       </div>
     </section>
-    <aside class="panel stack">
+    <aside class="panel stack stage-detail-panel">
+      ${renderFreeBattleMapDetail(selectedEntry)}
       <h2>カード状況</h2>
       ${campaignSummaryStats()}
       <button data-action="card-list">カード一覧を見る</button>
@@ -746,26 +845,60 @@ function renderFreeBattleSelect() {
   battleScreen.classList.add("hidden");
 }
 
-function freeBattleMapCard(map) {
+function freeBattleMapCard(entry, selected = false) {
+  const { map, stage } = entry;
   const playable = stagePlayable(map);
+  const tags = Array.isArray(stage?.tags) ? stage.tags : [];
   return `
-    <article class="stage-card">
+    <article class="stage-card stage-list-card ${selected ? "selected" : ""}">
       <div class="stage-card-head">
         <div>
-          <p class="eyebrow">${mapTypeName(map.type)} / 報酬1枚 / コスト上限なし</p>
+          <p class="eyebrow">${stageSeriesLabel(stage?.series)} / ${mapTypeName(map.type)}</p>
           <h3>${map.name}</h3>
         </div>
         <span class="status-pill ${playable ? "ready" : ""}">${playable ? "対戦可" : "未解禁"}</span>
       </div>
-      ${renderMapDetails(map)}
       <p class="small">敵は出撃時の自軍総コストを基準に、反対勢力の全カードからランダム編成されます。</p>
-      <div class="reward-list">
+      <div class="stage-meta-line">
         <span class="reward-chip">勝利: 全体ランダム1枚</span>
-        <span class="reward-chip owned">クリア状況・引換券には影響なし</span>
-        <span class="reward-chip owned">ステージ特殊ルールなし</span>
+        <span class="reward-chip">コスト上限なし</span>
+        <span class="reward-chip">${map.width} x ${map.height}</span>
+        ${tags.slice(0, 3).map((tag) => `<span class="reward-chip owned">${tag}</span>`).join("")}
       </div>
-      <button class="primary-button" data-action="select-free-battle-map" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このマップでフリー対戦</button>
+      <div class="stage-card-actions">
+        <button data-action="select-free-battle-detail" data-map-id="${map.id}">詳細</button>
+        <button class="primary-button" data-action="select-free-battle-map" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このマップでフリー対戦</button>
+      </div>
     </article>
+  `;
+}
+
+function renderFreeBattleMapDetail(entry) {
+  if (!entry) {
+    return `
+      <h2>マップ詳細</h2>
+      <p class="support-hint">表示できるマップがありません。</p>
+    `;
+  }
+  const { map, stage } = entry;
+  const playable = stagePlayable(map);
+  const tags = Array.isArray(stage?.tags) ? stage.tags : [];
+  return `
+    <div class="stage-detail-head">
+      <p class="eyebrow">${stageSeriesLabel(stage?.series)} / ${mapTypeName(map.type)}</p>
+      <h2>${map.name}</h2>
+      <span class="status-pill ${playable ? "ready" : ""}">${playable ? "対戦可" : "未解禁"}</span>
+    </div>
+    <p class="small">${stage?.summary ?? "フリー対戦用マップです。敵は自軍総コストに近いランダム編成で出撃します。"}</p>
+    <div class="reward-list">
+      <span class="reward-chip">勝利: 全体ランダム1枚</span>
+      <span class="reward-chip">コスト上限なし</span>
+      <span class="reward-chip owned">クリア状況・引換券には影響なし</span>
+      <span class="reward-chip owned">ステージ特殊ルールなし</span>
+    </div>
+    ${tags.length > 0 ? `<div class="reward-list">${tags.map((tag) => `<span class="reward-chip owned">${tag}</span>`).join("")}</div>` : ""}
+    ${renderMapDetails(map, { open: true })}
+      <button class="primary-button" data-action="select-free-battle-map" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このマップでフリー対戦</button>
   `;
 }
 

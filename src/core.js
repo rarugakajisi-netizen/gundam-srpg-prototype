@@ -75,6 +75,13 @@ const state = {
     enemyFaction: "all",
     sort: "story"
   },
+  freeBattleFilter: {
+    query: "",
+    series: "all",
+    terrain: "all",
+    playable: "all",
+    sort: "story"
+  },
   choiceFilter: {
     query: "",
     type: "all",

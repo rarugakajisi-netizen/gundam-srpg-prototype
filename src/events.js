@@ -50,6 +50,11 @@ setupScreen.addEventListener("change", (event) => {
     renderStageSelect();
     return;
   }
+  if (event.target.matches(".free-battle-control")) {
+    state.freeBattleFilter[event.target.dataset.filterKey] = event.target.value;
+    renderFreeBattleSelect();
+    return;
+  }
   if (event.target.matches(".picker-control")) {
     state.pickerFilter[event.target.dataset.filterKey] = event.target.value;
     renderFormationPicker(state.picker.kind, state.picker.owner);
@@ -120,6 +125,12 @@ setupScreen.addEventListener("input", (event) => {
     renderStageSelect();
     focusFilterControl(".stage-control", key, event.target.value);
   }
+  if (event.target.matches(".free-battle-control")) {
+    const key = event.target.dataset.filterKey;
+    state.freeBattleFilter[key] = event.target.value;
+    renderFreeBattleSelect();
+    focusFilterControl(".free-battle-control", key, event.target.value);
+  }
   if (event.target.matches(".picker-control")) {
     const key = event.target.dataset.filterKey;
     state.pickerFilter[key] = event.target.value;
@@ -154,6 +165,10 @@ setupScreen.addEventListener("click", (event) => {
   if (action === "reset-stage-filter") {
     state.stageFilter = { query: "", series: "all", status: "all", terrain: "all", enemyFaction: "all", sort: "story" };
     renderStageSelect();
+  }
+  if (action === "reset-free-battle-filter") {
+    state.freeBattleFilter = { query: "", series: "all", terrain: "all", playable: "all", sort: "story" };
+    renderFreeBattleSelect();
   }
   if (action === "reset-picker-filter") {
     state.pickerFilter = { query: "", sort: "costAsc" };
@@ -201,6 +216,10 @@ setupScreen.addEventListener("click", (event) => {
     initializeSelections();
     if (!restoreRememberedFormation()) applyStarterFormation();
     renderSetup();
+  }
+  if (action === "select-free-battle-detail") {
+    if (button.dataset.mapId) state.selectedMapId = button.dataset.mapId;
+    renderFreeBattleSelect();
   }
   if (action === "faction") changeFaction(button.dataset.faction);
   if (action === "add") addFormationEntry();
