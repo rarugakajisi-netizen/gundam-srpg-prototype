@@ -449,6 +449,32 @@ select {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
+.stage-list {
+  display: grid;
+  gap: 10px;
+}
+
+.stage-quick-actions,
+.stage-card-actions,
+.stage-meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stage-quick-actions button,
+.stage-card-actions button {
+  flex: 1 1 auto;
+}
+
+.stage-filter-bar label {
+  min-width: 132px;
+}
+
+.stage-filter-bar input[type="search"] {
+  min-width: 260px;
+}
+
 .card-grid {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
@@ -485,6 +511,27 @@ select {
 .stage-card.cleared {
   border-color: rgba(44, 122, 104, 0.55);
   background: #f7fcf9;
+}
+
+.stage-list-card.selected {
+  border-color: rgba(47, 104, 176, 0.7);
+  box-shadow: 0 0 0 2px rgba(47, 104, 176, 0.12);
+}
+
+.stage-detail-panel {
+  position: sticky;
+  top: 12px;
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+}
+
+.stage-detail-head {
+  display: grid;
+  gap: 6px;
+}
+
+.stage-detail-head h2 {
+  margin: 0;
 }
 
 .stage-card-head,

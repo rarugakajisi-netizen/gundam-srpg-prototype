@@ -431,6 +431,13 @@ function stagePlayable(map) {
   return playableFactionsOnMap(map).length > 0;
 }
 
+const STAGE_SERIES_LABELS = {
+  main: "本編",
+  "08th": "08小隊",
+  originalHistory: "史実再現オリジナル",
+  other: "その他"
+};
+
 function renderTitle() {
   state.screen = "title";
   phaseLabel.textContent = "タイトル";
@@ -460,8 +467,9 @@ function renderTitle() {
 
 function campaignSummaryStats() {
   const currentCap = stageCostCap(state.selectedMapId);
+  const stageCount = campaignStageEntries().length || state.data.maps.length;
   return statItems([
-    ["クリア", `${state.collection.clearedStages.length} / ${state.data.maps.length}`],
+    ["クリア", `${state.collection.clearedStages.length} / ${stageCount}`],
     ["機体", `${ownedUniqueCount("mobileSuits")}種 / ${ownedTotalCount("mobileSuits")}枚`],
     ["戦艦", `${state.collection.battleships.length} / ${state.data.battleships.filter((ship) => ship.selectable !== false).length}`],
     ["武器", `${ownedUniqueCount("weapons")}種 / ${ownedTotalCount("weapons")}枚`],
@@ -472,10 +480,128 @@ function campaignSummaryStats() {
   ]);
 }
 
+function campaignStageEntries() {
+  const maps = lookup().maps;
+  return (Array.isArray(state.data.campaign?.stages) ? state.data.campaign.stages : [])
+    .map((stage, index) => ({ stage, map: maps[stage.mapId], index }))
+    .filter((entry) => entry.map);
+}
+
+function stageSeriesLabel(series) {
+  return STAGE_SERIES_LABELS[series] ?? STAGE_SERIES_LABELS.other;
+}
+
+function stageSeriesSortValue(series) {
+  return {
+    main: 10,
+    "08th": 20,
+    originalHistory: 30,
+    other: 90
+  }[series] ?? 80;
+}
+
+function stageEntrySearchText(entry) {
+  const { stage, map } = entry;
+  const enemyFaction = stageEnemyFaction(map.id);
+  return normalizeSearchText([
+    map.id,
+    map.name,
+    mapTypeName(map.type),
+    stageSeriesLabel(stage.series),
+    factionName(enemyFaction),
+    stage.summary,
+    ...(Array.isArray(stage.tags) ? stage.tags : [])
+  ].filter(Boolean).join(" "));
+}
+
+function stageSortValue(entry, sort) {
+  const { stage, map, index } = entry;
+  if (sort === "costAsc" || sort === "costDesc") return stageCostCap(map.id);
+  return Number(stage.order) || index + 1;
+}
+
+function filteredStageEntries() {
+  const filter = state.stageFilter;
+  const query = normalizeSearchText(filter.query).trim();
+  return campaignStageEntries()
+    .filter((entry) => {
+      const { stage, map } = entry;
+      if (filter.series !== "all" && (stage.series ?? "other") !== filter.series) return false;
+      if (filter.status === "cleared" && !stageCleared(map.id)) return false;
+      if (filter.status === "uncleared" && stageCleared(map.id)) return false;
+      if (filter.status === "playable" && !stagePlayable(map)) return false;
+      if (filter.terrain !== "all" && map.type !== filter.terrain) return false;
+      if (filter.enemyFaction !== "all" && stageEnemyFaction(map.id) !== filter.enemyFaction) return false;
+      if (query && !stageEntrySearchText(entry).includes(query)) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const sort = filter.sort;
+      if (sort === "name") return a.map.name.localeCompare(b.map.name, "ja");
+      const aValue = stageSortValue(a, sort);
+      const bValue = stageSortValue(b, sort);
+      const desc = sort.endsWith("Desc");
+      if (aValue === bValue) return a.map.name.localeCompare(b.map.name, "ja");
+      return desc ? bValue - aValue : aValue - bValue;
+    });
+}
+
+function nextUnclearedStageEntry(entries = campaignStageEntries()) {
+  return [...entries]
+    .sort((a, b) => stageSortValue(a, "story") - stageSortValue(b, "story"))
+    .find((entry) => !stageCleared(entry.map.id) && stagePlayable(entry.map));
+}
+
+function renderStageControls(entries) {
+  const filter = state.stageFilter;
+  const seriesIds = Array.from(new Set(campaignStageEntries().map((entry) => entry.stage.series ?? "other")))
+    .sort((a, b) => stageSeriesSortValue(a) - stageSeriesSortValue(b) || stageSeriesLabel(a).localeCompare(stageSeriesLabel(b), "ja"));
+  const terrainIds = Array.from(new Set(campaignStageEntries().map((entry) => entry.map.type)));
+  const enemyFactionIds = Array.from(new Set(campaignStageEntries().map((entry) => stageEnemyFaction(entry.map.id))));
+  return `
+    <div class="filter-bar stage-filter-bar">
+      <label>検索<input class="stage-control" data-filter-key="query" type="search" value="${escapeAttr(filter.query)}" placeholder="ステージ名・タグ・敵勢力" /></label>
+      <label>分類<select class="stage-control" data-filter-key="series">
+        ${filterOption("all", "すべて", filter.series)}
+        ${seriesIds.map((id) => filterOption(id, stageSeriesLabel(id), filter.series)).join("")}
+      </select></label>
+      <label>状態<select class="stage-control" data-filter-key="status">
+        ${[
+          ["all", "すべて"],
+          ["uncleared", "未クリア"],
+          ["cleared", "クリア済"],
+          ["playable", "出撃可"]
+        ].map(([value, label]) => filterOption(value, label, filter.status)).join("")}
+      </select></label>
+      <label>地形<select class="stage-control" data-filter-key="terrain">
+        ${filterOption("all", "すべて", filter.terrain)}
+        ${terrainIds.map((id) => filterOption(id, mapTypeName(id), filter.terrain)).join("")}
+      </select></label>
+      <label>敵勢力<select class="stage-control" data-filter-key="enemyFaction">
+        ${filterOption("all", "すべて", filter.enemyFaction)}
+        ${enemyFactionIds.map((id) => filterOption(id, factionName(id), filter.enemyFaction)).join("")}
+      </select></label>
+      <label>並び替え<select class="stage-control" data-filter-key="sort">
+        ${[
+          ["story", "物語順"],
+          ["costAsc", "コスト低い順"],
+          ["costDesc", "コスト高い順"],
+          ["name", "名前"]
+        ].map(([value, label]) => filterOption(value, label, filter.sort)).join("")}
+      </select></label>
+      <button data-action="reset-stage-filter">リセット</button>
+    </div>
+    <p class="small">表示 ${entries.length} / ${campaignStageEntries().length}。検索はステージ名、分類、タグ、説明文に対応しています。</p>
+  `;
+}
+
 function renderStageSelect() {
   state.battleMode = "campaign";
   state.screen = "stage";
   phaseLabel.textContent = "ステージ選択";
+  const entries = filteredStageEntries();
+  const selectedEntry = entries.find((entry) => entry.map.id === state.selectedMapId) ?? entries[0] ?? null;
+  const nextEntry = nextUnclearedStageEntry(entries) ?? nextUnclearedStageEntry();
   setupScreen.className = "screen stage-layout";
   setupScreen.innerHTML = `
     <section class="panel stack">
@@ -483,12 +609,18 @@ function renderStageSelect() {
         <h2>ステージ選択</h2>
         <button data-action="title">タイトルへ</button>
       </div>
-      <div class="stage-grid">
-        ${state.data.maps.map((map) => stageCard(map)).join("")}
+      <div class="stage-quick-actions">
+        <button class="primary-button" data-action="select-next-uncleared-stage" data-map-id="${nextEntry?.map.id ?? ""}" ${nextEntry ? "" : "disabled"}>次の未クリアを表示</button>
+        ${selectedEntry ? `<button data-action="select-stage" data-map-id="${selectedEntry.map.id}" ${stagePlayable(selectedEntry.map) ? "" : "disabled"}>選択中ステージへ</button>` : ""}
+      </div>
+      ${renderStageControls(entries)}
+      <div class="stage-list">
+        ${entries.length === 0 ? `<p class="support-hint">条件に合うステージがありません。検索やフィルタをリセットしてください。</p>` : entries.map((entry) => stageCard(entry, selectedEntry?.map.id === entry.map.id)).join("")}
       </div>
     </section>
-    <aside class="panel stack">
-      <h2>カード状況</h2>
+    <aside class="panel stack stage-detail-panel">
+      ${renderStageDetail(selectedEntry)}
+      <h2>進行状況</h2>
       ${campaignSummaryStats()}
       <button data-action="card-list">カード一覧を見る</button>
       <button class="primary-button" data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換券を使う</button>
@@ -498,31 +630,73 @@ function renderStageSelect() {
   battleScreen.classList.add("hidden");
 }
 
-function stageCard(map) {
+function stageCard(entry, selected = false) {
+  const { map } = entry;
   const stage = stageConfig(map.id);
   const playable = stagePlayable(map);
   const cleared = stageCleared(map.id);
   const enemyFaction = stageEnemyFaction(map.id);
   const enemyCost = enemyTotalCostForStage(map.id);
   const cap = stageCostCap(map.id);
-  const rewardText = renderCommonDropSummary();
-  const rollText = commonDropRolls() > 0 ? ` / ${commonDropRolls()}回抽選` : "";
   return `
-    <article class="stage-card ${cleared ? "cleared" : ""}">
+    <article class="stage-card stage-list-card ${cleared ? "cleared" : ""} ${selected ? "selected" : ""}">
       <div class="stage-card-head">
         <div>
-          <p class="eyebrow">${mapTypeName(map.type)} / 敵:${factionName(enemyFaction)} / 敵${enemyCost} / 上限${cap}</p>
+          <p class="eyebrow">${stageSeriesLabel(stage.series)} / ${mapTypeName(map.type)}</p>
           <h3>${map.name}</h3>
         </div>
         <span class="status-pill ${playable ? "ready" : ""}">${cleared ? "CLEAR" : playable ? "出撃可" : "未解禁"}</span>
       </div>
       <p class="small">${stage.summary ?? "ステージ説明は未設定です。"}</p>
+      <div class="stage-meta-line">
+        <span class="reward-chip">${factionName(enemyFaction)}戦</span>
+        <span class="reward-chip">敵${enemyCost}</span>
+        <span class="reward-chip">上限${cap}</span>
+        ${stageCleared(map.id) ? `<span class="reward-chip owned">クリア済</span>` : ""}
+      </div>
       ${renderStageRuleChips(stage)}
-      ${renderMapDetails(map)}
-      <p class="small">全体ランダムドロップ${rollText}</p>
-      <div class="reward-list">${rewardText || `<span class="reward-chip">報酬未設定</span>`}</div>
-      <button class="primary-button" data-action="select-stage" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このステージへ</button>
+      <div class="stage-card-actions">
+        <button data-action="select-stage-detail" data-map-id="${map.id}">詳細</button>
+        <button class="primary-button" data-action="select-stage" data-map-id="${map.id}" ${playable ? "" : "disabled"}>出撃準備へ</button>
+      </div>
     </article>
+  `;
+}
+
+function renderStageDetail(entry) {
+  if (!entry) {
+    return `
+      <h2>ステージ詳細</h2>
+      <p class="support-hint">表示できるステージがありません。</p>
+    `;
+  }
+  const { stage, map } = entry;
+  const playable = stagePlayable(map);
+  const cleared = stageCleared(map.id);
+  const enemyFaction = stageEnemyFaction(map.id);
+  const enemyCost = enemyTotalCostForStage(map.id);
+  const cap = stageCostCap(map.id);
+  const tags = Array.isArray(stage.tags) ? stage.tags : [];
+  const rollText = commonDropRolls() > 0 ? `${commonDropRolls()}回抽選` : "抽選なし";
+  return `
+    <div class="stage-detail-head">
+      <p class="eyebrow">${stageSeriesLabel(stage.series)} / ${mapTypeName(map.type)}</p>
+      <h2>${map.name}</h2>
+      <span class="status-pill ${playable ? "ready" : ""}">${cleared ? "CLEAR" : playable ? "出撃可" : "未解禁"}</span>
+    </div>
+    <p class="small">${stage.summary ?? "ステージ説明は未設定です。"}</p>
+    <div class="reward-list">
+      <span class="reward-chip">敵勢力: ${factionName(enemyFaction)}</span>
+      <span class="reward-chip">敵総コスト: ${enemyCost}</span>
+      <span class="reward-chip">出撃上限: ${cap}</span>
+      <span class="reward-chip">報酬: 全体ランダム ${rollText}</span>
+    </div>
+    ${tags.length > 0 ? `<div class="reward-list">${tags.map((tag) => `<span class="reward-chip owned">${tag}</span>`).join("")}</div>` : ""}
+    ${renderStageRuleChips(stage)}
+    ${renderMapDetails(map, { open: true })}
+    <h3>報酬プール</h3>
+    <div class="reward-list">${renderCommonDropSummary() || `<span class="reward-chip">報酬未設定</span>`}</div>
+    <button class="primary-button" data-action="select-stage" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このステージへ</button>
   `;
 }
 

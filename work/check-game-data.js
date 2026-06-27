@@ -463,6 +463,18 @@ function createChecker(data) {
       if (ship && map && !battleshipCanDeployOnMap(ship, map)) error(scope, `${itemLabel(ship)} は ${map.name} に出撃できません。`);
       expectId(`${scope}.enemyCaptainId`, "characters", stage.enemyCaptainId, true);
       expectId(`${scope}.enemyFirstOfficerId`, "characters", stage.enemyFirstOfficerId, true);
+      if (!stage.series || typeof stage.series !== "string") warning(scope, "検索/分類用の series が未設定です。");
+      if (stage.order === undefined) warning(scope, "物語順ソート用の order が未設定です。");
+      else expectNumber(scope, stage, "order", { integer: true });
+      if (stage.tags !== undefined) {
+        if (!Array.isArray(stage.tags)) {
+          error(`${scope}.tags`, "配列である必要があります。");
+        } else {
+          stage.tags.forEach((tag, tagIndex) => {
+            if (typeof tag !== "string" || !tag.trim()) error(`${scope}.tags[${tagIndex}]`, "空でない文字列である必要があります。");
+          });
+        }
+      }
       if (stage.costCap !== undefined) expectNumber(scope, stage, "costCap");
       if (stage.turnLimit !== undefined) expectNumber(scope, stage, "turnLimit", { integer: true });
       list(stage.defenseTargets).forEach((target, targetIndex) => {

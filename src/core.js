@@ -67,6 +67,14 @@ const state = {
     ownership: "all",
     sort: "name"
   },
+  stageFilter: {
+    query: "",
+    series: "all",
+    status: "all",
+    terrain: "all",
+    enemyFaction: "all",
+    sort: "story"
+  },
   choiceFilter: {
     query: "",
     type: "all",

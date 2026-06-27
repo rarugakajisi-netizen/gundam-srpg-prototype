@@ -45,6 +45,11 @@ setupScreen.addEventListener("change", (event) => {
     renderCardList();
     return;
   }
+  if (event.target.matches(".stage-control")) {
+    state.stageFilter[event.target.dataset.filterKey] = event.target.value;
+    renderStageSelect();
+    return;
+  }
   if (event.target.matches(".picker-control")) {
     state.pickerFilter[event.target.dataset.filterKey] = event.target.value;
     renderFormationPicker(state.picker.kind, state.picker.owner);
@@ -109,6 +114,12 @@ setupScreen.addEventListener("input", (event) => {
     renderCardList();
     focusFilterControl(".library-control", key, event.target.value);
   }
+  if (event.target.matches(".stage-control")) {
+    const key = event.target.dataset.filterKey;
+    state.stageFilter[key] = event.target.value;
+    renderStageSelect();
+    focusFilterControl(".stage-control", key, event.target.value);
+  }
   if (event.target.matches(".picker-control")) {
     const key = event.target.dataset.filterKey;
     state.pickerFilter[key] = event.target.value;
@@ -139,6 +150,10 @@ setupScreen.addEventListener("click", (event) => {
   if (action === "reset-library-filter") {
     state.libraryFilter = { query: "", type: "all", faction: "all", ownership: "all", sort: "name" };
     renderCardList();
+  }
+  if (action === "reset-stage-filter") {
+    state.stageFilter = { query: "", series: "all", status: "all", terrain: "all", enemyFaction: "all", sort: "story" };
+    renderStageSelect();
   }
   if (action === "reset-picker-filter") {
     state.pickerFilter = { query: "", sort: "costAsc" };
@@ -173,6 +188,10 @@ setupScreen.addEventListener("click", (event) => {
     initializeSelections();
     if (!restoreRememberedFormation()) applyStarterFormation();
     renderSetup();
+  }
+  if (action === "select-stage-detail" || action === "select-next-uncleared-stage") {
+    if (button.dataset.mapId) state.selectedMapId = button.dataset.mapId;
+    renderStageSelect();
   }
   if (action === "select-free-battle-map") {
     state.battleMode = "free";

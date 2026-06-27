@@ -115,6 +115,13 @@ window.GAME_DATA.campaign = {
   "stages": [
     {
       "mapId": "gundamRisesColony",
+      "series": "main",
+      "order": 10,
+      "tags": [
+        "導入",
+        "コロニー",
+        "サイド7"
+      ],
       "enemyFaction": "zeon",
       "enemyBattleshipId": null,
       "summary": "サイド7のコロニー出入口から侵入した、デニム、ジーン、スレンダーのザクII小隊を迎撃する導入ステージ。岩場と緑地を越え、基地施設を守ります。",
@@ -155,6 +162,15 @@ window.GAME_DATA.campaign = {
     },
     {
       "mapId": "battleOfLoum",
+      "series": "originalHistory",
+      "order": 210,
+      "tags": [
+        "史実再現",
+        "オリジナル",
+        "宇宙",
+        "艦隊戦",
+        "ジオン視点"
+      ],
       "enemyFaction": "federation",
       "enemyBattleshipId": "salamis",
       "enemyCaptainId": "federationOfficer",
@@ -191,6 +207,14 @@ window.GAME_DATA.campaign = {
     },
     {
       "mapId": "garmaFalls",
+      "series": "main",
+      "order": 20,
+      "tags": [
+        "本編",
+        "地上",
+        "市街戦",
+        "ガルマ"
+      ],
       "enemyFaction": "zeon",
       "enemyBattleshipId": "gaw",
       "enemyCaptainId": "garma",
@@ -239,6 +263,14 @@ window.GAME_DATA.campaign = {
     },
     {
       "mapId": "vs07thPlatoon",
+      "series": "08th",
+      "order": 110,
+      "tags": [
+        "08小隊",
+        "地上",
+        "森林",
+        "第07小隊"
+      ],
       "enemyFaction": "federation",
       "enemyBattleshipId": null,
       "summary": "森と低い丘陵が入り組む前線地帯で、第07小隊の陸戦型ジム隊と交戦します。両軍側の平地に簡易拠点があり、中央の森林をどう抜けるかが焦点です。",
@@ -289,10 +321,18 @@ window.GAME_DATA.campaign = {
     },
     {
       "mapId": "frontline",
+      "series": "08th",
+      "order": 120,
+      "tags": [
+        "08小隊",
+        "地上",
+        "追撃",
+        "短期決戦"
+      ],
       "enemyFaction": "zeon",
       "enemyBattleshipId": null,
       "turnLimit": 8,
-      "summary": "周囲をジャングルに囲まれた平地で、時間稼ぎを狙うマゼラ・アタック隊を追撃する08小隊向けの低難易度ステージ。岩と古い遺跡の石柱が射線を切ります。",
+      "summary": "周囲をジャングルに囲まれた平地で、時間稼ぎを狙うマゼラ・アタック隊を追撃する08小隊向けステージ。岩と古い遺跡の石柱が射線を切ります。",
       "enemyFormations": {
         "zeon": [
           {
@@ -324,6 +364,14 @@ window.GAME_DATA.campaign = {
     },
     {
       "mapId": "rambaRalAssault",
+      "series": "main",
+      "order": 30,
+      "tags": [
+        "本編",
+        "地上",
+        "砂漠",
+        "ランバ・ラル隊"
+      ],
       "enemyFaction": "zeon",
       "enemyBattleshipId": "gallop",
       "enemyCaptainId": "hamon",
@@ -377,6 +425,15 @@ window.GAME_DATA.campaign = {
     },
     {
       "mapId": "shudderingMountainPart1",
+      "series": "08th",
+      "order": 130,
+      "tags": [
+        "08小隊",
+        "地上",
+        "防衛",
+        "エース",
+        "廃都市"
+      ],
       "enemyFaction": "zeon",
       "enemyBattleshipId": null,
       "costCap": 900,
