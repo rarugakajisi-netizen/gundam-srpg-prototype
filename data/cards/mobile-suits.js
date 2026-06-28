@@ -1936,7 +1936,8 @@ window.GAME_DATA.mobileSuits = [
     "weaponSlots": 2,
     "optionSlots": 1,
     "fixedWeaponIds": [
-      "beamSaber"
+      "beamSaber",
+      "longRangeBeamRifle"
     ],
     "mapTypes": [
       "ground",
@@ -3131,7 +3132,7 @@ window.GAME_DATA.mobileSuits = [
     "id": "groundGmSniper",
     "name": "陸戦型ジム・スナイパー",
     "faction": "federation",
-    "cost": 180,
+    "cost": 210,
     "armor": 275,
     "agility": 16,
     "mobility": 4
@@ -4872,6 +4873,1047 @@ window.GAME_DATA.mobileSuits = [
     "specials": [
       "spareMagazine"
     ],
+    "imagePath": ""
+  },
+  {
+    "id": "groundGundamGmHead",
+    "name": "陸戦型ガンダム（ジム頭）",
+    "faction": "federation",
+    "cost": 210,
+    "armor": 330,
+    "energy": 90,
+    "agility": 17,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "chestVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "groundGundam",
+      "gmHead"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "groundGmWeaponRack",
+    "name": "陸戦型ジム（ウェポンラック仕様）",
+    "faction": "federation",
+    "cost": 165,
+    "armor": 285,
+    "energy": 75,
+    "agility": 12,
+    "mobility": 3,
+    "weaponSlots": 3,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "smallShield"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "groundGm",
+      "weaponRack",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "groundGundamWeaponRack",
+    "name": "陸戦型ガンダム（ウェポンラック仕様）",
+    "faction": "federation",
+    "cost": 230,
+    "armor": 330,
+    "energy": 95,
+    "agility": 15,
+    "mobility": 4,
+    "weaponSlots": 3,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "chestVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "groundGundam",
+      "weaponRack"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmScout",
+    "name": "ジム・スカウト",
+    "faction": "federation",
+    "cost": 180,
+    "armor": 260,
+    "energy": 78,
+    "agility": 24,
+    "mobility": 5,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatKnife",
+      "wiredHelicopterMissile"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "gmCommand",
+      "reconMs",
+      "federationMassProduction"
+    ],
+    "specials": [
+      "recon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gmSpartan",
+    "name": "ジム・スパルタン",
+    "faction": "federation",
+    "cost": 190,
+    "armor": 275,
+    "energy": 82,
+    "agility": 26,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatKnife"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "gmCommand",
+      "meleeMs",
+      "stealthMs",
+      "federationMassProduction"
+    ],
+    "specials": [
+      "smokeDischarger"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "frogBall",
+    "name": "フロッグ・ボール",
+    "faction": "federation",
+    "cost": 70,
+    "armor": 145,
+    "energy": 35,
+    "agility": 9,
+    "mobility": 3,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "frogBallMissile",
+      "mineScatterPod"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "submarine",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "ball",
+      "aquaticMs",
+      "supportPod",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "ballTypeM",
+    "name": "ボールM型",
+    "faction": "federation",
+    "cost": 70,
+    "armor": 145,
+    "energy": 35,
+    "agility": 9,
+    "mobility": 3,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "smallMachineGun",
+      "spaceMineScatterPod"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "ball",
+      "supportPod",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmSloop",
+    "name": "ジム・スループ",
+    "faction": "federation",
+    "cost": 145,
+    "armor": 260,
+    "energy": 68,
+    "agility": 14,
+    "mobility": 3,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "aquaticMs",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmInterceptCustom",
+    "name": "ジム・インターセプトカスタム",
+    "faction": "federation",
+    "cost": 205,
+    "armor": 285,
+    "energy": 90,
+    "agility": 28,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gm",
+      "gmGuard",
+      "highMobilityMs",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "submersibleGm",
+    "name": "ジム可潜タイプ",
+    "faction": "federation",
+    "cost": 120,
+    "armor": 245,
+    "energy": 60,
+    "agility": 11,
+    "mobility": 3,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "aquaticMs",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "guncannonHarborDefense",
+    "name": "ガンキャノン港湾防衛タイプ",
+    "faction": "federation",
+    "cost": 205,
+    "armor": 360,
+    "energy": 80,
+    "agility": 9,
+    "mobility": 3,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "guncannonHalfCannon",
+      "antiSubTorpedo"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "guncannon",
+      "cannonMs",
+      "aquaticMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gundamEz8Hac",
+    "name": "ガンダムEz8 HAC",
+    "faction": "federation",
+    "cost": 315,
+    "armor": 365,
+    "energy": 115,
+    "agility": 16,
+    "mobility": 4,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber",
+      "salamisCannon"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "groundGundam",
+      "ez8",
+      "heavyMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gundamEz8Hmc",
+    "name": "ガンダムEz8 HMC",
+    "faction": "federation",
+    "cost": 285,
+    "armor": 300,
+    "energy": 78,
+    "agility": 34,
+    "mobility": 7,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaberTwin"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gundam",
+      "groundGundam",
+      "ez8",
+      "highMobilityMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "groundGmNightStalker",
+    "name": "陸戦型ジム・ナイトストーカー",
+    "faction": "federation",
+    "cost": 175,
+    "armor": 275,
+    "energy": 75,
+    "agility": 18,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "cannon180mm"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "groundGm",
+      "sniperMs",
+      "federationMassProduction"
+    ],
+    "specials": [
+      "highPerformanceSight"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gmDesert",
+    "name": "ジム砂漠仕様",
+    "faction": "federation",
+    "cost": 135,
+    "armor": 250,
+    "energy": 70,
+    "agility": 16,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": true,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "federationMassProduction",
+      "desertMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmDominance",
+    "name": "ジム・ドミナンス",
+    "faction": "federation",
+    "cost": 240,
+    "armor": 305,
+    "energy": 105,
+    "agility": 25,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "prototypeTwinBeamRifle",
+      "beamSaberUnit"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "gmDominance",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmDominanceAquatic",
+    "name": "ジム・ドミナンス（水中用装備）",
+    "faction": "federation",
+    "cost": 220,
+    "armor": 295,
+    "energy": 90,
+    "agility": 20,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "torpedo",
+      "anchor",
+      "beamPick"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "gmDominance",
+      "aquaGm",
+      "aquaticMs",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "agguguy",
+    "name": "アッグガイ",
+    "faction": "zeon",
+    "cost": 190,
+    "armor": 300,
+    "energy": 75,
+    "agility": 18,
+    "mobility": 4,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "agguguyHeatRod",
+      "fingerVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "acguy",
+      "aggSeries",
+      "aquaticMs",
+      "meleeMs"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zogok",
+    "name": "ゾゴック",
+    "faction": "zeon",
+    "cost": 220,
+    "armor": 340,
+    "energy": 90,
+    "agility": 22,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "armPunch",
+      "boomerangCutter"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zgok",
+      "aquaticMs",
+      "meleeMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "juaggu",
+    "name": "ジュアッグ",
+    "faction": "zeon",
+    "cost": 235,
+    "armor": 400,
+    "energy": 100,
+    "agility": 9,
+    "mobility": 3,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "juagguTripleRocket",
+      "aquaticMegaParticleCannon"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "aggSeries",
+      "aquaticMs",
+      "heavyMs"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "agg",
+    "name": "アッグ",
+    "faction": "zeon",
+    "cost": 130,
+    "armor": 260,
+    "energy": 55,
+    "agility": 8,
+    "mobility": 2,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "aggDrill",
+      "laserTorch"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "aggSeries",
+      "workMs"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "jurrick",
+    "name": "ジュリック",
+    "faction": "zeon",
+    "cost": 260,
+    "armor": 440,
+    "energy": 115,
+    "agility": 10,
+    "mobility": 3,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "ironNail",
+      "aquaticMegaParticleCannon"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gogg",
+      "zock",
+      "aquaticMs",
+      "heavyMs"
+    ],
+    "specials": [
+      "freezyYard"
+    ],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "ramZgok",
+    "name": "ラムズゴック",
+    "faction": "zeon",
+    "cost": 245,
+    "armor": 350,
+    "energy": 100,
+    "agility": 22,
+    "mobility": 5,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatRam",
+      "clawShield",
+      "aquaticMegaParticleCannon"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zgok",
+      "aquaticMs",
+      "meleeMs"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zakuTankGreenMacac",
+    "name": "ザクタンク（グリーンマカク）",
+    "faction": "zeon",
+    "cost": 105,
+    "armor": 300,
+    "energy": 40,
+    "agility": 5,
+    "mobility": 3,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "greenMacacMissilePod",
+      "pincerArm",
+      "zakuShoulderShield",
+      "zakuShoulderShieldSub"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zakuTank",
+      "workMs"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zakuTankWildBoar",
+    "name": "ザクタンク（ワイルドボア）",
+    "faction": "zeon",
+    "cost": 110,
+    "armor": 285,
+    "energy": 40,
+    "agility": 6,
+    "mobility": 3,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "tripleMachineGun",
+      "wildBoarDoubleMachineGun"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": true,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zakuTank",
+      "workMs"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "goufHunter",
+    "name": "グフ・ハンター",
+    "faction": "zeon",
+    "cost": 175,
+    "armor": 300,
+    "energy": 60,
+    "agility": 23,
+    "mobility": 5,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "fingerVulcan",
+      "heatSword",
+      "throwingHeatKnife"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gouf",
+      "meleeMs",
+      "stealthMs"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "brrello",
+    "name": "ブラレロ",
+    "faction": "zeon",
+    "cost": 350,
+    "armor": 360,
+    "energy": 140,
+    "agility": 27,
+    "mobility": 6,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "scatteringMegaParticleCannon",
+      "wiredMegaParticleGun",
+      "wiredHeatNata"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "flying",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "zakrello",
+      "psycommuMa",
+      "newtypeUse"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "bigRuf",
+    "name": "ビグ・ルフ",
+    "faction": "zeon",
+    "cost": 360,
+    "armor": 450,
+    "energy": 130,
+    "agility": 25,
+    "mobility": 7,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "bigroMegaParticleCannon",
+      "giantMissile"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "flying",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "bigro",
+      "assaultMa"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "bigroMayer",
+    "name": "ビグロマイヤー",
+    "faction": "zeon",
+    "cost": 340,
+    "armor": 420,
+    "energy": 135,
+    "agility": 30,
+    "mobility": 7,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "bigroMayerBeamCannon",
+      "mobileArmorMissile"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "flying",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "bigro",
+      "highMobilityMa"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "grabroBit",
+    "name": "グラブロ（試作水中ビット搭載型）",
+    "faction": "zeon",
+    "cost": 360,
+    "armor": 450,
+    "energy": 140,
+    "agility": 17,
+    "mobility": 5,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "aquaticBit",
+      "grabroTorpedo"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "submarine",
+    "terrainSuitability": {
+      "water": true,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "grabro",
+      "aquaticMa",
+      "psycommuMa",
+      "newtypeUse"
+    ],
+    "specials": [],
     "imagePath": ""
   },
   {

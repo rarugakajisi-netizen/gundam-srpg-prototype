@@ -1140,6 +1140,56 @@ window.GAME_DATA.compatibility = {
       "msId": "efreet",
       "weaponId": "shotgun",
       "accuracyBonus": 10
+    },
+    {
+      "msId": "gmScout",
+      "weaponId": "wiredHelicopterMissile",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gmScout",
+      "weaponId": "heatKnife",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "gmSpartan",
+      "weaponId": "heatKnife",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "groundGmNightStalker",
+      "weaponId": "cannon180mm",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gundamEz8Hac",
+      "weaponId": "salamisCannon",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "gmDominance",
+      "weaponId": "prototypeTwinBeamRifle",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gmDominance",
+      "weaponId": "beamSaberUnit",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "goufHunter",
+      "weaponId": "throwingHeatKnife",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "zaku1Sniper",
+      "weaponId": "zeonSniperRifle",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "zaku",
+      "weaponId": "zeonHandgun",
+      "accuracyBonus": 5
     }
   ]
 };

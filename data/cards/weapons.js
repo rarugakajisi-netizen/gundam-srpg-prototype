@@ -910,6 +910,7 @@ window.GAME_DATA.weapons = [
     "durability": 0,
     "fixedOnly": true,
     "factions": [
+      "federation",
       "zeon"
     ]
   },
@@ -3701,6 +3702,7 @@ window.GAME_DATA.weapons = [
     "name": "有線式ミサイル",
     "fixedOnly": true,
     "factions": [
+      "federation",
       "zeon"
     ]
   },
@@ -4197,6 +4199,553 @@ window.GAME_DATA.weapons = [
     "attackType": "melee",
     "durability": 0,
     "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "heatKnife",
+    "name": "ヒート・ナイフ",
+    "cost": 0,
+    "power": 92,
+    "accuracy": 84,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ]
+  },
+  {
+    "id": "throwingHeatKnife",
+    "name": "投擲ヒート・ナイフ",
+    "cost": 0,
+    "power": 84,
+    "accuracy": 78,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "throwing",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "frogBallMissile",
+    "name": "水中ミサイル",
+    "cost": 0,
+    "power": 98,
+    "accuracy": 74,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "specials": [
+      "antiSubmarine"
+    ],
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "mineScatterPod",
+    "name": "機雷散布ポッド",
+    "cost": 0,
+    "power": 0,
+    "accuracy": 100,
+    "range": 0,
+    "minRange": 0,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 3,
+    "category": "mine",
+    "attackType": "support",
+    "durability": 0,
+    "specials": [
+      "mineScatter"
+    ],
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "spaceMineScatterPod",
+    "name": "宇宙機雷散布ポッド",
+    "cost": 0,
+    "power": 0,
+    "accuracy": 100,
+    "range": 0,
+    "minRange": 0,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 3,
+    "category": "mine",
+    "attackType": "support",
+    "durability": 0,
+    "specials": [
+      "mineScatter"
+    ],
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "smallMachineGun",
+    "name": "小型マシンガン",
+    "cost": 0,
+    "power": 54,
+    "accuracy": 82,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "guncannonHalfCannon",
+    "name": "240mmキャノン（ハーフ）",
+    "cost": 0,
+    "power": 112,
+    "accuracy": 68,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "antiSubTorpedo",
+    "name": "対潜魚雷",
+    "cost": 0,
+    "power": 118,
+    "accuracy": 76,
+    "range": 4,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "torpedo",
+    "attackType": "shooting",
+    "durability": 0,
+    "specials": [
+      "antiSubmarine"
+    ],
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "salamisCannon",
+    "name": "サラミス砲",
+    "cost": 0,
+    "power": 230,
+    "accuracy": 58,
+    "range": 7,
+    "minRange": 3,
+    "consume": 46,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "ship-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "chargeRequired": 1,
+    "chargeCost": 28,
+    "chargeResetOnFire": true,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "prototypeTwinBeamRifle",
+    "name": "試作2連装ビーム・ライフル",
+    "cost": 0,
+    "power": 132,
+    "accuracy": 76,
+    "range": 4,
+    "minRange": 1,
+    "consume": 22,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "agguguyHeatRod",
+    "name": "4連装ヒート・ロッド",
+    "cost": 0,
+    "power": 136,
+    "accuracy": 76,
+    "range": 2,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "armPunch",
+    "name": "アーム・パンチ",
+    "cost": 0,
+    "power": 124,
+    "accuracy": 80,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "boomerangCutter",
+    "name": "ブーメラン・カッター",
+    "cost": 0,
+    "power": 96,
+    "accuracy": 78,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "boomerang",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "juagguTripleRocket",
+    "name": "腕部3連装ロケット砲",
+    "cost": 0,
+    "power": 122,
+    "accuracy": 70,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "rocket",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "aggDrill",
+    "name": "大型削岩ドリル",
+    "cost": 0,
+    "power": 170,
+    "accuracy": 70,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "laserTorch",
+    "name": "レーザー・トーチ",
+    "cost": 0,
+    "power": 46,
+    "accuracy": 74,
+    "range": 2,
+    "minRange": 1,
+    "consume": 8,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-tool",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "heatRam",
+    "name": "ヒート・ラム",
+    "cost": 0,
+    "power": 146,
+    "accuracy": 76,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "clawShield",
+    "name": "クロー・シールド",
+    "cost": 0,
+    "power": 92,
+    "accuracy": 78,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "shield",
+    "ammo": 0,
+    "category": "shield",
+    "attackType": "melee",
+    "durability": 80,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "greenMacacMissilePod",
+    "name": "ミサイル・ポッド",
+    "cost": 0,
+    "power": 96,
+    "accuracy": 70,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "pincerArm",
+    "name": "大型ペンチアーム",
+    "cost": 0,
+    "power": 104,
+    "accuracy": 76,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "wildBoarDoubleMachineGun",
+    "name": "二連装マシンガン",
+    "cost": 0,
+    "power": 80,
+    "accuracy": 78,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "wiredMegaParticleGun",
+    "name": "有線式メガ粒子砲",
+    "cost": 0,
+    "power": 132,
+    "accuracy": 72,
+    "range": 5,
+    "minRange": 2,
+    "consume": 24,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "wiredHeatNata",
+    "name": "有線式ヒート・ナタ",
+    "cost": 0,
+    "power": 126,
+    "accuracy": 78,
+    "range": 2,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "giantMissile",
+    "name": "超大型ミサイル",
+    "cost": 0,
+    "power": 220,
+    "accuracy": 62,
+    "range": 5,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 1,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "bigroMayerBeamCannon",
+    "name": "ビーム・カノン",
+    "cost": 0,
+    "power": 156,
+    "accuracy": 70,
+    "range": 5,
+    "minRange": 2,
+    "consume": 30,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "aquaticBit",
+    "name": "試作水中ビット",
+    "cost": 0,
+    "power": 150,
+    "accuracy": 74,
+    "range": 5,
+    "minRange": 2,
+    "consume": 28,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "bit",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "zeonSniperRifle",
+    "name": "スナイパーライフル",
+    "cost": 70,
+    "power": 150,
+    "accuracy": 74,
+    "range": 6,
+    "minRange": 3,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "sniper-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "slotCost": 2,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "zeonHandgun",
+    "name": "ハンドガン",
+    "cost": 20,
+    "power": 64,
+    "accuracy": 86,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 8,
+    "category": "handgun",
+    "attackType": "shooting",
+    "durability": 0,
     "factions": [
       "zeon"
     ]
