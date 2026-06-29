@@ -99,6 +99,10 @@ function normalizeSelections() {
     state.selectedOptionId = "";
   }
 
+  if (!mobileSuitCanHavePilot(normalizedMs)) {
+    state.selectedCharacterId = "";
+  }
+
   const captain = characters[state.selectedCaptainId];
   const captainUsed = captain && usedCharacterKeys({ excludeBridgeSlot: "captain", includeSelectedCharacter: true }).has(captain.characterKey ?? captain.id);
   if (state.selectedCaptainId && (!captain || !characterSelectable(captain) || !hasCard("characters", captain.id) || !characterUsableByFaction(captain, state.faction) || captainUsed)) {
@@ -113,7 +117,7 @@ function normalizeSelections() {
 
   const selectedCharacter = characters[state.selectedCharacterId];
   const selectedUsed = selectedCharacter && usedCharacterKeys().has(selectedCharacter.characterKey ?? selectedCharacter.id);
-  if (state.selectedCharacterId && (!selectedCharacter || !characterSelectable(selectedCharacter) || !hasCard("characters", selectedCharacter.id) || !characterUsableByFaction(selectedCharacter, state.faction) || selectedUsed)) {
+  if (state.selectedCharacterId && (!mobileSuitCanHavePilot(normalizedMs) || !selectedCharacter || !characterSelectable(selectedCharacter) || !hasCard("characters", selectedCharacter.id) || !characterUsableByFaction(selectedCharacter, state.faction) || selectedUsed)) {
     state.selectedCharacterId = "";
   }
 }
@@ -288,7 +292,7 @@ function freeBattleRandomEntry(faction, map, usedKeys, remainingBudget) {
   });
   const optionIds = freeBattleRandomOptions(ms, faction, remainingBudget);
   const weaponIds = freeBattleRandomWeapons(ms, Math.max(0, remainingBudget - ms.cost));
-  const characterId = freeBattleRandomCharacter(faction, usedKeys, true);
+  const characterId = mobileSuitCanHavePilot(ms) ? freeBattleRandomCharacter(faction, usedKeys, true) : "";
   return {
     msId: ms.id,
     characterIds: characterId ? [characterId] : [],
@@ -1526,6 +1530,7 @@ function renderSetup() {
   const selectedOption = options[state.selectedOptionId];
   const selectedCharacter = characters[state.selectedCharacterId];
   const selectedMsRemaining = selectedMs ? remainingCardCopies("mobileSuits", selectedMs.id) : 0;
+  const selectedMsCanHavePilot = mobileSuitCanHavePilot(selectedMs);
   const addCost = selectedMs.cost + (selectedCharacter?.cost ?? 0) + (selectedOption?.cost ?? 0) + state.selectedWeaponIds.reduce((sum, id) => sum + weapons[id].cost, 0);
   const projectedCost = cost + addCost;
 
@@ -1580,7 +1585,7 @@ function renderSetup() {
         </div>
       </div>
       ${renderMobileSuitDetails(selectedMs, { open: true })}
-      <div class="form-row">
+      ${selectedMsCanHavePilot ? `<div class="form-row">
         <label for="characterSelect">キャラクター</label>
         <div class="select-with-action">
           <select id="characterSelect">
@@ -1595,7 +1600,12 @@ function renderSetup() {
           <button data-action="clear-character" data-owner="mobileSuit">未配置</button>
         </div>
       </div>
-      ${selectedCharacter ? renderCharacterDetails(selectedCharacter, { open: true }) : `<p class="support-hint">キャラクター未配置です。一覧から選ぶか、プルダウンで選択してください。</p>`}
+      ${selectedCharacter ? renderCharacterDetails(selectedCharacter, { open: true }) : `<p class="support-hint">キャラクター未配置です。一覧から選ぶか、プルダウンで選択してください。</p>`}` : `
+      <div class="form-row">
+        <label>キャラクター</label>
+        <div class="readonly-field">パイロット不可</div>
+        <p class="support-hint">この機体はコクピットを持たない無人機として扱われ、キャラクターを搭乗させられません。</p>
+      </div>`}
       <div>
         <h3>手持ち武装</h3>
         <p class="small">装備枠: ${usedWeaponSlots} / ${selectedWeaponSlots}</p>
@@ -1729,6 +1739,7 @@ function chooseMobileSuit(msId) {
   if (!ms || !hasCard("mobileSuits", ms.id) || !mobileSuitCanDeployOnMap(ms, selectedMap())) return;
   state.selectedMsId = ms.id;
   state.selectedWeaponIds = defaultLoadout(ms);
+  if (!mobileSuitCanHavePilot(ms)) state.selectedCharacterId = "";
   renderSetup();
 }
 
@@ -1741,10 +1752,14 @@ function chooseBattleship(shipId) {
 }
 
 function setCharacterForOwner(owner, characterId) {
+  let assignedCharacterId = characterId;
   if (owner === "captain") state.selectedCaptainId = characterId;
   if (owner === "firstOfficer") state.selectedFirstOfficerId = characterId;
-  if (owner === "mobileSuit") state.selectedCharacterId = characterId;
-  if (characterId) clearCharacterConflicts(characterId, owner);
+  if (owner === "mobileSuit") {
+    assignedCharacterId = mobileSuitCanHavePilot(lookup().ms[state.selectedMsId]) ? characterId : "";
+    state.selectedCharacterId = assignedCharacterId;
+  }
+  if (assignedCharacterId) clearCharacterConflicts(assignedCharacterId, owner);
   if (owner === "captain" || owner === "firstOfficer") rememberFormation();
   renderSetup();
 }
@@ -1763,7 +1778,7 @@ function changeFaction(faction) {
   state.selectedCaptainId = bridge.captainId;
   state.selectedFirstOfficerId = bridge.firstOfficerId;
   state.selectedMsId = factionMs?.id ?? "";
-  state.selectedCharacterId = firstAvailableCharacter(faction)?.id ?? factionCharacter?.id ?? "";
+  state.selectedCharacterId = mobileSuitCanHavePilot(factionMs) ? (firstAvailableCharacter(faction)?.id ?? factionCharacter?.id ?? "") : "";
   state.selectedWeaponIds = factionMs ? defaultLoadout(factionMs) : [];
   state.selectedOptionId = "";
   if (!restoreRememberedFormation()) applyStarterFormation();
@@ -1777,13 +1792,15 @@ function addFormationEntry() {
   if (selectedWeaponSlotCost(state.selectedWeaponIds) > weaponSlotCount(lookup().ms[state.selectedMsId])) return;
   if (!selectionWithinOwnedCounts("weapons", state.selectedWeaponIds)) return;
   if (state.selectedOptionId && !selectionWithinOwnedCounts("options", [state.selectedOptionId])) return;
+  const selectedMs = lookup().ms[state.selectedMsId];
+  const characterIds = mobileSuitCanHavePilot(selectedMs) && state.selectedCharacterId ? [state.selectedCharacterId] : [];
   state.formation.push({
     msId: state.selectedMsId,
-    characterIds: state.selectedCharacterId ? [state.selectedCharacterId] : [],
+    characterIds,
     weaponIds: [...state.selectedWeaponIds],
     optionIds: state.selectedOptionId ? [state.selectedOptionId] : []
   });
-  state.selectedCharacterId = firstAvailableCharacter(state.faction)?.id ?? "";
+  state.selectedCharacterId = mobileSuitCanHavePilot(selectedMs) ? (firstAvailableCharacter(state.faction)?.id ?? "") : "";
   state.selectedOptionId = "";
   rememberFormation();
   renderSetup();

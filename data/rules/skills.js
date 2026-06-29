@@ -458,5 +458,21 @@ window.GAME_DATA.skills = [
     "timing": "最初の敵ターン",
     "effect": "最初の敵ターンのみ、相手全体の命中-8。",
     "implemented": true
+  },
+  {
+    "id": "examSystem",
+    "name": "EXAMシステム",
+    "type": "機体",
+    "timing": "耐久低下時/対ニュータイプ戦闘時",
+    "effect": "自機の耐久が3分の1以下になった時、または敵ニュータイプと戦闘した時に発動。命中・回避+18、与ダメージ+15。発動後、自軍ターン開始を3回迎えると自動撤退し、撃破扱いになる。",
+    "implemented": true
+  },
+  {
+    "id": "transform",
+    "name": "変形",
+    "type": "機体",
+    "timing": "行動時",
+    "effect": "行動として発動し、機体ごとに設定された変形先へ移行する。変形したターンは移動・攻撃できない。",
+    "implemented": true
   }
 ];

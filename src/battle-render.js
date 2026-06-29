@@ -191,6 +191,7 @@ function renderUnitDetail(unit, target) {
       ${freezyYardButton(unit)}
       ${mineScatterButtons(unit)}
       ${smokeDischargerButtons(unit)}
+      ${transformButtons(unit)}
       ${chargeWeaponButtons(unit)}
       ${vehicleOptionButton(unit)}
       ${attackButtons(unit, target)}
@@ -421,6 +422,27 @@ function smokeDischargerButtons(unit) {
     </button>
   ` : "";
   return skillButton;
+}
+
+function transformButtons(unit) {
+  if (!isMobileSuit(unit) || !unitHasSkill(unit, "transform")) return "";
+  const targets = transformTargetMobileSuits(unit);
+  if (targets.length === 0) return "";
+  return targets.map((targetMs) => {
+    const usable = canTransformToMs(unit, targetMs.id);
+    const status = [
+      "行動消費",
+      "移動・攻撃不可",
+      unit.moved ? "移動後不可" : "",
+      unit.acted || (unit.usedWeaponIds?.length ?? 0) > 0 ? "攻撃後不可" : "",
+      !cardCanStandAt(targetMs, unit.x, unit.y) ? "現在地では不可" : ""
+    ].filter(Boolean).join(" / ");
+    return `
+      <button data-action="transform-ms" data-ms-id="${targetMs.id}" ${state.outcome || state.phase !== "player" || unit.side !== "player" || !usable ? "disabled" : ""}>
+        変形<br><span class="button-detail">${targetMs.name} / ${status}</span>
+      </button>
+    `;
+  }).join("");
 }
 
 function vehicleOptionButton(unit) {

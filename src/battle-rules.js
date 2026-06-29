@@ -152,6 +152,70 @@ function retreatMobilitySupportActive(unit) {
     && sideHasSkill(unit.side, "breakthroughSupport");
 }
 
+function examSystemActive(unit) {
+  return isMobileSuit(unit) && (unit.examTurnsRemaining ?? 0) > 0;
+}
+
+function characterIsNewtype(character) {
+  return Boolean(character?.isNewtype)
+    || (character?.tags ?? []).includes("newtype")
+    || (character?.specials ?? []).includes("newtype")
+    || (character?.awakening ?? 0) >= 10;
+}
+
+function unitPilotIsNewtype(unit) {
+  return isMobileSuit(unit) && characterIsNewtype(primaryCharacterFor(unit));
+}
+
+function canActivateExamSystem(unit) {
+  return isMobileSuit(unit)
+    && isAlive(unit)
+    && unitHasSkill(unit, "examSystem")
+    && !unit.examSystemActivated
+    && !examSystemActive(unit);
+}
+
+function activateExamSystem(unit, reason = "条件達成") {
+  if (!canActivateExamSystem(unit)) return false;
+  unit.examSystemActivated = true;
+  unit.examTurnsRemaining = 3;
+  state.log.push(`${unitName(unit)}のEXAMシステム発動（${reason}）。命中・回避・攻撃力が上昇、3ターン後に自動撤退します。`);
+  return true;
+}
+
+function activateExamSystemByArmor(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit) || unit.maxArmor <= 0) return false;
+  if (unit.armor > Math.floor(unit.maxArmor / 3)) return false;
+  return activateExamSystem(unit, "耐久低下");
+}
+
+function activateExamSystemByCombat(attacker, defender) {
+  if (isMobileSuit(attacker) && unitPilotIsNewtype(defender)) activateExamSystem(attacker, "敵ニュータイプ反応");
+  if (isMobileSuit(defender) && unitPilotIsNewtype(attacker)) activateExamSystem(defender, "敵ニュータイプ反応");
+}
+
+function withdrawExamSystemUnit(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit)) return false;
+  unit.armor = 0;
+  unit.acted = true;
+  unit.moved = true;
+  unit.examTurnsRemaining = 0;
+  unit.examSystemWithdrawn = true;
+  state.log.push(`${unitName(unit)}がEXAMシステムの限界に達し、自動撤退。撃破扱いになります。`);
+  triggerSacrificialBoost(unit);
+  checkOutcome();
+  return true;
+}
+
+function tickExamSystem(unit) {
+  if (!examSystemActive(unit)) {
+    activateExamSystemByArmor(unit);
+    return;
+  }
+  unit.examTurnsRemaining -= 1;
+  if (unit.examTurnsRemaining <= 0) withdrawExamSystemUnit(unit);
+}
+
 function activeVehicleOptions(unit) {
   if (!isMobileSuit(unit) || unit.vehicleOptionDisabled) return [];
   return unitOptions(unit).filter((option) => option.effectType === "vehicle");
@@ -429,6 +493,7 @@ function skillAccuracyBonus(unit, defender, weapon) {
   if (pilotSupplyActive(unit)) bonus += 5;
   if (marineSpaceSupportActive(unit)) bonus += 5;
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus += 5;
+  if (examSystemActive(unit)) bonus += 18;
   const supportedByCommander = state.units.some((other) =>
     other.id !== unit.id
     && other.side === unit.side
@@ -451,6 +516,7 @@ function skillEvasionBonus(unit) {
   if (internalAuditActive(unit)) bonus += 4;
   if (marineSpaceSupportActive(unit)) bonus += 5;
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus -= 4;
+  if (examSystemActive(unit)) bonus += 18;
   return bonus;
 }
 
@@ -534,6 +600,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) damage += 8;
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) damage += 8;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) damage += 15;
+  if (examSystemActive(attacker)) damage += 15;
   if (rivalryActive(attacker, defender)) damage += 12;
   if (sideHasSkill(attacker.side, "forcedMarch")) damage += 10;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) damage -= 8;
@@ -568,6 +635,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
+  if (examSystemActive(attacker)) notes.push("EXAMシステム");
   if (rivalryActive(attacker, defender)) notes.push("対抗心");
   if (sideHasSkill(attacker.side, "forcedMarch")) notes.push("強行軍攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) notes.push("要警護人物攻撃抑制");
@@ -726,6 +794,7 @@ function attack(attacker, defender, weapon, renderAfter = true) {
   if (!isCombatUnit(attacker) || !isAttackTarget(defender) || !weapon || weaponUsed(attacker, weapon.id)) return;
   if (!weaponInRange(attacker, defender, weapon) || !canPayCost(attacker, weapon)) return;
 
+  activateExamSystemByCombat(attacker, defender);
   const attackerName = unitName(attacker);
   const defenderName = unitName(defender);
   const attackOrdinal = (attacker.usedWeaponIds?.length ?? 0) + 1;
@@ -779,6 +848,7 @@ function applyDamage(unit, amount) {
   unit.armor = Math.max(0, unit.armor - remaining);
   if (unit.armor === 0 && canUseEscapeShip(unit)) transformToEscapeShip(unit);
   if (unit.armor === 0 && canUseCoreSystem(unit)) transformToCoreFighter(unit);
+  activateExamSystemByArmor(unit);
   if (unit.armor === 0) triggerSacrificialBoost(unit);
 }
 
@@ -787,6 +857,80 @@ function discardVehicleOption(unit, renderAfter = true) {
   if (!isMobileSuit(unit) || !vehicleOption || unit.vehicleOptionDisabled) return false;
   unit.vehicleOptionDisabled = true;
   state.log.push(`${unitName(unit)}が${vehicleOption.name ?? "乗り物"}を切り離した。`);
+  if (renderAfter) renderBattle();
+  return true;
+}
+
+function transformTargetIds(unit) {
+  if (!isMobileSuit(unit)) return [];
+  const ms = msFor(unit);
+  return [...new Set([
+    ...(Array.isArray(ms.transformMsIds) ? ms.transformMsIds : []),
+    ms.transformMsId
+  ].filter((id) => id && id !== ms.id))];
+}
+
+function transformTargetMobileSuits(unit) {
+  const { ms } = lookup();
+  return transformTargetIds(unit).map((id) => ms[id]).filter(Boolean);
+}
+
+function canTransformToMs(unit, targetMsId) {
+  if (!isMobileSuit(unit) || !unitHasSkill(unit, "transform")) return false;
+  if (unit.acted || unit.moved || (unit.usedWeaponIds?.length ?? 0) > 0) return false;
+  const targetMs = lookup().ms[targetMsId];
+  if (!targetMs || targetMs.id === msFor(unit).id) return false;
+  if (!transformTargetIds(unit).includes(targetMs.id)) return false;
+  if (!cardUsableByFaction(targetMs, unit.faction)) return false;
+  if (!cardCanStandAt(targetMs, unit.x, unit.y)) return false;
+  return true;
+}
+
+function carriedWeaponIdsForTransform(unit) {
+  const sourceMs = msFor(unit);
+  const fixedWeaponIds = new Set(sourceMs.fixedWeaponIds ?? []);
+  const optionWeaponIds = new Set((unit.optionIds ?? []).flatMap((id) => lookup().options[id]?.weaponIds ?? []));
+  return (unit.weaponIds ?? []).filter((id) => !fixedWeaponIds.has(id) && !optionWeaponIds.has(id));
+}
+
+function optionWeaponIdsForUnit(unit) {
+  return (unit.optionIds ?? []).flatMap((id) => lookup().options[id]?.weaponIds ?? []);
+}
+
+function runtimeWeaponsAfterTransform(unit, weaponIds) {
+  const previous = Object.fromEntries((unit.runtimeWeapons ?? []).map((runtime) => [runtime.id, runtime]));
+  return runtimeWeaponsForIds(weaponIds, unit.optionIds ?? []).map((runtime) => previous[runtime.id] ? { ...runtime, ...previous[runtime.id] } : runtime);
+}
+
+function transformMobileSuit(unit, targetMsId, renderAfter = true) {
+  if (!canTransformToMs(unit, targetMsId)) return false;
+  const beforeName = unitName(unit);
+  const beforeMaxEnergy = Math.max(1, unit.maxEnergy || 1);
+  const carriedArmor = Math.max(1, unit.armor);
+  const energyRate = clamp(unit.energy / beforeMaxEnergy, 0, 1);
+  const targetMs = lookup().ms[targetMsId];
+  const optionIds = unit.optionIds ?? [];
+  const optionEnergyBonus = optionIds.includes("externalGenerator") ? 25 : 0;
+  const weaponIds = [...new Set([
+    ...(targetMs.fixedWeaponIds ?? []),
+    ...carriedWeaponIdsForTransform(unit),
+    ...optionWeaponIdsForUnit(unit)
+  ])];
+
+  unit.msId = targetMs.id;
+  unit.weaponIds = weaponIds;
+  unit.runtimeWeapons = runtimeWeaponsAfterTransform(unit, weaponIds);
+  unit.maxArmor = targetMs.armor;
+  unit.maxEnergy = targetMs.energy + optionEnergyBonus;
+  unit.armor = Math.min(unit.maxArmor, carriedArmor);
+  unit.energy = Math.min(unit.maxEnergy, Math.ceil(unit.maxEnergy * energyRate));
+  unit.usedWeaponIds = [];
+  unit.weaponCharges = {};
+  unit.moved = true;
+  unit.acted = true;
+  revealStealth(unit, "変形");
+  pushDialogue(unit, "wait");
+  state.log.push(`${beforeName}が${targetMs.name}へ変形。`);
   if (renderAfter) renderBattle();
   return true;
 }

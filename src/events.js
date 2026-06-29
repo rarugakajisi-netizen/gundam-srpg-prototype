@@ -254,6 +254,10 @@ battleScreen.addEventListener("click", (event) => {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) useSmokeSkill(unit);
   }
+  if (button?.dataset.action === "transform-ms") {
+    const unit = state.units.find((item) => item.id === state.selectedUnitId);
+    if (unit) transformMobileSuit(unit, button.dataset.msId);
+  }
   if (button?.dataset.action === "charge-weapon") {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) chargeWeapon(unit, weaponFor(button.dataset.weaponId));

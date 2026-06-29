@@ -163,6 +163,15 @@ function characterSelectable(character) {
   return character?.selectable !== false;
 }
 
+function mobileSuitPilotSlots(ms) {
+  if (!ms) return 1;
+  return Math.max(0, Math.floor(Number(ms.pilotSlots ?? 1) || 0));
+}
+
+function mobileSuitCanHavePilot(ms) {
+  return mobileSuitPilotSlots(ms) > 0;
+}
+
 function lookup() {
   return {
     ms: byId(state.data.mobileSuits),
@@ -696,7 +705,7 @@ function initializeSelections() {
   state.selectedCaptainId = bridge.captainId;
   state.selectedFirstOfficerId = bridge.firstOfficerId;
   state.selectedMsId = factionMs?.id ?? "";
-  state.selectedCharacterId = firstAvailableCharacter(state.faction)?.id ?? factionCharacter?.id ?? "";
+  state.selectedCharacterId = mobileSuitCanHavePilot(factionMs) ? (firstAvailableCharacter(state.faction)?.id ?? factionCharacter?.id ?? "") : "";
   state.selectedWeaponIds = factionMs ? defaultLoadout(factionMs) : [];
   state.selectedOptionId = "";
 }
@@ -743,16 +752,17 @@ function applyStarterFormation() {
   state.formation = starter.units
     .filter((entry) => {
       const ms = lookup().ms[entry.msId];
+      const characterIds = mobileSuitCanHavePilot(ms) ? (entry.characterIds ?? []).slice(0, mobileSuitPilotSlots(ms)) : [];
       const valid = hasCard("mobileSuits", entry.msId)
         && mobileSuitCanDeployOnMap(ms, map)
-        && entry.characterIds.every((id) => hasCard("characters", id))
+        && characterIds.every((id) => hasCard("characters", id))
         && entry.weaponIds.every((id) => hasCard("weapons", id))
         && (entry.optionIds ?? []).every((id) => hasCard("options", id));
-      return valid && canReserveCountedCards(entry, reserved);
+      return valid && canReserveCountedCards({ ...entry, characterIds }, reserved);
     })
     .map((entry) => ({
       msId: entry.msId,
-      characterIds: [...entry.characterIds],
+      characterIds: mobileSuitCanHavePilot(lookup().ms[entry.msId]) ? [...(entry.characterIds ?? []).slice(0, mobileSuitPilotSlots(lookup().ms[entry.msId]))] : [],
       weaponIds: [...entry.weaponIds],
       optionIds: [...(entry.optionIds ?? [])]
     }));
@@ -786,7 +796,8 @@ function restoreFormationSnapshot(profile) {
   const reserved = {};
   state.formation = (Array.isArray(profile.units) ? profile.units : []).flatMap((entry) => {
     const ms = data.ms[entry?.msId];
-    const characterIds = Array.isArray(entry?.characterIds) ? entry.characterIds : [];
+    const rawCharacterIds = Array.isArray(entry?.characterIds) ? entry.characterIds : [];
+    const characterIds = mobileSuitCanHavePilot(ms) ? rawCharacterIds.slice(0, mobileSuitPilotSlots(ms)) : [];
     const weaponIds = Array.isArray(entry?.weaponIds) ? entry.weaponIds : [];
     const optionIds = Array.isArray(entry?.optionIds) ? entry.optionIds : [];
     const charactersValid = characterIds.every((id) => data.characters[id]

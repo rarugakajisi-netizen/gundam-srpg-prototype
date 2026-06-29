@@ -128,6 +128,10 @@ function characterSelectable(character) {
   return character?.selectable !== false;
 }
 
+function mobileSuitPilotSlots(ms) {
+  return Math.max(0, Math.floor(Number(ms?.pilotSlots ?? 1) || 0));
+}
+
 function weaponEquippableByMs(ms, weapon) {
   return !weapon.fixedOnly
     && weaponUsableByFaction(weapon, ms.faction)
@@ -263,6 +267,10 @@ function createChecker(data) {
     const weaponIds = list(entry.weaponIds);
     const optionIds = list(entry.optionIds);
     const usedCharacters = new Set();
+    const pilotSlots = mobileSuitPilotSlots(ms);
+    if (characterIds.length > pilotSlots) {
+      error(scope, `パイロットスロット超過: ${characterIds.length} / ${pilotSlots}`);
+    }
 
     characterIds.forEach((id) => {
       const character = expectId(`${scope}.characterIds`, "characters", id);
@@ -329,6 +337,9 @@ function createChecker(data) {
       const scope = `mobileSuits.${ms.id}`;
       expectFaction(scope, ms.faction);
       ["cost", "armor", "energy", "agility", "mobility"].forEach((key) => expectNumber(scope, ms, key));
+      expectNumber(scope, ms, "pilotSlots", { integer: true, required: false });
+      if (ms.pilotSlots !== undefined && mobileSuitPilotSlots(ms) !== ms.pilotSlots) error(scope, `pilotSlots は0以上の整数である必要があります: ${String(ms.pilotSlots)}`);
+      if (mobileSuitPilotSlots(ms) > 1) warning(scope, "現在の編成UIはMSパイロット1名までの表示です。");
       expectNumber(scope, ms, "weaponSlots", { integer: true, required: false });
       expectNumber(scope, ms, "optionSlots", { integer: true, required: false });
       list(ms.mapTypes ?? ["ground", "space"]).forEach((type) => {

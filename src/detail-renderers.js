@@ -537,6 +537,7 @@ function activeSkillText(unit) {
   if ((unit.freezyYardActiveTurns ?? 0) > 0) skills.push(`フリージーヤード効果中${unit.freezyYardActiveTurns}`);
   if ((unit.smokeConcealedTurns ?? 0) > 0) skills.push(`煙幕隠蔽中${unit.smokeConcealedTurns}`);
   if ((unit.learningStacks ?? 0) > 0) skills.push(`教育型補正${unit.learningStacks}`);
+  if ((unit.examTurnsRemaining ?? 0) > 0) skills.push(`EXAM発動中${unit.examTurnsRemaining}`);
   return skills.length > 0 ? specialsLabel(skills) : "なし";
 }
 
@@ -568,6 +569,8 @@ function activateFreezyYard(unit, renderAfter = true) {
 function tickTurnStartEffects(side) {
   state.units.filter((unit) => unit.side === side && isCombatUnit(unit)).forEach((unit) => {
     if ((unit.freezyYardActiveTurns ?? 0) > 0) unit.freezyYardActiveTurns -= 1;
+    tickExamSystem(unit);
+    if (!isAlive(unit)) return;
     advanceLearningComputer(unit);
     unit.attackTargetCounts = {};
   });
@@ -770,6 +773,7 @@ function renderMobileSuitDetails(ms, options = {}) {
         ["EN", ms.energy],
         ["運動", ms.agility],
         ["移動", ms.mobility],
+        ["搭乗", mobileSuitCanHavePilot(ms) ? `パイロット${mobileSuitPilotSlots(ms)}名` : "パイロット不可"],
         ["装備枠", `武器${ms.weaponSlots ?? 2} / OP${ms.optionSlots ?? 1}`],
         ["携行武器制限", mobileSuitWeaponRestrictionText(ms)],
         ["特殊", specialsLabel(ms.specials)],

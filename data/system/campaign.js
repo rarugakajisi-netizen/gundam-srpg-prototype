@@ -475,6 +475,51 @@ window.GAME_DATA.campaign = {
           }
         ]
       }
+    },
+    {
+      "mapId": "atlanticBloodstained",
+      "series": "main",
+      "order": 40,
+      "tags": [
+        "本編",
+        "地上",
+        "水中",
+        "完全水没",
+        "マッド・アングラー隊"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "madAngler",
+      "enemyCaptainId": "char",
+      "enemyFirstOfficerId": "",
+      "summary": "大西洋の海中で、シャアのマッド・アングラー隊がグラブロとズゴック隊を投入する完全水没ステージ。全域が水中のため、水中適性の有無が機動力と回避に大きく響きます。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "grabro",
+            "characterIds": [
+              "flanaganBoone"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "zgok",
+            "characterIds": [
+              "zeonAquaticSoldier"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "zgok",
+            "characterIds": [
+              "zeonAquaticSoldier"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
     }
   ]
 };
