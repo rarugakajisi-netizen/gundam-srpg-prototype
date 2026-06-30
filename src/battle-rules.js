@@ -486,7 +486,7 @@ function skillAccuracyBonus(unit, defender, weapon) {
   if (unitHasSkill(unit, "commanderCustom")) bonus += 3;
   if (unitHasSkill(unit, "teamwork") && hasTeamworkAlly(unit)) bonus += 5;
   if (massProductionFormationActive(unit)) bonus += 4;
-  if (unitHasSkill(unit, "educationalComputer")) bonus += Math.min(9, unit.learningStacks ?? 0);
+  if (unitHasSkill(unit, "educationalComputer")) bonus += Math.min(EDUCATIONAL_COMPUTER_ACCURACY_CAP, unit.learningStacks ?? 0);
   if (unitHasSkill(unit, "stationaryInterception") && !unit.moved) bonus += 8;
   if (unitHasSkill(unit, "highPerformanceSight") && weapon?.attackType === "shooting" && defender && distance(unit, defender) >= 4) bonus += 8;
   if (unitHasSkill(unit, "allyBackup") && hasAllyAhead(unit)) bonus += 6;
@@ -510,9 +510,9 @@ function skillAccuracyBonus(unit, defender, weapon) {
 function skillEvasionBonus(unit) {
   if (!isMobileSuit(unit)) return 0;
   let bonus = 0;
-  if (unitHasSkill(unit, "educationalComputer")) bonus += Math.min(9, unit.learningStacks ?? 0);
+  if (unitHasSkill(unit, "educationalComputer")) bonus += Math.min(EDUCATIONAL_COMPUTER_EVASION_CAP, unit.learningStacks ?? 0);
   if (retreatSupportActive(unit)) bonus += 10;
-  if (unitHasSkill(unit, "haroSupport")) bonus += 6;
+  if (unitHasSkill(unit, "haroSupport")) bonus += HARO_EVASION_BONUS;
   if (pilotSupplyActive(unit)) bonus += 5;
   if (internalAuditActive(unit)) bonus += 4;
   if (marineSpaceSupportActive(unit)) bonus += 5;
@@ -583,8 +583,12 @@ function activateIField(defender, weapon) {
 function advanceLearningComputer(unit) {
   if (!isMobileSuit(unit) || !unitHasSkill(unit, "educationalComputer")) return;
   const before = unit.learningStacks ?? 0;
-  unit.learningStacks = Math.min(9, before + 1);
-  if (unit.learningStacks > before) state.log.push(`${unitName(unit)}の教育型コンピューターがターン経過データを蓄積（補正+${unit.learningStacks}）。`);
+  unit.learningStacks = Math.min(EDUCATIONAL_COMPUTER_ACCURACY_CAP, before + 1);
+  if (unit.learningStacks > before) {
+    const accuracyBonus = Math.min(EDUCATIONAL_COMPUTER_ACCURACY_CAP, unit.learningStacks);
+    const evasionBonus = Math.min(EDUCATIONAL_COMPUTER_EVASION_CAP, unit.learningStacks);
+    state.log.push(`${unitName(unit)}の教育型コンピューターがターン経過データを蓄積（命中+${accuracyBonus}、回避+${evasionBonus}）。`);
+  }
 }
 
 function damageFor(attacker, defender, weapon, options = {}) {

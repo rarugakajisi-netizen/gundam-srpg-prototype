@@ -248,7 +248,7 @@ window.GAME_DATA.skills = [
     "name": "教育型コンピューター",
     "type": "OP",
     "timing": "自軍ターン開始時",
-    "effect": "ターン開始ごとに戦闘データを蓄積し、命中・回避+1。最大+9。",
+    "effect": "ターン開始ごとに戦闘データを蓄積し、命中・回避+1。命中は最大+9、回避は最大+6。",
     "implemented": true
   },
   {
@@ -360,7 +360,7 @@ window.GAME_DATA.skills = [
     "name": "ハロのサポート",
     "type": "OP",
     "timing": "常時",
-    "effect": "MS搭乗時、回避+6。",
+    "effect": "MS搭乗時、回避+4。",
     "implemented": true
   },
   {
@@ -462,7 +462,7 @@ window.GAME_DATA.skills = [
   {
     "id": "examSystem",
     "name": "EXAMシステム",
-    "type": "機体",
+    "type": "機体/OP",
     "timing": "耐久低下時/対ニュータイプ戦闘時",
     "effect": "自機の耐久が3分の1以下になった時、または敵ニュータイプと戦闘した時に発動。命中・回避+18、与ダメージ+15。発動後、自軍ターン開始を3回迎えると自動撤退し、撃破扱いになる。",
     "implemented": true

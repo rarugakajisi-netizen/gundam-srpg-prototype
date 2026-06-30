@@ -274,7 +274,7 @@ window.GAME_DATA.options = [
     "cost": 70,
     "effectType": "skill",
     "grantsSkill": "educationalComputer",
-    "effectText": "自軍ターン開始ごとに命中・回避補正が+1される。最大+9。",
+    "effectText": "自軍ターン開始ごとに命中・回避補正が+1される。命中は最大+9、回避は最大+6。",
     "uniqueSkill": true,
     "factions": [
       "federation",
@@ -327,10 +327,10 @@ window.GAME_DATA.options = [
   {
     "id": "haro",
     "name": "ハロ",
-    "cost": 35,
+    "cost": 40,
     "effectType": "skill",
     "grantsSkill": "haroSupport",
-    "effectText": "パイロットの反応補助として、MS搭乗時の回避+6。",
+    "effectText": "パイロットの反応補助として、MS搭乗時の回避+4。",
     "uniqueSkill": true,
     "factions": [
       "federation"
@@ -467,7 +467,7 @@ window.GAME_DATA.options = [
   {
     "id": "alfredIzuruha",
     "name": "アルフレッド・イズルハ",
-    "cost": 45,
+    "cost": 50,
     "effectType": "skill",
     "grantsSkill": "enemyIntel",
     "effectText": "最初の敵ターンのみ、相手全体の命中-8。敵情を伝えて初動を乱すジオン専用OP。",
@@ -480,7 +480,7 @@ window.GAME_DATA.options = [
   {
     "id": "examSystemOption",
     "name": "EXAMシステム",
-    "cost": 90,
+    "cost": 105,
     "effectType": "skill",
     "grantsSkill": "examSystem",
     "effectText": "耐久3分の1以下、または敵ニュータイプとの戦闘で発動。命中・回避+18、与ダメージ+15。発動後3ターンで自動撤退する。",

@@ -203,7 +203,7 @@ window.GAME_DATA.mobileSuits = [
     "cost": 55,
     "armor": 90,
     "energy": 32,
-    "agility": 24,
+    "agility": 22,
     "mobility": 5,
     "weaponSlots": 0,
     "optionSlots": 0,
@@ -235,8 +235,8 @@ window.GAME_DATA.mobileSuits = [
     "cost": 70,
     "armor": 105,
     "energy": 38,
-    "agility": 26,
-    "mobility": 6,
+    "agility": 24,
+    "mobility": 5,
     "weaponSlots": 0,
     "optionSlots": 0,
     "fixedWeaponIds": [
@@ -1697,7 +1697,7 @@ window.GAME_DATA.mobileSuits = [
     "cost": 55,
     "armor": 90,
     "energy": 30,
-    "agility": 24,
+    "agility": 22,
     "mobility": 5,
     "weaponSlots": 0,
     "optionSlots": 0,
@@ -4268,7 +4268,7 @@ window.GAME_DATA.mobileSuits = [
     "cost": 65,
     "armor": 105,
     "agility": 16,
-    "mobility": 6
+    "mobility": 5
   },
   {
     "id": "gunnerGundam",
