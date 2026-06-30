@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 "use strict";
 
-// Static balance diagnostics for the card data. This intentionally reports
-// review candidates rather than declaring cards balanced or unbalanced.
+// Static balance diagnostics for the current split card data.
+// This report intentionally lists review candidates; it is not a pass/fail gate.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -22,184 +22,521 @@ const DATA_PATHS = [
   path.join(ROOT, "data", "rules", "compatibility.js")
 ];
 
+const CORE_PATH = path.join(ROOT, "src", "core.js");
+const BALANCE_CONSTANTS = {
+  HIT_RATE_BONUS: 8,
+  MIN_HIT_RATE: 15,
+  MIN_REPEAT_ATTACK_HIT_RATE: 6,
+  MAX_HIT_RATE: 92,
+  REPEAT_ATTACK_ACCURACY_PENALTY: 20,
+  REPEAT_ATTACK_MIN_HIT_PENALTY: 3,
+  EDUCATIONAL_COMPUTER_ACCURACY_CAP: 9,
+  EDUCATIONAL_COMPUTER_EVASION_CAP: 6,
+  HARO_EVASION_BONUS: 4
+};
+
+const WATCHED_WIDE_SKILLS = {
+  forcedMarch: "全体与ダメージ上昇/被ダメージ増加",
+  barrageSupport: "周囲3マスの敵回避-8",
+  massProductionFormation: "同型量産機の命中/攻防補助",
+  enemyIntel: "最初の敵ターンのみ相手全体命中-8",
+  pilotSupply: "戦艦隣接MSの命中/回避+5",
+  retreatSupport: "低耐久味方MSの回避+10",
+  internalAudit: "周囲2マス味方MSの回避+4",
+  marineSpaceSupport: "水中/宇宙専用系MSの命中/回避+5"
+};
+
+const WATCHED_OPTIONS = new Set([
+  "forcedMarch",
+  "barrageSupport",
+  "massProductionFormation",
+  "enemyIntel",
+  "educationalComputer",
+  "haroSupport",
+  "iField",
+  "examSystem",
+  "guerrillaTactics",
+  "stealth",
+  "smokeDischarger"
+]);
+
+const REPRESENTATIVE_DEFENDERS = [
+  { label: "標準回避60", evasion: 60 },
+  { label: "高回避75", evasion: 75 },
+  { label: "極高回避90", evasion: 90 }
+];
+
 function loadGameData() {
   const sandbox = { window: {} };
+  sandbox.window.window = sandbox.window;
+  vm.createContext(sandbox);
   for (const dataPath of DATA_PATHS) {
     if (!fs.existsSync(dataPath)) continue;
-    vm.runInNewContext(fs.readFileSync(dataPath, "utf8"), sandbox, { filename: dataPath });
+    vm.runInContext(fs.readFileSync(dataPath, "utf8"), sandbox, { filename: dataPath });
   }
   if (!sandbox.window.GAME_DATA) throw new Error("window.GAME_DATA was not defined.");
   return sandbox.window.GAME_DATA;
 }
 
+function loadConstants() {
+  if (!fs.existsSync(CORE_PATH)) return { ...BALANCE_CONSTANTS };
+  const source = fs.readFileSync(CORE_PATH, "utf8");
+  const constants = { ...BALANCE_CONSTANTS };
+  for (const key of Object.keys(constants)) {
+    const match = source.match(new RegExp(`const\\s+${key}\\s*=\\s*(-?\\d+(?:\\.\\d+)?)\\s*;`));
+    if (match) constants[key] = Number(match[1]);
+  }
+  return constants;
+}
+
 const data = loadGameData();
-const weaponsById = Object.fromEntries(data.weapons.map((item) => [item.id, item]));
-const skillsById = Object.fromEntries((data.skills ?? []).map((item) => [item.id, item]));
-const warnings = [];
+const constants = loadConstants();
+const indexes = {
+  mobileSuits: byId(data.mobileSuits),
+  battleships: byId(data.battleships),
+  weapons: byId(data.weapons),
+  characters: byId(data.characters),
+  options: byId(data.options ?? []),
+  skills: byId(data.skills ?? []),
+  maps: byId(data.maps ?? [])
+};
 
-function number(value) {
-  return Number.isFinite(value) ? value : 0;
+function byId(items = []) {
+  return Object.fromEntries(items.map((item) => [item.id, item]));
 }
 
-function median(values) {
-  const sorted = values.filter(Number.isFinite).sort((a, b) => a - b);
-  if (sorted.length === 0) return 0;
-  const middle = Math.floor(sorted.length / 2);
-  return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+function list(value) {
+  return Array.isArray(value) ? value : [];
 }
 
-function percentile(values, ratio) {
-  const sorted = values.filter(Number.isFinite).sort((a, b) => a - b);
-  if (sorted.length === 0) return 0;
-  return sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * ratio))];
+function number(value, fallback = 0) {
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function integer(value, fallback = 0) {
+  return Number.isInteger(value) ? value : fallback;
 }
 
 function unique(values) {
   return [...new Set(values)];
 }
 
-function attackWeaponIds(ids) {
-  return unique((ids ?? []).flatMap((id) => {
-    const weapon = weaponsById[id];
-    return weapon ? [id, ...(weapon.extraAttackIds ?? [])] : [id];
-  })).filter((id) => {
-    const weapon = weaponsById[id];
-    return weapon && !weapon.utilityOnly && number(weapon.power) > 0;
-  });
+function round(value, digits = 2) {
+  const scale = 10 ** digits;
+  return Math.round(value * scale) / scale;
 }
 
-function fixedAttackCount(ms) {
-  return attackWeaponIds(ms.fixedWeaponIds).length;
+function percentile(values, ratio) {
+  const sorted = values.filter(Number.isFinite).sort((a, b) => a - b);
+  if (!sorted.length) return 0;
+  return sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * ratio))];
 }
 
-function potentialAttackCount(ms) {
-  // Every attack-capable weapon can currently be used once per turn. Carried
-  // weapons consume at least one slot, so weaponSlots is the safe upper bound.
-  return fixedAttackCount(ms) + number(ms.weaponSlots);
-}
-
-function msRawScore(ms) {
-  return number(ms.armor)
-    + number(ms.energy) * 0.35
-    + number(ms.agility) * 3
-    + number(ms.mobility) * 12
-    + number(ms.weaponSlots) * 15
-    + fixedAttackCount(ms) * 22
-    + (ms.specials ?? []).length * 15;
-}
-
-function weaponExpectedDamage(weapon) {
-  return number(weapon.power) * number(weapon.accuracy) / 100;
-}
-
-function weaponReachFactor(weapon) {
-  const min = number(weapon.minRange) || 1;
-  const max = number(weapon.range) || min;
-  return 1 + Math.max(0, max - min) * 0.08;
-}
-
-function weaponEfficiency(weapon) {
-  return weaponExpectedDamage(weapon) * weaponReachFactor(weapon) / Math.max(1, number(weapon.cost));
+function distribution(values) {
+  const sorted = values.filter(Number.isFinite).sort((a, b) => a - b);
+  if (!sorted.length) return { min: 0, p25: 0, median: 0, p75: 0, p90: 0, max: 0 };
+  return {
+    min: sorted[0],
+    p25: percentile(sorted, 0.25),
+    median: percentile(sorted, 0.5),
+    p75: percentile(sorted, 0.75),
+    p90: percentile(sorted, 0.9),
+    max: sorted[sorted.length - 1]
+  };
 }
 
 function factionKey(item) {
-  return [...(item.factions ?? [item.faction]).filter(Boolean)].sort().join(",");
+  return list(item.factions ?? [item.faction]).filter(Boolean).sort().join(",");
 }
 
-function conservativeWeaponDominations() {
-  const candidates = data.weapons.filter((weapon) =>
-    number(weapon.cost) > 0
+function cardUsableByFaction(card, faction) {
+  if (!card) return false;
+  if (Array.isArray(card.factions)) return card.factions.includes(faction);
+  if (card.faction) return card.faction === faction;
+  return true;
+}
+
+function mobileSuitPilotSlots(ms) {
+  return Math.max(0, Math.floor(Number(ms?.pilotSlots ?? 1) || 0));
+}
+
+function tagsOf(ms) {
+  return new Set([ms.id, ...list(ms.tags)]);
+}
+
+function compatibilityMatchesMs(row, ms) {
+  if (row.msId) return row.msId === ms.id;
+  if (row.msTag) return tagsOf(ms).has(row.msTag);
+  return false;
+}
+
+function characterMsBonus(character, ms) {
+  const match = list(data.compatibility?.characterMs)
+    .find((row) => row.characterId === character.id && compatibilityMatchesMs(row, ms));
+  return number(match?.evasionBonus);
+}
+
+function msWeaponBonus(ms, weapon) {
+  const matches = list(data.compatibility?.msWeapon).filter((row) => compatibilityMatchesMs(row, ms));
+  const exact = matches.find((row) => row.weaponId === weapon.id);
+  const category = matches.find((row) => !row.weaponId && row.category === weapon.category);
+  return number(exact?.accuracyBonus ?? category?.accuracyBonus);
+}
+
+function attackWeapon(weapon) {
+  return Boolean(weapon)
+    && !weapon.utilityOnly
     && number(weapon.power) > 0
-    && !weapon.fixedOnly
-    && !(weapon.extraAttackIds ?? []).length
-    && !(weapon.specials ?? []).length
-    && weapon.kind !== "shield"
+    && weapon.attackType !== "guard";
+}
+
+function weaponSlotCost(weapon) {
+  return Math.max(1, integer(weapon?.slotCost, 1));
+}
+
+function runtimeAttackWeaponIds(ids) {
+  return unique(list(ids).flatMap((id) => {
+    const weapon = indexes.weapons[id];
+    return weapon ? [id, ...list(weapon.extraAttackIds)] : [id];
+  })).filter((id) => attackWeapon(indexes.weapons[id]));
+}
+
+function fixedAttackWeapons(ms) {
+  return runtimeAttackWeaponIds(ms.fixedWeaponIds).map((id) => indexes.weapons[id]).filter(Boolean);
+}
+
+function carriedAttackWeapons() {
+  return data.weapons.filter((weapon) => number(weapon.cost) > 0 && !weapon.fixedOnly && attackWeapon(weapon));
+}
+
+function weaponRangeSpan(weapon) {
+  const min = number(weapon.minRange, 1) || 1;
+  const max = number(weapon.range, min) || min;
+  return Math.max(1, max - min + 1);
+}
+
+function resourcePenalty(weapon) {
+  const consume = number(weapon.consume);
+  if (weapon.kind === "beam" || weapon.kind === "special") return consume * 0.65;
+  if (weapon.kind === "ammo") return consume * 4 + Math.max(0, 5 - number(weapon.ammo)) * 3;
+  if (weapon.kind === "shield") return number(weapon.shieldAttackCost, 10) * 0.25;
+  return 0;
+}
+
+function weaponRole(weapon) {
+  if (weapon.kind === "shield") return "shield";
+  if (weapon.chargeRequired) return "charge";
+  if (weapon.kind === "beam") return "beam";
+  if (weapon.kind === "ammo") return "ammo";
+  if (weapon.attackType === "melee") return "melee";
+  return weapon.kind ?? "other";
+}
+
+function weaponEfficiency(weapon) {
+  const rolePenalty = weapon.slotCost && weapon.slotCost > 1 ? weapon.slotCost : 1;
+  const value = number(weapon.power) * 0.78
+    + number(weapon.accuracy) * 1.25
+    + weaponRangeSpan(weapon) * 7
+    + number(msWeaponSyntheticUsefulness(weapon))
+    - resourcePenalty(weapon)
+    - number(weapon.chargeRequired) * 40;
+  return value / Math.max(1, number(weapon.cost)) / rolePenalty;
+}
+
+function msWeaponSyntheticUsefulness(weapon) {
+  if (weapon.ignoresObstacles) return 8;
+  if (weapon.cannotTargetFlying) return -5;
+  if (list(weapon.specials).includes("antiSubmarine")) return 5;
+  return 0;
+}
+
+function repeatPenalty(attackOrdinal) {
+  return Math.max(0, attackOrdinal - 2) * constants.REPEAT_ATTACK_ACCURACY_PENALTY;
+}
+
+function minimumHitRate(attackOrdinal, mobileSuit = true) {
+  if (!mobileSuit) return constants.MIN_HIT_RATE;
+  const penalty = Math.max(0, attackOrdinal - 2) * constants.REPEAT_ATTACK_MIN_HIT_PENALTY;
+  return Math.max(constants.MIN_REPEAT_ATTACK_HIT_RATE, constants.MIN_HIT_RATE - penalty);
+}
+
+function hitSequence(rawBeforeRepeat, attackCount, mobileSuit = true) {
+  return Array.from({ length: attackCount }, (_, index) => {
+    const ordinal = index + 1;
+    return Math.max(
+      minimumHitRate(ordinal, mobileSuit),
+      Math.min(constants.MAX_HIT_RATE, rawBeforeRepeat - repeatPenalty(ordinal))
+    );
+  });
+}
+
+function fixedWeaponProfile(ms) {
+  const fixed = fixedAttackWeapons(ms);
+  const ammoShots = fixed.reduce((sum, weapon) => sum + (weapon.kind === "ammo" ? number(weapon.ammo) : 0), 0);
+  const avgAccuracy = fixed.length ? fixed.reduce((sum, weapon) => sum + number(weapon.accuracy), 0) / fixed.length : 0;
+  const maxPower = fixed.length ? Math.max(...fixed.map((weapon) => number(weapon.power))) : 0;
+  return {
+    count: fixed.length,
+    ammoShots,
+    avgAccuracy,
+    maxPower,
+    weapons: fixed.map((weapon) => ({
+      id: weapon.id,
+      name: weapon.name,
+      power: weapon.power,
+      accuracy: weapon.accuracy,
+      ammo: weapon.ammo,
+      kind: weapon.kind
+    }))
+  };
+}
+
+function actionProfile(ms) {
+  const fixed = fixedWeaponProfile(ms);
+  const carriedUpperBound = number(ms.weaponSlots);
+  return {
+    fixed,
+    carriedUpperBound,
+    attackCeiling: fixed.count + carriedUpperBound
+  };
+}
+
+function msScore(ms) {
+  const profile = actionProfile(ms);
+  return number(ms.armor) * 0.65
+    + number(ms.energy) * 0.25
+    + number(ms.agility) * 5
+    + number(ms.mobility) * 14
+    + number(ms.weaponSlots) * 18
+    + profile.fixed.count * 25
+    + profile.fixed.maxPower * 0.15
+    + list(ms.specials).length * 14;
+}
+
+function skillAccuracyBonusFromStatic(ms, character, optionIds = []) {
+  const skills = new Set([...list(ms.specials), ...list(character.specials), ...optionIds.map((id) => indexes.options[id]?.grantsSkill).filter(Boolean)]);
+  let bonus = 0;
+  if (skills.has("commanderCustom")) bonus += 3;
+  if (skills.has("educationalComputer")) bonus += constants.EDUCATIONAL_COMPUTER_ACCURACY_CAP;
+  if (skills.has("phantomSystem")) bonus += 10;
+  if (skills.has("examSystem")) bonus += 18;
+  return bonus;
+}
+
+function skillEvasionBonusFromStatic(ms, character, optionIds = [], examActive = false) {
+  const skills = new Set([...list(ms.specials), ...list(character.specials), ...optionIds.map((id) => indexes.options[id]?.grantsSkill).filter(Boolean)]);
+  let bonus = 0;
+  if (skills.has("educationalComputer")) bonus += constants.EDUCATIONAL_COMPUTER_EVASION_CAP;
+  if (skills.has("haroSupport")) bonus += constants.HARO_EVASION_BONUS;
+  if (skills.has("phantomSystem")) bonus += 10;
+  if (examActive && skills.has("examSystem")) bonus += 18;
+  return bonus;
+}
+
+function pilotCandidatesForMs(ms) {
+  if (mobileSuitPilotSlots(ms) <= 0) return [{ id: "", name: "未搭乗", cost: 0, reaction: 0, awakening: 0, specials: [], faction: ms.faction }];
+  return data.characters.filter((character) =>
+    character.selectable !== false
+    && cardUsableByFaction(character, ms.faction)
   );
-  const results = [];
-  for (const weaker of candidates) {
-    for (const stronger of candidates) {
-      if (weaker.id === stronger.id) continue;
-      if (factionKey(weaker) !== factionKey(stronger)) continue;
-      if (weaker.kind !== stronger.kind || weaker.attackType !== stronger.attackType) continue;
-      if (weaker.category !== stronger.category) continue;
-      const resourceIsBetter = weaker.kind === "beam"
-        ? number(stronger.consume) <= number(weaker.consume)
-        : weaker.kind === "ammo"
-          ? number(stronger.ammo) >= number(weaker.ammo) && number(stronger.consume) <= number(weaker.consume)
-          : true;
-      const noWorse = number(stronger.cost) <= number(weaker.cost)
-        && number(stronger.power) >= number(weaker.power)
-        && number(stronger.accuracy) >= number(weaker.accuracy)
-        && (number(stronger.minRange) || 1) <= (number(weaker.minRange) || 1)
-        && number(stronger.range) >= number(weaker.range)
-        && (number(stronger.slotCost) || 1) <= (number(weaker.slotCost) || 1)
-        && resourceIsBetter;
-      const strictlyBetter = number(stronger.cost) < number(weaker.cost)
-        || number(stronger.power) > number(weaker.power)
-        || number(stronger.accuracy) > number(weaker.accuracy)
-        || number(stronger.range) > number(weaker.range);
-      if (noWorse && strictlyBetter) results.push({ weaker, stronger });
+}
+
+function evasionCombos() {
+  const rows = [];
+  for (const ms of data.mobileSuits) {
+    for (const character of pilotCandidatesForMs(ms)) {
+      const compatible = character.id ? characterMsBonus(character, ms) : 0;
+      const base = number(ms.agility)
+        + number(character.reaction)
+        + Math.floor(number(character.awakening) / 2)
+        + compatible
+        + skillEvasionBonusFromStatic(ms, character);
+      const optionScenarios = [{ label: "素", optionIds: [], examActive: false }];
+      if (number(ms.optionSlots, 1) > 0) {
+        if (cardUsableByFaction(indexes.options.haro, ms.faction)) optionScenarios.push({ label: "ハロ", optionIds: ["haro"], examActive: false });
+        if (cardUsableByFaction(indexes.options.educationalComputer, ms.faction)) optionScenarios.push({ label: "教育型最大", optionIds: ["educationalComputer"], examActive: false });
+        if (!list(ms.specials).includes("examSystem") && cardUsableByFaction(indexes.options.examSystemOption, ms.faction)) {
+          optionScenarios.push({ label: "EXAM OP発動", optionIds: ["examSystemOption"], examActive: true });
+        }
+      }
+      if (list(ms.specials).includes("examSystem")) optionScenarios.push({ label: "機体EXAM発動", optionIds: [], examActive: true });
+      for (const scenario of optionScenarios) {
+        const total = base + skillEvasionBonusFromStatic(ms, character, scenario.optionIds, scenario.examActive);
+        if (total >= 82) {
+          rows.push({
+            evasion: total,
+            scenario: scenario.label,
+            msId: ms.id,
+            msName: ms.name,
+            msCost: ms.cost,
+            agility: ms.agility,
+            characterId: character.id,
+            characterName: character.name,
+            characterCost: character.cost,
+            reaction: character.reaction,
+            awakening: character.awakening,
+            compatibility: compatible,
+            totalCost: number(ms.cost) + number(character.cost) + scenario.optionIds.reduce((sum, id) => sum + number(indexes.options[id]?.cost), 0)
+          });
+        }
+      }
     }
   }
-  return results.filter((pair, index, all) =>
-    all.findIndex((other) => other.weaker.id === pair.weaker.id) === index
-  );
+  return rows.sort((a, b) => b.evasion - a.evasion || a.totalCost - b.totalCost).slice(0, 30);
 }
 
-function addWarning(severity, category, card, message, evidence = {}) {
-  warnings.push({ severity, category, id: card.id, name: card.name, message, evidence });
+function lowCostSwarmCandidates() {
+  return data.mobileSuits
+    .map((ms) => {
+      const profile = actionProfile(ms);
+      const isAircraft = ms.movementType === "flying" || list(ms.tags).some((tag) => /Aircraft|Fighter|helicopter/i.test(tag));
+      const score = msScore(ms) / Math.max(1, number(ms.cost))
+        + (isAircraft ? 0.9 : 0)
+        + (number(ms.cost) <= 70 ? 0.6 : 0)
+        + (profile.fixed.count >= 2 ? 0.5 : 0);
+      return {
+        id: ms.id,
+        name: ms.name,
+        faction: ms.faction,
+        cost: ms.cost,
+        armor: ms.armor,
+        agility: ms.agility,
+        mobility: ms.mobility,
+        movementType: ms.movementType ?? "normal",
+        fixedAttacks: profile.fixed.count,
+        fixedAmmoShots: profile.fixed.ammoShots,
+        avgFixedAccuracy: round(profile.fixed.avgAccuracy, 1),
+        score: round(score, 2)
+      };
+    })
+    .filter((item) => item.cost <= 120)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 30);
 }
 
-function collectWarnings() {
-  const msEfficiencies = data.mobileSuits.map((ms) => msRawScore(ms) / Math.max(1, number(ms.cost)));
-  const highMsEfficiency = percentile(msEfficiencies, 0.9);
-  const lowMsEfficiency = percentile(msEfficiencies, 0.1);
-  for (const ms of data.mobileSuits) {
-    const attacks = potentialAttackCount(ms);
-    const efficiency = msRawScore(ms) / Math.max(1, number(ms.cost));
-    if (attacks >= 5) addWarning("high", "action-economy", ms, `最大攻撃回数候補が${attacks}回です。`, { fixedAttacks: fixedAttackCount(ms), weaponSlots: ms.weaponSlots, cost: ms.cost });
-    else if (attacks >= 4) addWarning("medium", "action-economy", ms, `最大攻撃回数候補が${attacks}回です。`, { fixedAttacks: fixedAttackCount(ms), weaponSlots: ms.weaponSlots, cost: ms.cost });
-    if (number(ms.cost) <= 100 && fixedAttackCount(ms) >= 2) addWarning("medium", "cheap-multiattack", ms, `コスト${ms.cost}で固定攻撃を${fixedAttackCount(ms)}個持ちます。`, { cost: ms.cost, fixedAttacks: fixedAttackCount(ms) });
-    if (efficiency >= highMsEfficiency) addWarning("info", "ms-cost-outlier", ms, "簡易性能/コストが上位10%です。", { efficiency: efficiency.toFixed(2) });
-    if (efficiency <= lowMsEfficiency) addWarning("info", "ms-cost-outlier", ms, "簡易性能/コストが下位10%です。", { efficiency: efficiency.toFixed(2) });
-  }
+function multiWeaponCandidates() {
+  return data.mobileSuits
+    .map((ms) => {
+      const profile = actionProfile(ms);
+      return {
+        id: ms.id,
+        name: ms.name,
+        faction: ms.faction,
+        cost: ms.cost,
+        weaponSlots: number(ms.weaponSlots),
+        fixedAttacks: profile.fixed.count,
+        attackCeiling: profile.attackCeiling,
+        avgFixedAccuracy: round(profile.fixed.avgAccuracy, 1),
+        fixedAmmoShots: profile.fixed.ammoShots,
+        fixedWeapons: profile.fixed.weapons.map((weapon) => `${weapon.name}:${weapon.power}/${weapon.accuracy}/${weapon.ammo}`).join(", ")
+      };
+    })
+    .filter((item) => item.attackCeiling >= 5 || (item.fixedAttacks >= 3 && item.avgFixedAccuracy >= 74))
+    .sort((a, b) => b.attackCeiling - a.attackCeiling || b.avgFixedAccuracy - a.avgFixedAccuracy || a.cost - b.cost)
+    .slice(0, 30);
+}
 
-  const carriedWeapons = data.weapons.filter((weapon) => number(weapon.cost) > 0 && number(weapon.power) > 0 && !weapon.fixedOnly);
-  const weaponEfficiencies = carriedWeapons.map(weaponEfficiency);
-  const highWeaponEfficiency = percentile(weaponEfficiencies, 0.9);
-  const lowWeaponEfficiency = percentile(weaponEfficiencies, 0.1);
-  for (const weapon of carriedWeapons) {
-    const efficiency = weaponEfficiency(weapon);
-    if (efficiency >= highWeaponEfficiency) addWarning("info", "weapon-cost-outlier", weapon, "基礎期待値/コストが上位10%です。", { efficiency: efficiency.toFixed(2) });
-    if (efficiency <= lowWeaponEfficiency) addWarning("info", "weapon-cost-outlier", weapon, "基礎期待値/コストが下位10%です。", { efficiency: efficiency.toFixed(2) });
-    if ((weapon.extraAttackIds ?? []).length) addWarning("medium", "action-economy", weapon, `付属攻撃を${weapon.extraAttackIds.length}個追加します。`, { extraAttackIds: weapon.extraAttackIds });
-  }
-  for (const { weaker, stronger } of conservativeWeaponDominations()) {
-    addWarning("high", "weapon-dominated", weaker, `${stronger.name}が同分類で全主要数値を上回っています。`, { strongerId: stronger.id, strongerName: stronger.name });
-  }
+function weaponEfficiencyRows() {
+  return carriedAttackWeapons()
+    .map((weapon) => ({
+      id: weapon.id,
+      name: weapon.name,
+      role: weaponRole(weapon),
+      faction: factionKey(weapon),
+      cost: weapon.cost,
+      power: weapon.power,
+      accuracy: weapon.accuracy,
+      range: `${number(weapon.minRange, 1) || 1}-${number(weapon.range, 1) || 1}`,
+      ammo: weapon.kind === "ammo" ? weapon.ammo : "",
+      consume: weapon.consume ?? "",
+      slotCost: weaponSlotCost(weapon),
+      efficiency: round(weaponEfficiency(weapon), 2)
+    }))
+    .sort((a, b) => b.efficiency - a.efficiency);
+}
 
-  const perAttackSkills = new Set(["ace", "aiSenshi", "outstandingTalent", "enhancedWarhead", "highOutputGenerator", "precisionMeleeProgram", "teamwork", "madness"]);
-  for (const character of data.characters.filter((item) => item.selectable !== false)) {
-    const matching = (character.specials ?? []).filter((id) => perAttackSkills.has(id));
-    if (matching.length) addWarning("medium", "per-attack-scaling", character, "複数武装攻撃の回数に比例して効果が増えます。", { skills: matching });
-    if ((character.specials ?? []).includes("panic")) addWarning("medium", "persistent-penalty", character, "常時命中-8のペナルティを持ちます。", { skill: "panic" });
+function roleSummaries(weaponRows) {
+  const groups = new Map();
+  for (const row of weaponRows) {
+    if (!groups.has(row.role)) groups.set(row.role, []);
+    groups.get(row.role).push(row.efficiency);
   }
+  return [...groups.entries()].map(([role, values]) => ({
+    role,
+    count: values.length,
+    distribution: distribution(values)
+  })).sort((a, b) => a.role.localeCompare(b.role));
+}
 
-  const sensitiveOptions = {
-    guerrillaTactics: "特殊地形上で射撃対象不可になるため、地形配置と接近手段を確認します。",
-    educationalComputer: "ターン開始ごとに成長するため、長期戦での最大補正到達速度を確認します。",
-    iField: "ビーム被弾ごとに自動発動し、回数制限がありません。",
-    massProductionFormation: "同型機複数へ攻防・命中の複合効果を与えます。",
-    barrageSupport: "周囲の味方全体を支援し、重複しません。"
-  };
-  for (const option of data.options ?? []) {
-    if (sensitiveOptions[option.grantsSkill]) addWarning("high", "rule-sensitive-option", option, sensitiveOptions[option.grantsSkill], { skill: option.grantsSkill, cost: option.cost });
+function wideSkillSources() {
+  const rows = [];
+  for (const [skillId, note] of Object.entries(WATCHED_WIDE_SKILLS)) {
+    const sources = [];
+    for (const character of data.characters) {
+      if (list(character.specials).includes(skillId)) {
+        sources.push({ type: "character", id: character.id, name: character.name, cost: character.cost, faction: character.faction, roles: list(character.roles).join("/") });
+      }
+    }
+    for (const option of data.options ?? []) {
+      if (option.grantsSkill === skillId) {
+        sources.push({ type: "option", id: option.id, name: option.name, cost: option.cost, faction: factionKey(option), roles: "" });
+      }
+    }
+    if (sources.length) {
+      rows.push({
+        skillId,
+        skillName: indexes.skills[skillId]?.name ?? skillId,
+        note,
+        count: sources.length,
+        minCost: Math.min(...sources.map((source) => number(source.cost))),
+        sources: sources.sort((a, b) => number(a.cost) - number(b.cost))
+      });
+    }
   }
+  return rows.sort((a, b) => a.minCost - b.minCost);
+}
+
+function stageRows() {
+  return list(data.campaign?.stages).map((stage) => {
+    const entries = Object.values(stage.enemyFormations ?? {}).flat();
+    const unitCost = entries.reduce((sum, entry) => sum
+      + number(indexes.mobileSuits[entry.msId]?.cost)
+      + list(entry.characterIds).reduce((value, id) => value + number(indexes.characters[id]?.cost), 0)
+      + list(entry.weaponIds).reduce((value, id) => value + number(indexes.weapons[id]?.cost), 0)
+      + list(entry.optionIds).reduce((value, id) => value + number(indexes.options[id]?.cost), 0), 0);
+    const bridgeCost = number(indexes.characters[stage.enemyCaptainId]?.cost)
+      + number(indexes.characters[stage.enemyFirstOfficerId]?.cost);
+    const enemyCost = unitCost + number(indexes.battleships[stage.enemyBattleshipId]?.cost) + bridgeCost;
+    const autoMargin = Math.max(80, Math.ceil(enemyCost * 0.15));
+    const costCap = Number.isFinite(stage.costCap) ? stage.costCap : Math.ceil((enemyCost + autoMargin) / 10) * 10;
+    const specialRules = [
+      stage.turnLimit ? `turnLimit:${stage.turnLimit}` : "",
+      list(stage.defenseTargets).length ? `defense:${list(stage.defenseTargets).length}` : "",
+      stage.enemyBattleshipId ? `enemyShip:${stage.enemyBattleshipId}` : ""
+    ].filter(Boolean);
+    return {
+      id: stage.id,
+      name: stage.name,
+      mapId: stage.mapId,
+      enemies: entries.length,
+      enemyCost,
+      costCap,
+      margin: costCap - enemyCost,
+      specialRules: specialRules.join(", ") || "-"
+    };
+  });
 }
 
 function integrityChecks() {
   const issues = [];
-  for (const [type, items] of Object.entries({ mobileSuits: data.mobileSuits, battleships: data.battleships, weapons: data.weapons, characters: data.characters, options: data.options ?? [] })) {
+  for (const [type, items] of Object.entries({
+    mobileSuits: data.mobileSuits,
+    battleships: data.battleships,
+    weapons: data.weapons,
+    characters: data.characters,
+    options: data.options ?? [],
+    skills: data.skills ?? []
+  })) {
     const seen = new Set();
     for (const item of items) {
       if (seen.has(item.id)) issues.push(`${type}: ID重複 ${item.id}`);
@@ -207,94 +544,210 @@ function integrityChecks() {
     }
   }
   for (const ms of data.mobileSuits) {
-    for (const id of ms.fixedWeaponIds ?? []) if (!weaponsById[id]) issues.push(`${ms.id}: 不明な固定武装 ${id}`);
+    for (const id of list(ms.fixedWeaponIds)) if (!indexes.weapons[id]) issues.push(`${ms.id}: 不明な固定武装 ${id}`);
   }
   for (const ship of data.battleships) {
-    for (const id of ship.weaponIds ?? []) if (!weaponsById[id]) issues.push(`${ship.id}: 不明な艦載武装 ${id}`);
+    for (const id of list(ship.weaponIds)) if (!indexes.weapons[id]) issues.push(`${ship.id}: 不明な艦載武装 ${id}`);
   }
-  const skillSources = [
-    ...data.mobileSuits.flatMap((item) => item.specials ?? []),
-    ...data.weapons.flatMap((item) => item.specials ?? []),
-    ...data.characters.flatMap((item) => item.specials ?? []),
-    ...(data.options ?? []).map((item) => item.grantsSkill).filter(Boolean)
-  ];
-  for (const id of unique(skillSources)) if (!skillsById[id]) issues.push(`スキル定義なし: ${id}`);
+  const usedSkillIds = unique([
+    ...data.mobileSuits.flatMap((item) => list(item.specials)),
+    ...data.weapons.flatMap((item) => list(item.specials)),
+    ...data.characters.flatMap((item) => list(item.specials)),
+    ...list(data.options).map((item) => item.grantsSkill).filter(Boolean)
+  ]);
+  for (const id of usedSkillIds) if (!indexes.skills[id]) issues.push(`スキル定義なし: ${id}`);
   return issues;
 }
 
-function stageRows() {
-  const ms = Object.fromEntries(data.mobileSuits.map((item) => [item.id, item]));
-  const ships = Object.fromEntries(data.battleships.map((item) => [item.id, item]));
-  const characters = Object.fromEntries(data.characters.map((item) => [item.id, item]));
-  const options = Object.fromEntries((data.options ?? []).map((item) => [item.id, item]));
-  return (data.campaign?.stages ?? []).map((stage) => {
-    const entries = Object.values(stage.enemyFormations ?? {}).flat();
-    const unitCost = entries.reduce((sum, entry) => sum
-      + number(ms[entry.msId]?.cost)
-      + (entry.characterIds ?? []).reduce((value, id) => value + number(characters[id]?.cost), 0)
-      + (entry.weaponIds ?? []).reduce((value, id) => value + number(weaponsById[id]?.cost), 0)
-      + (entry.optionIds ?? []).reduce((value, id) => value + number(options[id]?.cost), 0), 0);
-    const bridgeCost = number(characters[stage.enemyCaptainId]?.cost) + number(characters[stage.enemyFirstOfficerId]?.cost);
-    const enemyCost = unitCost + number(ships[stage.enemyBattleshipId]?.cost) + bridgeCost;
-    const margin = Math.max(80, Math.ceil(enemyCost * 0.15));
-    const cap = Number.isFinite(stage.costCap) ? stage.costCap : Math.ceil((enemyCost + margin) / 10) * 10;
-    return { mapId: stage.mapId, enemyCost, costCap: cap, margin: cap - enemyCost };
+function warningsFromReport(draft) {
+  const warnings = [];
+  const add = (severity, category, item, message, evidence = {}) => {
+    warnings.push({
+      severity,
+      category,
+      id: item.id ?? item.warningId ?? item.msId ?? item.skillId,
+      name: item.name ?? item.warningName ?? item.msName ?? item.skillName,
+      message,
+      evidence
+    });
+  };
+
+  for (const item of draft.multiWeaponCandidates) {
+    if (item.attackCeiling >= 5 && item.avgFixedAccuracy >= 74) {
+      add("high", "multi-weapon-accuracy", item, "多武装かつ固定武装の平均命中が高めです。", {
+        attackCeiling: item.attackCeiling,
+        avgFixedAccuracy: item.avgFixedAccuracy,
+        fixedAmmoShots: item.fixedAmmoShots
+      });
+    } else if (item.attackCeiling >= 5) {
+      add("medium", "multi-weapon-count", item, "装備込みの攻撃回数上限が高い機体です。", {
+        attackCeiling: item.attackCeiling,
+        avgFixedAccuracy: item.avgFixedAccuracy,
+        fixedAmmoShots: item.fixedAmmoShots
+      });
+    }
+  }
+
+  for (const item of draft.lowCostSwarmCandidates) {
+    if (item.score >= 3.2 && item.cost <= 80) {
+      add("medium", "low-cost-swarm", item, "低コスト物量で効率が高くなりやすい候補です。", {
+        score: item.score,
+        fixedAttacks: item.fixedAttacks,
+        fixedAmmoShots: item.fixedAmmoShots,
+        movementType: item.movementType
+      });
+    }
+  }
+
+  for (const row of draft.evasionCombos.slice(0, 20)) {
+    const item = {
+      ...row,
+      warningId: `${row.msId}:${row.characterId || "none"}:${row.scenario}`,
+      warningName: `${row.msName} + ${row.characterName} / ${row.scenario}`
+    };
+    if (row.evasion >= 96) {
+      add("high", "high-evasion-stack", item, "命中下限頼みになりやすい高回避ビルドです。", {
+        evasion: row.evasion,
+        scenario: row.scenario,
+        msId: row.msId,
+        characterId: row.characterId,
+        totalCost: row.totalCost
+      });
+    } else if (row.evasion >= 90) {
+      add("medium", "high-evasion-stack", item, "高回避ビルドです。命中補助との相性を確認してください。", {
+        evasion: row.evasion,
+        scenario: row.scenario,
+        msId: row.msId,
+        characterId: row.characterId,
+        totalCost: row.totalCost
+      });
+    }
+  }
+
+  for (const option of data.options ?? []) {
+    if (WATCHED_OPTIONS.has(option.grantsSkill)) {
+      const severity = ["forcedMarch", "enemyIntel", "examSystem", "iField"].includes(option.grantsSkill) ? "high" : "medium";
+      add(severity, "rule-sensitive-option", option, "ルール影響が大きいOPです。コストと発動条件を継続監視してください。", {
+        skill: option.grantsSkill,
+        cost: option.cost
+      });
+    }
+  }
+
+  return warnings.sort((a, b) => {
+    const order = { high: 0, medium: 1, info: 2 };
+    return order[a.severity] - order[b.severity] || a.category.localeCompare(b.category) || String(a.name).localeCompare(String(b.name), "ja");
   });
 }
 
-function markdownTable(headers, rows) {
-  const escape = (value) => String(value ?? "").replaceAll("|", "\\|").replaceAll("\n", " ");
-  return [`| ${headers.map(escape).join(" | ")} |`, `| ${headers.map(() => "---").join(" | ")} |`, ...rows.map((row) => `| ${row.map(escape).join(" | ")} |`)].join("\n");
+function buildRepresentativeHitRows() {
+  const attackers = [
+    { label: "標準射撃", weaponAccuracy: 78, ability: 18, skill: 0 },
+    { label: "高命中射撃", weaponAccuracy: 82, ability: 24, skill: 0 },
+    { label: "教育型最大", weaponAccuracy: 78, ability: 18, skill: constants.EDUCATIONAL_COMPUTER_ACCURACY_CAP },
+    { label: "EXAM発動", weaponAccuracy: 78, ability: 18, skill: 18 }
+  ];
+  return attackers.flatMap((attacker) => REPRESENTATIVE_DEFENDERS.map((defender) => {
+    const raw = attacker.weaponAccuracy + attacker.ability + attacker.skill + constants.HIT_RATE_BONUS - defender.evasion;
+    return {
+      attacker: attacker.label,
+      defender: defender.label,
+      rawBeforeRepeat: raw,
+      sequence: hitSequence(raw, 5).join(" / ")
+    };
+  }));
 }
 
 function buildReport() {
-  collectWarnings();
-  const integrity = integrityChecks();
-  const severityOrder = { high: 0, medium: 1, info: 2 };
-  warnings.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity] || a.category.localeCompare(b.category) || a.name.localeCompare(b.name, "ja"));
-  const topMs = data.mobileSuits.map((ms) => ({
-    ms,
-    fixed: fixedAttackCount(ms),
-    potential: potentialAttackCount(ms),
-    efficiency: msRawScore(ms) / Math.max(1, number(ms.cost))
-  })).sort((a, b) => b.potential - a.potential || b.efficiency - a.efficiency).slice(0, 25);
-  const topWeapons = data.weapons.filter((weapon) => number(weapon.cost) > 0 && number(weapon.power) > 0 && !weapon.fixedOnly)
-    .map((weapon) => ({ weapon, expected: weaponExpectedDamage(weapon), efficiency: weaponEfficiency(weapon) }))
-    .sort((a, b) => b.efficiency - a.efficiency).slice(0, 25);
+  const weaponRows = weaponEfficiencyRows();
   const report = {
     generatedAt: new Date().toISOString(),
     source: DATA_PATHS.filter(fs.existsSync).map((dataPath) => path.relative(ROOT, dataPath).replaceAll("\\", "/")).join(" + "),
+    constants,
     counts: {
       mobileSuits: data.mobileSuits.length,
       battleships: data.battleships.length,
       weapons: data.weapons.length,
       characters: data.characters.length,
-      options: (data.options ?? []).length,
-      skills: (data.skills ?? []).length
+      options: list(data.options).length,
+      skills: list(data.skills).length,
+      stages: list(data.campaign?.stages).length
     },
-    integrity,
-    stages: stageRows(),
-    warnings,
-    topMs: topMs.map(({ ms, fixed, potential, efficiency }) => ({ id: ms.id, name: ms.name, cost: ms.cost, fixedAttacks: fixed, potentialAttacks: potential, simpleEfficiency: Number(efficiency.toFixed(2)) })),
-    topWeapons: topWeapons.map(({ weapon, expected, efficiency }) => ({ id: weapon.id, name: weapon.name, cost: weapon.cost, expectedBaseDamage: Number(expected.toFixed(1)), simpleEfficiency: Number(efficiency.toFixed(2)) }))
+    distributions: {
+      mobileSuitCost: distribution(data.mobileSuits.map((item) => number(item.cost))),
+      battleshipCost: distribution(data.battleships.map((item) => number(item.cost))),
+      weaponCost: distribution(data.weapons.filter((item) => number(item.cost) > 0).map((item) => number(item.cost))),
+      characterCost: distribution(data.characters.map((item) => number(item.cost))),
+      optionCost: distribution(list(data.options).map((item) => number(item.cost)))
+    },
+    repeatAttack: {
+      penalties: Array.from({ length: 6 }, (_, index) => repeatPenalty(index + 1)),
+      mobileSuitMinimums: Array.from({ length: 6 }, (_, index) => minimumHitRate(index + 1, true)),
+      battleshipMinimums: Array.from({ length: 6 }, (_, index) => minimumHitRate(index + 1, false)),
+      representativeHits: buildRepresentativeHitRows()
+    },
+    integrity: integrityChecks(),
+    lowCostSwarmCandidates: lowCostSwarmCandidates(),
+    multiWeaponCandidates: multiWeaponCandidates(),
+    evasionCombos: evasionCombos(),
+    weaponEfficiencyTop: weaponRows.slice(0, 35),
+    weaponEfficiencyByRole: roleSummaries(weaponRows),
+    wideSkillSources: wideSkillSources(),
+    stages: stageRows()
   };
+  report.warnings = warningsFromReport(report);
   return report;
 }
 
+function markdownTable(headers, rows) {
+  const escape = (value) => String(value ?? "").replaceAll("|", "\\|").replaceAll("\n", " ");
+  if (!rows.length) return "_該当なし_";
+  return [
+    `| ${headers.map(escape).join(" | ")} |`,
+    `| ${headers.map(() => "---").join(" | ")} |`,
+    ...rows.map((row) => `| ${row.map(escape).join(" | ")} |`)
+  ].join("\n");
+}
+
 function reportToMarkdown(report) {
-  const warningCounts = Object.fromEntries(["high", "medium", "info"].map((level) => [level, report.warnings.filter((item) => item.severity === level).length]));
-  const sections = [
+  const warningCounts = Object.fromEntries(["high", "medium", "info"].map((severity) => [
+    severity,
+    report.warnings.filter((item) => item.severity === severity).length
+  ]));
+  const repeatRule = `ペナルティ ${report.repeatAttack.penalties.join(" / ")}、MS最低命中 ${report.repeatAttack.mobileSuitMinimums.join(" / ")}、戦艦最低命中 ${report.repeatAttack.battleshipMinimums.join(" / ")}`;
+
+  return [
     "# カードバランス自動診断",
     "",
-    `生成: ${report.generatedAt} / 参照: \`${report.source}\``,
+    `生成: ${report.generatedAt}`,
+    `参照: \`${report.source}\``,
     "",
-    "> このレポートは再確認候補を絞るための静的診断です。実戦での強弱を断定するものではありません。",
+    "> このレポートは、今の調整方針に沿って再確認候補を絞るための静的診断です。実戦での強弱を断定するものではありません。",
     "",
     "## サマリー",
     "",
-    markdownTable(["機体", "戦艦", "武器", "キャラ", "OP", "スキル"], [[report.counts.mobileSuits, report.counts.battleships, report.counts.weapons, report.counts.characters, report.counts.options, report.counts.skills]]),
+    markdownTable(
+      ["MS/MA", "戦艦", "武器", "キャラ", "OP", "スキル", "ステージ"],
+      [[report.counts.mobileSuits, report.counts.battleships, report.counts.weapons, report.counts.characters, report.counts.options, report.counts.skills, report.counts.stages]]
+    ),
     "",
     `警告候補: high ${warningCounts.high} / medium ${warningCounts.medium} / info ${warningCounts.info}`,
+    "",
+    "## コスト分布",
+    "",
+    markdownTable(
+      ["分類", "min", "p25", "median", "p75", "p90", "max"],
+      Object.entries(report.distributions).map(([key, value]) => [key, value.min, value.p25, value.median, value.p75, value.p90, value.max])
+    ),
+    "",
+    "## 連続攻撃・命中前提",
+    "",
+    repeatRule,
+    "",
+    markdownTable(
+      ["攻撃側", "防御側", "連続攻撃前の素値", "1〜5回目命中"],
+      report.repeatAttack.representativeHits.map((row) => [row.attacker, row.defender, row.rawBeforeRepeat, row.sequence])
+    ),
     "",
     "## データ整合性",
     "",
@@ -302,37 +755,84 @@ function reportToMarkdown(report) {
     "",
     "## 優先確認候補",
     "",
-    markdownTable(["重要度", "分類", "カード", "指摘", "根拠"], report.warnings.filter((item) => item.severity !== "info").map((item) => [item.severity, item.category, `${item.name} (${item.id})`, item.message, JSON.stringify(item.evidence)])),
+    markdownTable(
+      ["重要度", "分類", "カード", "指摘", "根拠"],
+      report.warnings.map((item) => [item.severity, item.category, `${item.name} (${item.id})`, item.message, JSON.stringify(item.evidence)])
+    ),
     "",
-    "## 最大攻撃回数候補",
+    "## 低コスト物量・航空機候補",
     "",
-    markdownTable(["機体", "コスト", "固定攻撃", "装備込み最大", "簡易性能/コスト"], report.topMs.map((item) => [`${item.name} (${item.id})`, item.cost, item.fixedAttacks, item.potentialAttacks, item.simpleEfficiency])),
+    markdownTable(
+      ["機体", "勢力", "コスト", "装甲", "回避", "移動", "移動型", "固定攻撃", "固定弾数", "固定平均命中", "効率"],
+      report.lowCostSwarmCandidates.map((item) => [item.name, item.faction, item.cost, item.armor, item.agility, item.mobility, item.movementType, item.fixedAttacks, item.fixedAmmoShots, item.avgFixedAccuracy, item.score])
+    ),
     "",
-    "## 携行武器の基礎期待値/コスト 上位",
+    "## 多武装・固定武装圧",
     "",
-    markdownTable(["武器", "コスト", "威力×命中", "簡易効率"], report.topWeapons.map((item) => [`${item.name} (${item.id})`, item.cost, item.expectedBaseDamage, item.simpleEfficiency])),
+    markdownTable(
+      ["機体", "勢力", "コスト", "装備枠", "固定攻撃", "最大攻撃候補", "固定平均命中", "固定弾数", "固定武装"],
+      report.multiWeaponCandidates.map((item) => [item.name, item.faction, item.cost, item.weaponSlots, item.fixedAttacks, item.attackCeiling, item.avgFixedAccuracy, item.fixedAmmoShots, item.fixedWeapons])
+    ),
+    "",
+    "## 高回避スタック候補",
+    "",
+    markdownTable(
+      ["回避", "シナリオ", "機体", "機体コスト", "パイロット", "パイロットコスト", "相性", "総コスト"],
+      report.evasionCombos.map((item) => [item.evasion, item.scenario, `${item.msName} (${item.msId})`, item.msCost, `${item.characterName} (${item.characterId || "none"})`, item.characterCost, item.compatibility, item.totalCost])
+    ),
+    "",
+    "## 携行武器 効率上位",
+    "",
+    markdownTable(
+      ["武器", "役割", "勢力", "コスト", "威力", "命中", "射程", "弾数", "消費", "枠", "効率"],
+      report.weaponEfficiencyTop.map((item) => [item.name, item.role, item.faction, item.cost, item.power, item.accuracy, item.range, item.ammo, item.consume, item.slotCost, item.efficiency])
+    ),
+    "",
+    "## 武器役割別 効率分布",
+    "",
+    markdownTable(
+      ["役割", "数", "min", "median", "p90", "max"],
+      report.weaponEfficiencyByRole.map((item) => [item.role, item.count, item.distribution.min, item.distribution.median, item.distribution.p90, item.distribution.max])
+    ),
+    "",
+    "## 広域・支援スキル源",
+    "",
+    markdownTable(
+      ["スキル", "最安コスト", "数", "用途", "安い順の主な源"],
+      report.wideSkillSources.map((item) => [
+        `${item.skillName} (${item.skillId})`,
+        item.minCost,
+        item.count,
+        item.note,
+        item.sources.slice(0, 6).map((source) => `${source.name}/${source.type}/${source.cost}`).join(", ")
+      ])
+    ),
     "",
     "## ステージコスト",
     "",
-    markdownTable(["マップ", "敵総コスト", "出撃上限", "余裕"], report.stages.map((item) => [item.mapId, item.enemyCost, item.costCap, item.margin])),
+    markdownTable(
+      ["ステージ", "マップ", "敵数", "敵総コスト", "出撃上限", "余裕", "特殊条件"],
+      report.stages.map((item) => [item.name || item.id, item.mapId, item.enemies, item.enemyCost, item.costCap, item.margin, item.specialRules])
+    ),
     "",
-    "## 指標メモ",
+    "## 読み方メモ",
     "",
-    "- 最大攻撃回数候補 = 攻撃可能な固定・付属武装数 + 装備枠数。現行の各武装1回/ターンを前提にしています。",
-    "- 機体の簡易性能は装甲、EN、運動性、移動、装備枠、固定攻撃、スキル数を合成した比較用指標です。",
-    "- 武器効率は威力×命中率×射程幅補正÷コストです。弾数、EN事情、特殊効果、地形は最終判断で別途確認します。",
-    "- high/mediumはルールとの相互作用、infoは上下10%の統計的外れ値です。"
-  ];
-  return sections.join("\n");
+    "- 低コスト物量候補は、低コスト・飛行・固定武装数・固定弾数・基礎性能を混ぜたレビュー用スコアです。",
+    "- 多武装候補は、固定攻撃数と装備枠から「1ターンに撃てる可能性がある武装数」を見ています。",
+    "- 高回避候補は、相性・覚醒・ハロ・教育型・EXAMなどの代表的な重ね方を静的に列挙しています。",
+    "- 携行武器効率は、威力、命中、射程、弾数/EN消費、slotCost、チャージを混ぜた比較用スコアです。",
+    "- high/medium は調整対象の断定ではなく、次に人間が見るべき候補です。"
+  ].join("\n");
 }
 
 function parseArgs(args) {
-  const parsed = { json: false, output: "" };
+  const parsed = { json: false, output: "", help: false };
   for (let index = 0; index < args.length; index += 1) {
-    if (args[index] === "--json") parsed.json = true;
-    else if (args[index] === "--output") parsed.output = args[++index] ?? "";
-    else if (args[index] === "--help") parsed.help = true;
-    else throw new Error(`Unknown argument: ${args[index]}`);
+    const arg = args[index];
+    if (arg === "--json") parsed.json = true;
+    else if (arg === "--output") parsed.output = args[++index] ?? "";
+    else if (arg === "--help") parsed.help = true;
+    else throw new Error(`Unknown argument: ${arg}`);
   }
   return parsed;
 }
@@ -342,6 +842,7 @@ if (args.help) {
   console.log("Usage: node work/card-balance-report.js [--json] [--output <path>]");
   process.exit(0);
 }
+
 const report = buildReport();
 const output = args.json ? `${JSON.stringify(report, null, 2)}\n` : `${reportToMarkdown(report)}\n`;
 if (args.output) {
