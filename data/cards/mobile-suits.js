@@ -5917,6 +5917,477 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "zanny",
+    "name": "ザニー",
+    "faction": "federation",
+    "cost": 85,
+    "armor": 210,
+    "energy": 45,
+    "agility": 10,
+    "mobility": 3,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "earlyMs",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zephyrGundam",
+    "name": "ゼファーガンダム",
+    "faction": "federation",
+    "cost": 330,
+    "armor": 330,
+    "energy": 105,
+    "agility": 31,
+    "mobility": 6,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "pilotSlots": 0,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber",
+      "fixedShield"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "unmannedMs",
+      "phantomSystemMs"
+    ],
+    "specials": [
+      "phantomSystem"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gundamGtFourB",
+    "name": "ガンダムGT-FOUR（B）",
+    "faction": "federation",
+    "cost": 255,
+    "armor": 300,
+    "energy": 95,
+    "agility": 22,
+    "mobility": 7,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "gtFourBeamCannon"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "flying",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "gtFour",
+      "transformableMs"
+    ],
+    "specials": [
+      "transform"
+    ],
+    "transformMsId": "gundamGtFourG",
+    "imagePath": ""
+  },
+  {
+    "id": "gundamGtFourG",
+    "name": "ガンダムGT-FOUR（G）",
+    "faction": "federation",
+    "cost": 235,
+    "armor": 300,
+    "energy": 95,
+    "agility": 18,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "gtFourBeamCannon"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "gtFour",
+      "transformableMs"
+    ],
+    "specials": [
+      "transform"
+    ],
+    "transformMsId": "gundamGtFourB",
+    "imagePath": ""
+  },
+  {
+    "id": "blueDestiny1",
+    "name": "ブルーディスティニー1号機",
+    "faction": "federation",
+    "cost": 280,
+    "armor": 330,
+    "energy": 95,
+    "agility": 25,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "bdChestMissile"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "groundGundam",
+      "blueDestiny",
+      "examMs"
+    ],
+    "specials": [
+      "examSystem"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "blueDestiny3",
+    "name": "ブルーディスティニー3号機",
+    "faction": "federation",
+    "cost": 300,
+    "armor": 330,
+    "energy": 105,
+    "agility": 27,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "bdChestMissile"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "gmCommand",
+      "blueDestiny",
+      "examMs"
+    ],
+    "specials": [
+      "examSystem"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gyanEos",
+    "name": "ギャン・エーオース",
+    "faction": "zeon",
+    "cost": 260,
+    "armor": 315,
+    "energy": 100,
+    "agility": 28,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamBayonet",
+      "bayonetBeamGun"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gyan",
+      "commanderMs",
+      "meleeMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "dolmel",
+    "name": "ドルメル",
+    "faction": "zeon",
+    "cost": 305,
+    "armor": 350,
+    "energy": 110,
+    "agility": 27,
+    "mobility": 5,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "dolmelArmBeamSaber",
+      "heatPile",
+      "dolmelMissilePod"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "dolmel",
+      "assaultMs",
+      "meleeMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "qatal",
+    "name": "カタール",
+    "faction": "zeon",
+    "cost": 365,
+    "armor": 330,
+    "energy": 140,
+    "agility": 32,
+    "mobility": 6,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "qatalBeamBlade",
+      "qatalBeamCannon",
+      "qatalBit"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "dolmel",
+      "psycommuMs",
+      "newtypeUse",
+      "stealthMs"
+    ],
+    "specials": [
+      "stealth"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "goufVijanta",
+    "name": "グフ・ヴィジャンタ",
+    "faction": "zeon",
+    "cost": 220,
+    "armor": 315,
+    "energy": 70,
+    "agility": 27,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "removalMace",
+      "scissorAnchor"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gouf",
+      "meleeMs",
+      "highMobilityMs"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "goufTacticalAssault",
+    "name": "グフ戦術強攻型",
+    "faction": "zeon",
+    "cost": 230,
+    "armor": 325,
+    "energy": 70,
+    "agility": 22,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatRod",
+      "heatSword",
+      "goufGatling120mm"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gouf",
+      "assaultMs"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "efreetCustom",
+    "name": "イフリート改",
+    "faction": "zeon",
+    "cost": 300,
+    "armor": 315,
+    "energy": 85,
+    "agility": 32,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "efreetHeatSaber",
+      "efreetLegMissilePod"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "efreet",
+      "examMs",
+      "meleeMs"
+    ],
+    "specials": [
+      "examSystem"
+    ],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "blueDestiny2",
+    "name": "ブルーディスティニー2号機",
+    "faction": "zeon",
+    "cost": 310,
+    "armor": 330,
+    "energy": 105,
+    "agility": 28,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "bdChestMissile"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gundam",
+      "blueDestiny",
+      "examMs"
+    ],
+    "specials": [
+      "examSystem"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "gundamPixy",
     "name": "ガンダム・ピクシー",
     "faction": "federation",

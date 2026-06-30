@@ -468,6 +468,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "phantomSystem",
+    "name": "ファントムシステム",
+    "type": "機体",
+    "timing": "常時",
+    "effect": "AIによる自律戦闘補助。MS搭乗者がいなくても命中・回避+10、与ダメージ+8。",
+    "implemented": true
+  },
+  {
     "id": "transform",
     "name": "変形",
     "type": "機体",

@@ -4749,5 +4749,313 @@ window.GAME_DATA.weapons = [
     "factions": [
       "zeon"
     ]
+  },
+  {
+    "id": "fixedShield",
+    "name": "固定シールド",
+    "cost": 0,
+    "power": 70,
+    "accuracy": 82,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "shield",
+    "ammo": 0,
+    "category": "shield",
+    "attackType": "melee",
+    "durability": 90,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "gtFourBeamCannon",
+    "name": "ビーム・キャノン（GT-FOUR）",
+    "cost": 0,
+    "power": 122,
+    "accuracy": 72,
+    "range": 4,
+    "minRange": 2,
+    "consume": 22,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "bdChestMissile",
+    "name": "胸部ミサイル",
+    "cost": 0,
+    "power": 88,
+    "accuracy": 76,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ]
+  },
+  {
+    "id": "beamBayonet",
+    "name": "ビーム・ベイオネット",
+    "cost": 0,
+    "power": 132,
+    "accuracy": 80,
+    "range": 1,
+    "minRange": 1,
+    "consume": 16,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "bayonetBeamGun",
+    "name": "ビーム・ベイオネット内蔵ビームガン",
+    "cost": 0,
+    "power": 88,
+    "accuracy": 78,
+    "range": 3,
+    "minRange": 1,
+    "consume": 12,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "roundShield",
+    "name": "ラウンド・シールド",
+    "cost": 45,
+    "power": 84,
+    "accuracy": 78,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "shield",
+    "ammo": 0,
+    "category": "shield",
+    "attackType": "melee",
+    "durability": 110,
+    "specials": [
+      "impactDiffusionArmor"
+    ],
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "dolmelArmBeamSaber",
+    "name": "両腕部ビーム・サーベル",
+    "cost": 0,
+    "power": 142,
+    "accuracy": 82,
+    "range": 1,
+    "minRange": 1,
+    "consume": 18,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "heatPile",
+    "name": "肩部ヒート・パイル",
+    "cost": 0,
+    "power": 132,
+    "accuracy": 78,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "dolmelMissilePod",
+    "name": "ミサイル・ポッド（ドルメル）",
+    "cost": 0,
+    "power": 104,
+    "accuracy": 72,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "qatalBeamBlade",
+    "name": "ビームブレード",
+    "cost": 0,
+    "power": 150,
+    "accuracy": 80,
+    "range": 1,
+    "minRange": 1,
+    "consume": 20,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "qatalBeamCannon",
+    "name": "内蔵ビーム砲",
+    "cost": 0,
+    "power": 132,
+    "accuracy": 74,
+    "range": 4,
+    "minRange": 2,
+    "consume": 24,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "qatalBit",
+    "name": "ビット",
+    "cost": 0,
+    "power": 152,
+    "accuracy": 76,
+    "range": 5,
+    "minRange": 2,
+    "consume": 30,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "bit",
+    "attackType": "shooting",
+    "durability": 0,
+    "requiredAwakening": 10,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "removalMace",
+    "name": "リムーヴァル・メイス",
+    "cost": 0,
+    "power": 128,
+    "accuracy": 78,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "scissorAnchor",
+    "name": "シザー・アンカー",
+    "cost": 0,
+    "power": 96,
+    "accuracy": 76,
+    "range": 2,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "anchor",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "goufGatling120mm",
+    "name": "120mmガトリング",
+    "cost": 0,
+    "power": 108,
+    "accuracy": 76,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "gatling",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "efreetLegMissilePod",
+    "name": "脚部ミサイルポッド",
+    "cost": 0,
+    "power": 94,
+    "accuracy": 74,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
   }
 ];

@@ -3303,5 +3303,205 @@ window.GAME_DATA.characters = [
       "massProductionFormation"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "youKajima",
+    "name": "ユウ・カジマ",
+    "characterKey": "youKajima",
+    "faction": "federation",
+    "cost": 150,
+    "shooting": 24,
+    "melee": 21,
+    "reaction": 25,
+    "awakening": 0,
+    "command": 12,
+    "support": 8,
+    "maintenance": 3,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "ace"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "philipHughes",
+    "name": "フィリップ・ヒューズ",
+    "characterKey": "philipHughes",
+    "faction": "federation",
+    "cost": 85,
+    "shooting": 18,
+    "melee": 13,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 9,
+    "support": 16,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "samanaFulis",
+    "name": "サマナ・フュリス",
+    "characterKey": "samanaFulis",
+    "faction": "federation",
+    "cost": 75,
+    "shooting": 16,
+    "melee": 12,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 7,
+    "support": 14,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "allyBackup"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "maureenKitamura",
+    "name": "モーリン・キタムラ",
+    "characterKey": "maureenKitamura",
+    "faction": "federation",
+    "cost": 65,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 8,
+    "support": 18,
+    "maintenance": 18,
+    "roles": [
+      "operator",
+      "mechanic"
+    ],
+    "specials": [
+      "retreatSupport"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "walhammerCains",
+    "name": "ワルハマー・T・カインズ",
+    "characterKey": "walhammerCains",
+    "faction": "federation",
+    "cost": 80,
+    "shooting": 4,
+    "melee": 2,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 10,
+    "support": 18,
+    "maintenance": 24,
+    "roles": [
+      "mechanic",
+      "operator"
+    ],
+    "specials": [
+      "internalAudit"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "frederickBrown",
+    "name": "フレデリック・ブラウン",
+    "characterKey": "frederickBrown",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 12,
+    "melee": 11,
+    "reaction": 12,
+    "awakening": 0,
+    "command": 4,
+    "support": 5,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "nimbusSchterzen",
+    "name": "ニムバス・シュターゼン",
+    "characterKey": "nimbusSchterzen",
+    "faction": "zeon",
+    "cost": 145,
+    "shooting": 18,
+    "melee": 26,
+    "reaction": 23,
+    "awakening": 0,
+    "command": 14,
+    "support": 5,
+    "maintenance": 2,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "ace"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "marionWelch",
+    "name": "マリオン・ウェルチ",
+    "characterKey": "marionWelch",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 10,
+    "melee": 6,
+    "reaction": 18,
+    "awakening": 24,
+    "command": 5,
+    "support": 16,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "operator"
+    ],
+    "specials": [
+      "retreatSupport"
+    ],
+    "isNewtype": true,
+    "tags": [
+      "newtype"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "ephaGaldrial",
+    "name": "エファ・ガラドリアル",
+    "characterKey": "ephaGaldrial",
+    "faction": "zeon",
+    "cost": 120,
+    "shooting": 18,
+    "melee": 10,
+    "reaction": 22,
+    "awakening": 26,
+    "command": 5,
+    "support": 8,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "rivalry"
+    ],
+    "isNewtype": true,
+    "tags": [
+      "newtype"
+    ],
+    "imagePath": ""
   }
 ];

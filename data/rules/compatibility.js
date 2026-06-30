@@ -673,6 +673,96 @@ window.GAME_DATA.compatibility = {
       "characterId": "martinHagar",
       "msId": "zaku2",
       "evasionBonus": 6
+    },
+    {
+      "characterId": "youKajima",
+      "msTag": "blueDestiny",
+      "evasionBonus": 14
+    },
+    {
+      "characterId": "youKajima",
+      "msTag": "examMs",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "youKajima",
+      "msTag": "gmCommand",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "youKajima",
+      "msTag": "gmDominance",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "philipHughes",
+      "msTag": "gm",
+      "evasionBonus": 5
+    },
+    {
+      "characterId": "philipHughes",
+      "msTag": "gmCommand",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "philipHughes",
+      "msTag": "gmDominance",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "samanaFulis",
+      "msTag": "gm",
+      "evasionBonus": 4
+    },
+    {
+      "characterId": "samanaFulis",
+      "msTag": "gmCommand",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "samanaFulis",
+      "msTag": "gmDominance",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "frederickBrown",
+      "msTag": "zaku",
+      "evasionBonus": 5
+    },
+    {
+      "characterId": "frederickBrown",
+      "msTag": "dom",
+      "evasionBonus": 5
+    },
+    {
+      "characterId": "frederickBrown",
+      "msTag": "gelgoog",
+      "evasionBonus": 5
+    },
+    {
+      "characterId": "nimbusSchterzen",
+      "msId": "efreetCustom",
+      "evasionBonus": 14
+    },
+    {
+      "characterId": "nimbusSchterzen",
+      "msId": "blueDestiny2",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "marionWelch",
+      "msTag": "examMs",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "ephaGaldrial",
+      "msId": "qatal",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "ephaGaldrial",
+      "msId": "dolmel",
+      "evasionBonus": 8
     }
   ],
   "msWeapon": [
@@ -1190,6 +1280,81 @@ window.GAME_DATA.compatibility = {
       "msTag": "zaku",
       "weaponId": "zeonHandgun",
       "accuracyBonus": 5
+    },
+    {
+      "msId": "blueDestiny1",
+      "weaponId": "bdChestMissile",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "blueDestiny3",
+      "weaponId": "bdChestMissile",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "blueDestiny2",
+      "weaponId": "bdChestMissile",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "blueDestiny",
+      "weaponId": "beamSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "gtFour",
+      "weaponId": "gtFourBeamCannon",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "zephyrGundam",
+      "weaponId": "beamSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "zephyrGundam",
+      "weaponId": "fixedShield",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "gyanEos",
+      "weaponId": "beamBayonet",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "dolmel",
+      "weaponId": "dolmelArmBeamSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "dolmel",
+      "weaponId": "heatPile",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "qatal",
+      "weaponId": "qatalBit",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "goufVijanta",
+      "weaponId": "removalMace",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "goufTacticalAssault",
+      "weaponId": "goufGatling120mm",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "efreetCustom",
+      "weaponId": "efreetHeatSaber",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "efreetCustom",
+      "weaponId": "efreetLegMissilePod",
+      "accuracyBonus": 8
     }
   ]
 };

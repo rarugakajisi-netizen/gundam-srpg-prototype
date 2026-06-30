@@ -494,6 +494,7 @@ function skillAccuracyBonus(unit, defender, weapon) {
   if (marineSpaceSupportActive(unit)) bonus += 5;
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus += 5;
   if (examSystemActive(unit)) bonus += 18;
+  if (unitHasSkill(unit, "phantomSystem")) bonus += 10;
   const supportedByCommander = state.units.some((other) =>
     other.id !== unit.id
     && other.side === unit.side
@@ -517,6 +518,7 @@ function skillEvasionBonus(unit) {
   if (marineSpaceSupportActive(unit)) bonus += 5;
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus -= 4;
   if (examSystemActive(unit)) bonus += 18;
+  if (unitHasSkill(unit, "phantomSystem")) bonus += 10;
   return bonus;
 }
 
@@ -601,6 +603,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) damage += 8;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) damage += 15;
   if (examSystemActive(attacker)) damage += 15;
+  if (isMobileSuit(attacker) && unitHasSkill(attacker, "phantomSystem")) damage += 8;
   if (rivalryActive(attacker, defender)) damage += 12;
   if (sideHasSkill(attacker.side, "forcedMarch")) damage += 10;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) damage -= 8;
@@ -636,6 +639,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
   if (examSystemActive(attacker)) notes.push("EXAMシステム");
+  if (isMobileSuit(attacker) && unitHasSkill(attacker, "phantomSystem")) notes.push("ファントムシステム");
   if (rivalryActive(attacker, defender)) notes.push("対抗心");
   if (sideHasSkill(attacker.side, "forcedMarch")) notes.push("強行軍攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) notes.push("要警護人物攻撃抑制");

@@ -476,5 +476,19 @@ window.GAME_DATA.options = [
       "zeon"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "examSystemOption",
+    "name": "EXAMシステム",
+    "cost": 90,
+    "effectType": "skill",
+    "grantsSkill": "examSystem",
+    "effectText": "耐久3分の1以下、または敵ニュータイプとの戦闘で発動。命中・回避+18、与ダメージ+15。発動後3ターンで自動撤退する。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
   }
 ];
