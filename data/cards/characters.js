@@ -3305,6 +3305,136 @@ window.GAME_DATA.characters = [
     "imagePath": ""
   },
   {
+    "id": "masterPRayer",
+    "name": "マスター・P・レイヤー",
+    "characterKey": "masterPRayer",
+    "faction": "federation",
+    "cost": 130,
+    "shooting": 22,
+    "melee": 18,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 17,
+    "support": 9,
+    "maintenance": 3,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "maximilianBerger",
+    "name": "マクシミリアン・バーガー",
+    "characterKey": "maximilianBerger",
+    "faction": "federation",
+    "cost": 95,
+    "shooting": 21,
+    "melee": 12,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 8,
+    "support": 13,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "allyBackup"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "leungLeeFei",
+    "name": "レオン・リーフェイ",
+    "characterKey": "leungLeeFei",
+    "faction": "federation",
+    "cost": 90,
+    "shooting": 17,
+    "melee": 17,
+    "reaction": 19,
+    "awakening": 0,
+    "command": 8,
+    "support": 12,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "anitaJulian",
+    "name": "アニタ・ジュリアン",
+    "characterKey": "anitaJulian",
+    "faction": "federation",
+    "cost": 70,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 9,
+    "support": 19,
+    "maintenance": 16,
+    "roles": [
+      "operator",
+      "mechanic"
+    ],
+    "specials": [
+      "internalAudit"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "bobRock",
+    "name": "ボブ・ロック",
+    "characterKey": "bobRock",
+    "faction": "federation",
+    "cost": 65,
+    "shooting": 6,
+    "melee": 5,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 7,
+    "support": 13,
+    "maintenance": 24,
+    "roles": [
+      "mechanic",
+      "operator"
+    ],
+    "specials": [
+      "retreatSupport"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "stanleyHawkins",
+    "name": "スタンリー・ホーキンス",
+    "characterKey": "stanleyHawkins",
+    "faction": "federation",
+    "cost": 95,
+    "shooting": 8,
+    "melee": 5,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 22,
+    "support": 17,
+    "maintenance": 6,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [
+      "massProductionFormation"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "youKajima",
     "name": "ユウ・カジマ",
     "characterKey": "youKajima",

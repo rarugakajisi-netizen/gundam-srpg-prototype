@@ -5917,6 +5917,141 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "gmWhiteDingo",
+    "name": "ジム（ＷＤ隊）",
+    "faction": "federation",
+    "cost": 135,
+    "armor": 250,
+    "energy": 70,
+    "agility": 17,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "whiteDingo",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmCannonWhiteDingo",
+    "name": "ジム・キャノン（ＷＤ隊）",
+    "faction": "federation",
+    "cost": 170,
+    "armor": 260,
+    "energy": 70,
+    "agility": 12,
+    "mobility": 3,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "gmCannonCannon",
+      "headVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "cannonMs",
+      "whiteDingo",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "massProductionGuncannonWhiteDingo",
+    "name": "量産型ガンキャノン（ＷＤ隊）",
+    "faction": "federation",
+    "cost": 185,
+    "armor": 325,
+    "energy": 75,
+    "agility": 11,
+    "mobility": 3,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "massProductionGuncannonCannon",
+      "headVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "guncannon",
+      "cannonMs",
+      "whiteDingo",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmSniper2WhiteDingo",
+    "name": "ジム・スナイパーII（ＷＤ隊）",
+    "faction": "federation",
+    "cost": 260,
+    "armor": 310,
+    "energy": 105,
+    "agility": 29,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "gmCommand",
+      "gmSniper",
+      "whiteDingo",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "zanny",
     "name": "ザニー",
     "faction": "federation",

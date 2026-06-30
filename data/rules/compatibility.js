@@ -763,6 +763,36 @@ window.GAME_DATA.compatibility = {
       "characterId": "ephaGaldrial",
       "msId": "dolmel",
       "evasionBonus": 8
+    },
+    {
+      "characterId": "masterPRayer",
+      "msTag": "whiteDingo",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "maximilianBerger",
+      "msTag": "whiteDingo",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "leungLeeFei",
+      "msTag": "whiteDingo",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "anitaJulian",
+      "msTag": "whiteDingo",
+      "evasionBonus": 4
+    },
+    {
+      "characterId": "bobRock",
+      "msTag": "whiteDingo",
+      "evasionBonus": 4
+    },
+    {
+      "characterId": "stanleyHawkins",
+      "msTag": "whiteDingo",
+      "evasionBonus": 5
     }
   ],
   "msWeapon": [
