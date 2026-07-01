@@ -87,6 +87,16 @@ function rivalryActive(attacker, defender) {
     && combatUnitTotalCost(defender) > combatUnitTotalCost(attacker);
 }
 
+function oldSoldierPrideActive(attacker, defender) {
+  return isMobileSuit(attacker)
+    && unitHasSkill(attacker, "oldSoldierPride")
+    && combatUnitTotalCost(defender) > combatUnitTotalCost(attacker);
+}
+
+function oldSoldierPrideEvasionPenalty(unit, options = {}) {
+  return isMobileSuit(unit) && options.incomingAttack && unitHasSkill(unit, "oldSoldierPride") ? 6 : 0;
+}
+
 function enemyIntelAccuracyPenalty(attacker) {
   const opposingSide = attacker.side === "player" ? "enemy" : "player";
   return state.turnNumber === 1
@@ -123,6 +133,58 @@ function alliedBattleship(side) {
 
 function sideHasSkill(side, skillId) {
   return state.units.some((unit) => unit.side === side && isCombatUnit(unit) && isAlive(unit) && unitHasSkill(unit, skillId));
+}
+
+function alliedBattleshipInDanger(side) {
+  return state.units.some((unit) =>
+    unit.side === side
+    && isBattleship(unit)
+    && isAlive(unit)
+    && unit.maxArmor > 0
+    && unit.armor <= Math.floor(unit.maxArmor / 2)
+  );
+}
+
+function rearGuardDestroyedAllyExists(unit) {
+  if (!isCombatUnit(unit)) return false;
+  return state.units.some((other) =>
+    other.id !== unit.id
+    && other.side === unit.side
+    && (isMobileSuit(other) || isBattleship(other))
+    && other.armor <= 0
+    && (isBattleship(unit) || !isBattleship(other))
+  );
+}
+
+function desperateRearGuardActive(unit) {
+  return isCombatUnit(unit)
+    && unitHasSkill(unit, "desperateRearGuard")
+    && alliedBattleshipInDanger(unit.side)
+    && rearGuardDestroyedAllyExists(unit);
+}
+
+function nearbyAlliedUnit(unit, range = 2) {
+  if (!isCombatUnit(unit)) return false;
+  return state.units.some((other) =>
+    other.id !== unit.id
+    && other.side === unit.side
+    && isCombatUnit(other)
+    && distance(other, unit) <= range
+  );
+}
+
+function schemingActive(unit) {
+  return isCombatUnit(unit)
+    && unitHasSkill(unit, "scheming")
+    && nearbyAlliedUnit(unit, 2);
+}
+
+function schemingAccuracyBonus(unit) {
+  return schemingActive(unit) ? 6 : 0;
+}
+
+function schemingEvasionBonus(unit) {
+  return schemingActive(unit) ? 6 : 0;
 }
 
 function mobileSuitIsAquaticOrSpaceOnly(unit) {
@@ -492,6 +554,8 @@ function skillAccuracyBonus(unit, defender, weapon) {
   if (unitHasSkill(unit, "allyBackup") && hasAllyAhead(unit)) bonus += 6;
   if (pilotSupplyActive(unit)) bonus += 5;
   if (marineSpaceSupportActive(unit)) bonus += 5;
+  if (oldSoldierPrideActive(unit, defender)) bonus += 5;
+  bonus += schemingAccuracyBonus(unit);
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus += 5;
   if (examSystemActive(unit)) bonus += 18;
   if (unitHasSkill(unit, "phantomSystem")) bonus += 10;
@@ -542,12 +606,12 @@ function minimumHitRate(unit, attackOrdinal = (unit.usedWeaponIds?.length ?? 0) 
   return Math.max(MIN_REPEAT_ATTACK_HIT_RATE, MIN_HIT_RATE - repeatPenalty);
 }
 
-function evasion(unit) {
+function evasion(unit, options = {}) {
   if (isDefenseTarget(unit)) return 0;
-  if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit);
+  if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit) + schemingEvasionBonus(unit);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
-  return Math.max(0, ms.agility + character.reaction + Math.floor(character.awakening / 2) + characterMsBonus(unit) + skillEvasionBonus(unit) - jinxEvasionPenalty(unit) - unitTerrainPenalty(unit).evasion);
+  return Math.max(0, ms.agility + character.reaction + Math.floor(character.awakening / 2) + characterMsBonus(unit) + skillEvasionBonus(unit) + schemingEvasionBonus(unit) - jinxEvasionPenalty(unit) - oldSoldierPrideEvasionPenalty(unit, options) - unitTerrainPenalty(unit).evasion);
 }
 
 function hitRate(attacker, defender, weapon, options = {}) {
@@ -556,14 +620,15 @@ function hitRate(attacker, defender, weapon, options = {}) {
   const enemyIntelPenalty = enemyIntelAccuracyPenalty(attacker);
   const attackOrdinal = options.attackOrdinal ?? ((attacker.usedWeaponIds?.length ?? 0) + 1);
   const minHitRate = minimumHitRate(attacker, attackOrdinal);
+  const defenderEvasion = evasion(defender, { incomingAttack: true });
   if (isBattleship(attacker)) {
-    const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + barrageSupportPenalty(defender, attacker) - panicPenalty - innocentPenalty - enemyIntelPenalty - evasion(defender);
+    const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + schemingAccuracyBonus(attacker) + barrageSupportPenalty(defender, attacker) - panicPenalty - innocentPenalty - enemyIntelPenalty - defenderEvasion;
     return clamp(raw, minHitRate, MAX_HIT_RATE);
   }
   const character = primaryCharacterFor(attacker);
   const ability = weapon.attackType === "melee" ? character.melee : character.shooting;
   const repeatPenalty = repeatAttackAccuracyPenalty(attacker, attackOrdinal);
-  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - innocentPenalty - enemyIntelPenalty - repeatPenalty - evasion(defender);
+  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - innocentPenalty - enemyIntelPenalty - repeatPenalty - defenderEvasion;
   return clamp(raw, minHitRate, MAX_HIT_RATE);
 }
 
@@ -610,6 +675,8 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (examSystemActive(attacker)) damage += 15;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "phantomSystem")) damage += 8;
   if (rivalryActive(attacker, defender)) damage += 12;
+  if (oldSoldierPrideActive(attacker, defender)) damage += 8;
+  if (desperateRearGuardActive(attacker)) damage += 20;
   if (sideHasSkill(attacker.side, "forcedMarch")) damage += 10;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) damage -= 8;
   if (isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence")) damage -= 5;
@@ -623,6 +690,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(defender) && unitHasSkill(defender, "aiSenshi") && alliedMobileSuitDestroyed(defender.side)) damage -= 10;
   if (isMobileSuit(defender) && massProductionFormationActive(defender)) damage -= 8;
   if (isMobileSuit(defender) && unitHasSkill(defender, "guardedPersons")) damage -= 10;
+  if (desperateRearGuardActive(defender)) damage -= 15;
   if (peaceWillDefensiveActive(defender)) damage -= 8;
   if (sideHasSkill(defender.side, "forcedMarch")) damage += 12;
   if (guardMissionProtector(defender, attacker)) damage -= 10;
@@ -646,7 +714,10 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
   if (examSystemActive(attacker)) notes.push("EXAMシステム");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "phantomSystem")) notes.push("ファントムシステム");
+  if (schemingActive(attacker)) notes.push("策謀攻撃");
   if (rivalryActive(attacker, defender)) notes.push("対抗心");
+  if (oldSoldierPrideActive(attacker, defender)) notes.push("老兵の意地");
+  if (desperateRearGuardActive(attacker)) notes.push("決死の殿軍攻撃");
   if (sideHasSkill(attacker.side, "forcedMarch")) notes.push("強行軍攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "guardedPersons")) notes.push("要警護人物攻撃抑制");
   if (sideHasSkill(attacker.side, "peaceWill")) notes.push("講和の意志攻撃抑制");
@@ -654,8 +725,11 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) notes.push("対水中");
   if (weapon.kind === "ammo" && freezyYardActive(defender)) notes.push("フリージーヤード");
   if (isMobileSuit(defender) && massProductionFormationActive(defender)) notes.push("量産機編成防御");
+  if (schemingActive(defender)) notes.push("策謀防御");
   if (isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence")) notes.push("無垢な存在");
+  if (isMobileSuit(defender) && unitHasSkill(defender, "oldSoldierPride")) notes.push("老兵の意地:回避低下");
   if (isMobileSuit(defender) && unitHasSkill(defender, "guardedPersons")) notes.push("要警護人物防御");
+  if (desperateRearGuardActive(defender)) notes.push("決死の殿軍防御");
   if (peaceWillDefensiveActive(defender)) notes.push("講和の意志防御");
   if (sideHasSkill(defender.side, "forcedMarch")) notes.push("強行軍被害");
   const protector = guardMissionProtector(defender, attacker);
@@ -761,6 +835,21 @@ function canUseCoreSystem(unit) {
   return Boolean(lookup().ms[msFor(unit).escapeMsId ?? "coreFighter"]);
 }
 
+function additionalArmorTargetMs(unit) {
+  if (!isMobileSuit(unit)) return null;
+  const sourceMs = msFor(unit);
+  return lookup().ms[sourceMs.purgeMsId ?? sourceMs.escapeMsId] ?? null;
+}
+
+function canPurgeAdditionalArmor(unit) {
+  if (!isMobileSuit(unit) || unit.additionalArmorPurged || !unitHasSkill(unit, "additionalArmor")) return false;
+  const targetMs = additionalArmorTargetMs(unit);
+  if (!targetMs || targetMs.id === msFor(unit).id) return false;
+  if (!cardUsableByFaction(targetMs, unit.faction)) return false;
+  if (!cardCanStandAt(targetMs, unit.x, unit.y)) return false;
+  return true;
+}
+
 function canUseEscapeShip(unit) {
   return isBattleship(unit) && !unit.escapeShipUsed && Boolean(battleshipFor(unit).escapeShipId);
 }
@@ -771,6 +860,7 @@ function transformToCoreFighter(unit) {
   const coreFighter = lookup().ms[sourceMs.escapeMsId ?? "coreFighter"];
   unit.coreSystemUsed = true;
   unit.msId = coreFighter.id;
+  unit.faction = coreFighter.faction;
   unit.weaponIds = [...coreFighter.fixedWeaponIds, ...(sourceMs.escapeWeaponIds ?? [])];
   unit.runtimeWeapons = runtimeWeaponsForIds(unit.weaponIds);
   unit.armor = coreFighter.armor;
@@ -779,6 +869,34 @@ function transformToCoreFighter(unit) {
   unit.maxEnergy = coreFighter.energy;
   unit.usedWeaponIds = [];
   state.log.push(`${beforeName}の脱出機構作動。${coreFighter.name}で戦闘続行。`);
+}
+
+function purgeAdditionalArmor(unit, reason = "任意パージ", renderAfter = true) {
+  if (!canPurgeAdditionalArmor(unit)) return false;
+  const beforeName = unitName(unit);
+  const targetMs = additionalArmorTargetMs(unit);
+  const optionIds = unit.optionIds ?? [];
+  const optionEnergyBonus = optionIds.includes("externalGenerator") ? 25 : 0;
+  const weaponIds = [...new Set([
+    ...(targetMs.fixedWeaponIds ?? []),
+    ...carriedWeaponIdsForTransform(unit),
+    ...optionWeaponIdsForUnit(unit)
+  ])];
+
+  unit.additionalArmorPurged = true;
+  unit.msId = targetMs.id;
+  unit.faction = targetMs.faction;
+  unit.weaponIds = weaponIds;
+  unit.runtimeWeapons = runtimeWeaponsAfterTransform(unit, weaponIds);
+  unit.maxArmor = targetMs.armor;
+  unit.maxEnergy = targetMs.energy + optionEnergyBonus;
+  unit.armor = targetMs.armor;
+  unit.energy = unit.maxEnergy;
+  unit.usedWeaponIds = [];
+  unit.weaponCharges = {};
+  state.log.push(reason === "破壊" ? `${beforeName}の増加装甲が破壊された。${targetMs.name}で戦闘続行。` : `${beforeName}が増加装甲をパージ。${targetMs.name}で戦闘続行。`);
+  if (renderAfter) renderBattle();
+  return true;
 }
 
 function transformToEscapeShip(unit) {
@@ -857,6 +975,7 @@ function applyDamage(unit, amount) {
   }
   unit.armor = Math.max(0, unit.armor - remaining);
   if (unit.armor === 0 && canUseEscapeShip(unit)) transformToEscapeShip(unit);
+  if (unit.armor === 0 && canPurgeAdditionalArmor(unit)) purgeAdditionalArmor(unit, "破壊", false);
   if (unit.armor === 0 && canUseCoreSystem(unit)) transformToCoreFighter(unit);
   activateExamSystemByArmor(unit);
   if (unit.armor === 0) triggerSacrificialBoost(unit);
@@ -928,6 +1047,7 @@ function transformMobileSuit(unit, targetMsId, renderAfter = true) {
   ])];
 
   unit.msId = targetMs.id;
+  unit.faction = targetMs.faction;
   unit.weaponIds = weaponIds;
   unit.runtimeWeapons = runtimeWeaponsAfterTransform(unit, weaponIds);
   unit.maxArmor = targetMs.armor;

@@ -49,7 +49,7 @@ window.GAME_DATA.characters = [
     "characterKey": "federationOfficer",
     "faction": "federation",
     "selectable": false,
-    "cost": 55,
+    "cost": 45,
     "shooting": 9,
     "melee": 6,
     "reaction": 8,
@@ -130,7 +130,7 @@ window.GAME_DATA.characters = [
     "name": "カイ・シデン",
     "characterKey": "kai",
     "faction": "federation",
-    "cost": 75,
+    "cost": 85,
     "shooting": 16,
     "melee": 8,
     "reaction": 13,
@@ -272,7 +272,7 @@ window.GAME_DATA.characters = [
     "name": "マチルダ・アジャン",
     "characterKey": "matilda",
     "faction": "federation",
-    "cost": 65,
+    "cost": 55,
     "shooting": 7,
     "melee": 4,
     "reaction": 9,
@@ -935,7 +935,7 @@ window.GAME_DATA.characters = [
       "commander"
     ],
     "specials": [
-      "ace"
+      "desperateRearGuard"
     ],
     "imagePath": ""
   },
@@ -1308,7 +1308,7 @@ window.GAME_DATA.characters = [
       "mechanic"
     ],
     "specials": [
-      "ace"
+      "oldSoldierPride"
     ],
     "imagePath": ""
   },
@@ -1416,7 +1416,7 @@ window.GAME_DATA.characters = [
       "operator"
     ],
     "specials": [
-      "barrageSupport"
+      "scheming"
     ],
     "imagePath": ""
   },
@@ -1462,7 +1462,7 @@ window.GAME_DATA.characters = [
       "commander"
     ],
     "specials": [
-      "guerrillaTactics"
+      "scheming"
     ],
     "imagePath": ""
   },
@@ -1493,7 +1493,7 @@ window.GAME_DATA.characters = [
     "name": "マッシュ",
     "characterKey": "mash",
     "faction": "zeon",
-    "cost": 105,
+    "cost": 95,
     "shooting": 15,
     "melee": 17,
     "reaction": 17,
@@ -1504,9 +1504,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "pilot"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -1514,7 +1512,7 @@ window.GAME_DATA.characters = [
     "name": "オルテガ",
     "characterKey": "ortega",
     "faction": "zeon",
-    "cost": 105,
+    "cost": 95,
     "shooting": 18,
     "melee": 15,
     "reaction": 16,
@@ -1525,9 +1523,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "pilot"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -2222,7 +2218,7 @@ window.GAME_DATA.characters = [
     "id": "cynthia08",
     "name": "シンシア",
     "faction": "zeon",
-    "cost": 65,
+    "cost": 55,
     "shooting": 5,
     "melee": 3,
     "reaction": 9,
@@ -2824,7 +2820,7 @@ window.GAME_DATA.characters = [
     "name": "アヤ・スワンポート",
     "characterKey": "ayaSwanport",
     "faction": "federation",
-    "cost": 55,
+    "cost": 45,
     "shooting": 4,
     "melee": 3,
     "reaction": 9,
@@ -2835,9 +2831,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "operator"
     ],
-    "specials": [
-      "retreatSupport"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -2845,7 +2839,7 @@ window.GAME_DATA.characters = [
     "name": "フォルド・ロムフェロー",
     "characterKey": "fordRomfellow",
     "faction": "federation",
-    "cost": 90,
+    "cost": 80,
     "shooting": 16,
     "melee": 14,
     "reaction": 15,
@@ -2857,9 +2851,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3034,7 +3026,7 @@ window.GAME_DATA.characters = [
     "name": "エリオット・レム",
     "characterKey": "elliottRem",
     "faction": "zeon",
-    "cost": 75,
+    "cost": 85,
     "shooting": 12,
     "melee": 10,
     "reaction": 11,
@@ -3047,7 +3039,9 @@ window.GAME_DATA.characters = [
       "mechanic",
       "commander"
     ],
-    "specials": [],
+    "specials": [
+      "zakuPassion"
+    ],
     "imagePath": ""
   },
   {
@@ -3077,7 +3071,7 @@ window.GAME_DATA.characters = [
     "name": "ユイマン・カーライル",
     "characterKey": "yuimanCarlile",
     "faction": "zeon",
-    "cost": 65,
+    "cost": 55,
     "shooting": 13,
     "melee": 12,
     "reaction": 13,
@@ -3163,7 +3157,7 @@ window.GAME_DATA.characters = [
     "name": "メイ・カーウィン",
     "characterKey": "mayKerwin",
     "faction": "zeon",
-    "cost": 65,
+    "cost": 55,
     "shooting": 5,
     "melee": 3,
     "reaction": 9,
@@ -3175,9 +3169,7 @@ window.GAME_DATA.characters = [
       "operator",
       "mechanic"
     ],
-    "specials": [
-      "zakuPassion"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3346,7 +3338,7 @@ window.GAME_DATA.characters = [
     "name": "レオン・リーフェイ",
     "characterKey": "leungLeeFei",
     "faction": "federation",
-    "cost": 90,
+    "cost": 80,
     "shooting": 17,
     "melee": 17,
     "reaction": 19,
@@ -3357,9 +3349,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "pilot"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3389,7 +3379,7 @@ window.GAME_DATA.characters = [
     "name": "ボブ・ロック",
     "characterKey": "bobRock",
     "faction": "federation",
-    "cost": 65,
+    "cost": 55,
     "shooting": 6,
     "melee": 5,
     "reaction": 8,
@@ -3401,9 +3391,7 @@ window.GAME_DATA.characters = [
       "mechanic",
       "operator"
     ],
-    "specials": [
-      "retreatSupport"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3411,7 +3399,7 @@ window.GAME_DATA.characters = [
     "name": "スタンリー・ホーキンス",
     "characterKey": "stanleyHawkins",
     "faction": "federation",
-    "cost": 95,
+    "cost": 85,
     "shooting": 8,
     "melee": 5,
     "reaction": 10,
@@ -3455,7 +3443,7 @@ window.GAME_DATA.characters = [
     "name": "フィリップ・ヒューズ",
     "characterKey": "philipHughes",
     "faction": "federation",
-    "cost": 85,
+    "cost": 75,
     "shooting": 18,
     "melee": 13,
     "reaction": 15,
@@ -3466,9 +3454,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "pilot"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3497,7 +3483,7 @@ window.GAME_DATA.characters = [
     "name": "モーリン・キタムラ",
     "characterKey": "maureenKitamura",
     "faction": "federation",
-    "cost": 65,
+    "cost": 55,
     "shooting": 5,
     "melee": 3,
     "reaction": 9,
@@ -3509,9 +3495,7 @@ window.GAME_DATA.characters = [
       "operator",
       "mechanic"
     ],
-    "specials": [
-      "retreatSupport"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3582,7 +3566,7 @@ window.GAME_DATA.characters = [
     "name": "マリオン・ウェルチ",
     "characterKey": "marionWelch",
     "faction": "zeon",
-    "cost": 95,
+    "cost": 85,
     "shooting": 10,
     "melee": 6,
     "reaction": 18,
@@ -3594,9 +3578,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "operator"
     ],
-    "specials": [
-      "retreatSupport"
-    ],
+    "specials": [],
     "isNewtype": true,
     "tags": [
       "newtype"
@@ -3678,7 +3660,7 @@ window.GAME_DATA.characters = [
     "name": "ユライア・ヒープ",
     "characterKey": "uriahHeep",
     "faction": "zeon",
-    "cost": 105,
+    "cost": 95,
     "shooting": 5,
     "melee": 3,
     "reaction": 8,
@@ -3700,7 +3682,7 @@ window.GAME_DATA.characters = [
     "name": "小泉 摩耶",
     "characterKey": "mayaKoizumi",
     "faction": "zeon",
-    "cost": 95,
+    "cost": 85,
     "shooting": 8,
     "melee": 5,
     "reaction": 10,
@@ -3712,9 +3694,7 @@ window.GAME_DATA.characters = [
       "commander",
       "operator"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3744,7 +3724,7 @@ window.GAME_DATA.characters = [
     "name": "ティナ・デュバル",
     "characterKey": "tinaDuvall",
     "faction": "zeon",
-    "cost": 90,
+    "cost": 80,
     "shooting": 17,
     "melee": 15,
     "reaction": 17,
@@ -3756,9 +3736,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3832,7 +3810,7 @@ window.GAME_DATA.characters = [
     "name": "アルファ・A・ベイト",
     "characterKey": "alphaABateOyw",
     "faction": "federation",
-    "cost": 105,
+    "cost": 95,
     "shooting": 20,
     "melee": 15,
     "reaction": 20,
@@ -3844,9 +3822,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3941,7 +3917,7 @@ window.GAME_DATA.characters = [
     "name": "マット・オースティン",
     "characterKey": "matAustin",
     "faction": "zeon",
-    "cost": 105,
+    "cost": 95,
     "shooting": 17,
     "melee": 18,
     "reaction": 16,
@@ -3953,9 +3929,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "zakuPassion"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3963,7 +3937,7 @@ window.GAME_DATA.characters = [
     "name": "シャルロッテ・ヘープナー",
     "characterKey": "charlotteHepner",
     "faction": "zeon",
-    "cost": 75,
+    "cost": 65,
     "shooting": 14,
     "melee": 12,
     "reaction": 15,
@@ -3975,9 +3949,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "operator"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {

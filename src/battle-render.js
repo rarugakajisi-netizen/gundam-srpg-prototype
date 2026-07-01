@@ -193,6 +193,7 @@ function renderUnitDetail(unit, target) {
       ${smokeDischargerButtons(unit)}
       ${transformButtons(unit)}
       ${chargeWeaponButtons(unit)}
+      ${additionalArmorButton(unit)}
       ${vehicleOptionButton(unit)}
       ${attackButtons(unit, target)}
     </div>
@@ -452,6 +453,24 @@ function vehicleOptionButton(unit) {
   return `
     <button data-action="discard-vehicle" ${state.outcome || state.phase !== "player" || unit.side !== "player" ? "disabled" : ""}>
       切り離し<br><span class="button-detail">${vehicleOption.name} / 移動+${vehicleOption.value ?? 0}${vehicleOption.forbidsMelee ? " / 格闘不可" : ""}</span>
+    </button>
+  `;
+}
+
+function additionalArmorButton(unit) {
+  if (!isMobileSuit(unit) || !unitHasSkill(unit, "additionalArmor")) return "";
+  const targetMs = additionalArmorTargetMs(unit);
+  if (!targetMs) return "";
+  const usable = canPurgeAdditionalArmor(unit);
+  const status = [
+    targetMs.name,
+    "行動消費なし",
+    unit.additionalArmorPurged ? "使用済み" : "",
+    !cardCanStandAt(targetMs, unit.x, unit.y) ? "現在地では不可" : ""
+  ].filter(Boolean).join(" / ");
+  return `
+    <button data-action="purge-additional-armor" ${state.outcome || state.phase !== "player" || unit.side !== "player" || !usable ? "disabled" : ""}>
+      パージ<br><span class="button-detail">${status}</span>
     </button>
   `;
 }

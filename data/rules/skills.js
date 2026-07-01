@@ -12,11 +12,27 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "desperateRearGuard",
+    "name": "決死の殿軍",
+    "type": "キャラ",
+    "timing": "味方撃破後/戦艦損傷時",
+    "effect": "自機以外の味方ユニットが撃破済み、かつ味方戦艦の耐久力が半分以下の時、与ダメージ+20、被ダメージ-15。戦艦以外に搭乗中は、撃破済み味方の判定から戦艦を除く。",
+    "implemented": true
+  },
+  {
     "id": "coreSystem",
     "name": "脱出機能",
     "type": "機体",
     "timing": "撃破時",
     "effect": "一度だけ、機体ごとに設定された脱出先へ移行して戦場に残る。",
+    "implemented": true
+  },
+  {
+    "id": "additionalArmor",
+    "name": "増加装甲",
+    "type": "機体",
+    "timing": "被撃破時/任意",
+    "effect": "装甲が破壊された時、または任意パージ時に、機体ごとに設定されたパージ先へ移行して戦闘を継続する。",
     "implemented": true
   },
   {
@@ -356,6 +372,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "scheming",
+    "name": "策謀",
+    "type": "キャラ",
+    "timing": "味方接近時",
+    "effect": "2マス以内に味方ユニットがいる間、自分だけ命中・回避+6。",
+    "implemented": true
+  },
+  {
     "id": "forcedMarch",
     "name": "強行軍",
     "type": "キャラ/OP",
@@ -457,6 +481,14 @@ window.GAME_DATA.skills = [
     "type": "キャラ/OP",
     "timing": "攻撃時",
     "effect": "攻撃対象のユニット総コストが自分より高い時、与ダメージ+12。",
+    "implemented": true
+  },
+  {
+    "id": "oldSoldierPride",
+    "name": "老兵の意地",
+    "type": "キャラ",
+    "timing": "攻撃時/被攻撃時",
+    "effect": "自機より高コストの敵に攻撃する時、命中+5、与ダメージ+8。被攻撃時、回避-6。",
     "implemented": true
   },
   {

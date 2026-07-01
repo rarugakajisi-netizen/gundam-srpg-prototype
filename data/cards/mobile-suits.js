@@ -4582,9 +4582,9 @@ window.GAME_DATA.mobileSuits = [
       "armorPack"
     ],
     "specials": [
-      "coreSystem"
+      "additionalArmor"
     ],
-    "escapeMsId": "alex",
+    "purgeMsId": "alex",
     "imagePath": ""
   },
   {

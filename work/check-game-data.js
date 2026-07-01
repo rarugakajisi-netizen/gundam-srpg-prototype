@@ -362,6 +362,7 @@ function createChecker(data) {
       });
       list(ms.escapeWeaponIds).forEach((id) => expectId(`${scope}.escapeWeaponIds`, "weapons", id));
       expectId(`${scope}.escapeMsId`, "mobileSuits", ms.escapeMsId, true);
+      expectId(`${scope}.purgeMsId`, "mobileSuits", ms.purgeMsId, true);
       list(ms.specials).forEach((id) => expectId(`${scope}.specials`, "skills", id));
     });
 

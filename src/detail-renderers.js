@@ -105,6 +105,12 @@ function mobileSuitWeaponRestrictionText(ms) {
   return "なし";
 }
 
+function mobileSuitPurgeTargetText(ms) {
+  const targetId = ms.purgeMsId ?? ms.escapeMsId;
+  if (!(ms.specials ?? []).includes("additionalArmor") || !targetId) return "なし";
+  return lookup().ms[targetId]?.name ?? targetId;
+}
+
 function weaponMinRange(weapon) {
   return weapon.minRange ?? 1;
 }
@@ -786,6 +792,7 @@ function renderMobileSuitDetails(ms, options = {}) {
         ["携行武器制限", mobileSuitWeaponRestrictionText(ms)],
         ["特殊", specialsLabel(ms.specials)],
         ["脱出先", (ms.specials ?? []).includes("coreSystem") ? (lookup().ms[ms.escapeMsId ?? "coreFighter"]?.name ?? ms.escapeMsId ?? "コア・ファイター") : "なし"],
+        ["パージ先", mobileSuitPurgeTargetText(ms)],
         ["地形適性", mapSuitabilityLabel(ms)]
       ])}
       <div class="detail-list">

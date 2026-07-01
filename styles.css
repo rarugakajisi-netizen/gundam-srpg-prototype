@@ -6,7 +6,7 @@
   --muted: #667078;
   --line: #c9c3b8;
   --federation: #2f68b0;
-  --zeon: #a23a35;
+  --zeon: #2f7d46;
   --accent: #2c7a68;
   --warn: #b85c18;
   --danger: #a33333;
@@ -599,6 +599,47 @@ select {
 .collection-card.revealed {
   background: #fffaf2;
   border-color: rgba(184, 92, 24, 0.28);
+}
+
+.collection-card.card-faction-federation,
+.picker-card.card-faction-federation,
+.unit-card.card-faction-federation {
+  border-color: rgba(47, 104, 176, 0.42);
+  background:
+    linear-gradient(90deg, rgba(47, 104, 176, 0.88) 0 7px, transparent 7px),
+    linear-gradient(135deg, rgba(47, 104, 176, 0.14), rgba(255, 255, 255, 0.94) 52%);
+}
+
+.collection-card.card-faction-zeon,
+.picker-card.card-faction-zeon,
+.unit-card.card-faction-zeon {
+  border-color: rgba(47, 125, 70, 0.42);
+  background:
+    linear-gradient(90deg, rgba(47, 125, 70, 0.9) 0 7px, transparent 7px),
+    linear-gradient(135deg, rgba(47, 125, 70, 0.15), rgba(255, 255, 255, 0.94) 52%);
+}
+
+.collection-card.card-faction-mixed,
+.picker-card.card-faction-mixed,
+.unit-card.card-faction-mixed {
+  border-color: rgba(44, 122, 104, 0.42);
+  background:
+    linear-gradient(90deg, var(--federation) 0 4px, var(--zeon) 4px 8px, transparent 8px),
+    linear-gradient(135deg, rgba(47, 104, 176, 0.11), rgba(47, 125, 70, 0.12) 52%, rgba(255, 255, 255, 0.94));
+}
+
+.collection-card.card-faction-federation .status-pill.ready,
+.picker-card.card-faction-federation .status-pill.ready {
+  border-color: rgba(47, 104, 176, 0.44);
+  color: #24538f;
+  background: rgba(47, 104, 176, 0.12);
+}
+
+.collection-card.card-faction-zeon .status-pill.ready,
+.picker-card.card-faction-zeon .status-pill.ready {
+  border-color: rgba(47, 125, 70, 0.44);
+  color: #246339;
+  background: rgba(47, 125, 70, 0.12);
 }
 
 .collection-card.locked details {

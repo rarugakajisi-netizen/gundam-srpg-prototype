@@ -946,6 +946,16 @@ function itemFactionIds(item) {
   return [];
 }
 
+function cardFactionClass(item) {
+  const factions = itemFactionIds(item);
+  const hasFederation = factions.includes("federation");
+  const hasZeon = factions.includes("zeon");
+  if (hasFederation && hasZeon) return "card-faction-mixed";
+  if (hasFederation) return "card-faction-federation";
+  if (hasZeon) return "card-faction-zeon";
+  return "";
+}
+
 function itemSearchText(type, item) {
   return normalizeSearchText([
     item.id,
@@ -1178,7 +1188,7 @@ function renderChoiceCardSelect() {
 function renderChoiceCandidateCard(type, item) {
   const countText = isCountedCardType(type) ? `現在 x${cardCount(type, item.id)} / ${countedCardLimit(type)}` : "未所持";
   return `
-    <article class="collection-card revealed">
+    <article class="collection-card revealed ${cardFactionClass(item)}">
       <div class="collection-card-head">
         <strong>${item.name}</strong>
         <span class="status-pill preview">${cardTypeLabel(type)} / ${countText}</span>
@@ -1267,7 +1277,7 @@ function cardLibrarySection(type, title, items, detailRenderer, options = {}) {
           const visible = actuallyOwned || revealed;
           const countLabel = isCountedCardType(type) && actuallyOwned ? `所持 x${cardCount(type, item.id)}` : actuallyOwned ? "所持" : "確認用";
           return `
-            <article class="collection-card ${actuallyOwned ? "owned" : visible ? "revealed" : "locked"}">
+            <article class="collection-card ${actuallyOwned ? "owned" : visible ? "revealed" : "locked"} ${visible ? cardFactionClass(item) : ""}">
               <div class="collection-card-head">
                 <strong>${visible ? item.name : "未入手カード"}</strong>
                 <span class="status-pill ${actuallyOwned ? "ready" : visible ? "preview" : ""}">${visible ? countLabel : "未入手"}</span>
@@ -1383,7 +1393,7 @@ function ownerLabel(owner) {
 function mobileSuitPickerCard(ms) {
   const remaining = remainingCardCopies("mobileSuits", ms.id);
   return `
-    <article class="picker-card ${ms.id === state.selectedMsId ? "selected" : ""}">
+    <article class="picker-card ${cardFactionClass(ms)} ${ms.id === state.selectedMsId ? "selected" : ""}">
       <div class="collection-card-head">
         <strong>${ms.name}</strong>
         <span class="status-pill ${remaining > 0 ? "ready" : ""}">所持${cardCount("mobileSuits", ms.id)} / 残り${remaining}</span>
@@ -1404,7 +1414,7 @@ function mobileSuitPickerCard(ms) {
 
 function battleshipPickerCard(ship) {
   return `
-    <article class="picker-card ${ship.id === state.selectedBattleshipId ? "selected" : ""}">
+    <article class="picker-card ${cardFactionClass(ship)} ${ship.id === state.selectedBattleshipId ? "selected" : ""}">
       <div class="collection-card-head">
         <strong>${ship.name}</strong>
         <span class="status-pill ready">所持</span>
@@ -1445,7 +1455,7 @@ function characterPickerCard(character, owner) {
   const current = character.id === characterIdForOwner(owner);
   const disabled = used && !current;
   return `
-    <article class="picker-card ${current ? "selected" : ""} ${disabled ? "disabled-card" : ""}">
+    <article class="picker-card ${cardFactionClass(character)} ${current ? "selected" : ""} ${disabled ? "disabled-card" : ""}">
       <div class="collection-card-head">
         <strong>${character.name}</strong>
         <span class="status-pill ${disabled ? "" : "ready"}">${disabled ? "編成済み" : "選択可"}</span>
@@ -1697,7 +1707,7 @@ function rosterCard(entry, index) {
   const optionNames = (entry.optionIds ?? []).map((id) => options[id]?.name).filter(Boolean).join(" / ") || "OPなし";
   const sortieNumber = index + 1;
   return `
-    <div class="unit-card">
+    <div class="unit-card ${cardFactionClass(unitMs)}">
       <div class="portrait ${unitMs.faction}">${sortieNumber}</div>
       <div>
         <strong>${sortieNumber}. ${unitMs.name} + ${unitCharacter.name}</strong>
@@ -1719,7 +1729,7 @@ function battleshipRosterCard(ship) {
   const captain = characters[state.selectedCaptainId];
   const firstOfficer = characters[state.selectedFirstOfficerId];
   return `
-    <div class="unit-card flagship-card">
+    <div class="unit-card flagship-card ${cardFactionClass(ship)}">
       <div class="portrait ${ship.faction}">艦</div>
       <div>
         <strong>${ship.name}</strong>
@@ -1825,6 +1835,7 @@ function makeUnit(entry, side, x, y, index) {
     side,
     sortieNumber: index + 1,
     msId: entry.msId,
+    faction: unitMs.faction,
     characterIds: [...entry.characterIds],
     optionIds,
     weaponIds,
