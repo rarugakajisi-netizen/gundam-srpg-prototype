@@ -793,6 +793,66 @@ window.GAME_DATA.compatibility = {
       "characterId": "stanleyHawkins",
       "msTag": "whiteDingo",
       "evasionBonus": 5
+    },
+    {
+      "characterId": "vischDonahue",
+      "msTag": "groundGelgoog",
+      "evasionBonus": 14
+    },
+    {
+      "characterId": "vischDonahue",
+      "msTag": "gouf",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "vischDonahue",
+      "msTag": "gelgoog",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "vischDonahue",
+      "msTag": "zaku",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "vischDonahue",
+      "msTag": "dom",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "vischDonahue",
+      "msTag": "efreet",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "vischDonahue",
+      "msTag": "desertMs",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "vischDonahue",
+      "msTag": "groundMa",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "tinaDuvall",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "tinaDuvall",
+      "msTag": "gouf",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "nearlight",
+      "msTag": "dom",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "nearlight",
+      "msTag": "desertMs",
+      "evasionBonus": 5
     }
   ],
   "msWeapon": [
@@ -1385,6 +1445,46 @@ window.GAME_DATA.compatibility = {
       "msId": "efreetCustom",
       "weaponId": "efreetLegMissilePod",
       "accuracyBonus": 8
+    },
+    {
+      "msTag": "groundGelgoog",
+      "weaponId": "giantBazooka",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "groundGelgoog",
+      "weaponId": "gelgoogArmGrenadeLauncher",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "desertGelgoog",
+      "weaponId": "armedBuster",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gelgoogG",
+      "weaponId": "desertGelgoogBeamRifle",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "desertGelgoog",
+      "weaponId": "desertGelgoogBeamRifle",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "rhinoSaras",
+      "weaponId": "rhinoSarasMachineGun",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "rhinoSaras",
+      "weaponId": "rhinoSarasMissilePod",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "rhinoSaras",
+      "weaponId": "rhinoSarasCannon",
+      "accuracyBonus": 6
     }
   ]
 };

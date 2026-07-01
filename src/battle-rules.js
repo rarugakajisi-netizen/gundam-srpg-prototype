@@ -602,6 +602,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "precisionMeleeProgram") && weapon.attackType === "melee") damage += 12;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "sandAmbush") && terrainAt(attacker.x, attacker.y) === "desert") damage += 12;
   if (isMobileSuit(defender) && msFor(defender).movementType === "flying" && weaponHasSkill(weapon, "antiAir")) damage += 18;
+  if (terrainAt(defender.x, defender.y) === "desert" && (unitHasSkill(attacker, "antiDesert") || weaponHasSkill(weapon, "antiDesert"))) damage += 18;
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) damage += 20;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) damage += 8;
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) damage += 8;
@@ -639,6 +640,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "allyBackup") && hasAllyAhead(attacker)) notes.push("味方援護");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "sandAmbush") && terrainAt(attacker.x, attacker.y) === "desert") notes.push("砂塵の伏兵");
   if (isMobileSuit(defender) && msFor(defender).movementType === "flying" && weaponHasSkill(weapon, "antiAir")) notes.push("対空中");
+  if (terrainAt(defender.x, defender.y) === "desert" && (unitHasSkill(attacker, "antiDesert") || weaponHasSkill(weapon, "antiDesert"))) notes.push("対砂漠");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");

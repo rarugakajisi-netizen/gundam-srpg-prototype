@@ -5917,6 +5917,141 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "gelgoogGround",
+    "name": "陸戦型ゲルググ",
+    "faction": "zeon",
+    "cost": 265,
+    "armor": 365,
+    "energy": 105,
+    "agility": 23,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamNaginata",
+      "gelgoogArmGrenadeLauncher"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gelgoog",
+      "groundGelgoog"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gelgoogG",
+    "name": "ゲルググG",
+    "faction": "zeon",
+    "cost": 270,
+    "armor": 365,
+    "energy": 105,
+    "agility": 23,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamNaginata",
+      "gelgoogArmGrenadeLauncher"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": true,
+      "debris": false
+    },
+    "tags": [
+      "gelgoog",
+      "groundGelgoog",
+      "desertMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "desertGelgoog",
+    "name": "デザート・ゲルググ",
+    "faction": "zeon",
+    "cost": 285,
+    "armor": 360,
+    "energy": 105,
+    "agility": 22,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamNaginata",
+      "armedBuster"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": true,
+      "debris": false
+    },
+    "tags": [
+      "gelgoog",
+      "desertMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "rhinoSaras",
+    "name": "ライノサラス",
+    "faction": "zeon",
+    "cost": 320,
+    "armor": 390,
+    "energy": 70,
+    "agility": 8,
+    "mobility": 3,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "rhinoSarasMachineGun",
+      "rhinoSarasMissilePod",
+      "rhinoSarasCannon"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": true,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "groundMa",
+      "desertMs",
+      "zaku"
+    ],
+    "specials": [],
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "gmWhiteDingo",
     "name": "ジム（ＷＤ隊）",
     "faction": "federation",

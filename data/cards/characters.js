@@ -3633,5 +3633,182 @@ window.GAME_DATA.characters = [
       "newtype"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "vischDonahue",
+    "name": "ヴィッシュ・ドナヒュー",
+    "characterKey": "vischDonahue",
+    "faction": "zeon",
+    "cost": 165,
+    "shooting": 25,
+    "melee": 22,
+    "reaction": 26,
+    "awakening": 0,
+    "command": 20,
+    "support": 12,
+    "maintenance": 8,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "ace",
+      "guerrillaTactics"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "walterCurtis",
+    "name": "ウォルター・カーティス",
+    "characterKey": "walterCurtis",
+    "faction": "zeon",
+    "cost": 120,
+    "shooting": 6,
+    "melee": 4,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 27,
+    "support": 22,
+    "maintenance": 8,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [
+      "massProductionFormation"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "uriahHeep",
+    "name": "ユライア・ヒープ",
+    "characterKey": "uriahHeep",
+    "faction": "zeon",
+    "cost": 105,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 22,
+    "support": 25,
+    "maintenance": 18,
+    "roles": [
+      "captain",
+      "operator"
+    ],
+    "specials": [
+      "retreatSupport"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "mayaKoizumi",
+    "name": "小泉 摩耶",
+    "characterKey": "mayaKoizumi",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 8,
+    "melee": 5,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 20,
+    "support": 22,
+    "maintenance": 10,
+    "roles": [
+      "commander",
+      "operator"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "giocondaWillis",
+    "name": "ジョコンダ・ウィリス",
+    "characterKey": "giocondaWillis",
+    "faction": "zeon",
+    "cost": 70,
+    "shooting": 7,
+    "melee": 4,
+    "reaction": 11,
+    "awakening": 0,
+    "command": 12,
+    "support": 17,
+    "maintenance": 7,
+    "roles": [
+      "operator",
+      "commander"
+    ],
+    "specials": [
+      "retreatSupport"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "tinaDuvall",
+    "name": "ティナ・デュバル",
+    "characterKey": "tinaDuvall",
+    "faction": "zeon",
+    "cost": 90,
+    "shooting": 17,
+    "melee": 15,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 13,
+    "support": 10,
+    "maintenance": 8,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "alysonHannigan",
+    "name": "アリソン・ハニガン",
+    "characterKey": "alysonHannigan",
+    "faction": "zeon",
+    "cost": 75,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 13,
+    "support": 21,
+    "maintenance": 16,
+    "roles": [
+      "operator",
+      "mechanic"
+    ],
+    "specials": [
+      "internalAudit"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "nearlight",
+    "name": "ニアーライト",
+    "characterKey": "nearlight",
+    "faction": "zeon",
+    "cost": 115,
+    "shooting": 16,
+    "melee": 12,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 19,
+    "support": 6,
+    "maintenance": 4,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "rivalry"
+    ],
+    "imagePath": ""
   }
 ];

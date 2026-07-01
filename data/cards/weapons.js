@@ -1029,6 +1029,27 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "desertGelgoogBeamRifle",
+    "name": "ビーム・ライフル（砂漠戦仕様）",
+    "cost": 55,
+    "power": 110,
+    "accuracy": 78,
+    "range": 3,
+    "minRange": 1,
+    "consume": 15,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "specials": [
+      "antiDesert"
+    ],
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
     "id": "hyperBazooka",
     "name": "ハイパー・バズーカ",
     "cost": 50,
@@ -5051,6 +5072,101 @@ window.GAME_DATA.weapons = [
     "kind": "ammo",
     "ammo": 5,
     "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "gelgoogArmGrenadeLauncher",
+    "name": "腕部グレネード・ランチャー",
+    "cost": 0,
+    "power": 96,
+    "accuracy": 76,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "grenade",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "armedBuster",
+    "name": "アームド・バスター",
+    "cost": 0,
+    "power": 158,
+    "accuracy": 66,
+    "range": 5,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "rhinoSarasMachineGun",
+    "name": "大口径マシンガン",
+    "cost": 0,
+    "power": 116,
+    "accuracy": 72,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 7,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "rhinoSarasMissilePod",
+    "name": "各部ミサイルポッド",
+    "cost": 0,
+    "power": 120,
+    "accuracy": 68,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "rhinoSarasCannon",
+    "name": "大口径キャノン砲",
+    "cost": 0,
+    "power": 190,
+    "accuracy": 60,
+    "range": 6,
+    "minRange": 3,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 3,
+    "category": "cannon",
     "attackType": "shooting",
     "durability": 0,
     "fixedOnly": true,

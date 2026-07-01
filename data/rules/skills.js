@@ -244,6 +244,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "antiDesert",
+    "name": "対砂漠",
+    "type": "武器",
+    "timing": "攻撃時",
+    "effect": "砂漠マスにいる敵への与ダメージ+18。",
+    "implemented": true
+  },
+  {
     "id": "educationalComputer",
     "name": "教育型コンピューター",
     "type": "OP",
