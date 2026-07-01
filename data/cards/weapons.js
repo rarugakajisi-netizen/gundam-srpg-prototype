@@ -1238,6 +1238,26 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "mudrock300mmCannon",
+    "name": "300mm低反動キャノン",
+    "cost": 0,
+    "power": 155,
+    "accuracy": 64,
+    "range": 5,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "ignoresObstacles": true,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
     "id": "sprayMissileLauncher",
     "name": "スプレーミサイルランチャー",
     "cost": 0,
@@ -1903,6 +1923,25 @@ window.GAME_DATA.weapons = [
     "minRange": 1,
     "consume": 0,
     "kind": "free",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "largeHeatSaber",
+    "name": "大型ヒート・サーベル",
+    "cost": 0,
+    "power": 155,
+    "accuracy": 72,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
     "ammo": 0,
     "category": "melee",
     "attackType": "melee",

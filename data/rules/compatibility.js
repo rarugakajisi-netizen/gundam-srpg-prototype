@@ -853,6 +853,201 @@ window.GAME_DATA.compatibility = {
       "characterId": "nearlight",
       "msTag": "desertMs",
       "evasionBonus": 5
+    },
+    {
+      "characterId": "southBurningOyw",
+      "msTag": "immortal4th",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "southBurningOyw",
+      "msId": "gmCommandSpace",
+      "evasionBonus": 11
+    },
+    {
+      "characterId": "southBurningOyw",
+      "msTag": "gmKai",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "alphaABateOyw",
+      "msTag": "immortal4th",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "alphaABateOyw",
+      "msId": "gmCommandSpace",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "alphaABateOyw",
+      "msTag": "gmKai",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "bernardMonshaOyw",
+      "msTag": "immortal4th",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "bernardMonshaOyw",
+      "msId": "gmCommandSpace",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "bernardMonshaOyw",
+      "msTag": "gmKai",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "chapAdelOyw",
+      "msTag": "immortal4th",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "chapAdelOyw",
+      "msId": "gmCommandSpace",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "chapAdelOyw",
+      "msTag": "cannonMs",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "gerhartSchmitzer",
+      "msId": "zaku1Gerhart",
+      "evasionBonus": 14
+    },
+    {
+      "characterId": "gerhartSchmitzer",
+      "msTag": "zaku1",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "gerhartSchmitzer",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "leRoar",
+      "msTag": "zaku",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "leRoar",
+      "msTag": "gouf",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "matAustin",
+      "msTag": "zaku1",
+      "evasionBonus": 14
+    },
+    {
+      "characterId": "matAustin",
+      "msTag": "zaku",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "charlotteHepner",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "nickiRobert",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "nickiRobert",
+      "msTag": "dom",
+      "evasionBonus": 5
+    },
+    {
+      "characterId": "leighSvagr",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "leighSvagr",
+      "msTag": "zaku1",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "leighSvagr",
+      "msTag": "dom",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "renceh",
+      "msTag": "gouf",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "renceh",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "manning",
+      "msTag": "zaku1",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "manning",
+      "msTag": "gouf",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "sophieFranc",
+      "msTag": "dom",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "sophieFranc",
+      "msTag": "domFunf",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "sandra",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "sandra",
+      "msTag": "domTropen",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "sandra",
+      "msTag": "dom",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "eiger",
+      "msId": "gundamMudrock",
+      "evasionBonus": 14
+    },
+    {
+      "characterId": "eiger",
+      "msTag": "cannonMs",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "eiger",
+      "msId": "type61Tank",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "sakaki",
+      "msId": "type61Tank",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "sakaki",
+      "msTag": "tank",
+      "evasionBonus": 6
     }
   ],
   "msWeapon": [
@@ -1484,6 +1679,91 @@ window.GAME_DATA.compatibility = {
     {
       "msId": "rhinoSaras",
       "weaponId": "rhinoSarasCannon",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "zaku1Gerhart",
+      "weaponId": "heatHawk",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "domFunf",
+      "weaponId": "giantBazooka",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "domFunf",
+      "weaponId": "heatSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "domBeinNichts",
+      "weaponId": "raketenBazooka",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "domBeinNichts",
+      "weaponId": "sturmFaust",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "domBeinNichts",
+      "weaponId": "heatSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "domGrossBeil",
+      "weaponId": "largeHeatSaber",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "domGrossBeil",
+      "weaponId": "heatKnife",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "domTropen",
+      "weaponId": "raketenBazooka",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "domTropen",
+      "weaponId": "mmp80MachineGun",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "domTropen",
+      "weaponId": "sturmFaust",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "domTropen",
+      "weaponId": "heatSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "domTropen",
+      "weaponId": "zakuBazooka",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "armoredGm",
+      "weaponId": "beamSprayGun",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "armoredGm",
+      "weaponId": "hyperBazooka",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "gundamMudrock",
+      "weaponId": "mudrock300mmCannon",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gundamMudrock",
+      "weaponId": "beamRifle",
       "accuracyBonus": 6
     }
   ]

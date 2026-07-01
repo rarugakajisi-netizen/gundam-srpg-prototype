@@ -492,6 +492,41 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "armoredGm",
+    "name": "ジム装甲強化型",
+    "faction": "federation",
+    "cost": 160,
+    "armor": 320,
+    "energy": 72,
+    "agility": 13,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "armoredGm",
+      "heavyMs",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "gundam",
     "name": "ガンダム",
     "faction": "federation",
@@ -1103,6 +1138,145 @@ window.GAME_DATA.mobileSuits = [
     "tags": [
       "dom",
       "rickDom"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "domFunf",
+    "name": "ドム・フュンフ",
+    "faction": "zeon",
+    "cost": 250,
+    "armor": 380,
+    "energy": 85,
+    "agility": 20,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatSaber",
+      "spreadBeam"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "dom",
+      "domFunf",
+      "highMobilityMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "domBeinNichts",
+    "name": "ドム・バインニヒツ",
+    "faction": "zeon",
+    "cost": 280,
+    "armor": 365,
+    "energy": 95,
+    "agility": 26,
+    "mobility": 7,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatSaber",
+      "spreadBeam"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "dom",
+      "domFunf",
+      "rickDom",
+      "spaceAssault",
+      "highMobilityMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "domGrossBeil",
+    "name": "ドム・グロウスバイル",
+    "faction": "zeon",
+    "cost": 295,
+    "armor": 370,
+    "energy": 92,
+    "agility": 29,
+    "mobility": 7,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "largeHeatSaber",
+      "heatKnife"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "dom",
+      "domFunf",
+      "rickDom",
+      "spaceAssault",
+      "highMobilityMs",
+      "meleeMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "domTropen",
+    "name": "ドム・トローペン",
+    "faction": "zeon",
+    "cost": 270,
+    "armor": 390,
+    "energy": 88,
+    "agility": 21,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatSaber",
+      "spreadBeam"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": true,
+      "debris": false
+    },
+    "tags": [
+      "dom",
+      "domFunf",
+      "domTropen",
+      "desert",
+      "highMobilityMs"
     ],
     "specials": [],
     "imagePath": ""
@@ -2534,6 +2708,42 @@ window.GAME_DATA.mobileSuits = [
       "zaku",
       "zaku1",
       "blackTriStars"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "zaku1Gerhart",
+    "name": "ザクI（ゲラート機）",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 125,
+    "armor": 235,
+    "energy": 45,
+    "agility": 16,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zaku1",
+      "gerhartCustom"
     ],
     "specials": [],
     "imagePath": ""
@@ -4876,6 +5086,41 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "gundamMudrock",
+    "name": "ガンダム6号機マドロック",
+    "faction": "federation",
+    "cost": 335,
+    "armor": 385,
+    "energy": 125,
+    "agility": 23,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "mudrock300mmCannon"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "secondLotGundam",
+      "cannonMs",
+      "mudrock"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "groundGundamGmHead",
     "name": "陸戦型ガンダム（ジム頭）",
     "faction": "federation",
@@ -6181,6 +6426,107 @@ window.GAME_DATA.mobileSuits = [
       "gmCommand",
       "gmSniper",
       "whiteDingo",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmImmortal4th",
+    "name": "ジム（不死身の第四小隊）",
+    "faction": "federation",
+    "cost": 135,
+    "armor": 250,
+    "energy": 70,
+    "agility": 17,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gm",
+      "immortal4th",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmCannonImmortal4th",
+    "name": "ジム・キャノン（不死身の第四小隊）",
+    "faction": "federation",
+    "cost": 170,
+    "armor": 260,
+    "energy": 70,
+    "agility": 12,
+    "mobility": 3,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "gmCannonCannon",
+      "headVulcan"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gm",
+      "cannonMs",
+      "immortal4th",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmKaiImmortal4th",
+    "name": "ジム改（不死身の第四小隊）",
+    "faction": "federation",
+    "cost": 200,
+    "armor": 300,
+    "energy": 88,
+    "agility": 24,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "enhancedBeamSaber"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gm",
+      "gmKai",
+      "immortal4th",
       "federationMassProduction"
     ],
     "specials": [],

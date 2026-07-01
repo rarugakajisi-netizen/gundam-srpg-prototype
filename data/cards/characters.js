@@ -315,7 +315,7 @@ window.GAME_DATA.characters = [
     "name": "スレッガー・ロウ",
     "characterKey": "sleggar",
     "faction": "federation",
-    "cost": 100,
+    "cost": 90,
     "shooting": 22,
     "melee": 12,
     "reaction": 22,
@@ -455,9 +455,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "operator"
     ],
-    "specials": [
-      "recon"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -1212,7 +1210,7 @@ window.GAME_DATA.characters = [
     "name": "ハインツ・ベア",
     "characterKey": "heinzBaer",
     "faction": "federation",
-    "cost": 105,
+    "cost": 95,
     "shooting": 18,
     "melee": 17,
     "reaction": 17,
@@ -3049,9 +3047,7 @@ window.GAME_DATA.characters = [
       "mechanic",
       "commander"
     ],
-    "specials": [
-      "zakuPassion"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3081,7 +3077,7 @@ window.GAME_DATA.characters = [
     "name": "ユイマン・カーライル",
     "characterKey": "yuimanCarlile",
     "faction": "zeon",
-    "cost": 75,
+    "cost": 65,
     "shooting": 13,
     "melee": 12,
     "reaction": 13,
@@ -3321,9 +3317,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3525,7 +3519,7 @@ window.GAME_DATA.characters = [
     "name": "ワルハマー・T・カインズ",
     "characterKey": "walhammerCains",
     "faction": "federation",
-    "cost": 80,
+    "cost": 70,
     "shooting": 4,
     "melee": 2,
     "reaction": 8,
@@ -3809,6 +3803,386 @@ window.GAME_DATA.characters = [
     "specials": [
       "rivalry"
     ],
+    "imagePath": ""
+  },
+  {
+    "id": "southBurningOyw",
+    "name": "サウス・バニング",
+    "characterKey": "southBurningOyw",
+    "faction": "federation",
+    "cost": 130,
+    "shooting": 22,
+    "melee": 18,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 24,
+    "support": 14,
+    "maintenance": 6,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "alphaABateOyw",
+    "name": "アルファ・A・ベイト",
+    "characterKey": "alphaABateOyw",
+    "faction": "federation",
+    "cost": 105,
+    "shooting": 20,
+    "melee": 15,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 14,
+    "support": 8,
+    "maintenance": 4,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "bernardMonshaOyw",
+    "name": "ベルナルド・モンシア",
+    "characterKey": "bernardMonshaOyw",
+    "faction": "federation",
+    "cost": 110,
+    "shooting": 21,
+    "melee": 17,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 10,
+    "support": 6,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "rivalry"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "chapAdelOyw",
+    "name": "チャップ・アデル",
+    "characterKey": "chapAdelOyw",
+    "faction": "federation",
+    "cost": 90,
+    "shooting": 18,
+    "melee": 13,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 11,
+    "support": 15,
+    "maintenance": 5,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "allyBackup"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gerhartSchmitzer",
+    "name": "ゲラート・シュマイザー",
+    "characterKey": "gerhartSchmitzer",
+    "faction": "zeon",
+    "cost": 140,
+    "shooting": 20,
+    "melee": 18,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 28,
+    "support": 18,
+    "maintenance": 8,
+    "roles": [
+      "pilot",
+      "commander",
+      "captain"
+    ],
+    "specials": [
+      "guerrillaTactics"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "leRoar",
+    "name": "ル・ローア",
+    "characterKey": "leRoar",
+    "faction": "zeon",
+    "cost": 100,
+    "shooting": 18,
+    "melee": 13,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 20,
+    "support": 13,
+    "maintenance": 6,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "recon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "matAustin",
+    "name": "マット・オースティン",
+    "characterKey": "matAustin",
+    "faction": "zeon",
+    "cost": 105,
+    "shooting": 17,
+    "melee": 18,
+    "reaction": 16,
+    "awakening": 0,
+    "command": 18,
+    "support": 16,
+    "maintenance": 12,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "zakuPassion"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "charlotteHepner",
+    "name": "シャルロッテ・ヘープナー",
+    "characterKey": "charlotteHepner",
+    "faction": "zeon",
+    "cost": 75,
+    "shooting": 14,
+    "melee": 12,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 12,
+    "support": 15,
+    "maintenance": 8,
+    "roles": [
+      "pilot",
+      "operator"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "nickiRobert",
+    "name": "ニッキ・ロベルト",
+    "characterKey": "nickiRobert",
+    "faction": "zeon",
+    "cost": 80,
+    "shooting": 15,
+    "melee": 12,
+    "reaction": 16,
+    "awakening": 0,
+    "command": 13,
+    "support": 12,
+    "maintenance": 6,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "leighSvagr",
+    "name": "リィ・スワガー",
+    "characterKey": "leighSvagr",
+    "faction": "zeon",
+    "cost": 75,
+    "shooting": 19,
+    "melee": 12,
+    "reaction": 16,
+    "awakening": 0,
+    "command": 11,
+    "support": 14,
+    "maintenance": 7,
+    "roles": [
+      "pilot",
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "renceh",
+    "name": "レンチェフ",
+    "characterKey": "renceh",
+    "faction": "zeon",
+    "cost": 115,
+    "shooting": 22,
+    "melee": 19,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 12,
+    "support": 4,
+    "maintenance": 3,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "madness"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "manning",
+    "name": "マニング",
+    "characterKey": "manning",
+    "faction": "zeon",
+    "cost": 100,
+    "shooting": 20,
+    "melee": 18,
+    "reaction": 19,
+    "awakening": 0,
+    "command": 14,
+    "support": 13,
+    "maintenance": 6,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "mourningResolve"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "sophieFranc",
+    "name": "ソフィ・フラン",
+    "characterKey": "sophieFranc",
+    "faction": "zeon",
+    "cost": 110,
+    "shooting": 18,
+    "melee": 21,
+    "reaction": 19,
+    "awakening": 0,
+    "command": 14,
+    "support": 12,
+    "maintenance": 7,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "sandra",
+    "name": "サンドラ",
+    "characterKey": "sandra",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 21,
+    "melee": 17,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 12,
+    "support": 8,
+    "maintenance": 6,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "migaki",
+    "name": "ミガキ",
+    "characterKey": "migaki",
+    "faction": "zeon",
+    "cost": 80,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 15,
+    "support": 18,
+    "maintenance": 24,
+    "roles": [
+      "mechanic",
+      "operator"
+    ],
+    "specials": [
+      "internalAudit"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "fenrirBoyMechanic",
+    "name": "少年整備兵",
+    "characterKey": "fenrirBoyMechanic",
+    "faction": "zeon",
+    "cost": 50,
+    "shooting": 4,
+    "melee": 3,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 6,
+    "support": 12,
+    "maintenance": 22,
+    "roles": [
+      "mechanic",
+      "operator"
+    ],
+    "specials": [
+      "pilotSupply"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "eiger",
+    "name": "エイガー",
+    "characterKey": "eiger",
+    "faction": "federation",
+    "cost": 110,
+    "shooting": 23,
+    "melee": 14,
+    "reaction": 19,
+    "awakening": 0,
+    "command": 22,
+    "support": 10,
+    "maintenance": 9,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "sakaki",
+    "name": "サカキ",
+    "characterKey": "sakaki",
+    "faction": "federation",
+    "cost": 60,
+    "shooting": 16,
+    "melee": 8,
+    "reaction": 12,
+    "awakening": 0,
+    "command": 10,
+    "support": 11,
+    "maintenance": 6,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
     "imagePath": ""
   }
 ];
