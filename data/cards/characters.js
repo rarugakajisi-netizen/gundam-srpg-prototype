@@ -4156,5 +4156,355 @@ window.GAME_DATA.characters = [
     ],
     "specials": [],
     "imagePath": ""
+  },
+  {
+    "id": "matHeley",
+    "name": "マット・ヒーリィ",
+    "characterKey": "matHeley",
+    "faction": "federation",
+    "cost": 115,
+    "shooting": 21,
+    "melee": 16,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 20,
+    "support": 15,
+    "maintenance": 6,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "larryRadley",
+    "name": "ラリー・ラドリー",
+    "characterKey": "larryRadley",
+    "faction": "federation",
+    "cost": 100,
+    "shooting": 23,
+    "melee": 12,
+    "reaction": 21,
+    "awakening": 0,
+    "command": 14,
+    "support": 12,
+    "maintenance": 4,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "anishRofman",
+    "name": "アニッシュ・ロフマン",
+    "characterKey": "anishRofman",
+    "faction": "federation",
+    "cost": 80,
+    "shooting": 17,
+    "melee": 14,
+    "reaction": 16,
+    "awakening": 0,
+    "command": 11,
+    "support": 12,
+    "maintenance": 8,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "noelAnderson",
+    "name": "ノエル・アンダーソン",
+    "characterKey": "noelAnderson",
+    "faction": "federation",
+    "cost": 65,
+    "shooting": 6,
+    "melee": 4,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 15,
+    "support": 20,
+    "maintenance": 8,
+    "roles": [
+      "operator",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "rachelMilsteen",
+    "name": "レーチェル・ミルスティーン",
+    "characterKey": "rachelMilsteen",
+    "faction": "federation",
+    "cost": 75,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 19,
+    "support": 22,
+    "maintenance": 15,
+    "roles": [
+      "captain",
+      "operator",
+      "mechanic"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "johnKowen",
+    "name": "ジョン・コーウェン",
+    "characterKey": "johnKowen",
+    "faction": "federation",
+    "cost": 110,
+    "shooting": 7,
+    "melee": 4,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 26,
+    "support": 22,
+    "maintenance": 12,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "rawtonDuchamp",
+    "name": "ロートン・デュシャン",
+    "characterKey": "rawtonDuchamp",
+    "faction": "federation",
+    "cost": 25,
+    "shooting": 2,
+    "melee": 2,
+    "reaction": 6,
+    "awakening": 0,
+    "command": 4,
+    "support": 12,
+    "maintenance": 5,
+    "roles": [
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "tokushima",
+    "name": "トクシマ",
+    "characterKey": "tokushima",
+    "faction": "federation",
+    "cost": 55,
+    "shooting": 14,
+    "melee": 11,
+    "reaction": 13,
+    "awakening": 0,
+    "command": 7,
+    "support": 6,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "kenBederstadt",
+    "name": "ケン・ビーダーシュタット",
+    "characterKey": "kenBederstadt",
+    "faction": "zeon",
+    "cost": 115,
+    "shooting": 20,
+    "melee": 18,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 21,
+    "support": 16,
+    "maintenance": 7,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "garskyZinobiev",
+    "name": "ガースキー・ジノビエフ",
+    "characterKey": "garskyZinobiev",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 18,
+    "melee": 18,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 17,
+    "support": 14,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "yukiNakasato",
+    "name": "ユウキ・ナカサト",
+    "characterKey": "yukiNakasato",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 10,
+    "support": 19,
+    "maintenance": 8,
+    "roles": [
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "janeContie",
+    "name": "ジェーン・コンティ",
+    "characterKey": "janeContie",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 17,
+    "melee": 15,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 20,
+    "support": 21,
+    "maintenance": 12,
+    "roles": [
+      "pilot",
+      "operator",
+      "commander"
+    ],
+    "specials": [
+      "spyConduct"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "douglasRodin",
+    "name": "ダグラス・ローデン",
+    "characterKey": "douglasRodin",
+    "faction": "zeon",
+    "cost": 120,
+    "shooting": 8,
+    "melee": 5,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 28,
+    "support": 23,
+    "maintenance": 10,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "zeonSakaki",
+    "name": "サカキ",
+    "characterKey": "zeonSakaki",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 4,
+    "melee": 3,
+    "reaction": 7,
+    "awakening": 0,
+    "command": 12,
+    "support": 18,
+    "maintenance": 15,
+    "roles": [
+      "operator",
+      "mechanic"
+    ],
+    "specials": [
+      "pilotSupply"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "claudeGhoul",
+    "name": "クロード",
+    "characterKey": "claudeGhoul",
+    "faction": "zeon",
+    "cost": 115,
+    "shooting": 21,
+    "melee": 17,
+    "reaction": 22,
+    "awakening": 18,
+    "command": 18,
+    "support": 3,
+    "maintenance": 2,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "madness"
+    ],
+    "isNewtype": true,
+    "tags": [
+      "newtype"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "claudiaGhoul",
+    "name": "クローディア",
+    "characterKey": "claudiaGhoul",
+    "faction": "zeon",
+    "cost": 85,
+    "shooting": 17,
+    "melee": 13,
+    "reaction": 18,
+    "awakening": 12,
+    "command": 8,
+    "support": 8,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "isNewtype": true,
+    "tags": [
+      "newtype"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "adaGhoul",
+    "name": "エイダ",
+    "characterKey": "adaGhoul",
+    "faction": "zeon",
+    "cost": 70,
+    "shooting": 16,
+    "melee": 11,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 6,
+    "support": 5,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
   }
 ];

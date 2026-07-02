@@ -1048,6 +1048,76 @@ window.GAME_DATA.compatibility = {
       "characterId": "sakaki",
       "msTag": "tank",
       "evasionBonus": 6
+    },
+    {
+      "characterId": "matHeley",
+      "msTag": "groundGundam",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "matHeley",
+      "msTag": "gm",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "larryRadley",
+      "msTag": "gm",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "larryRadley",
+      "msTag": "federationAircraft",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "anishRofman",
+      "msTag": "gm",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "tokushima",
+      "msTag": "gm",
+      "evasionBonus": 5
+    },
+    {
+      "characterId": "kenBederstadt",
+      "msTag": "zaku",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "kenBederstadt",
+      "msTag": "dom",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "garskyZinobiev",
+      "msTag": "zaku",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "garskyZinobiev",
+      "msTag": "dom",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "jakeGuns",
+      "msTag": "dom",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "janeContie",
+      "msTag": "aquatic",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "claudeGhoul",
+      "msTag": "psycommu",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "claudiaGhoul",
+      "msTag": "psycommu",
+      "evasionBonus": 5
     }
   ],
   "msWeapon": [
