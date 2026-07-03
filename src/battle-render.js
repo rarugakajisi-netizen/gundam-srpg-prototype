@@ -450,9 +450,11 @@ function vehicleOptionButton(unit) {
   if (!isMobileSuit(unit)) return "";
   const vehicleOption = activeVehicleOption(unit);
   if (!vehicleOption) return "";
+  const mobilityValue = vehicleOption.value ?? 0;
+  const mobilityLabel = mobilityValue >= 0 ? `移動+${mobilityValue}` : `移動${mobilityValue}`;
   return `
     <button data-action="discard-vehicle" ${state.outcome || state.phase !== "player" || unit.side !== "player" ? "disabled" : ""}>
-      切り離し<br><span class="button-detail">${vehicleOption.name} / 移動+${vehicleOption.value ?? 0}${vehicleOption.forbidsMelee ? " / 格闘不可" : ""}</span>
+      切り離し<br><span class="button-detail">${vehicleOption.name} / ${mobilityLabel}${vehicleOption.forbidsMelee ? " / 格闘不可" : ""}</span>
     </button>
   `;
 }

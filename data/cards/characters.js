@@ -4506,5 +4506,175 @@ window.GAME_DATA.characters = [
     ],
     "specials": [],
     "imagePath": ""
+  },
+  {
+    "id": "alanAylward",
+    "name": "アラン・アイルワード",
+    "characterKey": "alanAylward",
+    "faction": "federation",
+    "cost": 105,
+    "shooting": 19,
+    "melee": 16,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 19,
+    "support": 15,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "dennisBarrow",
+    "name": "デニス・バロウ",
+    "characterKey": "dennisBarrow",
+    "faction": "federation",
+    "cost": 100,
+    "shooting": 22,
+    "melee": 14,
+    "reaction": 19,
+    "awakening": 0,
+    "command": 17,
+    "support": 18,
+    "maintenance": 8,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "allyBackup"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "lilSomers",
+    "name": "リル・ソマーズ",
+    "characterKey": "lilSomers",
+    "faction": "federation",
+    "cost": 90,
+    "shooting": 18,
+    "melee": 15,
+    "reaction": 21,
+    "awakening": 0,
+    "command": 9,
+    "support": 8,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "rivalry"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "hoaBlanchett",
+    "name": "ホア・ブランシェット",
+    "characterKey": "hoaBlanchett",
+    "faction": "federation",
+    "cost": 70,
+    "shooting": 4,
+    "melee": 2,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 12,
+    "support": 25,
+    "maintenance": 9,
+    "roles": [
+      "operator"
+    ],
+    "specials": [
+      "internalAudit"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "leoBrower",
+    "name": "レオ・ブラウアー",
+    "characterKey": "leoBrower",
+    "faction": "zeon",
+    "cost": 105,
+    "shooting": 18,
+    "melee": 17,
+    "reaction": 21,
+    "awakening": 0,
+    "command": 20,
+    "support": 17,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "retreatSupport"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "toldoBobrov",
+    "name": "トルド・ボブロフ",
+    "characterKey": "toldoBobrov",
+    "faction": "zeon",
+    "cost": 100,
+    "shooting": 21,
+    "melee": 16,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 13,
+    "support": 14,
+    "maintenance": 11,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "oldSoldierPride"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "klausBertrand",
+    "name": "クラウス・ベルトラン",
+    "characterKey": "klausBertrand",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 22,
+    "melee": 12,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 18,
+    "support": 19,
+    "maintenance": 12,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "scheming"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "annFriberg",
+    "name": "アン・フリーベリ",
+    "characterKey": "annFriberg",
+    "faction": "zeon",
+    "cost": 45,
+    "shooting": 10,
+    "melee": 7,
+    "reaction": 12,
+    "awakening": 0,
+    "command": 6,
+    "support": 16,
+    "maintenance": 6,
+    "roles": [
+      "pilot",
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
   }
 ];

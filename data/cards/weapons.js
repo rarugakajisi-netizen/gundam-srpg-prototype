@@ -5212,5 +5212,81 @@ window.GAME_DATA.weapons = [
     "factions": [
       "zeon"
     ]
+  },
+  {
+    "id": "fellowBoosterMissile",
+    "name": "フェロウ・ブースター用ミサイル",
+    "cost": 0,
+    "power": 92,
+    "accuracy": 72,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "corvetteBoosterMissile",
+    "name": "コルベット・ブースター用ミサイル",
+    "cost": 0,
+    "power": 90,
+    "accuracy": 74,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "bustlinerMegaParticleCannon",
+    "name": "バストライナー・メガ粒子砲",
+    "cost": 0,
+    "power": 185,
+    "accuracy": 64,
+    "range": 6,
+    "minRange": 3,
+    "consume": 34,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle-cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "skiureMegaParticleCannon",
+    "name": "スキウレ・メガ粒子砲",
+    "cost": 0,
+    "power": 180,
+    "accuracy": 64,
+    "range": 6,
+    "minRange": 3,
+    "consume": 0,
+    "kind": "beam",
+    "ammo": 4,
+    "category": "mega-particle-cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
   }
 ];

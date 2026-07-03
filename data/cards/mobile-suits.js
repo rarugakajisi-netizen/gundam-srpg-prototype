@@ -7074,5 +7074,38 @@ window.GAME_DATA.mobileSuits = [
       "smokeDischarger"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "slyflail",
+    "name": "スライフレイル",
+    "faction": "federation",
+    "cost": 245,
+    "armor": 345,
+    "energy": 95,
+    "agility": 21,
+    "mobility": 5,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamJavelin"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "groundGundam",
+      "forestMs"
+    ],
+    "specials": [],
+    "imagePath": ""
   }
 ];

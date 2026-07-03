@@ -490,5 +490,89 @@ window.GAME_DATA.options = [
       "zeon"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "fellowBooster",
+    "name": "フェロウ・ブースター",
+    "cost": 90,
+    "effectType": "vehicle",
+    "grantsSkill": "subFlightSystem",
+    "effectText": "宇宙専用SFS。移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。ミサイルを追加する。",
+    "value": 2,
+    "forbidsMelee": true,
+    "weaponIds": [
+      "fellowBoosterMissile"
+    ],
+    "uniqueSkill": true,
+    "factions": [
+      "federation"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "corvetteBooster",
+    "name": "コルベット・ブースター",
+    "cost": 90,
+    "effectType": "vehicle",
+    "grantsSkill": "subFlightSystem",
+    "effectText": "地上専用の飛行SFS。移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。ミサイルを追加する。",
+    "value": 2,
+    "forbidsMelee": true,
+    "weaponIds": [
+      "corvetteBoosterMissile"
+    ],
+    "uniqueSkill": true,
+    "factions": [
+      "federation"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "lightLiner",
+    "name": "ライトライナー",
+    "cost": 35,
+    "effectType": "mobility",
+    "value": 1,
+    "effectText": "地上専用の簡易飛行SFS。移動力+1。武装なしの安価な支援装備。",
+    "factions": [
+      "federation"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "bustliner",
+    "name": "バストライナー",
+    "cost": 95,
+    "effectType": "vehicle",
+    "grantsSkill": "subFlightSystem",
+    "effectText": "移動砲台系SFS。移動力-1。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。強力なメガ粒子砲を追加する。",
+    "value": -1,
+    "forbidsMelee": true,
+    "weaponIds": [
+      "bustlinerMegaParticleCannon"
+    ],
+    "uniqueSkill": true,
+    "factions": [
+      "federation"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "skiure",
+    "name": "スキウレ",
+    "cost": 90,
+    "effectType": "vehicle",
+    "grantsSkill": "subFlightSystem",
+    "effectText": "ジオン専用の移動砲台。移動力-1。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。機体出力に依存しないメガ粒子砲を追加する。",
+    "value": -1,
+    "forbidsMelee": true,
+    "weaponIds": [
+      "skiureMegaParticleCannon"
+    ],
+    "uniqueSkill": true,
+    "factions": [
+      "zeon"
+    ],
+    "imagePath": ""
   }
 ];
