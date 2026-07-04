@@ -4694,9 +4694,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4715,9 +4713,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "pilot"
     ],
-    "specials": [
-      "rivalry"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4736,9 +4732,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "pilot"
     ],
-    "specials": [
-      "stationaryInterception"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4777,9 +4771,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "operator"
     ],
-    "specials": [
-      "internalAudit"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4798,9 +4790,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "pilot"
     ],
-    "specials": [
-      "madness"
-    ],
+    "specials": [],
     "isNewtype": true,
     "tags": [
       "newtype",
@@ -4825,9 +4815,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4847,9 +4835,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "guardMission"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4868,9 +4854,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "pilot"
     ],
-    "specials": [
-      "stationaryInterception"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4890,9 +4874,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "rivalry"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4912,9 +4894,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "teamwork"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4956,9 +4936,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "pilot"
     ],
-    "specials": [
-      "guardMission"
-    ],
+    "specials": [],
     "imagePath": ""
   }
 ];

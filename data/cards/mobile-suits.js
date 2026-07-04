@@ -7265,8 +7265,7 @@ window.GAME_DATA.mobileSuits = [
     "weaponSlots": 1,
     "optionSlots": 1,
     "fixedWeaponIds": [
-      "heatLanceSchneid",
-      "tripleGatlingGun"
+      "heatLanceSchneid"
     ],
     "mapTypes": [
       "ground"
@@ -7286,9 +7285,7 @@ window.GAME_DATA.mobileSuits = [
       "meleeMs",
       "schneidCustom"
     ],
-    "specials": [
-      "smokeDischarger"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
