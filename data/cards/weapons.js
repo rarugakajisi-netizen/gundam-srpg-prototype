@@ -4264,6 +4264,25 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "heatLanceSchneid",
+    "name": "ヒート・ランサー",
+    "cost": 0,
+    "power": 148,
+    "accuracy": 78,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
     "id": "heatKnife",
     "name": "ヒート・ナイフ",
     "cost": 0,

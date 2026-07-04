@@ -4807,5 +4807,158 @@ window.GAME_DATA.characters = [
       "cyberNewtype"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "vincentGleissner",
+    "name": "ヴィンセント・グライスナー",
+    "characterKey": "vincentGleissner",
+    "faction": "zeon",
+    "cost": 120,
+    "shooting": 20,
+    "melee": 19,
+    "reaction": 23,
+    "awakening": 0,
+    "command": 17,
+    "support": 14,
+    "maintenance": 6,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "dougSchneid",
+    "name": "ダグ・シュナイド",
+    "characterKey": "dougSchneid",
+    "faction": "zeon",
+    "cost": 130,
+    "shooting": 18,
+    "melee": 24,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 26,
+    "support": 18,
+    "maintenance": 8,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "guardMission"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "liberioLincke",
+    "name": "リベリオ・リンケ",
+    "characterKey": "liberioLincke",
+    "faction": "zeon",
+    "cost": 90,
+    "shooting": 22,
+    "melee": 10,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 8,
+    "support": 12,
+    "maintenance": 5,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "stationaryInterception"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "guyHelmuth",
+    "name": "ギー・ヘルムート",
+    "characterKey": "guyHelmuth",
+    "faction": "zeon",
+    "cost": 100,
+    "shooting": 14,
+    "melee": 23,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 12,
+    "support": 5,
+    "maintenance": 3,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "rivalry"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "severoOswald",
+    "name": "セベロ・オズワルド",
+    "characterKey": "severoOswald",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 20,
+    "melee": 15,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 20,
+    "support": 9,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "anneroseRosenheim",
+    "name": "アンネローゼ・ローゼンハイン",
+    "characterKey": "anneroseRosenheim",
+    "faction": "zeon",
+    "cost": 105,
+    "shooting": 18,
+    "melee": 12,
+    "reaction": 20,
+    "awakening": 22,
+    "command": 5,
+    "support": 10,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "isNewtype": true,
+    "tags": [
+      "newtype"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "albertBell",
+    "name": "アルバート・ベル",
+    "characterKey": "albertBell",
+    "faction": "zeon",
+    "cost": 65,
+    "shooting": 12,
+    "melee": 8,
+    "reaction": 14,
+    "awakening": 0,
+    "command": 4,
+    "support": 8,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "guardMission"
+    ],
+    "imagePath": ""
   }
 ];

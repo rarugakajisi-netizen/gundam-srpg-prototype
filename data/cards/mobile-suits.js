@@ -7254,6 +7254,44 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "efreetSchneid",
+    "name": "イフリート（シュナイド機）",
+    "faction": "zeon",
+    "cost": 275,
+    "armor": 325,
+    "energy": 85,
+    "agility": 29,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatLanceSchneid",
+      "tripleGatlingGun"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "efreet",
+      "gouf",
+      "dom",
+      "assaultMs",
+      "meleeMs",
+      "schneidCustom"
+    ],
+    "specials": [
+      "smokeDischarger"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "slyflail",
     "name": "スライフレイル",
     "faction": "federation",

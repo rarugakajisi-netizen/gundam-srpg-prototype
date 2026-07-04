@@ -660,6 +660,86 @@ window.GAME_DATA.compatibility = {
       "evasionBonus": 12
     },
     {
+      "characterId": "vincentGleissner",
+      "msId": "highMobilityGelgoog",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "vincentGleissner",
+      "msId": "highMobilityZaku",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "vincentGleissner",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "dougSchneid",
+      "msId": "efreetSchneid",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "dougSchneid",
+      "msTag": "efreet",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "liberioLincke",
+      "msId": "zaku2Kai",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "liberioLincke",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "guyHelmuth",
+      "msId": "domGrossBeil",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "guyHelmuth",
+      "msId": "rickDom2",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "guyHelmuth",
+      "msTag": "dom",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "severoOswald",
+      "msId": "zaku2S",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "severoOswald",
+      "msId": "zaku2",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "anneroseRosenheim",
+      "msId": "psycommuZakuTest",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "anneroseRosenheim",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "albertBell",
+      "msId": "zaku2",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "albertBell",
+      "msTag": "zaku",
+      "evasionBonus": 5
+    },
+    {
       "characterId": "elliottRem",
       "msTag": "zaku",
       "evasionBonus": 6
