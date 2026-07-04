@@ -218,6 +218,10 @@ function examSystemActive(unit) {
   return isMobileSuit(unit) && (unit.examTurnsRemaining ?? 0) > 0;
 }
 
+function hadesSystemActive(unit) {
+  return isMobileSuit(unit) && (unit.hadesTurnsRemaining ?? 0) > 0;
+}
+
 function characterIsNewtype(character) {
   return Boolean(character?.isNewtype)
     || (character?.tags ?? []).includes("newtype")
@@ -237,11 +241,27 @@ function canActivateExamSystem(unit) {
     && !examSystemActive(unit);
 }
 
+function canActivateHadesSystem(unit) {
+  return isMobileSuit(unit)
+    && isAlive(unit)
+    && unitHasSkill(unit, "hadesSystem")
+    && !unit.hadesSystemActivated
+    && !hadesSystemActive(unit);
+}
+
 function activateExamSystem(unit, reason = "条件達成") {
   if (!canActivateExamSystem(unit)) return false;
   unit.examSystemActivated = true;
   unit.examTurnsRemaining = 3;
   state.log.push(`${unitName(unit)}のEXAMシステム発動（${reason}）。命中・回避・攻撃力が上昇、3ターン後に自動撤退します。`);
+  return true;
+}
+
+function activateHadesSystem(unit, reason = "条件達成") {
+  if (!canActivateHadesSystem(unit)) return false;
+  unit.hadesSystemActivated = true;
+  unit.hadesTurnsRemaining = 3;
+  state.log.push(`${unitName(unit)}のHADES発動（${reason}）。命中・回避・攻撃力が上昇、3ターン後に機体へ大きな負荷がかかります。`);
   return true;
 }
 
@@ -251,9 +271,32 @@ function activateExamSystemByArmor(unit) {
   return activateExamSystem(unit, "耐久低下");
 }
 
+function activateHadesSystemByArmor(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit) || unit.maxArmor <= 0) return false;
+  if (unit.armor > Math.floor(unit.maxArmor / 3)) return false;
+  return activateHadesSystem(unit, "耐久低下");
+}
+
 function activateExamSystemByCombat(attacker, defender) {
   if (isMobileSuit(attacker) && unitPilotIsNewtype(defender)) activateExamSystem(attacker, "敵ニュータイプ反応");
   if (isMobileSuit(defender) && unitPilotIsNewtype(attacker)) activateExamSystem(defender, "敵ニュータイプ反応");
+}
+
+function overheatHadesSystemUnit(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit)) return false;
+  const armorLoss = Math.max(1, Math.ceil(unit.maxArmor * HADES_OVERHEAT_ARMOR_LOSS_RATE));
+  const beforeArmor = unit.armor;
+  unit.armor = Math.max(0, unit.armor - armorLoss);
+  unit.energy = 0;
+  unit.hadesTurnsRemaining = 0;
+  unit.hadesSystemOverheated = true;
+  state.log.push(`${unitName(unit)}がHADESの限界に達し、耐久${beforeArmor - unit.armor}低下、EN0。`);
+  if (unit.armor === 0) {
+    state.log.push(`${unitName(unit)}はHADESの負荷で戦闘不能。`);
+    triggerSacrificialBoost(unit);
+    checkOutcome();
+  }
+  return true;
 }
 
 function withdrawExamSystemUnit(unit) {
@@ -267,6 +310,15 @@ function withdrawExamSystemUnit(unit) {
   triggerSacrificialBoost(unit);
   checkOutcome();
   return true;
+}
+
+function tickHadesSystem(unit) {
+  if (!hadesSystemActive(unit)) {
+    activateHadesSystemByArmor(unit);
+    return;
+  }
+  unit.hadesTurnsRemaining -= 1;
+  if (unit.hadesTurnsRemaining <= 0) overheatHadesSystemUnit(unit);
 }
 
 function tickExamSystem(unit) {
@@ -558,6 +610,7 @@ function skillAccuracyBonus(unit, defender, weapon) {
   bonus += schemingAccuracyBonus(unit);
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus += 5;
   if (examSystemActive(unit)) bonus += 18;
+  if (hadesSystemActive(unit)) bonus += HADES_ACCURACY_BONUS;
   if (unitHasSkill(unit, "phantomSystem")) bonus += 10;
   const supportedByCommander = state.units.some((other) =>
     other.id !== unit.id
@@ -582,6 +635,7 @@ function skillEvasionBonus(unit) {
   if (marineSpaceSupportActive(unit)) bonus += 5;
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus -= 4;
   if (examSystemActive(unit)) bonus += 18;
+  if (hadesSystemActive(unit)) bonus += HADES_EVASION_BONUS;
   if (unitHasSkill(unit, "phantomSystem")) bonus += 10;
   return bonus;
 }
@@ -673,6 +727,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) damage += 8;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) damage += 15;
   if (examSystemActive(attacker)) damage += 15;
+  if (hadesSystemActive(attacker)) damage += HADES_DAMAGE_BONUS;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "phantomSystem")) damage += 8;
   if (rivalryActive(attacker, defender)) damage += 12;
   if (oldSoldierPrideActive(attacker, defender)) damage += 8;
@@ -713,6 +768,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
   if (examSystemActive(attacker)) notes.push("EXAMシステム");
+  if (hadesSystemActive(attacker)) notes.push("HADES");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "phantomSystem")) notes.push("ファントムシステム");
   if (schemingActive(attacker)) notes.push("策謀攻撃");
   if (rivalryActive(attacker, defender)) notes.push("対抗心");
@@ -978,6 +1034,7 @@ function applyDamage(unit, amount) {
   if (unit.armor === 0 && canPurgeAdditionalArmor(unit)) purgeAdditionalArmor(unit, "破壊", false);
   if (unit.armor === 0 && canUseCoreSystem(unit)) transformToCoreFighter(unit);
   activateExamSystemByArmor(unit);
+  activateHadesSystemByArmor(unit);
   if (unit.armor === 0) triggerSacrificialBoost(unit);
 }
 

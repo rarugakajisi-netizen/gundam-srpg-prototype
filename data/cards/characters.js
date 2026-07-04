@@ -4781,5 +4781,31 @@ window.GAME_DATA.characters = [
       "internalAudit"
     ],
     "imagePath": ""
+  },
+  {
+    "id": "chloeCroce",
+    "name": "クロエ・クローチェ",
+    "characterKey": "chloeCroce",
+    "faction": "federation",
+    "cost": 125,
+    "shooting": 21,
+    "melee": 18,
+    "reaction": 24,
+    "awakening": 24,
+    "command": 3,
+    "support": 4,
+    "maintenance": 2,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "madness"
+    ],
+    "isNewtype": true,
+    "tags": [
+      "newtype",
+      "cyberNewtype"
+    ],
+    "imagePath": ""
   }
 ];

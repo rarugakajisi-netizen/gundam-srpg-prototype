@@ -23,6 +23,10 @@ const REPEAT_ATTACK_MIN_HIT_PENALTY = 3;
 const EDUCATIONAL_COMPUTER_ACCURACY_CAP = 9;
 const EDUCATIONAL_COMPUTER_EVASION_CAP = 6;
 const HARO_EVASION_BONUS = 4;
+const HADES_ACCURACY_BONUS = 12;
+const HADES_EVASION_BONUS = 12;
+const HADES_DAMAGE_BONUS = 10;
+const HADES_OVERHEAT_ARMOR_LOSS_RATE = 0.67;
 const GUERRILLA_TERRAINS = new Set(["desert", "forest", "water", "debris"]);
 const SAVE_KEY = "gundamSrpgPrototypeSaveV1";
 const FAVORITE_FORMATION_SLOTS = 20;
@@ -173,6 +177,7 @@ function optionUsableOnMap(option, map = selectedMap()) {
 }
 
 function optionEquippableByMs(option, ms, map = selectedMap(), faction = ms?.faction) {
+  if (option?.grantsSkill === "examSystem" && (ms?.specials ?? []).includes("hadesSystem")) return false;
   return Boolean(option)
     && Boolean(ms)
     && optionUsableByFaction(option, faction)

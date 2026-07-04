@@ -508,6 +508,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "hadesSystem",
+    "name": "HADES",
+    "type": "機体",
+    "timing": "耐久低下時",
+    "effect": "自機の耐久が3分の1以下になった時に発動。命中・回避+12、与ダメージ+10。発動後、自軍ターン開始を3回迎えると耐久が大きく低下し、EN0になる。",
+    "implemented": true
+  },
+  {
     "id": "phantomSystem",
     "name": "ファントムシステム",
     "type": "機体",

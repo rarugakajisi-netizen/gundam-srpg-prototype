@@ -655,6 +655,11 @@ window.GAME_DATA.compatibility = {
       "evasionBonus": 7
     },
     {
+      "characterId": "chloeCroce",
+      "msTag": "paleRider",
+      "evasionBonus": 12
+    },
+    {
       "characterId": "elliottRem",
       "msTag": "zaku",
       "evasionBonus": 6

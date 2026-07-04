@@ -7076,6 +7076,80 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "paleRiderGround",
+    "name": "ペイルライダー（陸戦重装仕様）",
+    "faction": "federation",
+    "cost": 320,
+    "armor": 345,
+    "energy": 120,
+    "agility": 25,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "handBeamGun"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "groundGundam",
+      "paleRider",
+      "hadesMs"
+    ],
+    "specials": [
+      "hadesSystem"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "paleRiderSpace",
+    "name": "ペイルライダー（空間戦仕様）",
+    "faction": "federation",
+    "cost": 350,
+    "armor": 355,
+    "energy": 125,
+    "agility": 29,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "handBeamGun",
+      "giantGatling"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gundam",
+      "unit5",
+      "paleRider",
+      "hadesMs",
+      "spaceAssault"
+    ],
+    "specials": [
+      "hadesSystem"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "groundGmSlaveWraith",
     "name": "陸戦型ジム（スレイヴ・レイス隊）",
     "faction": "federation",

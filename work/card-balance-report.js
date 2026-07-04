@@ -32,7 +32,10 @@ const BALANCE_CONSTANTS = {
   REPEAT_ATTACK_MIN_HIT_PENALTY: 3,
   EDUCATIONAL_COMPUTER_ACCURACY_CAP: 9,
   EDUCATIONAL_COMPUTER_EVASION_CAP: 6,
-  HARO_EVASION_BONUS: 4
+  HARO_EVASION_BONUS: 4,
+  HADES_ACCURACY_BONUS: 12,
+  HADES_EVASION_BONUS: 12,
+  HADES_DAMAGE_BONUS: 10
 };
 
 const WATCHED_WIDE_SKILLS = {
@@ -154,6 +157,11 @@ function cardUsableByFaction(card, faction) {
   if (Array.isArray(card.factions)) return card.factions.includes(faction);
   if (card.faction) return card.faction === faction;
   return true;
+}
+
+function optionEquippableByMs(option, ms) {
+  if (option?.grantsSkill === "examSystem" && list(ms.specials).includes("hadesSystem")) return false;
+  return cardUsableByFaction(option, ms.faction);
 }
 
 function mobileSuitPilotSlots(ms) {
@@ -323,13 +331,14 @@ function skillAccuracyBonusFromStatic(ms, character, optionIds = []) {
   return bonus;
 }
 
-function skillEvasionBonusFromStatic(ms, character, optionIds = [], examActive = false) {
+function skillEvasionBonusFromStatic(ms, character, optionIds = [], examActive = false, hadesActive = false) {
   const skills = new Set([...list(ms.specials), ...list(character.specials), ...optionIds.map((id) => indexes.options[id]?.grantsSkill).filter(Boolean)]);
   let bonus = 0;
   if (skills.has("educationalComputer")) bonus += constants.EDUCATIONAL_COMPUTER_EVASION_CAP;
   if (skills.has("haroSupport")) bonus += constants.HARO_EVASION_BONUS;
   if (skills.has("phantomSystem")) bonus += 10;
   if (examActive && skills.has("examSystem")) bonus += 18;
+  if (hadesActive && skills.has("hadesSystem")) bonus += constants.HADES_EVASION_BONUS;
   return bonus;
 }
 
@@ -351,17 +360,18 @@ function evasionCombos() {
         + Math.floor(number(character.awakening) / 2)
         + compatible
         + skillEvasionBonusFromStatic(ms, character);
-      const optionScenarios = [{ label: "素", optionIds: [], examActive: false }];
+      const optionScenarios = [{ label: "素", optionIds: [], examActive: false, hadesActive: false }];
       if (number(ms.optionSlots, 1) > 0) {
-        if (cardUsableByFaction(indexes.options.haro, ms.faction)) optionScenarios.push({ label: "ハロ", optionIds: ["haro"], examActive: false });
-        if (cardUsableByFaction(indexes.options.educationalComputer, ms.faction)) optionScenarios.push({ label: "教育型最大", optionIds: ["educationalComputer"], examActive: false });
-        if (!list(ms.specials).includes("examSystem") && cardUsableByFaction(indexes.options.examSystemOption, ms.faction)) {
-          optionScenarios.push({ label: "EXAM OP発動", optionIds: ["examSystemOption"], examActive: true });
+        if (optionEquippableByMs(indexes.options.haro, ms)) optionScenarios.push({ label: "ハロ", optionIds: ["haro"], examActive: false, hadesActive: false });
+        if (optionEquippableByMs(indexes.options.educationalComputer, ms)) optionScenarios.push({ label: "教育型最大", optionIds: ["educationalComputer"], examActive: false, hadesActive: false });
+        if (!list(ms.specials).includes("examSystem") && optionEquippableByMs(indexes.options.examSystemOption, ms)) {
+          optionScenarios.push({ label: "EXAM OP発動", optionIds: ["examSystemOption"], examActive: true, hadesActive: false });
         }
       }
-      if (list(ms.specials).includes("examSystem")) optionScenarios.push({ label: "機体EXAM発動", optionIds: [], examActive: true });
+      if (list(ms.specials).includes("examSystem")) optionScenarios.push({ label: "機体EXAM発動", optionIds: [], examActive: true, hadesActive: false });
+      if (list(ms.specials).includes("hadesSystem")) optionScenarios.push({ label: "HADES発動", optionIds: [], examActive: false, hadesActive: true });
       for (const scenario of optionScenarios) {
-        const total = base + skillEvasionBonusFromStatic(ms, character, scenario.optionIds, scenario.examActive);
+        const total = base + skillEvasionBonusFromStatic(ms, character, scenario.optionIds, scenario.examActive, scenario.hadesActive);
         if (total >= 82) {
           rows.push({
             evasion: total,
@@ -645,7 +655,8 @@ function buildRepresentativeHitRows() {
     { label: "標準射撃", weaponAccuracy: 78, ability: 18, skill: 0 },
     { label: "高命中射撃", weaponAccuracy: 82, ability: 24, skill: 0 },
     { label: "教育型最大", weaponAccuracy: 78, ability: 18, skill: constants.EDUCATIONAL_COMPUTER_ACCURACY_CAP },
-    { label: "EXAM発動", weaponAccuracy: 78, ability: 18, skill: 18 }
+    { label: "EXAM発動", weaponAccuracy: 78, ability: 18, skill: 18 },
+    { label: "HADES発動", weaponAccuracy: 78, ability: 18, skill: constants.HADES_ACCURACY_BONUS }
   ];
   return attackers.flatMap((attacker) => REPRESENTATIVE_DEFENDERS.map((defender) => {
     const raw = attacker.weaponAccuracy + attacker.ability + attacker.skill + constants.HIT_RATE_BONUS - defender.evasion;
