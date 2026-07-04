@@ -120,6 +120,12 @@ function optionUsableByFaction(option, faction) {
   return cardUsableByFaction(option, faction);
 }
 
+function optionUsableOnMap(option, map) {
+  if (!Array.isArray(option?.mapTypes) || option.mapTypes.length === 0) return true;
+  const deployTypes = mapDeployTypes(map);
+  return option.mapTypes.some((type) => deployTypes.includes(type));
+}
+
 function characterUsableByFaction(character, faction) {
   return cardUsableByFaction(character, faction);
 }
@@ -295,6 +301,7 @@ function createChecker(data) {
     optionIds.forEach((id) => {
       const option = expectId(`${scope}.optionIds`, "options", id);
       if (option && !optionUsableByFaction(option, faction)) error(scope, `${itemLabel(option)} は ${faction} で使用できません。`);
+      if (option && map && !optionUsableOnMap(option, map)) error(scope, `${itemLabel(option)} は ${map.name} に出撃できません。`);
     });
     if (optionIds.length > (ms.optionSlots ?? 1)) {
       error(scope, `オプションスロット超過: ${optionIds.length} / ${ms.optionSlots ?? 1}`);
@@ -408,6 +415,9 @@ function createChecker(data) {
       const scope = `options.${option.id}`;
       expectNumber(scope, option, "cost");
       expectFactions(scope, option.factions, true);
+      list(option.mapTypes).forEach((type) => {
+        if (!DEPLOY_TYPES.has(type)) error(scope, `不明な mapTypes です: ${type}`);
+      });
       expectId(`${scope}.grantsSkill`, "skills", option.grantsSkill, true);
       list(option.weaponIds).forEach((id) => expectId(`${scope}.weaponIds`, "weapons", id));
       if (!option.effectText || typeof option.effectText !== "string") warning(scope, "effectText が未設定です。");

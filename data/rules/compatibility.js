@@ -610,6 +610,51 @@ window.GAME_DATA.compatibility = {
       "evasionBonus": 12
     },
     {
+      "characterId": "travisKirkland",
+      "msId": "slaveWraith",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "travisKirkland",
+      "msTag": "groundGm",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "fredReber",
+      "msId": "gundamPixy",
+      "evasionBonus": 12
+    },
+    {
+      "characterId": "fredReber",
+      "msTag": "groundGm",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "marvinHerriot",
+      "msId": "guncannonHeavyTypeDSlaveWraith",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "marvinHerriot",
+      "msTag": "groundGm",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "edwardLee",
+      "msId": "groundGmSlaveWraith",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "edwardLee",
+      "msTag": "groundGm",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "dorisBrandt",
+      "msTag": "groundGm",
+      "evasionBonus": 7
+    },
+    {
       "characterId": "elliottRem",
       "msTag": "zaku",
       "evasionBonus": 6

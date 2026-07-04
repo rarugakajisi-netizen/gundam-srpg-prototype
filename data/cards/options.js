@@ -426,6 +426,9 @@ window.GAME_DATA.options = [
     "effectText": "移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。ミサイルを追加する。",
     "value": 2,
     "forbidsMelee": true,
+    "mapTypes": [
+      "ground"
+    ],
     "weaponIds": [
       "dodaiYsMissile"
     ],
@@ -500,6 +503,9 @@ window.GAME_DATA.options = [
     "effectText": "宇宙専用SFS。移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。ミサイルを追加する。",
     "value": 2,
     "forbidsMelee": true,
+    "mapTypes": [
+      "space"
+    ],
     "weaponIds": [
       "fellowBoosterMissile"
     ],
@@ -518,6 +524,9 @@ window.GAME_DATA.options = [
     "effectText": "地上専用の飛行SFS。移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。ミサイルを追加する。",
     "value": 2,
     "forbidsMelee": true,
+    "mapTypes": [
+      "ground"
+    ],
     "weaponIds": [
       "corvetteBoosterMissile"
     ],
@@ -534,6 +543,9 @@ window.GAME_DATA.options = [
     "effectType": "mobility",
     "value": 1,
     "effectText": "地上専用の簡易飛行SFS。移動力+1。武装なしの安価な支援装備。",
+    "mapTypes": [
+      "ground"
+    ],
     "factions": [
       "federation"
     ],

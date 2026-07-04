@@ -7040,6 +7040,110 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "slaveWraith",
+    "name": "スレイヴ・レイス",
+    "faction": "federation",
+    "cost": 245,
+    "armor": 350,
+    "energy": 100,
+    "agility": 20,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "groundGundam",
+      "slaveWraith",
+      "reconMs"
+    ],
+    "specials": [
+      "recon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "groundGmSlaveWraith",
+    "name": "陸戦型ジム（スレイヴ・レイス隊）",
+    "faction": "federation",
+    "cost": 160,
+    "armor": 290,
+    "energy": 75,
+    "agility": 17,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "smallShield"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "groundGm",
+      "slaveWraith",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "guncannonHeavyTypeDSlaveWraith",
+    "name": "ガンキャノン重装型タイプD（スレイヴ・レイス隊）",
+    "faction": "federation",
+    "cost": 245,
+    "armor": 410,
+    "energy": 90,
+    "agility": 15,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "typeDShortCannon",
+      "headVulcan"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "guncannon",
+      "cannonMs",
+      "slaveWraith"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "efreet",
     "name": "イフリート",
     "faction": "zeon",

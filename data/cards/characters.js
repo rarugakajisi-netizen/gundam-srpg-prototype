@@ -4676,5 +4676,110 @@ window.GAME_DATA.characters = [
     ],
     "specials": [],
     "imagePath": ""
+  },
+  {
+    "id": "travisKirkland",
+    "name": "トラヴィス・カークランド",
+    "characterKey": "travisKirkland",
+    "faction": "federation",
+    "cost": 110,
+    "shooting": 18,
+    "melee": 17,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 22,
+    "support": 17,
+    "maintenance": 7,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "teamwork"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "fredReber",
+    "name": "フレッド・リーバー",
+    "characterKey": "fredReber",
+    "faction": "federation",
+    "cost": 95,
+    "shooting": 15,
+    "melee": 23,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 6,
+    "support": 5,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "rivalry"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "marvinHerriot",
+    "name": "マーヴィン・ヘリオット",
+    "characterKey": "marvinHerriot",
+    "faction": "federation",
+    "cost": 95,
+    "shooting": 22,
+    "melee": 10,
+    "reaction": 16,
+    "awakening": 0,
+    "command": 13,
+    "support": 15,
+    "maintenance": 12,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "stationaryInterception"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "edwardLee",
+    "name": "エドワード・リー",
+    "characterKey": "edwardLee",
+    "faction": "federation",
+    "cost": 55,
+    "shooting": 10,
+    "melee": 7,
+    "reaction": 13,
+    "awakening": 0,
+    "command": 5,
+    "support": 14,
+    "maintenance": 17,
+    "roles": [
+      "pilot",
+      "mechanic"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "dorisBrandt",
+    "name": "ドリス・ブラント",
+    "characterKey": "dorisBrandt",
+    "faction": "federation",
+    "cost": 75,
+    "shooting": 4,
+    "melee": 2,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 10,
+    "support": 25,
+    "maintenance": 8,
+    "roles": [
+      "operator"
+    ],
+    "specials": [
+      "internalAudit"
+    ],
+    "imagePath": ""
   }
 ];

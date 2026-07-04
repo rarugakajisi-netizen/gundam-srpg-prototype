@@ -58,6 +58,12 @@ function cardUsableByFaction(card, faction) {
   return true;
 }
 
+function cardUsableOnMap(card, map) {
+  if (!Array.isArray(card?.mapTypes) || card.mapTypes.length === 0) return true;
+  const deployTypes = mapDeployTypes(map);
+  return card.mapTypes.some((type) => deployTypes.includes(type));
+}
+
 function itemFactionIds(item) {
   if (Array.isArray(item.factions)) return item.factions;
   if (item.faction) return [item.faction];
@@ -149,7 +155,7 @@ function setupCandidatePools(data, collection, faction, map) {
       characterSelectable(item) && cardUsableByFaction(item, faction) && hasCard(collection, "characters", item.id)
     ),
     options: data.options.filter((item) =>
-      hasCard(collection, "options", item.id) && cardUsableByFaction(item, faction)
+      hasCard(collection, "options", item.id) && cardUsableByFaction(item, faction) && cardUsableOnMap(item, map)
     )
   };
 }
@@ -214,6 +220,7 @@ function createChecker(data) {
         }
         for (const option of pools.options) {
           if (!cardUsableByFaction(option, faction)) error(`setup.${map.id}.${faction}.options`, `所属外オプションが候補に入ります: ${itemName(option)}`);
+          if (!cardUsableOnMap(option, map)) error(`setup.${map.id}.${faction}.options`, `出撃不可マップのオプションが候補に入ります: ${itemName(option)}`);
         }
         const playable = pools.mobileSuits.length > 0 && pools.battleships.length > 0 && pools.characters.length > 0;
         if (playable && pools.mobileSuits.every((ms) => data.weapons.every((weapon) => !setupWeaponCandidate(ms, weapon)))) {

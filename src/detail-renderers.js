@@ -90,6 +90,11 @@ function optionUsableByFaction(option, faction) {
   return cardUsableByFaction(option, faction);
 }
 
+function optionMapTypesText(option) {
+  if (!Array.isArray(option.mapTypes) || option.mapTypes.length === 0) return "地上 / 宇宙";
+  return option.mapTypes.map((type) => ({ ground: "地上", space: "宇宙" }[type] ?? type)).join(" / ");
+}
+
 function weaponEquippableByMs(ms, weapon) {
   return !weapon.fixedOnly
     && weaponUsableByFaction(weapon, ms.faction)
@@ -915,6 +920,7 @@ function renderOptionDetails(option, options = {}) {
         ["種別", option.effectType],
         ["付与", option.grantsSkill ? specialsLabel([option.grantsSkill]) : "直接効果"],
         ["効果", option.effectText],
+        ["出撃", optionMapTypesText(option)],
         ["重複", option.uniqueSkill ? "同名効果と重複なし" : "重複可"],
         ["使用勢力", factions]
       ])}

@@ -95,7 +95,7 @@ function normalizeSelections() {
     state.selectedWeaponIds = fitWeaponIdsToSlots(state.selectedWeaponIds.filter((id) => availableWeaponIds.includes(id)), normalizedMs);
   }
   const selectedOption = lookup().options[state.selectedOptionId];
-  if (state.selectedOptionId && (!selectedOption || remainingCardCopies("options", selectedOption.id) < 1 || !optionUsableByFaction(selectedOption, state.faction) || (normalizedMs?.optionSlots ?? 1) < 1)) {
+  if (state.selectedOptionId && (!selectedOption || remainingCardCopies("options", selectedOption.id) < 1 || !optionEquippableByMs(selectedOption, normalizedMs, currentMap, state.faction) || (normalizedMs?.optionSlots ?? 1) < 1)) {
     state.selectedOptionId = "";
   }
 
@@ -274,11 +274,11 @@ function freeBattleRandomWeapons(ms, remainingBudget) {
   return fitWeaponIdsToSlots(weapons, ms);
 }
 
-function freeBattleRandomOptions(ms, faction, remainingBudget) {
+function freeBattleRandomOptions(ms, faction, remainingBudget, map = selectedMap()) {
   const slots = Math.max(0, Number(ms.optionSlots ?? 1) || 0);
   if (slots <= 0 || Math.random() > 0.35) return [];
   return shuffled(state.data.options ?? [])
-    .filter((option) => optionUsableByFaction(option, faction) && (option.cost ?? 0) <= Math.max(35, remainingBudget * 0.2))
+    .filter((option) => optionEquippableByMs(option, ms, map, faction) && (option.cost ?? 0) <= Math.max(35, remainingBudget * 0.2))
     .slice(0, slots)
     .map((option) => option.id);
 }
@@ -290,7 +290,7 @@ function freeBattleRandomEntry(faction, map, usedKeys, remainingBudget) {
     const target = Math.max(60, remainingBudget * 0.55);
     return 1 / (1 + Math.abs((item.cost ?? 0) - target));
   });
-  const optionIds = freeBattleRandomOptions(ms, faction, remainingBudget);
+  const optionIds = freeBattleRandomOptions(ms, faction, remainingBudget, map);
   const weaponIds = freeBattleRandomWeapons(ms, Math.max(0, remainingBudget - ms.cost));
   const characterId = mobileSuitCanHavePilot(ms) ? freeBattleRandomCharacter(faction, usedKeys, true) : "";
   return {
@@ -1536,7 +1536,7 @@ function renderSetup() {
   const availableWeapons = state.data.weapons.filter((weapon) => remainingCardCopies("weapons", weapon.id) > 0
     && weaponEquippableByMs(selectedMs, weapon)
     && weaponSlotCost(weapon) <= selectedWeaponSlots);
-  const availableOptions = (state.data.options ?? []).filter((option) => remainingCardCopies("options", option.id) > 0 && optionUsableByFaction(option, state.faction));
+  const availableOptions = (state.data.options ?? []).filter((option) => remainingCardCopies("options", option.id) > 0 && optionEquippableByMs(option, selectedMs, selectedMapData, state.faction));
   const selectedOption = options[state.selectedOptionId];
   const selectedCharacter = characters[state.selectedCharacterId];
   const selectedMsRemaining = selectedMs ? remainingCardCopies("mobileSuits", selectedMs.id) : 0;

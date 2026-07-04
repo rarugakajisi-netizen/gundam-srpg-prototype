@@ -158,6 +158,27 @@ function cardUsableByFaction(card, faction) {
   return true;
 }
 
+function cardUsableOnMap(card, map = selectedMap()) {
+  if (!Array.isArray(card?.mapTypes) || card.mapTypes.length === 0) return true;
+  const deployTypes = mapDeployTypes(map);
+  return card.mapTypes.some((type) => deployTypes.includes(type));
+}
+
+function optionUsableByFaction(option, faction) {
+  return cardUsableByFaction(option, faction);
+}
+
+function optionUsableOnMap(option, map = selectedMap()) {
+  return cardUsableOnMap(option, map);
+}
+
+function optionEquippableByMs(option, ms, map = selectedMap(), faction = ms?.faction) {
+  return Boolean(option)
+    && Boolean(ms)
+    && optionUsableByFaction(option, faction)
+    && optionUsableOnMap(option, map);
+}
+
 function characterUsableByFaction(character, faction) {
   return cardUsableByFaction(character, faction);
 }
@@ -760,7 +781,7 @@ function applyStarterFormation() {
         && mobileSuitCanDeployOnMap(ms, map)
         && characterIds.every((id) => hasCard("characters", id))
         && entry.weaponIds.every((id) => hasCard("weapons", id))
-        && (entry.optionIds ?? []).every((id) => hasCard("options", id));
+        && (entry.optionIds ?? []).every((id) => hasCard("options", id) && optionEquippableByMs(lookup().options[id], ms, map, state.faction));
       return valid && canReserveCountedCards({ ...entry, characterIds }, reserved);
     })
     .map((entry) => ({
@@ -813,7 +834,7 @@ function restoreFormationSnapshot(profile) {
       && weaponEquippableByMs(ms, data.weapons[id]));
     const optionsValid = optionIds.every((id) => data.options[id]
       && hasCard("options", id)
-      && optionUsableByFaction(data.options[id], state.faction));
+      && optionEquippableByMs(data.options[id], ms, map, state.faction));
     const restored = { msId: entry?.msId, characterIds, weaponIds, optionIds };
     const valid = ms
       && ms.faction === state.faction
