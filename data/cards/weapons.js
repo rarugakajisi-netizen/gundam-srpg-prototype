@@ -192,6 +192,118 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "shortBeamRifleGLine",
+    "name": "ショート・ビーム・ライフル",
+    "cost": 35,
+    "power": 98,
+    "accuracy": 78,
+    "range": 3,
+    "minRange": 1,
+    "consume": 15,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "heavyRifleGLine",
+    "name": "ヘビー・ライフル",
+    "cost": 55,
+    "power": 120,
+    "accuracy": 76,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "gLineGatlingSmasher",
+    "name": "ガトリングスマッシャー",
+    "cost": 0,
+    "power": 92,
+    "accuracy": 80,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "gLineMissilePod",
+    "name": "ミサイルポッド（ジーライン）",
+    "cost": 0,
+    "power": 98,
+    "accuracy": 72,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "gLineSingleAssaultCannon",
+    "name": "単装アサルトキャノン",
+    "cost": 0,
+    "power": 128,
+    "accuracy": 70,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "gLineHeatLance",
+    "name": "ヒート・ランス",
+    "cost": 0,
+    "power": 142,
+    "accuracy": 78,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
     "id": "federationMachineGun100mm",
     "name": "100mmマシンガン",
     "cost": 35,
@@ -852,6 +964,120 @@ window.GAME_DATA.weapons = [
     "durability": 0,
     "fixedOnly": true,
     "ignoresObstacles": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "unit7BackLongRangeBeamCannon",
+    "name": "背部長距離ビーム・キャノン",
+    "cost": 0,
+    "power": 160,
+    "accuracy": 72,
+    "range": 6,
+    "minRange": 2,
+    "consume": 32,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "unit7MissilePod",
+    "name": "ミサイルポッド（7号機）",
+    "cost": 0,
+    "power": 108,
+    "accuracy": 68,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "unit7TwinBeamSprayGun",
+    "name": "2連ビーム・スプレーガン",
+    "cost": 0,
+    "power": 112,
+    "accuracy": 74,
+    "range": 3,
+    "minRange": 1,
+    "consume": 18,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "hfa7MegaBeamCannon",
+    "name": "メガ・ビーム・キャノン（重装FA7号機）",
+    "cost": 0,
+    "power": 250,
+    "accuracy": 72,
+    "range": 7,
+    "minRange": 3,
+    "consume": 62,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "hfa7LargeMissileContainer",
+    "name": "大型ミサイルコンテナ",
+    "cost": 0,
+    "power": 145,
+    "accuracy": 68,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "hfa7WaistBeamCannon",
+    "name": "腰部ビーム・キャノン",
+    "cost": 0,
+    "power": 132,
+    "accuracy": 72,
+    "range": 4,
+    "minRange": 1,
+    "consume": 24,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
     "factions": [
       "federation"
     ]
@@ -4305,6 +4531,44 @@ window.GAME_DATA.weapons = [
   {
     "id": "throwingHeatKnife",
     "name": "投擲ヒート・ナイフ",
+    "cost": 0,
+    "power": 84,
+    "accuracy": 78,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "throwing",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "coldBladeNacht",
+    "name": "コールド・ブレード",
+    "cost": 0,
+    "power": 132,
+    "accuracy": 82,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "coldKunaiNacht",
+    "name": "コールド・クナイ",
     "cost": 0,
     "power": 84,
     "accuracy": 78,

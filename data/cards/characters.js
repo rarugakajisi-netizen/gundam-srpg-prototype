@@ -422,7 +422,7 @@ window.GAME_DATA.characters = [
     "name": "パオロ・カシアス",
     "characterKey": "paoloCassius",
     "faction": "federation",
-    "cost": 80,
+    "cost": 70,
     "shooting": 4,
     "melee": 3,
     "reaction": 6,
@@ -434,9 +434,7 @@ window.GAME_DATA.characters = [
       "captain",
       "commander"
     ],
-    "specials": [
-      "guardMission"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3275,7 +3273,7 @@ window.GAME_DATA.characters = [
     "name": "マーチン・ハガー",
     "characterKey": "martinHagar",
     "faction": "zeon",
-    "cost": 70,
+    "cost": 60,
     "shooting": 12,
     "melee": 9,
     "reaction": 10,
@@ -3287,9 +3285,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "massProductionFormation"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3357,7 +3353,7 @@ window.GAME_DATA.characters = [
     "name": "アニタ・ジュリアン",
     "characterKey": "anitaJulian",
     "faction": "federation",
-    "cost": 70,
+    "cost": 60,
     "shooting": 5,
     "melee": 3,
     "reaction": 10,
@@ -3369,9 +3365,7 @@ window.GAME_DATA.characters = [
       "operator",
       "mechanic"
     ],
-    "specials": [
-      "internalAudit"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3503,7 +3497,7 @@ window.GAME_DATA.characters = [
     "name": "ワルハマー・T・カインズ",
     "characterKey": "walhammerCains",
     "faction": "federation",
-    "cost": 70,
+    "cost": 65,
     "shooting": 4,
     "melee": 2,
     "reaction": 8,
@@ -3515,9 +3509,7 @@ window.GAME_DATA.characters = [
       "mechanic",
       "operator"
     ],
-    "specials": [
-      "internalAudit"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3660,7 +3652,7 @@ window.GAME_DATA.characters = [
     "name": "ユライア・ヒープ",
     "characterKey": "uriahHeep",
     "faction": "zeon",
-    "cost": 95,
+    "cost": 90,
     "shooting": 5,
     "melee": 3,
     "reaction": 8,
@@ -3672,9 +3664,7 @@ window.GAME_DATA.characters = [
       "captain",
       "operator"
     ],
-    "specials": [
-      "retreatSupport"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3702,7 +3692,7 @@ window.GAME_DATA.characters = [
     "name": "ジョコンダ・ウィリス",
     "characterKey": "giocondaWillis",
     "faction": "zeon",
-    "cost": 70,
+    "cost": 60,
     "shooting": 7,
     "melee": 4,
     "reaction": 11,
@@ -3714,9 +3704,7 @@ window.GAME_DATA.characters = [
       "operator",
       "commander"
     ],
-    "specials": [
-      "retreatSupport"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -3996,7 +3984,7 @@ window.GAME_DATA.characters = [
     "name": "レンチェフ",
     "characterKey": "renceh",
     "faction": "zeon",
-    "cost": 115,
+    "cost": 110,
     "shooting": 22,
     "melee": 19,
     "reaction": 20,
@@ -4008,9 +3996,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "madness"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4078,7 +4064,7 @@ window.GAME_DATA.characters = [
     "name": "ミガキ",
     "characterKey": "migaki",
     "faction": "zeon",
-    "cost": 80,
+    "cost": 75,
     "shooting": 5,
     "melee": 3,
     "reaction": 8,
@@ -4090,9 +4076,7 @@ window.GAME_DATA.characters = [
       "mechanic",
       "operator"
     ],
-    "specials": [
-      "internalAudit"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4576,7 +4560,7 @@ window.GAME_DATA.characters = [
     "name": "ホア・ブランシェット",
     "characterKey": "hoaBlanchett",
     "faction": "federation",
-    "cost": 70,
+    "cost": 65,
     "shooting": 4,
     "melee": 2,
     "reaction": 9,
@@ -4587,9 +4571,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "operator"
     ],
-    "specials": [
-      "internalAudit"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4933,6 +4915,146 @@ window.GAME_DATA.characters = [
     "command": 4,
     "support": 8,
     "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "huguesCourand",
+    "name": "ユーグ・クーロ",
+    "characterKey": "huguesCourand",
+    "faction": "federation",
+    "cost": 125,
+    "shooting": 21,
+    "melee": 19,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 24,
+    "support": 15,
+    "maintenance": 4,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "desperateRearGuard"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "hughCarter",
+    "name": "ヒュー・カーター",
+    "characterKey": "hughCarter",
+    "faction": "federation",
+    "cost": 85,
+    "shooting": 17,
+    "melee": 15,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 8,
+    "support": 13,
+    "maintenance": 6,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "erikBlanke",
+    "name": "エリク・ブランケ",
+    "characterKey": "erikBlanke",
+    "faction": "zeon",
+    "cost": 130,
+    "shooting": 20,
+    "melee": 18,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 25,
+    "support": 14,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "commanderStealth"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "airosBarde",
+    "name": "アイロス・バーデ",
+    "characterKey": "airosBarde",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 17,
+    "melee": 14,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 18,
+    "support": 17,
+    "maintenance": 6,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "fritzBauer",
+    "name": "フリッツ・バウアー",
+    "characterKey": "fritzBauer",
+    "faction": "zeon",
+    "cost": 80,
+    "shooting": 16,
+    "melee": 17,
+    "reaction": 16,
+    "awakening": 0,
+    "command": 6,
+    "support": 9,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "christoDoerr",
+    "name": "クリスト・デーア",
+    "characterKey": "christoDoerr",
+    "faction": "zeon",
+    "cost": 90,
+    "shooting": 15,
+    "melee": 19,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 12,
+    "support": 14,
+    "maintenance": 12,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "tatianaDoerr",
+    "name": "タチアナ・デーア",
+    "characterKey": "tatianaDoerr",
+    "faction": "zeon",
+    "cost": 100,
+    "shooting": 18,
+    "melee": 14,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 7,
+    "support": 16,
+    "maintenance": 8,
     "roles": [
       "pilot"
     ],

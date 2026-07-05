@@ -740,6 +740,86 @@ window.GAME_DATA.compatibility = {
       "evasionBonus": 5
     },
     {
+      "characterId": "huguesCourand",
+      "msTag": "gmCommand",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "huguesCourand",
+      "msTag": "groundGundam",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "huguesCourand",
+      "msTag": "gm",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "hughCarter",
+      "msTag": "gmCommand",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "hughCarter",
+      "msTag": "gm",
+      "evasionBonus": 5
+    },
+    {
+      "characterId": "erikBlanke",
+      "msTag": "gelgoog",
+      "evasionBonus": 9
+    },
+    {
+      "characterId": "erikBlanke",
+      "msTag": "zaku",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "erikBlanke",
+      "msTag": "dom",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "airosBarde",
+      "msTag": "gelgoog",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "airosBarde",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "fritzBauer",
+      "msTag": "dom",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "fritzBauer",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "christoDoerr",
+      "msTag": "efreet",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "christoDoerr",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "tatianaDoerr",
+      "msTag": "zaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "tatianaDoerr",
+      "msTag": "gelgoog",
+      "evasionBonus": 6
+    },
+    {
       "characterId": "elliottRem",
       "msTag": "zaku",
       "evasionBonus": 6
@@ -1282,6 +1362,46 @@ window.GAME_DATA.compatibility = {
       "accuracyBonus": 7
     },
     {
+      "msTag": "gLine",
+      "weaponId": "shortBeamRifleGLine",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "gLine",
+      "weaponId": "heavyRifleGLine",
+      "accuracyBonus": 8
+    },
+    {
+      "msTag": "gLine",
+      "weaponId": "beamSaber",
+      "accuracyBonus": 6
+    },
+    {
+      "msTag": "gLine",
+      "weaponId": "headVulcan",
+      "accuracyBonus": 5
+    },
+    {
+      "msId": "gLineStandardArmor",
+      "weaponId": "gLineGatlingSmasher",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gLineLightArmor",
+      "weaponId": "gLineMissilePod",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "gLineAssaultArmor",
+      "weaponId": "gLineSingleAssaultCannon",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "gLineAssaultArmor",
+      "weaponId": "gLineHeatLance",
+      "accuracyBonus": 8
+    },
+    {
       "msTag": "gm",
       "weaponId": "gmCannonCannon",
       "accuracyBonus": 7
@@ -1717,6 +1837,36 @@ window.GAME_DATA.compatibility = {
       "accuracyBonus": 10
     },
     {
+      "msId": "efreetNacht",
+      "weaponId": "coldBladeNacht",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "efreetNacht",
+      "weaponId": "coldKunaiNacht",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "efreetNacht",
+      "weaponId": "efreetHeatSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "efreetNacht",
+      "weaponId": "shotgun",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "efreetNacht",
+      "weaponId": "tripleGatlingGun",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "efreetNacht",
+      "weaponId": "mmp80MachineGun",
+      "accuracyBonus": 8
+    },
+    {
       "msId": "gmScout",
       "weaponId": "wiredHelicopterMissile",
       "accuracyBonus": 8
@@ -1965,6 +2115,56 @@ window.GAME_DATA.compatibility = {
       "msId": "gundamMudrock",
       "weaponId": "beamRifle",
       "accuracyBonus": 6
+    },
+    {
+      "msId": "gundamUnit7",
+      "weaponId": "beamSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gundamUnit7",
+      "weaponId": "headVulcan",
+      "accuracyBonus": 5
+    },
+    {
+      "msId": "fullArmorGundamUnit7",
+      "weaponId": "unit7BackLongRangeBeamCannon",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "fullArmorGundamUnit7",
+      "weaponId": "unit7MissilePod",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "fullArmorGundamUnit7",
+      "weaponId": "unit7TwinBeamSprayGun",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "fullArmorGundamUnit7",
+      "weaponId": "beamSaber",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "heavyFullArmorGundamUnit7",
+      "weaponId": "hfa7MegaBeamCannon",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "heavyFullArmorGundamUnit7",
+      "weaponId": "hfa7LargeMissileContainer",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "heavyFullArmorGundamUnit7",
+      "weaponId": "hfa7WaistBeamCannon",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "heavyFullArmorGundamUnit7",
+      "weaponId": "beamSaber",
+      "accuracyBonus": 4
     }
   ]
 };

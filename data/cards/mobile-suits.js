@@ -492,6 +492,146 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "gLine",
+    "name": "ジーライン",
+    "faction": "federation",
+    "cost": 140,
+    "armor": 225,
+    "energy": 82,
+    "agility": 20,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gLine",
+      "rx81"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gLineStandardArmor",
+    "name": "ジーライン・スタンダードアーマー",
+    "faction": "federation",
+    "cost": 185,
+    "armor": 285,
+    "energy": 92,
+    "agility": 22,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "gLineGatlingSmasher"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gLine",
+      "rx81",
+      "gLineStandardArmor"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gLineLightArmor",
+    "name": "ジーライン・ライトアーマー",
+    "faction": "federation",
+    "cost": 175,
+    "armor": 195,
+    "energy": 88,
+    "agility": 31,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "gLineMissilePod"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gLine",
+      "rx81",
+      "gLineLightArmor",
+      "lightArmor",
+      "highMobility"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gLineAssaultArmor",
+    "name": "ジーライン・アサルトアーマー",
+    "faction": "federation",
+    "cost": 205,
+    "armor": 315,
+    "energy": 96,
+    "agility": 18,
+    "mobility": 5,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "gLineSingleAssaultCannon",
+      "gLineHeatLance"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gLine",
+      "rx81",
+      "gLineAssaultArmor",
+      "assaultMs",
+      "meleeMs",
+      "heavyMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "armoredGm",
     "name": "ジム装甲強化型",
     "faction": "federation",
@@ -5121,6 +5261,123 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "gundamUnit7",
+    "name": "ガンダム7号機",
+    "faction": "federation",
+    "cost": 310,
+    "armor": 340,
+    "energy": 130,
+    "agility": 32,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "unit7",
+      "secondLotGundam",
+      "highMobility"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "fullArmorGundamUnit7",
+    "name": "フルアーマーガンダム7号機",
+    "faction": "federation",
+    "cost": 420,
+    "armor": 610,
+    "energy": 150,
+    "agility": 20,
+    "mobility": 4,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "unit7BackLongRangeBeamCannon",
+      "unit7MissilePod",
+      "unit7TwinBeamSprayGun",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "unit7",
+      "secondLotGundam",
+      "heavyMs",
+      "armorPack",
+      "fullArmor"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "heavyFullArmorGundamUnit7",
+    "name": "重装フルアーマーガンダム7号機",
+    "faction": "federation",
+    "cost": 535,
+    "armor": 650,
+    "energy": 170,
+    "agility": 12,
+    "mobility": 3,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "hfa7MegaBeamCannon",
+      "hfa7LargeMissileContainer",
+      "hfa7WaistBeamCannon",
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "gundam",
+      "unit7",
+      "secondLotGundam",
+      "heavyMs",
+      "armorPack",
+      "fullArmor",
+      "heavyLauncherMs",
+      "spaceAssault"
+    ],
+    "specials": [
+      "coreSystem"
+    ],
+    "escapeMsId": "gundamUnit7",
+    "imagePath": ""
+  },
+  {
     "id": "groundGundamGmHead",
     "name": "陸戦型ガンダム（ジム頭）",
     "faction": "federation",
@@ -7286,6 +7543,45 @@ window.GAME_DATA.mobileSuits = [
       "schneidCustom"
     ],
     "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "efreetNacht",
+    "name": "イフリート・ナハト",
+    "faction": "zeon",
+    "cost": 315,
+    "armor": 320,
+    "energy": 90,
+    "agility": 33,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "coldBladeNacht",
+      "coldKunaiNacht"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "efreet",
+      "gouf",
+      "dom",
+      "assaultMs",
+      "meleeMs",
+      "stealthMs",
+      "nachtCustom"
+    ],
+    "specials": [
+      "stealth"
+    ],
     "imagePath": ""
   },
   {
