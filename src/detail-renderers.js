@@ -662,8 +662,24 @@ function mobileSuitTags(ms) {
   return ms.tags ?? [ms.id];
 }
 
+function isDedicatedMobileSuit(ms) {
+  return /[（(][^）)]*(?:機|隊)[）)]/.test(ms?.name ?? "");
+}
+
+function isDedicatedCompatibilityTag(tag) {
+  return tag !== "commanderCustom"
+    && (/Custom$/.test(tag) || ["whiteDingo", "immortal4th", "slaveWraith"].includes(tag));
+}
+
 function compatibilityMatchesMs(item, ms) {
   return item.msId === ms.id || (item.msTag && mobileSuitTags(ms).includes(item.msTag));
+}
+
+function characterMsCompatibilityMatches(item, ms) {
+  if (!compatibilityMatchesMs(item, ms)) return false;
+  if (!isDedicatedMobileSuit(ms)) return true;
+  return item.msId === ms.id
+    || Boolean(item.msTag && isDedicatedCompatibilityTag(item.msTag) && mobileSuitTags(ms).includes(item.msTag));
 }
 
 function msTagLabel(tag) {
@@ -751,7 +767,7 @@ function characterMsCompatibilityText(character) {
 
 function mobileSuitCharacterCompatibilityText(ms) {
   const characters = lookup().characters;
-  const matches = (state.data.compatibility?.characterMs ?? []).filter((item) => compatibilityMatchesMs(item, ms));
+  const matches = (state.data.compatibility?.characterMs ?? []).filter((item) => characterMsCompatibilityMatches(item, ms));
   return matches.length > 0
     ? matches.map((item) => `${characters[item.characterId]?.name ?? item.characterId} 回避+${item.evasionBonus}`).join(" / ")
     : "なし";

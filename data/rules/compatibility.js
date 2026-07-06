@@ -126,6 +126,11 @@ window.GAME_DATA.compatibility = {
     },
     {
       "characterId": "anavelGato",
+      "msId": "gelgoogGato",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "anavelGato",
       "msTag": "highMobilityZaku",
       "evasionBonus": 6
     },

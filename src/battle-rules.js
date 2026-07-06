@@ -588,7 +588,7 @@ function characterMsCompatibility(unit) {
   if (!isMobileSuit(unit)) return null;
   const characterId = unit.characterIds?.[0];
   const unitMs = msFor(unit);
-  return (state.data.compatibility?.characterMs ?? []).find((item) => item.characterId === characterId && compatibilityMatchesMs(item, unitMs));
+  return (state.data.compatibility?.characterMs ?? []).find((item) => item.characterId === characterId && characterMsCompatibilityMatches(item, unitMs));
 }
 
 function characterMsBonus(unit) {

@@ -172,15 +172,31 @@ function tagsOf(ms) {
   return new Set([ms.id, ...list(ms.tags)]);
 }
 
+function isDedicatedMobileSuit(ms) {
+  return /[（(][^）)]*(?:機|隊)[）)]/.test(ms?.name ?? "");
+}
+
+function isDedicatedCompatibilityTag(tag) {
+  return tag !== "commanderCustom"
+    && (/Custom$/.test(tag) || ["whiteDingo", "immortal4th", "slaveWraith"].includes(tag));
+}
+
 function compatibilityMatchesMs(row, ms) {
   if (row.msId) return row.msId === ms.id;
   if (row.msTag) return tagsOf(ms).has(row.msTag);
   return false;
 }
 
+function characterMsCompatibilityMatches(row, ms) {
+  if (!compatibilityMatchesMs(row, ms)) return false;
+  if (!isDedicatedMobileSuit(ms)) return true;
+  return row.msId === ms.id
+    || Boolean(row.msTag && isDedicatedCompatibilityTag(row.msTag) && tagsOf(ms).has(row.msTag));
+}
+
 function characterMsBonus(character, ms) {
   const match = list(data.compatibility?.characterMs)
-    .find((row) => row.characterId === character.id && compatibilityMatchesMs(row, ms));
+    .find((row) => row.characterId === character.id && characterMsCompatibilityMatches(row, ms));
   return number(match?.evasionBonus);
 }
 

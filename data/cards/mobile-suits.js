@@ -1701,6 +1701,39 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "gelgoogGato",
+    "name": "ゲルググ（ガトー機）",
+    "faction": "zeon",
+    "cost": 305,
+    "armor": 410,
+    "energy": 125,
+    "agility": 22,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamNaginata"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gelgoog",
+      "gatoCustom",
+      "heavyMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "gyan",
     "name": "ギャン",
     "faction": "zeon",
