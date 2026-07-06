@@ -2000,6 +2000,7 @@ function finishDeployment() {
   tickTurnStartEffects("player");
   state.turnNumber = 1;
   state.phase = "player";
+  state.battleGrowthEligible = true;
   state.selectedUnitId = state.units.find((unit) => unit.side === "player" && isCombatUnit(unit))?.id ?? null;
   state.selectedTargetId = null;
   state.log.push("配置完了。自軍ターン開始。");
@@ -2011,6 +2012,14 @@ function phaseName() {
   if (state.phase === "deployment") return "配置フェイズ";
   if (state.phase === "player") return "自軍ターン";
   return "敵軍ターン";
+}
+
+function playerCharacterIdsForGrowth() {
+  return [
+    state.selectedCaptainId,
+    state.selectedFirstOfficerId,
+    ...state.formation.flatMap((entry) => entry.characterIds ?? [])
+  ].filter(Boolean);
 }
 
 function launchBattle() {
@@ -2060,6 +2069,9 @@ function launchBattle() {
   state.enemyQueue = [];
   state.mines = [];
   state.sacrificialBoostSides = {};
+  state.battleGrowthEligible = false;
+  state.battleGrowthAwarded = false;
+  state.battleGrowthCharacterIds = playerCharacterIdsForGrowth();
   state.resultRewards = [];
   state.log = [`${factionName(state.faction)}部隊、出撃。敵は${factionName(enemyFaction)}です。`];
   if (isFreeBattle()) {

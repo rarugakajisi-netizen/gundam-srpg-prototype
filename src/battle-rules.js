@@ -30,7 +30,8 @@ function battleshipCrew(unit) {
   const { characters } = lookup();
   return (unit.characterIds ?? [])
     .map((id) => characters[id])
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((character) => unit.side === "player" ? characterWithGrowth(character) : character);
 }
 
 function battleshipCaptain(unit) {

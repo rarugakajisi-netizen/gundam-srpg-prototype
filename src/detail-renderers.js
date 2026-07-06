@@ -851,7 +851,46 @@ function renderBattleshipDataDetails(ship, options = {}) {
   `;
 }
 
+function characterStatDisplay(character, stat) {
+  const baseValue = Number(character?.[stat]) || 0;
+  const bonus = characterStatGrowthBonus(character, stat);
+  const value = Math.min(CHARACTER_GROWTH_STAT_CAP, baseValue + bonus);
+  if (bonus <= 0) return value;
+  return `${value} <span class="growth-bonus">+${bonus}</span><span class="small inline">基礎${baseValue}</span>`;
+}
+
+function renderCharacterGrowthPanel(character) {
+  if (!character?.id || !hasCard("characters", character.id) || !characterSelectable(character)) return "";
+  const record = characterGrowthRecordForView(character.id);
+  const progress = characterGrowthProgress(record);
+  const unspent = Math.max(0, Number(record.unspent) || 0);
+  const buttons = CHARACTER_GROWTH_STATS.map((stat) => {
+    const label = CHARACTER_GROWTH_STAT_LABELS[stat] ?? stat;
+    const baseValue = Number(character[stat]) || 0;
+    const bonus = characterStatGrowthBonus(character, stat);
+    const value = Math.min(CHARACTER_GROWTH_STAT_CAP, baseValue + bonus);
+    const capped = value >= CHARACTER_GROWTH_STAT_CAP;
+    return `
+      <button data-action="grow-character-stat" data-character-id="${escapeAttr(character.id)}" data-stat="${stat}" ${unspent < 1 || capped ? "disabled" : ""}>
+        ${label}+1
+        <span class="button-detail">${value}/${CHARACTER_GROWTH_STAT_CAP}${bonus > 0 ? `（成長+${bonus}）` : ""}</span>
+      </button>
+    `;
+  }).join("");
+  return `
+    <div class="growth-panel">
+      <div class="growth-head">
+        <strong>成長</strong>
+        <span class="status-pill ${unspent > 0 ? "ready" : ""}">未使用pt ${unspent}</span>
+      </div>
+      <p class="small">出撃 ${record.sorties ?? 0}回 / 次の成長まで ${progress} / ${CHARACTER_GROWTH_SORTIES_PER_POINT}</p>
+      <div class="growth-actions">${buttons}</div>
+    </div>
+  `;
+}
+
 function renderCharacterDetails(character, options = {}) {
+  const grownCharacter = characterWithGrowth(character);
   const factions = character.factions?.map((faction) => state.data.factions[faction]).join(" / ")
     ?? state.data.factions[character.faction]
     ?? character.faction;
@@ -861,19 +900,20 @@ function renderCharacterDetails(character, options = {}) {
       ${statItems([
         ["使用勢力", factions],
         ["コスト", character.cost],
-        ["射撃", character.shooting],
-        ["格闘", character.melee],
-        ["反応", character.reaction],
+        ["射撃", characterStatDisplay(character, "shooting")],
+        ["格闘", characterStatDisplay(character, "melee")],
+        ["反応", characterStatDisplay(character, "reaction")],
         ["覚醒", character.awakening],
-        ["指揮", character.command],
-        ["支援", character.support],
-        ["整備", character.maintenance],
+        ["指揮", characterStatDisplay(character, "command")],
+        ["支援", characterStatDisplay(character, "support")],
+        ["整備", characterStatDisplay(character, "maintenance")],
         ["得意", characterRolesLabel(character)]
       ])}
+      ${renderCharacterGrowthPanel(character)}
       <div class="detail-list">
         <p class="small">特殊: ${specialsLabel(character.specials)}</p>
-        <p class="small">MS搭乗時: ${characterMsContributionText(character)}</p>
-        <p class="small">戦艦搭乗時: ${characterBridgeContributionText(character)}</p>
+        <p class="small">MS搭乗時: ${characterMsContributionText(grownCharacter)}</p>
+        <p class="small">戦艦搭乗時: ${characterBridgeContributionText(grownCharacter)}</p>
         <p class="small">機体相性: ${characterMsCompatibilityText(character)}</p>
         ${renderSkillDetails(character.specials)}
       </div>

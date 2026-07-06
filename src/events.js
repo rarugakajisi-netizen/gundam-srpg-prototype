@@ -2,6 +2,15 @@
 
 // Outcome checks, UI event handlers, and application boot.
 
+function awardBattleGrowthIfEligible() {
+  if (!state.outcome || !state.battleGrowthEligible || state.battleGrowthAwarded) return;
+  state.battleGrowthAwarded = true;
+  const growthGains = recordCharacterSorties(state.battleGrowthCharacterIds);
+  for (const gain of growthGains) {
+    state.log.push(`${gain.character.name}の成長ポイント+${gain.points}。キャラ詳細から能力を強化できます。`);
+  }
+}
+
 function checkOutcome() {
   if (state.outcome) return;
   const playerBattleshipAlive = state.units.some((unit) => unit.side === "player" && isBattleship(unit) && isAlive(unit));
@@ -32,6 +41,7 @@ function checkOutcome() {
     state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
     phaseLabel.textContent = state.outcome;
   }
+  awardBattleGrowthIfEligible();
 }
 
 setupScreen.addEventListener("change", (event) => {
@@ -184,6 +194,14 @@ setupScreen.addEventListener("click", (event) => {
   if (action === "claim-choice-card") {
     claimChoiceCard(button.dataset.cardType, button.dataset.id);
     renderChoiceCardSelect();
+  }
+  if (action === "grow-character-stat") {
+    if (spendCharacterGrowthPoint(button.dataset.characterId, button.dataset.stat)) {
+      if (state.screen === "cards") renderCardList();
+      else if (state.screen === "picker") renderFormationPicker(state.picker.kind, state.picker.owner);
+      else if (state.screen === "choice") renderChoiceCardSelect();
+      else renderSetup();
+    }
   }
   if (action === "back-setup") renderSetup();
   if (action === "open-picker") renderFormationPicker(button.dataset.pickerKind, button.dataset.owner ?? "");

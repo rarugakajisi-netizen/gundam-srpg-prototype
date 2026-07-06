@@ -514,7 +514,8 @@ function msFor(unit) {
 }
 
 function primaryCharacterFor(unit) {
-  return lookup().characters[unit.characterIds?.[0]] ?? NO_CHARACTER;
+  const character = lookup().characters[unit.characterIds?.[0]] ?? NO_CHARACTER;
+  return unit.side === "player" ? characterWithGrowth(character) : character;
 }
 
 function weaponFor(id) {

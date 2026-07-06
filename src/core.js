@@ -30,6 +30,17 @@ const HADES_OVERHEAT_ARMOR_LOSS_RATE = 0.67;
 const GUERRILLA_TERRAINS = new Set(["desert", "forest", "water", "debris"]);
 const SAVE_KEY = "gundamSrpgPrototypeSaveV1";
 const FAVORITE_FORMATION_SLOTS = 20;
+const CHARACTER_GROWTH_STAT_CAP = 30;
+const CHARACTER_GROWTH_SORTIES_PER_POINT = 20;
+const CHARACTER_GROWTH_STATS = ["shooting", "melee", "reaction", "command", "support", "maintenance"];
+const CHARACTER_GROWTH_STAT_LABELS = {
+  shooting: "射撃",
+  melee: "格闘",
+  reaction: "反応",
+  command: "指揮",
+  support: "支援",
+  maintenance: "整備"
+};
 const setupScreen = document.querySelector("#setupScreen");
 const battleScreen = document.querySelector("#battleScreen");
 const phaseLabel = document.querySelector("#phaseLabel");
@@ -64,6 +75,9 @@ const state = {
   enemyQueue: [],
   mines: [],
   sacrificialBoostSides: {},
+  battleGrowthEligible: false,
+  battleGrowthAwarded: false,
+  battleGrowthCharacterIds: [],
   log: [],
   resultRewards: [],
   revealAllCards: false,
@@ -231,6 +245,26 @@ function normalizeCountMap(value) {
   return {};
 }
 
+function normalizeCharacterGrowth(value) {
+  if (!value || typeof value !== "object") return {};
+  return Object.fromEntries(Object.entries(value)
+    .map(([id, rawRecord]) => {
+      const record = rawRecord && typeof rawRecord === "object" ? rawRecord : {};
+      const rawBonuses = record.bonuses && typeof record.bonuses === "object" ? record.bonuses : {};
+      const bonuses = {};
+      for (const stat of CHARACTER_GROWTH_STATS) {
+        const bonus = Math.max(0, Math.floor(Number(rawBonuses[stat]) || 0));
+        if (bonus > 0) bonuses[stat] = bonus;
+      }
+      return [id, {
+        sorties: Math.max(0, Math.floor(Number(record.sorties) || 0)),
+        unspent: Math.max(0, Math.floor(Number(record.unspent) || 0)),
+        bonuses
+      }];
+    })
+    .filter(([id]) => Boolean(id)));
+}
+
 function countedCardIds(type) {
   return Object.keys(normalizeCountMap(state.collection?.[type]));
 }
@@ -259,7 +293,8 @@ function cloneCollection(collection) {
     characters: [...(collection?.characters ?? [])],
     options: normalizeCountMap(collection?.options),
     clearedStages: [...(collection?.clearedStages ?? [])],
-    choiceTickets: Math.max(0, Number(collection?.choiceTickets) || 0)
+    choiceTickets: Math.max(0, Number(collection?.choiceTickets) || 0),
+    characterGrowth: normalizeCharacterGrowth(collection?.characterGrowth)
   };
 }
 
@@ -373,6 +408,96 @@ function resetCollection() {
 
 function hasCard(type, id) {
   return cardCount(type, id) > 0;
+}
+
+function emptyCharacterGrowthRecord() {
+  return { sorties: 0, unspent: 0, bonuses: {} };
+}
+
+function characterGrowthRecordForView(characterId) {
+  return state.collection?.characterGrowth?.[characterId] ?? emptyCharacterGrowthRecord();
+}
+
+function characterGrowthRecord(characterId) {
+  if (!state.collection.characterGrowth) state.collection.characterGrowth = {};
+  if (!state.collection.characterGrowth[characterId]) {
+    state.collection.characterGrowth[characterId] = emptyCharacterGrowthRecord();
+  }
+  if (!state.collection.characterGrowth[characterId].bonuses) {
+    state.collection.characterGrowth[characterId].bonuses = {};
+  }
+  return state.collection.characterGrowth[characterId];
+}
+
+function characterGrowthSpent(record) {
+  return CHARACTER_GROWTH_STATS.reduce((sum, stat) => sum + Math.max(0, Number(record.bonuses?.[stat]) || 0), 0);
+}
+
+function characterGrowthEarned(record) {
+  return Math.floor(Math.max(0, Number(record.sorties) || 0) / CHARACTER_GROWTH_SORTIES_PER_POINT);
+}
+
+function characterGrowthProgress(record) {
+  return Math.max(0, Number(record.sorties) || 0) % CHARACTER_GROWTH_SORTIES_PER_POINT;
+}
+
+function characterStatGrowthBonus(character, stat) {
+  if (!character?.id || !CHARACTER_GROWTH_STATS.includes(stat)) return 0;
+  const rawBonus = Math.max(0, Number(state.collection?.characterGrowth?.[character.id]?.bonuses?.[stat]) || 0);
+  const baseValue = Math.max(0, Number(character[stat]) || 0);
+  return Math.min(rawBonus, Math.max(0, CHARACTER_GROWTH_STAT_CAP - baseValue));
+}
+
+function characterEffectiveStat(character, stat) {
+  if (!character || !CHARACTER_GROWTH_STATS.includes(stat)) return Number(character?.[stat]) || 0;
+  return Math.min(CHARACTER_GROWTH_STAT_CAP, (Number(character[stat]) || 0) + characterStatGrowthBonus(character, stat));
+}
+
+function characterWithGrowth(character) {
+  if (!character?.id) return character ?? NO_CHARACTER;
+  const grown = { ...character };
+  for (const stat of CHARACTER_GROWTH_STATS) {
+    grown[stat] = characterEffectiveStat(character, stat);
+  }
+  return grown;
+}
+
+function canGrowCharacterStat(character, stat) {
+  return Boolean(character?.id)
+    && CHARACTER_GROWTH_STATS.includes(stat)
+    && characterEffectiveStat(character, stat) < CHARACTER_GROWTH_STAT_CAP;
+}
+
+function spendCharacterGrowthPoint(characterId, stat) {
+  const character = lookup().characters[characterId];
+  if (!character || !hasCard("characters", characterId) || !canGrowCharacterStat(character, stat)) return false;
+  const record = characterGrowthRecord(characterId);
+  if ((record.unspent ?? 0) < 1) return false;
+  record.unspent -= 1;
+  record.bonuses[stat] = Math.max(0, Number(record.bonuses[stat]) || 0) + 1;
+  saveCollection();
+  return true;
+}
+
+function recordCharacterSorties(characterIds) {
+  const gained = [];
+  let changed = false;
+  for (const characterId of new Set((characterIds ?? []).filter(Boolean))) {
+    const character = lookup().characters[characterId];
+    if (!character || !hasCard("characters", characterId) || !characterSelectable(character)) continue;
+    const record = characterGrowthRecord(characterId);
+    const beforeUnspent = record.unspent ?? 0;
+    record.sorties = Math.max(0, Number(record.sorties) || 0) + 1;
+    const earned = characterGrowthEarned(record);
+    const allocated = characterGrowthSpent(record) + (record.unspent ?? 0);
+    if (earned > allocated) record.unspent += earned - allocated;
+    if ((record.unspent ?? 0) > beforeUnspent) {
+      gained.push({ character, points: (record.unspent ?? 0) - beforeUnspent });
+    }
+    changed = true;
+  }
+  if (changed) saveCollection();
+  return gained;
 }
 
 function unlockCard(reward) {

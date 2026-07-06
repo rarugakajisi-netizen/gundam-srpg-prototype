@@ -319,6 +319,12 @@ select {
   line-height: 1.45;
 }
 
+.small.inline {
+  display: inline;
+  margin-left: 4px;
+  font-size: 12px;
+}
+
 .stack {
   display: grid;
   gap: 10px;
@@ -716,6 +722,46 @@ select {
 .detail-box .small {
   margin-left: 10px;
   margin-right: 10px;
+}
+
+.detail-box .small.inline {
+  margin-left: 4px;
+  margin-right: 0;
+}
+
+.growth-bonus {
+  display: inline-block;
+  margin-left: 4px;
+  color: #1d7f48;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.growth-panel {
+  display: grid;
+  gap: 8px;
+  margin: 8px 10px;
+  padding: 9px;
+  border: 1px solid rgba(46, 125, 50, 0.22);
+  border-radius: 8px;
+  background: #f4fbf5;
+}
+
+.growth-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.growth-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+  gap: 6px;
+}
+
+.growth-actions button {
+  min-height: 44px;
 }
 
 .weapon-detail summary {
