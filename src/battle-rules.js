@@ -858,7 +858,7 @@ function useSmokeSkill(unit, renderAfter = true) {
 }
 
 function scatterMines(attacker, target, weapon) {
-  if (!weaponHasSkill(weapon, "mineScatter")) return;
+  if (!weapon.mineScatterOnAttack) return;
   if (!state.mines) state.mines = [];
   let placed = 0;
   for (const cell of mineCellsAround(target)) {
@@ -1312,7 +1312,7 @@ function enemyMineScatterWeapon(unit, targets, attackPlan) {
   if (attackPlan || targets.length === 0) return null;
   const nearest = [...targets].sort((a, b) => distance(unit, a) - distance(unit, b))[0];
   if (distance(unit, nearest) > 3) return null;
-  return attackWeapons(unit).find((weapon) => canUseMineScatter(unit, weapon)) ?? null;
+  return unitWeaponObjects(unit).find((weapon) => canUseMineScatter(unit, weapon)) ?? null;
 }
 
 function enemyMoveCandidates(unit) {

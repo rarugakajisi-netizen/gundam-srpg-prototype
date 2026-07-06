@@ -402,7 +402,7 @@ function freezyYardButton(unit) {
 
 function mineScatterButtons(unit) {
   if (!isCombatUnit(unit)) return "";
-  return attackWeapons(unit)
+  return unitWeaponObjects(unit)
     .filter((weapon) => weaponHasSkill(weapon, "mineScatter"))
     .map((weapon) => {
       const cells = mineScatterCells(unit);
