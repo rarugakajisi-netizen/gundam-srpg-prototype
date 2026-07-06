@@ -120,6 +120,26 @@ window.GAME_DATA.compatibility = {
       "evasionBonus": 10
     },
     {
+      "characterId": "anavelGato",
+      "msTag": "gelgoog",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "anavelGato",
+      "msTag": "highMobilityZaku",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "cimaGarahau",
+      "msTag": "gelgoog",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "cimaGarahau",
+      "msTag": "commanderCustom",
+      "evasionBonus": 5
+    },
+    {
       "characterId": "dozle",
       "msTag": "bigZam",
       "evasionBonus": 10

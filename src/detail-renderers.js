@@ -66,7 +66,7 @@ function characterMsContributionText(character) {
   const shooting = character.shooting;
   const melee = character.melee;
   const evasion = character.reaction + Math.floor(character.awakening / 2);
-  const ace = character.specials.includes("ace") ? " / 与ダメージ+10" : "";
+  const ace = character.specials.includes("ace") ? " / 適性機体で与ダメージ+10" : "";
   return `射撃命中+${shooting} / 格闘命中+${melee} / 回避+${evasion}${ace}`;
 }
 

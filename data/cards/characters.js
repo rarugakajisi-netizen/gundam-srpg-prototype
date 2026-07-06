@@ -565,6 +565,68 @@ window.GAME_DATA.characters = [
     "imagePath": ""
   },
   {
+    "id": "anavelGato",
+    "name": "アナベル・ガトー",
+    "characterKey": "anavelGato",
+    "faction": "zeon",
+    "cost": 115,
+    "shooting": 20,
+    "melee": 19,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 14,
+    "support": 7,
+    "maintenance": 2,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "rivalry"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "eguilleDelaz",
+    "name": "エギーユ・デラーズ",
+    "characterKey": "eguilleDelaz",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 8,
+    "melee": 5,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 23,
+    "support": 17,
+    "maintenance": 4,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "cimaGarahau",
+    "name": "シーマ・ガラハウ",
+    "characterKey": "cimaGarahau",
+    "faction": "zeon",
+    "cost": 105,
+    "shooting": 19,
+    "melee": 14,
+    "reaction": 21,
+    "awakening": 0,
+    "command": 15,
+    "support": 9,
+    "maintenance": 4,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "zeonSoldier",
     "name": "ジオン一般兵",
     "characterKey": "zeonSoldier",
@@ -3754,7 +3816,7 @@ window.GAME_DATA.characters = [
     "name": "ニアーライト",
     "characterKey": "nearlight",
     "faction": "zeon",
-    "cost": 115,
+    "cost": 100,
     "shooting": 16,
     "melee": 12,
     "reaction": 18,
@@ -3766,9 +3828,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "rivalry"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4622,7 +4682,7 @@ window.GAME_DATA.characters = [
     "name": "クラウス・ベルトラン",
     "characterKey": "klausBertrand",
     "faction": "zeon",
-    "cost": 95,
+    "cost": 90,
     "shooting": 22,
     "melee": 12,
     "reaction": 18,
@@ -4634,9 +4694,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "scheming"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {

@@ -578,12 +578,22 @@ function markWeaponUsed(unit, weapon) {
   if (!unit.usedWeaponIds.includes(weapon.id)) unit.usedWeaponIds.push(weapon.id);
 }
 
-function characterMsBonus(unit) {
-  if (!isMobileSuit(unit)) return 0;
+function characterMsCompatibility(unit) {
+  if (!isMobileSuit(unit)) return null;
   const characterId = unit.characterIds?.[0];
   const unitMs = msFor(unit);
-  const match = (state.data.compatibility?.characterMs ?? []).find((item) => item.characterId === characterId && compatibilityMatchesMs(item, unitMs));
+  return (state.data.compatibility?.characterMs ?? []).find((item) => item.characterId === characterId && compatibilityMatchesMs(item, unitMs));
+}
+
+function characterMsBonus(unit) {
+  const match = characterMsCompatibility(unit);
   return match?.evasionBonus ?? 0;
+}
+
+function aceSkillActive(unit) {
+  return isMobileSuit(unit)
+    && unitHasSkill(unit, "ace")
+    && Boolean(characterMsCompatibility(unit));
 }
 
 function msWeaponBonus(unit, weapon) {
@@ -713,7 +723,7 @@ function advanceLearningComputer(unit) {
 
 function damageFor(attacker, defender, weapon, options = {}) {
   let damage = weapon.power;
-  if (isMobileSuit(attacker) && unitHasSkill(attacker, "ace")) damage += 10;
+  if (aceSkillActive(attacker)) damage += 10;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "aiSenshi") && alliedMobileSuitDestroyed(attacker.side)) damage += 15;
   if (isCombatUnit(attacker) && sacrificialBoostActive(attacker.side)) damage += 12;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "outstandingTalent") && isFrontmostAlly(attacker)) damage += 12;
@@ -756,6 +766,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
 function combatEffectNotes(attacker, defender, weapon, options = {}) {
   const notes = [];
   if (isCombatUnit(attacker) && sacrificialBoostActive(attacker.side)) notes.push("命を賭して……");
+  if (aceSkillActive(attacker)) notes.push("エース");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "outstandingTalent") && isFrontmostAlly(attacker)) notes.push("突出した才能");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "enhancedWarhead") && weapon.kind === "ammo") notes.push("強化弾頭");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "highOutputGenerator") && weapon.kind === "beam") notes.push("高出力ジェネレーター");

@@ -8,7 +8,7 @@ window.GAME_DATA.skills = [
     "name": "エース",
     "type": "キャラ",
     "timing": "攻撃時",
-    "effect": "MS搭乗時、与ダメージ+10。",
+    "effect": "適性機体に搭乗して攻撃する時、与ダメージ+10。",
     "implemented": true
   },
   {
