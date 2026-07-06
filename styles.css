@@ -460,6 +460,59 @@ select {
   gap: 10px;
 }
 
+.stage-folder-panel {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(47, 104, 176, 0.18);
+  border-radius: 8px;
+  background: #f6f9fd;
+}
+
+.stage-folder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.stage-folder-card {
+  display: grid;
+  gap: 8px;
+  min-height: 116px;
+  padding: 10px;
+  text-align: left;
+  border-color: rgba(47, 104, 176, 0.24);
+  background: #ffffff;
+}
+
+.stage-folder-card.selected {
+  border-color: rgba(47, 104, 176, 0.78);
+  box-shadow: 0 0 0 2px rgba(47, 104, 176, 0.14);
+}
+
+.stage-folder-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stage-folder-head strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink);
+  font-size: 17px;
+}
+
+.stage-folder-meta {
+  display: grid;
+  gap: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .stage-quick-actions,
 .stage-card-actions,
 .stage-meta-line {

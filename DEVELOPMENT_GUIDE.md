@@ -201,6 +201,9 @@ unit.weaponCharges = {
 - `enemyBattleshipId`: 敵戦艦を固定したい時に指定する。`null` なら敵戦艦なし。
 - `costCap`: ステージ固有の出撃上限。未指定なら敵総コストをもとに自動計算。
 - `turnLimit`: 通常ステージ専用の特殊敗北条件。指定ターン終了までに敵を撃破できないと敗北。フリー対戦では反映しない。
+- `surviveTurns`: 通常ステージ専用の特殊勝利条件。指定ターン終了まで生き延びると勝利。フリー対戦では反映しない。
+- `enemyReinforcements`: 通常ステージ専用の敵増援。`{ startTurn, endTurn, countPerTurn, entries }` を指定し、自軍ターン開始時に空きマスへ敵を追加する。フリー対戦では反映しない。
+- 敵編成/増援エントリの `armorOverride`: ステージギミック用に出撃時HPを上書きする。通常カード性能を変えずにHP1の的や特殊個体を作る場合に使う。
 - `defenseTargets`: 通常ステージ専用の防衛対象。`[{ name, x, y, armor, mobility }]` を指定し、すべて破壊されると敗北。敵AIは優先的に攻撃します。`mobility` は任意で、未指定なら移動不可。フリー対戦では反映しない。
 - 報酬はステージ別には持たせず、`campaign.commonDropRewards` による全体ランダムドロップを使います。
 - `commonDropRewards.categoryWeights` は、まずどの種別を抽選するかの重みです。機体やキャラが増えても、戦艦など少数カテゴリがカード枚数差で埋もれないようにここで調整します。

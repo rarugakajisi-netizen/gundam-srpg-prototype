@@ -58,15 +58,20 @@ function renderBattle() {
 
 function renderBattleRuleStatus() {
   const limit = stageTurnLimit();
+  const survivalLimit = stageSurvivalTurnLimit();
+  const reinforcements = stageEnemyReinforcements();
   const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
-  if ((limit === null && defenseTargets.length === 0) || state.outcome) return "";
+  if ((limit === null && survivalLimit === null && !reinforcements && defenseTargets.length === 0) || state.outcome) return "";
   const remaining = Math.max(0, limit - state.turnNumber + 1);
+  const survivalRemaining = Math.max(0, survivalLimit - state.turnNumber + 1);
   const aliveDefenseTargets = defenseTargets.filter((unit) => isAlive(unit)).length;
   return `
     <section class="panel deployment-panel">
       <div>
         <h2>特殊ルール</h2>
         ${limit !== null ? `<p class="small">時間稼ぎ: 第${limit}ターン終了までに敵を撃破してください。現在${state.turnNumber}ターン目 / 残り${remaining}ターン。</p>` : ""}
+        ${survivalLimit !== null ? `<p class="small">生存戦: 第${survivalLimit}ターン終了まで生き延びると勝利です。現在${state.turnNumber}ターン目 / 残り${survivalRemaining}ターン。</p>` : ""}
+        ${reinforcements ? `<p class="small">増援: 条件ターン中、自軍ターン開始時に敵増援が出現します。</p>` : ""}
         ${defenseTargets.length > 0 ? `<p class="small">防衛対象: ${aliveDefenseTargets} / ${defenseTargets.length} 残存。すべて破壊されると敗北します。</p>` : ""}
       </div>
     </section>

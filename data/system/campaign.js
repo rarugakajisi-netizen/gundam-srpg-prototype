@@ -520,6 +520,98 @@ window.GAME_DATA.campaign = {
           }
         ]
       }
+    },
+    {
+      "mapId": "ballHell",
+      "series": "other",
+      "order": 900,
+      "tags": [
+        "オリジナル",
+        "ネタ",
+        "宇宙",
+        "サバイバル",
+        "ジオン視点",
+        "ボール"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": null,
+      "costCap": 1200,
+      "surviveTurns": 6,
+      "enemyReinforcements": {
+        "startTurn": 2,
+        "endTurn": 6,
+        "countPerTurn": 8,
+        "entries": [
+          {
+            "msId": "ball",
+            "characterIds": [],
+            "weaponIds": [],
+            "optionIds": [],
+            "armorOverride": 1
+          }
+        ]
+      },
+      "summary": "完全オリジナルのネタステージ。HP1のボールが毎ターン大量投入されるボール地獄を、第6ターン終了まで生き延びるサバイバル戦です。倒しても倒しても次の波が来ます。",
+      "enemyFormations": {
+        "federation": [
+          {
+            "msId": "ball",
+            "characterIds": [],
+            "weaponIds": [],
+            "optionIds": [],
+            "armorOverride": 1
+          },
+          {
+            "msId": "ball",
+            "characterIds": [],
+            "weaponIds": [],
+            "optionIds": [],
+            "armorOverride": 1
+          },
+          {
+            "msId": "ball",
+            "characterIds": [],
+            "weaponIds": [],
+            "optionIds": [],
+            "armorOverride": 1
+          },
+          {
+            "msId": "ball",
+            "characterIds": [],
+            "weaponIds": [],
+            "optionIds": [],
+            "armorOverride": 1
+          },
+          {
+            "msId": "ball",
+            "characterIds": [],
+            "weaponIds": [],
+            "optionIds": [],
+            "armorOverride": 1
+          },
+          {
+            "msId": "ball",
+            "characterIds": [],
+            "weaponIds": [],
+            "optionIds": [],
+            "armorOverride": 1
+          },
+          {
+            "msId": "ball",
+            "characterIds": [],
+            "weaponIds": [],
+            "optionIds": [],
+            "armorOverride": 1
+          },
+          {
+            "msId": "ball",
+            "characterIds": [],
+            "weaponIds": [],
+            "optionIds": [],
+            "armorOverride": 1
+          }
+        ]
+      }
     }
   ]
 };

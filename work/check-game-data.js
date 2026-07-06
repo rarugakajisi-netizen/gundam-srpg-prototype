@@ -268,6 +268,7 @@ function createChecker(data) {
     if (!ms) return;
     if (ms.faction !== faction) error(scope, `機体勢力が編成勢力と一致しません: ${ms.faction} !== ${faction}`);
     if (map && !mobileSuitCanDeployOnMap(ms, map)) error(scope, `${itemLabel(ms)} は ${map.name} に出撃できません。`);
+    if (entry.armorOverride !== undefined) expectNumber(scope, entry, "armorOverride", { integer: true });
 
     const characterIds = list(entry.characterIds);
     const weaponIds = list(entry.weaponIds);
@@ -499,6 +500,23 @@ function createChecker(data) {
       }
       if (stage.costCap !== undefined) expectNumber(scope, stage, "costCap");
       if (stage.turnLimit !== undefined) expectNumber(scope, stage, "turnLimit", { integer: true });
+      if (stage.surviveTurns !== undefined) expectNumber(scope, stage, "surviveTurns", { integer: true });
+      if (stage.enemyReinforcements !== undefined) {
+        const reinforcementScope = `${scope}.enemyReinforcements`;
+        if (!isPlainObject(stage.enemyReinforcements)) {
+          error(reinforcementScope, "オブジェクトである必要があります。");
+        } else {
+          ["startTurn", "endTurn", "countPerTurn", "count"].forEach((key) => {
+            if (stage.enemyReinforcements[key] !== undefined) expectNumber(reinforcementScope, stage.enemyReinforcements, key, { integer: true });
+          });
+          const reinforcementEntries = list(stage.enemyReinforcements.entries);
+          if (reinforcementEntries.length === 0) {
+            error(`${reinforcementScope}.entries`, "1件以上の増援エントリが必要です。");
+          } else {
+            reinforcementEntries.forEach((entry, entryIndex) => validateFormationEntry(entry, `${reinforcementScope}.entries[${entryIndex}]`, stage.enemyFaction, map, { playerControlled: false }));
+          }
+        }
+      }
       list(stage.defenseTargets).forEach((target, targetIndex) => {
         const targetScope = `${scope}.defenseTargets[${targetIndex}]`;
         if (!target.name || typeof target.name !== "string") warning(targetScope, "name が未設定です。");

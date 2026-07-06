@@ -521,6 +521,8 @@ function stageRows() {
     const costCap = Number.isFinite(stage.costCap) ? stage.costCap : Math.ceil((enemyCost + autoMargin) / 10) * 10;
     const specialRules = [
       stage.turnLimit ? `turnLimit:${stage.turnLimit}` : "",
+      stage.surviveTurns ? `survive:${stage.surviveTurns}` : "",
+      stage.enemyReinforcements ? `reinforce:${stage.enemyReinforcements.countPerTurn ?? stage.enemyReinforcements.count ?? "?"}` : "",
       list(stage.defenseTargets).length ? `defense:${list(stage.defenseTargets).length}` : "",
       stage.enemyBattleshipId ? `enemyShip:${stage.enemyBattleshipId}` : ""
     ].filter(Boolean);

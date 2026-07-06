@@ -20,6 +20,8 @@ function checkOutcome() {
   const enemyAlive = state.units.some((unit) => unit.side === "enemy" && isMobileSuit(unit) && isAlive(unit));
   const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
   const defenseTargetsDestroyed = defenseTargets.length > 0 && defenseTargets.every((unit) => !isAlive(unit));
+  const survivalLimit = stageSurvivalTurnLimit();
+  const survivalComplete = survivalLimit !== null && state.phase === "player" && state.turnNumber > survivalLimit;
 
   if (!playerBattleshipAlive || !playerAlive) {
     state.outcome = "敗北";
@@ -35,13 +37,22 @@ function checkOutcome() {
     state.outcome = "敗北";
     state.outcomeMessage = `敵の時間稼ぎを許しました。${stageTurnLimit()}ターン以内に敵を撃破してください。`;
     phaseLabel.textContent = state.outcome;
-  } else if ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive) {
+  } else if (survivalComplete) {
+    state.outcome = "勝利";
+    state.outcomeMessage = "";
+    state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
+    phaseLabel.textContent = state.outcome;
+  } else if (survivalLimit === null && ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive)) {
     state.outcome = "勝利";
     state.outcomeMessage = "";
     state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
     phaseLabel.textContent = state.outcome;
   }
   awardBattleGrowthIfEligible();
+}
+
+function renderStageFilterScreen() {
+  renderStageSelect();
 }
 
 setupScreen.addEventListener("change", (event) => {
@@ -57,7 +68,7 @@ setupScreen.addEventListener("change", (event) => {
   }
   if (event.target.matches(".stage-control")) {
     state.stageFilter[event.target.dataset.filterKey] = event.target.value;
-    renderStageSelect();
+    renderStageFilterScreen();
     return;
   }
   if (event.target.matches(".free-battle-control")) {
@@ -132,7 +143,7 @@ setupScreen.addEventListener("input", (event) => {
   if (event.target.matches(".stage-control")) {
     const key = event.target.dataset.filterKey;
     state.stageFilter[key] = event.target.value;
-    renderStageSelect();
+    renderStageFilterScreen();
     focusFilterControl(".stage-control", key, event.target.value);
   }
   if (event.target.matches(".free-battle-control")) {
@@ -174,6 +185,10 @@ setupScreen.addEventListener("click", (event) => {
   }
   if (action === "reset-stage-filter") {
     state.stageFilter = { query: "", series: "all", status: "all", terrain: "all", enemyFaction: "all", sort: "story" };
+    renderStageFilterScreen();
+  }
+  if (action === "select-stage-folder") {
+    state.stageFilter.series = button.dataset.series ?? "all";
     renderStageSelect();
   }
   if (action === "reset-free-battle-filter") {

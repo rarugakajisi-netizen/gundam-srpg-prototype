@@ -75,6 +75,7 @@ const state = {
   enemyQueue: [],
   mines: [],
   sacrificialBoostSides: {},
+  stageReinforcementSerial: 0,
   battleGrowthEligible: false,
   battleGrowthAwarded: false,
   battleGrowthCharacterIds: [],
@@ -548,6 +549,18 @@ function stageTurnLimit(mapId = state.selectedMapId) {
   if (isFreeBattle()) return null;
   const limit = Number(stageConfig(mapId).turnLimit);
   return Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : null;
+}
+
+function stageSurvivalTurnLimit(mapId = state.selectedMapId) {
+  if (isFreeBattle()) return null;
+  const limit = Number(stageConfig(mapId).surviveTurns);
+  return Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : null;
+}
+
+function stageEnemyReinforcements(mapId = state.selectedMapId) {
+  if (isFreeBattle()) return null;
+  const config = stageConfig(mapId).enemyReinforcements;
+  return config && typeof config === "object" ? config : null;
 }
 
 function stageDefenseTargets(mapId = state.selectedMapId) {

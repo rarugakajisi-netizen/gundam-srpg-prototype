@@ -1439,7 +1439,9 @@ function finishEnemyTurn() {
   state.enemyQueue = [];
   state.selectedUnitId = state.units.find((unit) => unit.side === "player" && isCombatUnit(unit))?.id ?? null;
   state.selectedTargetId = null;
+  spawnStageEnemyReinforcementsForTurn();
   state.log.push("自軍ターン開始。");
+  checkOutcome();
   renderBattle();
 }
 

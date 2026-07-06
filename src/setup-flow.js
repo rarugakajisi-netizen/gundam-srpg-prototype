@@ -397,7 +397,8 @@ function enemyFormationForStage(mapId, faction) {
     msId: entry.msId,
     characterIds: [...(entry.characterIds ?? [])],
     weaponIds: [...(entry.weaponIds ?? [])],
-    optionIds: [...(entry.optionIds ?? [])]
+    optionIds: [...(entry.optionIds ?? [])],
+    armorOverride: entry.armorOverride
   }));
 }
 
@@ -506,6 +507,42 @@ function stageSeriesSortValue(series) {
     originalHistory: 30,
     other: 90
   }[series] ?? 80;
+}
+
+function stageSeriesIds() {
+  return Array.from(new Set(campaignStageEntries().map((entry) => entry.stage.series ?? "other")))
+    .sort((a, b) => stageSeriesSortValue(a) - stageSeriesSortValue(b) || stageSeriesLabel(a).localeCompare(stageSeriesLabel(b), "ja"));
+}
+
+function stageFolderEntries() {
+  const entries = campaignStageEntries();
+  const folders = stageSeriesIds().map((series) => ({
+    id: series,
+    label: stageSeriesLabel(series),
+    entries: entries.filter((entry) => (entry.stage.series ?? "other") === series)
+  }));
+  return [
+    {
+      id: "all",
+      label: "すべて",
+      entries
+    },
+    ...folders
+  ];
+}
+
+function stageFolderStats(entries) {
+  const cleared = entries.filter((entry) => stageCleared(entry.map.id)).length;
+  const playable = entries.filter((entry) => stagePlayable(entry.map)).length;
+  const terrains = [...new Set(entries.map((entry) => mapTypeName(entry.map.type)))];
+  const next = nextUnclearedStageEntry(entries);
+  return {
+    total: entries.length,
+    cleared,
+    playable,
+    terrains,
+    next
+  };
 }
 
 function stageEntrySearchText(entry) {
@@ -653,14 +690,13 @@ function renderFreeBattleControls(entries) {
 
 function renderStageControls(entries) {
   const filter = state.stageFilter;
-  const seriesIds = Array.from(new Set(campaignStageEntries().map((entry) => entry.stage.series ?? "other")))
-    .sort((a, b) => stageSeriesSortValue(a) - stageSeriesSortValue(b) || stageSeriesLabel(a).localeCompare(stageSeriesLabel(b), "ja"));
+  const seriesIds = stageSeriesIds();
   const terrainIds = Array.from(new Set(campaignStageEntries().map((entry) => entry.map.type)));
   const enemyFactionIds = Array.from(new Set(campaignStageEntries().map((entry) => stageEnemyFaction(entry.map.id))));
   return `
     <div class="filter-bar stage-filter-bar">
       <label>検索<input class="stage-control" data-filter-key="query" type="search" value="${escapeAttr(filter.query)}" placeholder="ステージ名・タグ・敵勢力" /></label>
-      <label>分類<select class="stage-control" data-filter-key="series">
+      <label>タイトル<select class="stage-control" data-filter-key="series">
         ${filterOption("all", "すべて", filter.series)}
         ${seriesIds.map((id) => filterOption(id, stageSeriesLabel(id), filter.series)).join("")}
       </select></label>
@@ -694,6 +730,46 @@ function renderStageControls(entries) {
   `;
 }
 
+function renderStageFolderPicker() {
+  const folders = stageFolderEntries();
+  return `
+    <section class="stage-folder-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Title Folders</p>
+          <h3>タイトル別フォルダ</h3>
+        </div>
+        <span class="small">作品・分類ごとにステージを絞り込みます。</span>
+      </div>
+      <div class="stage-folder-grid">
+        ${folders.map((folder) => stageFolderCard(folder)).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function stageFolderCard(folder) {
+  const stats = stageFolderStats(folder.entries);
+  const selected = state.stageFilter.series === folder.id;
+  const terrainText = stats.terrains.length > 0 ? stats.terrains.join(" / ") : "地形なし";
+  return `
+    <button type="button" class="stage-folder-card ${selected ? "selected" : ""}" data-action="select-stage-folder" data-series="${folder.id}">
+      <span class="stage-folder-head">
+        <span>
+          <span class="eyebrow">Folder</span>
+          <strong>${folder.label}</strong>
+        </span>
+        <span class="status-pill ${stats.playable > 0 ? "ready" : ""}">${stats.cleared} / ${stats.total} CLEAR</span>
+      </span>
+      <span class="stage-folder-meta">
+        <span>${terrainText}</span>
+        <span>出撃可 ${stats.playable}</span>
+        <span>次: ${stats.next?.map.name ?? "なし"}</span>
+      </span>
+    </button>
+  `;
+}
+
 function renderStageSelect() {
   state.battleMode = "campaign";
   state.screen = "stage";
@@ -712,6 +788,7 @@ function renderStageSelect() {
         <button class="primary-button" data-action="select-next-uncleared-stage" data-map-id="${nextEntry?.map.id ?? ""}" ${nextEntry ? "" : "disabled"}>次の未クリアを表示</button>
         ${selectedEntry ? `<button data-action="select-stage" data-map-id="${selectedEntry.map.id}" ${stagePlayable(selectedEntry.map) ? "" : "disabled"}>選択中ステージへ</button>` : ""}
       </div>
+      ${renderStageFolderPicker()}
       ${renderStageControls(entries)}
       <div class="stage-list">
         ${entries.length === 0 ? `<p class="support-hint">条件に合うステージがありません。検索やフィルタをリセットしてください。</p>` : entries.map((entry) => stageCard(entry, selectedEntry?.map.id === entry.map.id)).join("")}
@@ -803,6 +880,9 @@ function renderStageRuleChips(stage) {
   const chips = [];
   const turnLimit = Number(stage.turnLimit);
   if (Number.isFinite(turnLimit) && turnLimit > 0) chips.push(`敗北条件: ${Math.floor(turnLimit)}ターン経過`);
+  const surviveTurns = Number(stage.surviveTurns);
+  if (Number.isFinite(surviveTurns) && surviveTurns > 0) chips.push(`勝利条件: ${Math.floor(surviveTurns)}ターン生存`);
+  if (stage.enemyReinforcements) chips.push("敵増援: 毎ターン出現");
   const defenseTargets = Array.isArray(stage.defenseTargets) ? stage.defenseTargets : [];
   if (defenseTargets.length > 0) chips.push(`防衛対象: ${defenseTargets.length}個 / 全破壊で敗北`);
   return chips.length > 0 ? `<div class="reward-list">${chips.map((text) => `<span class="reward-chip">${text}</span>`).join("")}</div>` : "";
@@ -1824,6 +1904,9 @@ function makeUnit(entry, side, x, y, index) {
   const weaponIds = [...unitMs.fixedWeaponIds, ...entry.weaponIds, ...optionWeaponIds];
   const runtimeWeapons = runtimeWeaponsForIds(weaponIds, optionIds);
   const maxEnergy = unitMs.energy + (optionIds.includes("externalGenerator") ? 25 : 0);
+  const maxArmor = Number.isFinite(Number(entry.armorOverride))
+    ? Math.max(1, Math.floor(Number(entry.armorOverride)))
+    : unitMs.armor;
   const totalCost = unitMs.cost
     + (entry.characterIds ?? []).reduce((sum, id) => sum + (characters[id]?.cost ?? 0), 0)
     + (entry.weaponIds ?? []).reduce((sum, id) => sum + (weapons[id]?.cost ?? 0), 0)
@@ -1841,9 +1924,9 @@ function makeUnit(entry, side, x, y, index) {
     weaponIds,
     totalCost,
     runtimeWeapons,
-    armor: unitMs.armor,
+    armor: maxArmor,
     energy: maxEnergy,
-    maxArmor: unitMs.armor,
+    maxArmor,
     maxEnergy,
     x,
     y,
@@ -1952,6 +2035,71 @@ function reserveDefenseTargetCell(config, index, occupied) {
     : nearestOpenDeploymentCell(validOrigin, occupied, canStandAt, map);
   if (cell) occupied.add(positionKey(cell.x, cell.y));
   return cell ?? validOrigin;
+}
+
+function reinforcementSpawnCells(side, occupied, card = null, map = selectedMap()) {
+  const center = Math.floor(boardWidth(map) / 2);
+  const cells = Array.from({ length: boardWidth(map) * boardHeight(map) }, (_, index) => ({
+    x: index % boardWidth(map),
+    y: Math.floor(index / boardWidth(map))
+  })).filter((cell) => cardCanStandAt(card, cell.x, cell.y, map) && !occupied.has(positionKey(cell.x, cell.y)));
+  const zoneCells = cells.filter((cell) => deploymentZoneContains(side, cell.x, cell.y, map));
+  const candidates = zoneCells.length > 0 ? zoneCells : cells;
+  return candidates.sort((a, b) => {
+    const yOrder = side === "enemy" ? a.y - b.y : b.y - a.y;
+    if (yOrder !== 0) return yOrder;
+    const centerOrder = Math.abs(a.x - center) - Math.abs(b.x - center);
+    if (centerOrder !== 0) return centerOrder;
+    return a.x - b.x;
+  });
+}
+
+function spawnStageEnemyReinforcementsForTurn() {
+  const config = stageEnemyReinforcements();
+  if (!config || state.outcome) return 0;
+  const turn = state.turnNumber;
+  const startTurn = Math.max(1, Math.floor(Number(config.startTurn) || 2));
+  const survivalLimit = stageSurvivalTurnLimit();
+  const endTurn = Number.isFinite(Number(config.endTurn))
+    ? Math.max(startTurn, Math.floor(Number(config.endTurn)))
+    : (survivalLimit ?? startTurn);
+  if (turn < startTurn || turn > endTurn) return 0;
+
+  const entries = Array.isArray(config.entries) && config.entries.length > 0
+    ? config.entries
+    : (config.entry ? [config.entry] : []);
+  const count = Math.max(0, Math.floor(Number(config.countPerTurn ?? config.count) || entries.length));
+  if (entries.length === 0 || count <= 0) return 0;
+
+  const occupied = new Set(state.units.filter(isAlive).map((unit) => positionKey(unit.x, unit.y)));
+  const spawned = [];
+  for (let i = 0; i < count; i += 1) {
+    const template = entries[i % entries.length];
+    const ms = lookup().ms[template.msId];
+    if (!ms) continue;
+    const cell = reinforcementSpawnCells("enemy", occupied, ms)[0];
+    if (!cell) break;
+    occupied.add(positionKey(cell.x, cell.y));
+    state.stageReinforcementSerial += 1;
+    const unit = makeUnit({
+      msId: template.msId,
+      characterIds: [...(template.characterIds ?? [])],
+      weaponIds: [...(template.weaponIds ?? [])],
+      optionIds: [...(template.optionIds ?? [])],
+      armorOverride: template.armorOverride
+    }, "enemy", cell.x, cell.y, state.stageReinforcementSerial);
+    unit.reinforcement = true;
+    spawned.push(unit);
+  }
+
+  if (spawned.length > 0) {
+    state.units.push(...spawned);
+    const name = lookup().ms[entries[0].msId]?.name ?? "敵";
+    state.log.push(`増援: ${name}が${spawned.length}機出現。`);
+  } else {
+    state.log.push("増援: 出現可能な空きマスがありません。");
+  }
+  return spawned.length;
 }
 
 function deploymentRows(side, map = selectedMap()) {
@@ -2069,6 +2217,7 @@ function launchBattle() {
   state.enemyQueue = [];
   state.mines = [];
   state.sacrificialBoostSides = {};
+  state.stageReinforcementSerial = 0;
   state.battleGrowthEligible = false;
   state.battleGrowthAwarded = false;
   state.battleGrowthCharacterIds = playerCharacterIdsForGrowth();
