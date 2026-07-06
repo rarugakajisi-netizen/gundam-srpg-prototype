@@ -950,7 +950,7 @@ window.GAME_DATA.characters = [
       "commander"
     ],
     "specials": [
-      "antiSubmarine"
+      "aquaticCombatAdaptation"
     ],
     "imagePath": ""
   },
@@ -4436,9 +4436,7 @@ window.GAME_DATA.characters = [
       "operator",
       "commander"
     ],
-    "specials": [
-      "spyConduct"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {

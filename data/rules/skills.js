@@ -148,6 +148,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "aquaticCombatAdaptation",
+    "name": "水中戦適応",
+    "type": "キャラ",
+    "timing": "水中マス上",
+    "effect": "MS搭乗時、自分が水中マスにいる間、命中・回避+6。",
+    "implemented": true
+  },
+  {
     "id": "beamDisruption",
     "name": "ビーム撹乱幕",
     "type": "機体/武器",
