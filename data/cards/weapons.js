@@ -61,6 +61,84 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "hildolfr30cmApfsds",
+    "name": "30サンチ砲（有翼徹甲）",
+    "cost": 0,
+    "power": 190,
+    "accuracy": 62,
+    "range": 6,
+    "minRange": 5,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "ignoresObstacles": true,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "hildolfr30cmIncendiary",
+    "name": "30サンチ砲（焼夷弾）",
+    "cost": 0,
+    "power": 135,
+    "accuracy": 68,
+    "range": 5,
+    "minRange": 3,
+    "consume": 18,
+    "kind": "special",
+    "ammo": 0,
+    "category": "special",
+    "attackType": "shooting",
+    "durability": 0,
+    "ignoresObstacles": true,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "hildolfrShovelArm",
+    "name": "ショベル・アーム",
+    "cost": 0,
+    "power": 120,
+    "accuracy": 76,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "hildolfrMachineGun105mm",
+    "name": "105mmマシンガン",
+    "cost": 0,
+    "power": 82,
+    "accuracy": 78,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
     "id": "beamSaber",
     "name": "ビームサーベル",
     "cost": 0,

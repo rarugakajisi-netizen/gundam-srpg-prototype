@@ -371,6 +371,14 @@ function createChecker(data) {
       list(ms.escapeWeaponIds).forEach((id) => expectId(`${scope}.escapeWeaponIds`, "weapons", id));
       expectId(`${scope}.escapeMsId`, "mobileSuits", ms.escapeMsId, true);
       expectId(`${scope}.purgeMsId`, "mobileSuits", ms.purgeMsId, true);
+      const transformMs = expectId(`${scope}.transformMsId`, "mobileSuits", ms.transformMsId, true);
+      if (
+        transformMs
+        && Number(ms.cost) !== Number(transformMs.cost)
+        && (!transformMs.transformMsId || transformMs.transformMsId !== ms.id || ms.id < transformMs.id)
+      ) {
+        warning(scope, `変形先 ${itemLabel(transformMs)} とコストが一致していません: ${ms.cost} vs ${transformMs.cost}`);
+      }
       list(ms.specials).forEach((id) => expectId(`${scope}.specials`, "skills", id));
     });
 

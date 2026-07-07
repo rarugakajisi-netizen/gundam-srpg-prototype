@@ -7,7 +7,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "amuro",
       "msTag": "gundam",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "amuro",
@@ -17,7 +17,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "amuroAwakened",
       "msTag": "gundam",
-      "evasionBonus": 14
+      "evasionBonus": 10
     },
     {
       "characterId": "amuroAwakened",
@@ -102,7 +102,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "char",
       "msTag": "charCustom",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "char",
@@ -128,6 +128,11 @@ window.GAME_DATA.compatibility = {
       "characterId": "anavelGato",
       "msId": "gelgoogGato",
       "evasionBonus": 8
+    },
+    {
+      "characterId": "anavelGato",
+      "msId": "rickDomGato",
+      "evasionBonus": 7
     },
     {
       "characterId": "anavelGato",
@@ -182,7 +187,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "lalah",
       "msTag": "psycommu",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "challiaBull",
@@ -277,7 +282,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "lydoWolf",
       "msId": "gmCannonLydo",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "francisBackmeyer",
@@ -322,7 +327,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "char",
       "msId": "charRickDom",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "ramba",
@@ -367,12 +372,12 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "shinMatsunaga",
       "msId": "matsunagaHighMobilityZaku",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "johnnyRidden",
       "msId": "johnnyHighMobilityZaku",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "ianGreydon",
@@ -392,7 +397,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "char",
       "msId": "charZgok",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "rob07",
@@ -487,7 +492,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "johnnyRidden",
       "msId": "johnnyHighMobilityGelgoog",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "shiroAmada",
@@ -537,7 +542,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "norrisPackard",
       "msTag": "gouf",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "uragan",
@@ -562,12 +567,12 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "lydoWolf",
       "msId": "massProductionGuncannonLydo",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "lydoWolf",
       "msId": "gmSniper2Lydo",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "christinaMackenzie",
@@ -617,7 +622,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "fordRomfellow",
       "msId": "gundamUnit5Bst",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "luceKassel",
@@ -627,12 +632,12 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "luceKassel",
       "msId": "gundamUnit4Bst",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "borkCry",
       "msId": "gundamPixy",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "travisKirkland",
@@ -647,7 +652,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "fredReber",
       "msId": "gundamPixy",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "fredReber",
@@ -682,12 +687,12 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "chloeCroce",
       "msTag": "paleRider",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "vincentGleissner",
       "msId": "highMobilityGelgoog",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "vincentGleissner",
@@ -702,7 +707,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "dougSchneid",
       "msId": "efreetSchneid",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "dougSchneid",
@@ -722,7 +727,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "guyHelmuth",
       "msId": "domGrossBeil",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "guyHelmuth",
@@ -747,7 +752,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "anneroseRosenheim",
       "msId": "psycommuZakuTest",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "anneroseRosenheim",
@@ -912,7 +917,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "youKajima",
       "msTag": "blueDestiny",
-      "evasionBonus": 14
+      "evasionBonus": 10
     },
     {
       "characterId": "youKajima",
@@ -977,12 +982,12 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "nimbusSchterzen",
       "msId": "efreetCustom",
-      "evasionBonus": 14
+      "evasionBonus": 10
     },
     {
       "characterId": "nimbusSchterzen",
       "msId": "blueDestiny2",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "marionWelch",
@@ -992,7 +997,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "ephaGaldrial",
       "msId": "qatal",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "ephaGaldrial",
@@ -1002,7 +1007,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "masterPRayer",
       "msTag": "whiteDingo",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "maximilianBerger",
@@ -1032,12 +1037,12 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "vischDonahue",
       "msTag": "groundGelgoog",
-      "evasionBonus": 14
+      "evasionBonus": 10
     },
     {
       "characterId": "vischDonahue",
       "msTag": "gouf",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "vischDonahue",
@@ -1092,12 +1097,12 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "southBurningOyw",
       "msTag": "immortal4th",
-      "evasionBonus": 12
+      "evasionBonus": 10
     },
     {
       "characterId": "southBurningOyw",
       "msId": "gmCommandSpace",
-      "evasionBonus": 11
+      "evasionBonus": 10
     },
     {
       "characterId": "southBurningOyw",
@@ -1152,7 +1157,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "gerhartSchmitzer",
       "msId": "zaku1Gerhart",
-      "evasionBonus": 14
+      "evasionBonus": 10
     },
     {
       "characterId": "gerhartSchmitzer",
@@ -1177,7 +1182,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "matAustin",
       "msTag": "zaku1",
-      "evasionBonus": 14
+      "evasionBonus": 10
     },
     {
       "characterId": "matAustin",
@@ -1262,7 +1267,7 @@ window.GAME_DATA.compatibility = {
     {
       "characterId": "eiger",
       "msId": "gundamMudrock",
-      "evasionBonus": 14
+      "evasionBonus": 10
     },
     {
       "characterId": "eiger",
@@ -1380,6 +1385,26 @@ window.GAME_DATA.compatibility = {
       "msTag": "guncannon",
       "weaponId": "guncannonBeamRifle",
       "accuracyBonus": 8
+    },
+    {
+      "msId": "hildolfrTankMode",
+      "weaponId": "hildolfr30cmApfsds",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "hildolfrTankMode",
+      "weaponId": "hildolfr30cmIncendiary",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "hildolfrMobileMode",
+      "weaponId": "hildolfrShovelArm",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "hildolfrMobileMode",
+      "weaponId": "hildolfrMachineGun105mm",
+      "accuracyBonus": 6
     },
     {
       "msTag": "gm",

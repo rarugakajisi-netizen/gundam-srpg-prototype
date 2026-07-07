@@ -66,6 +66,84 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "hildolfrTankMode",
+    "name": "ヒルドルブ（タンクモード）",
+    "faction": "zeon",
+    "cost": 310,
+    "armor": 520,
+    "energy": 120,
+    "agility": 10,
+    "mobility": 4,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "hildolfr30cmApfsds",
+      "hildolfr30cmIncendiary"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "hildolfr",
+      "tank",
+      "groundVehicle",
+      "cannonMs",
+      "heavyMs",
+      "transformableMs"
+    ],
+    "specials": [
+      "transform"
+    ],
+    "transformMsId": "hildolfrMobileMode",
+    "imagePath": ""
+  },
+  {
+    "id": "hildolfrMobileMode",
+    "name": "ヒルドルブ（モビルモード）",
+    "faction": "zeon",
+    "cost": 310,
+    "armor": 520,
+    "energy": 120,
+    "agility": 4,
+    "mobility": 3,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "hildolfrShovelArm",
+      "hildolfrMachineGun105mm"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "hildolfr",
+      "tank",
+      "groundVehicle",
+      "meleeMs",
+      "heavyMs",
+      "transformableMs"
+    ],
+    "specials": [
+      "transform"
+    ],
+    "transformMsId": "hildolfrTankMode",
+    "imagePath": ""
+  },
+  {
     "id": "coreFighter",
     "name": "コア・ファイター",
     "faction": "federation",
@@ -1278,6 +1356,39 @@ window.GAME_DATA.mobileSuits = [
     "tags": [
       "dom",
       "rickDom"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "rickDomGato",
+    "name": "リック・ドム（ガトー機）",
+    "faction": "zeon",
+    "cost": 270,
+    "armor": 390,
+    "energy": 92,
+    "agility": 21,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatSaber",
+      "spreadBeam"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "dom",
+      "rickDom",
+      "gatoCustom"
     ],
     "specials": [],
     "imagePath": ""
@@ -6936,7 +7047,7 @@ window.GAME_DATA.mobileSuits = [
     "id": "gundamGtFourG",
     "name": "ガンダムGT-FOUR（G）",
     "faction": "federation",
-    "cost": 235,
+    "cost": 255,
     "armor": 300,
     "energy": 95,
     "agility": 18,
