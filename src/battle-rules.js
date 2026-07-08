@@ -1189,16 +1189,59 @@ function applyPreBattleSkillEffects() {
   }
 }
 
+const SATURN_ENGINE_DANGER_MOVE_DISTANCE = 4;
+
+function movedDistance(from, to) {
+  return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
+}
+
+function resetSaturnEngineIfNoLongMove(unit) {
+  if (!isMobileSuit(unit) || !unitHasSkill(unit, "saturnEngineIncomplete")) return;
+  if (!unit.saturnEngineLongMoveThisTurn) unit.saturnEngineLongMoveStreak = 0;
+  unit.saturnEngineLongMoveThisTurn = false;
+}
+
+function resolveSaturnEngineAfterMove(unit, moveDistance) {
+  if (!isMobileSuit(unit) || !isAlive(unit) || !unitHasSkill(unit, "saturnEngineIncomplete")) return false;
+  if (moveDistance < SATURN_ENGINE_DANGER_MOVE_DISTANCE) {
+    unit.saturnEngineLongMoveStreak = 0;
+    unit.saturnEngineLongMoveThisTurn = false;
+    return false;
+  }
+
+  unit.saturnEngineLongMoveThisTurn = true;
+  unit.saturnEngineLongMoveStreak = (unit.saturnEngineLongMoveStreak ?? 0) + 1;
+  if (unit.saturnEngineLongMoveStreak < 2) {
+    state.log.push(`${unitName(unit)}の土星エンジンが危険回転域に入った。`);
+    return false;
+  }
+
+  unit.armor = 0;
+  unit.acted = true;
+  unit.moved = true;
+  unit.saturnEngineLongMoveStreak = 0;
+  unit.saturnEngineLongMoveThisTurn = false;
+  state.log.push(`${unitName(unit)}の土星エンジンが暴走し、自爆。流れ星となった。`);
+  triggerSacrificialBoost(unit);
+  checkOutcome();
+  return true;
+}
+
 function moveUnit(unit, x, y) {
   if (state.outcome) return;
   if (!isMovableUnit(unit) || state.phase !== "player" || unit.side !== "player" || unit.moved) return;
   if (!canMoveTo(unit, x, y)) return;
+  const from = { x: unit.x, y: unit.y };
   unit.x = x;
   unit.y = y;
   unit.moved = true;
   if (isCombatUnit(unit)) revealStealth(unit, "移動");
   triggerMines(unit);
   if (!isAlive(unit) || state.outcome) {
+    renderBattle();
+    return;
+  }
+  if (resolveSaturnEngineAfterMove(unit, movedDistance(from, unit))) {
     renderBattle();
     return;
   }
@@ -1213,6 +1256,7 @@ function endPlayerTurn() {
   applyGundamPassion("player");
   applyZakuPassion("player");
   state.units.filter((unit) => unit.side === "player" && isCombatUnit(unit)).forEach((unit) => {
+    resetSaturnEngineIfNoLongMove(unit);
     unit.acted = false;
     unit.moved = false;
     unit.usedWeaponIds = [];
@@ -1448,6 +1492,7 @@ function finishEnemyTurn() {
   applyGundamPassion("enemy");
   applyZakuPassion("enemy");
   state.units.filter((unit) => unit.side === "enemy" && isCombatUnit(unit)).forEach((unit) => {
+    resetSaturnEngineIfNoLongMove(unit);
     unit.acted = false;
     unit.moved = false;
     unit.usedWeaponIds = [];
@@ -1468,12 +1513,14 @@ function finishEnemyTurn() {
 
 function moveEnemyUnit(unit, movePlan) {
   if (!movePlan) return false;
+  const from = { x: unit.x, y: unit.y };
   unit.x = movePlan.x;
   unit.y = movePlan.y;
   unit.moved = true;
   revealStealth(unit, "移動");
   triggerMines(unit);
   if (!isAlive(unit) || state.outcome) return true;
+  if (resolveSaturnEngineAfterMove(unit, movedDistance(from, unit))) return true;
   pushDialogue(unit, "move");
   state.log.push(`${unitName(unit)}が${movePlan.reason}。`);
   return true;

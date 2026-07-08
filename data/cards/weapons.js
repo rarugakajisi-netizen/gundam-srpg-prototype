@@ -1987,6 +1987,25 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "antiShipRifle",
+    "name": "対艦ライフル",
+    "cost": 70,
+    "power": 145,
+    "accuracy": 66,
+    "range": 5,
+    "minRange": 3,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "cannon",
+    "slotCost": 2,
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
     "id": "cracker",
     "name": "クラッカー",
     "cost": 30,
@@ -2078,6 +2097,26 @@ window.GAME_DATA.weapons = [
     "attackType": "melee",
     "durability": 135,
     "shieldAttackCost": 30,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "shieldPick",
+    "name": "シールド・ピック",
+    "cost": 0,
+    "power": 82,
+    "accuracy": 76,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "shield",
+    "ammo": 0,
+    "category": "shield",
+    "attackType": "melee",
+    "durability": 75,
+    "shieldAttackCost": 22,
+    "fixedOnly": true,
     "factions": [
       "zeon"
     ]
@@ -4509,6 +4548,29 @@ window.GAME_DATA.weapons = [
     "chargeResetOnFire": true,
     "factions": [
       "federation"
+    ]
+  },
+  {
+    "id": "jormungandCannon",
+    "name": "ヨルムンガンド砲",
+    "cost": 0,
+    "power": 430,
+    "accuracy": 46,
+    "range": 10,
+    "minRange": 1,
+    "consume": 85,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "chargeRequired": 2,
+    "chargeCost": 45,
+    "chargeResetOnFire": true,
+    "fixedOnly": true,
+    "ignoresObstacles": true,
+    "factions": [
+      "zeon"
     ]
   },
   {

@@ -532,6 +532,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "saturnEngineIncomplete",
+    "name": "土星エンジン（未完）",
+    "type": "機体",
+    "timing": "移動時",
+    "effect": "2ターン連続で4マス以上移動すると暴走し、自爆して撃破扱いになる。",
+    "implemented": true
+  },
+  {
     "id": "transform",
     "name": "変形",
     "type": "機体",

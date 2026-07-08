@@ -571,6 +571,29 @@ window.GAME_DATA.battleships = [
     "imagePath": ""
   },
   {
+    "id": "jotunheim",
+    "name": "ヨーツンヘイム",
+    "faction": "zeon",
+    "cost": 135,
+    "armor": 760,
+    "energy": 95,
+    "agility": 2,
+    "mobility": 2,
+    "mapTypes": [
+      "space"
+    ],
+    "weaponIds": [
+      "singleMegaParticleCannon"
+    ],
+    "support": {
+      "armor": 36,
+      "shield": 16,
+      "energy": 42,
+      "ammo": 3
+    },
+    "imagePath": ""
+  },
+  {
     "id": "chibe",
     "name": "チベ",
     "faction": "zeon",

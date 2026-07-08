@@ -1222,6 +1222,121 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "zudah",
+    "name": "ヅダ",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 105,
+    "armor": 205,
+    "energy": 60,
+    "agility": 28,
+    "mobility": 7,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk",
+      "shieldPick"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zudah",
+      "highMobilityMs",
+      "prototypeMs"
+    ],
+    "specials": [
+      "saturnEngineIncomplete"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zudahCommander",
+    "name": "ヅダ（隊長機）",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 115,
+    "armor": 220,
+    "energy": 60,
+    "agility": 28,
+    "mobility": 7,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk",
+      "shieldPick"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zudah",
+      "highMobilityMs",
+      "prototypeMs",
+      "commanderMs"
+    ],
+    "specials": [
+      "saturnEngineIncomplete"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zudahF",
+    "name": "ヅダF",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 110,
+    "armor": 225,
+    "energy": 60,
+    "agility": 17,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk",
+      "shieldPick"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zudah",
+      "prototypeMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "charZaku2S",
     "name": "ザクIIS型（シャア機）",
     "faction": "zeon",
@@ -1904,6 +2019,39 @@ window.GAME_DATA.mobileSuits = [
     "tags": [
       "mobileArmor",
       "flyingMa"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "jormungand",
+    "name": "ヨルムンガンド",
+    "faction": "zeon",
+    "cost": 240,
+    "armor": 260,
+    "energy": 185,
+    "agility": 1,
+    "mobility": 1,
+    "weaponSlots": 0,
+    "optionSlots": 0,
+    "fixedWeaponIds": [
+      "jormungandCannon"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "spaceMa",
+      "fixedArtillery",
+      "jormungand"
     ],
     "specials": [],
     "imagePath": ""

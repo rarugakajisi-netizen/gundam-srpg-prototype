@@ -1577,6 +1577,21 @@ window.GAME_DATA.compatibility = {
       "accuracyBonus": 5
     },
     {
+      "msTag": "zudah",
+      "weaponId": "heatHawk",
+      "accuracyBonus": 6
+    },
+    {
+      "msTag": "zudah",
+      "weaponId": "shieldPick",
+      "accuracyBonus": 6
+    },
+    {
+      "msTag": "zudah",
+      "weaponId": "antiShipRifle",
+      "accuracyBonus": 8
+    },
+    {
       "msTag": "dom",
       "weaponId": "giantBazooka",
       "accuracyBonus": 8
