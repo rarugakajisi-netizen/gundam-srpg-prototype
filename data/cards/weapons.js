@@ -42,6 +42,25 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "oggoRocket",
+    "name": "オッゴ用ロケット弾",
+    "cost": 0,
+    "power": 92,
+    "accuracy": 64,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "rocket",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
     "id": "tankGun55mm",
     "name": "55mm滑腔砲",
     "cost": 0,
@@ -136,6 +155,122 @@ window.GAME_DATA.weapons = [
     "fixedOnly": true,
     "factions": [
       "zeon"
+    ]
+  },
+  {
+    "id": "assaultGuntank220mmCurvedCannon",
+    "name": "220mmキャノン（曲射）",
+    "cost": 0,
+    "power": 145,
+    "accuracy": 66,
+    "range": 5,
+    "minRange": 3,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "ignoresObstacles": true,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "assaultGuntankArmBopGun",
+    "name": "腕部ボッブ・ガン",
+    "cost": 0,
+    "power": 82,
+    "accuracy": 78,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "assaultGuntankFlamethrower",
+    "name": "大型火炎放射器",
+    "cost": 0,
+    "power": 105,
+    "accuracy": 74,
+    "range": 2,
+    "minRange": 1,
+    "consume": 16,
+    "kind": "special",
+    "ammo": 0,
+    "category": "special",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "assaultGuntank220mmHorizontalCannon",
+    "name": "220mmキャノン（水平射）",
+    "cost": 0,
+    "power": 155,
+    "accuracy": 68,
+    "range": 5,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "assaultGuntankMissilePod",
+    "name": "ミサイルポッド",
+    "cost": 0,
+    "power": 105,
+    "accuracy": 70,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "ignoresObstacles": true,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "assaultGuntankFuelBomb",
+    "name": "燃料爆雷",
+    "cost": 0,
+    "power": 150,
+    "accuracy": 64,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 2,
+    "category": "bomb",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
     ]
   },
   {
@@ -2470,6 +2605,82 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "zegokArmMegaParticleCannon",
+    "name": "左腕部メガ粒子砲",
+    "cost": 0,
+    "power": 105,
+    "accuracy": 70,
+    "range": 4,
+    "minRange": 1,
+    "consume": 18,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "zegokMultiMissilePass",
+    "name": "マルチ・ミサイル・パス",
+    "cost": 0,
+    "power": 180,
+    "accuracy": 58,
+    "range": 5,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "zegokR1MissileLauncher",
+    "name": "R-1（アール・アイン）",
+    "cost": 0,
+    "power": 135,
+    "accuracy": 66,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "kuebelme",
+    "name": "クーベルメ",
+    "cost": 0,
+    "power": 240,
+    "accuracy": 62,
+    "range": 5,
+    "minRange": 1,
+    "consume": 65,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
     "id": "bigroMegaParticleCannon",
     "name": "ビグロ・メガ粒子砲",
     "cost": 0,
@@ -2481,6 +2692,25 @@ window.GAME_DATA.weapons = [
     "kind": "beam",
     "ammo": 0,
     "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "bigLangGatling",
+    "name": "自衛用ガトリング",
+    "cost": 0,
+    "power": 92,
+    "accuracy": 76,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "gatling",
     "attackType": "shooting",
     "durability": 0,
     "fixedOnly": true,

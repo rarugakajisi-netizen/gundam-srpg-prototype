@@ -540,6 +540,22 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "mobileDiver",
+    "name": "モビルダイバー",
+    "type": "機体",
+    "timing": "ターン開始時",
+    "effect": "戦闘開始から5ターン経過すると高度維持不能となり、自動撤退して撃破扱いになる。",
+    "implemented": true
+  },
+  {
+    "id": "frontlineSupply",
+    "name": "前線補給機能",
+    "type": "機体",
+    "timing": "ターン終了時",
+    "effect": "隣接した味方機体のうち残り耐久割合が最も低い1機へ修理補給を行う。搭乗パイロットの整備が高いほど効果が上がる。",
+    "implemented": true
+  },
+  {
     "id": "transform",
     "name": "変形",
     "type": "機体",

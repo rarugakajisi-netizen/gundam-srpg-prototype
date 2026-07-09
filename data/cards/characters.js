@@ -1040,6 +1040,348 @@ window.GAME_DATA.characters = [
     "imagePath": ""
   },
   {
+    "id": "moniqueCadillac",
+    "name": "モニク・キャディラック",
+    "characterKey": "moniqueCadillac",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 8,
+    "melee": 4,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 12,
+    "support": 16,
+    "maintenance": 12,
+    "roles": [
+      "operator",
+      "commander",
+      "pilot"
+    ],
+    "specials": [
+      "internalAudit"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "martinProchnow",
+    "name": "マルティン・プロホノウ",
+    "characterKey": "martinProchnow",
+    "faction": "zeon",
+    "cost": 70,
+    "shooting": 7,
+    "melee": 4,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 16,
+    "support": 14,
+    "maintenance": 6,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "aleksandroHemme",
+    "name": "アレクサンドロ・ヘンメ",
+    "characterKey": "aleksandroHemme",
+    "faction": "zeon",
+    "cost": 70,
+    "shooting": 16,
+    "melee": 4,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 3,
+    "support": 4,
+    "maintenance": 6,
+    "roles": [
+      "pilot",
+      "operator"
+    ],
+    "specials": [
+      "oldSoldierPride"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "demeziereSonnen",
+    "name": "デメジエール・ソンネン",
+    "characterKey": "demeziereSonnen",
+    "faction": "zeon",
+    "cost": 75,
+    "shooting": 17,
+    "melee": 8,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 5,
+    "support": 3,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "jeanLucDuvall",
+    "name": "ジャン・リュック・デュバル",
+    "characterKey": "jeanLucDuvall",
+    "faction": "zeon",
+    "cost": 90,
+    "shooting": 18,
+    "melee": 13,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 10,
+    "support": 5,
+    "maintenance": 3,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "hidetoWashiya",
+    "name": "ヒデト・ワシヤ",
+    "characterKey": "hidetoWashiya",
+    "faction": "zeon",
+    "cost": 60,
+    "shooting": 14,
+    "melee": 8,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 5,
+    "support": 8,
+    "maintenance": 8,
+    "roles": [
+      "pilot",
+      "mechanic"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "wernerHolbein",
+    "name": "ヴェルナー・ホルバイン",
+    "characterKey": "wernerHolbein",
+    "faction": "zeon",
+    "cost": 80,
+    "shooting": 18,
+    "melee": 8,
+    "reaction": 14,
+    "awakening": 0,
+    "command": 5,
+    "support": 4,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "erwinCadillac",
+    "name": "エルヴィン・キャディラック",
+    "characterKey": "erwinCadillac",
+    "faction": "zeon",
+    "cost": 45,
+    "shooting": 12,
+    "melee": 6,
+    "reaction": 11,
+    "awakening": 0,
+    "command": 3,
+    "support": 5,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "herbertVonKaspen",
+    "name": "ヘルベルト・フォン・カスペン",
+    "characterKey": "herbertVonKaspen",
+    "faction": "zeon",
+    "cost": 105,
+    "shooting": 20,
+    "melee": 16,
+    "reaction": 16,
+    "awakening": 0,
+    "command": 18,
+    "support": 8,
+    "maintenance": 2,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "elmerSnell",
+    "name": "エルマー・スネル",
+    "characterKey": "elmerSnell",
+    "faction": "zeon",
+    "cost": 95,
+    "shooting": 19,
+    "melee": 13,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 14,
+    "support": 7,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "benBarberry",
+    "name": "ベン・バーバリー",
+    "characterKey": "benBarberry",
+    "faction": "federation",
+    "cost": 70,
+    "shooting": 15,
+    "melee": 11,
+    "reaction": 13,
+    "awakening": 0,
+    "command": 12,
+    "support": 8,
+    "maintenance": 3,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "hermanYandell",
+    "name": "ハーマン・ヤンデル",
+    "characterKey": "hermanYandell",
+    "faction": "federation",
+    "cost": 75,
+    "shooting": 16,
+    "melee": 8,
+    "reaction": 11,
+    "awakening": 0,
+    "command": 15,
+    "support": 6,
+    "maintenance": 3,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "raybanSla",
+    "name": "レイバン・スラー",
+    "characterKey": "raybanSla",
+    "faction": "federation",
+    "cost": 55,
+    "shooting": 13,
+    "melee": 7,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 5,
+    "support": 5,
+    "maintenance": 2,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "alineNazon",
+    "name": "アリーヌ・ネイズン",
+    "characterKey": "alineNazon",
+    "faction": "federation",
+    "cost": 85,
+    "shooting": 17,
+    "melee": 10,
+    "reaction": 14,
+    "awakening": 0,
+    "command": 13,
+    "support": 12,
+    "maintenance": 10,
+    "roles": [
+      "pilot",
+      "commander",
+      "mechanic"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "milosKarppi",
+    "name": "ミロス・カルッピ",
+    "characterKey": "milosKarppi",
+    "faction": "federation",
+    "cost": 55,
+    "shooting": 14,
+    "melee": 8,
+    "reaction": 11,
+    "awakening": 0,
+    "command": 5,
+    "support": 6,
+    "maintenance": 5,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "drobaKuzwayo",
+    "name": "ドロバ・クズワヨ",
+    "characterKey": "drobaKuzwayo",
+    "faction": "federation",
+    "cost": 55,
+    "shooting": 14,
+    "melee": 8,
+    "reaction": 11,
+    "awakening": 0,
+    "command": 5,
+    "support": 6,
+    "maintenance": 5,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "micheleCorematta",
+    "name": "ミケーレ・コレマッタ",
+    "characterKey": "micheleCorematta",
+    "faction": "federation",
+    "cost": 85,
+    "shooting": 8,
+    "melee": 5,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 18,
+    "support": 8,
+    "maintenance": 3,
+    "roles": [
+      "commander",
+      "captain"
+    ],
+    "specials": [
+      "breakthroughSupport"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "texanDimitry",
     "name": "テキサン・ディミトリー",
     "characterKey": "texanDimitry",

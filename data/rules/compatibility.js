@@ -250,6 +250,11 @@ window.GAME_DATA.compatibility = {
       "evasionBonus": 10
     },
     {
+      "characterId": "oliverMay",
+      "msId": "bigLang",
+      "evasionBonus": 10
+    },
+    {
       "characterId": "flanaganBoone",
       "msId": "grabro",
       "evasionBonus": 10
@@ -263,6 +268,76 @@ window.GAME_DATA.compatibility = {
       "characterId": "oliverMay",
       "msTag": "supportPod",
       "evasionBonus": 5
+    },
+    {
+      "characterId": "moniqueCadillac",
+      "msTag": "zudah",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "aleksandroHemme",
+      "msId": "jormungand",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "demeziereSonnen",
+      "msTag": "tank",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "jeanLucDuvall",
+      "msTag": "zudah",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "hidetoWashiya",
+      "msTag": "zudah",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "wernerHolbein",
+      "msTag": "zegok",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "erwinCadillac",
+      "msId": "oggo",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "herbertVonKaspen",
+      "msId": "gelgoogKaspen",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "elmerSnell",
+      "msId": "zaku2WhiteOgre",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "hermanYandell",
+      "msId": "type61Tank",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "raybanSla",
+      "msId": "type61Tank",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "alineNazon",
+      "msTag": "assaultGuntank",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "milosKarppi",
+      "msTag": "assaultGuntank",
+      "evasionBonus": 6
+    },
+    {
+      "characterId": "drobaKuzwayo",
+      "msTag": "assaultGuntank",
+      "evasionBonus": 6
     },
     {
       "characterId": "texanDimitry",
@@ -1407,6 +1482,36 @@ window.GAME_DATA.compatibility = {
       "accuracyBonus": 6
     },
     {
+      "msId": "assaultGuntankNormal",
+      "weaponId": "assaultGuntank220mmCurvedCannon",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "assaultGuntankNormal",
+      "weaponId": "assaultGuntankArmBopGun",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "assaultGuntankNormal",
+      "weaponId": "assaultGuntankFlamethrower",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "assaultGuntankAssaultGun",
+      "weaponId": "assaultGuntank220mmHorizontalCannon",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "assaultGuntankAssaultGun",
+      "weaponId": "assaultGuntankMissilePod",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "assaultGuntankAssaultGun",
+      "weaponId": "assaultGuntankFuelBomb",
+      "accuracyBonus": 6
+    },
+    {
       "msTag": "gm",
       "weaponId": "beamSprayGun",
       "accuracyBonus": 7
@@ -1592,6 +1697,11 @@ window.GAME_DATA.compatibility = {
       "accuracyBonus": 8
     },
     {
+      "msId": "gemCamouf",
+      "weaponId": "antiShipRifle",
+      "accuracyBonus": 7
+    },
+    {
       "msTag": "dom",
       "weaponId": "giantBazooka",
       "accuracyBonus": 8
@@ -1690,6 +1800,16 @@ window.GAME_DATA.compatibility = {
       "msTag": "mobileArmor",
       "weaponId": "mobileArmorMissile",
       "accuracyBonus": 5
+    },
+    {
+      "msId": "bigLang",
+      "weaponId": "bigroMegaParticleCannon",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "bigLang",
+      "weaponId": "bigLangGatling",
+      "accuracyBonus": 7
     },
     {
       "msTag": "groundGm",

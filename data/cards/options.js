@@ -101,6 +101,21 @@ window.GAME_DATA.options = [
     "imagePath": ""
   },
   {
+    "id": "supplyOperation",
+    "name": "補給作戦",
+    "cost": 35,
+    "effectType": "mobility",
+    "value": -1,
+    "grantsSkill": "frontlineSupply",
+    "effectText": "前線補給機能を得る。補給物資を積むため移動力-1。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "guerrillaTacticsOption",
     "name": "ゲリラ作戦",
     "cost": 55,

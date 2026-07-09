@@ -319,6 +319,19 @@ function withdrawExamSystemUnit(unit) {
   return true;
 }
 
+function withdrawMobileDiverUnit(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit)) return false;
+  unit.armor = 0;
+  unit.acted = true;
+  unit.moved = true;
+  unit.mobileDiverTurnsRemaining = 0;
+  unit.mobileDiverWithdrawn = true;
+  state.log.push(`${unitName(unit)}が高度維持限界に達し、自動撤退。撃破扱いになります。`);
+  triggerSacrificialBoost(unit);
+  checkOutcome();
+  return true;
+}
+
 function tickHadesSystem(unit) {
   if (!hadesSystemActive(unit)) {
     activateHadesSystemByArmor(unit);
@@ -335,6 +348,14 @@ function tickExamSystem(unit) {
   }
   unit.examTurnsRemaining -= 1;
   if (unit.examTurnsRemaining <= 0) withdrawExamSystemUnit(unit);
+}
+
+function tickMobileDiver(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit) || !unitHasSkill(unit, "mobileDiver")) return;
+  if (!Number.isFinite(unit.mobileDiverTurnsRemaining)) unit.mobileDiverTurnsRemaining = MOBILE_DIVER_TURNS;
+  if (state.phase === "deployment") return;
+  unit.mobileDiverTurnsRemaining -= 1;
+  if (unit.mobileDiverTurnsRemaining <= 0) withdrawMobileDiverUnit(unit);
 }
 
 function activeVehicleOptions(unit) {
@@ -380,6 +401,53 @@ function weaponCanAttack(weapon) {
   if (weapon.utilityOnly) return false;
   if (weapon.kind !== "shield") return true;
   return weapon.attackType !== "guard" && weapon.power > 0;
+}
+
+function applySupplyToUnit(unit, support) {
+  const changes = [];
+  const beforeArmor = unit.armor;
+  unit.armor = Math.min(unit.maxArmor, unit.armor + support.armor);
+  if (unit.armor > beforeArmor) changes.push(`装甲+${unit.armor - beforeArmor}`);
+
+  const beforeEnergy = unit.energy;
+  unit.energy = Math.min(unit.maxEnergy, unit.energy + support.energy);
+  if (unit.energy > beforeEnergy) changes.push(`EN+${unit.energy - beforeEnergy}`);
+
+  unit.runtimeWeapons.forEach((runtime) => {
+    const weapon = weaponFor(runtime.id);
+    if (weapon.kind === "ammo") {
+      const beforeAmmo = runtime.ammo;
+      runtime.ammo = Math.min(runtime.maxAmmo ?? weapon.ammo, runtime.ammo + support.ammo);
+      if (runtime.ammo > beforeAmmo) changes.push(`${weapon.name}弾+${runtime.ammo - beforeAmmo}`);
+    }
+    if (weapon.kind === "shield") {
+      const beforeShield = runtime.durability;
+      runtime.durability = Math.min(weapon.durability, runtime.durability + support.shield);
+      if (runtime.durability > beforeShield) changes.push(`${weapon.name}+${runtime.durability - beforeShield}`);
+    }
+  });
+
+  return changes;
+}
+
+function frontlineSupplyFor(unit) {
+  const maintenance = primaryCharacterFor(unit).maintenance ?? 0;
+  return {
+    armor: 12 + maintenance,
+    shield: 6 + Math.floor(maintenance / 2),
+    energy: 12 + Math.floor(maintenance / 2),
+    ammo: Math.min(3, 1 + Math.floor(maintenance / 12))
+  };
+}
+
+function durabilityRatio(unit) {
+  return unit.maxArmor > 0 ? unit.armor / unit.maxArmor : 1;
+}
+
+function frontlineSupplyTargetFor(source) {
+  return state.units
+    .filter((unit) => unit.side === source.side && unit.id !== source.id && isCombatUnit(unit) && isMobileSuit(unit) && isAlive(unit) && isAdjacent(unit, source))
+    .sort((a, b) => durabilityRatio(a) - durabilityRatio(b) || a.armor - b.armor || String(a.id).localeCompare(String(b.id)))[0] ?? null;
 }
 
 function unitWeaponObjects(unit) {
@@ -435,33 +503,26 @@ function applyBattleshipSupport(side) {
 
   const supportedUnits = state.units.filter((unit) => unit.side === side && isCombatUnit(unit) && isMobileSuit(unit) && isAdjacent(unit, battleship));
   supportedUnits.forEach((unit) => {
-    const changes = [];
-    const beforeArmor = unit.armor;
-    unit.armor = Math.min(unit.maxArmor, unit.armor + support.armor);
-    if (unit.armor > beforeArmor) changes.push(`装甲+${unit.armor - beforeArmor}`);
-
-    const beforeEnergy = unit.energy;
-    unit.energy = Math.min(unit.maxEnergy, unit.energy + support.energy);
-    if (unit.energy > beforeEnergy) changes.push(`EN+${unit.energy - beforeEnergy}`);
-
-    unit.runtimeWeapons.forEach((runtime) => {
-      const weapon = weaponFor(runtime.id);
-      if (weapon.kind === "ammo") {
-        const beforeAmmo = runtime.ammo;
-        runtime.ammo = Math.min(runtime.maxAmmo ?? weapon.ammo, runtime.ammo + support.ammo);
-        if (runtime.ammo > beforeAmmo) changes.push(`${weapon.name}弾+${runtime.ammo - beforeAmmo}`);
-      }
-      if (weapon.kind === "shield") {
-        const beforeShield = runtime.durability;
-        runtime.durability = Math.min(weapon.durability, runtime.durability + support.shield);
-        if (runtime.durability > beforeShield) changes.push(`${weapon.name}+${runtime.durability - beforeShield}`);
-      }
-    });
+    const changes = applySupplyToUnit(unit, support);
 
     if (changes.length > 0) {
       state.log.push(`${unitName(unit)}が${unitName(battleship)}から補給を受けた（${changes.join("、")}）。`);
     } else {
       state.log.push(`${unitName(unit)}は${unitName(battleship)}に隣接中。補給は満タンです。`);
+    }
+  });
+}
+
+function applyFrontlineSupply(side) {
+  const sources = state.units.filter((unit) => unit.side === side && isCombatUnit(unit) && isMobileSuit(unit) && isAlive(unit) && unitHasSkill(unit, "frontlineSupply"));
+  sources.forEach((source) => {
+    const target = frontlineSupplyTargetFor(source);
+    if (!target) return;
+    const changes = applySupplyToUnit(target, frontlineSupplyFor(source));
+    if (changes.length > 0) {
+      state.log.push(`${unitName(target)}が${unitName(source)}の前線補給を受けた（${changes.join("、")}）。`);
+    } else {
+      state.log.push(`${unitName(source)}が${unitName(target)}へ前線補給を試みたが、補給は満タンです。`);
     }
   });
 }
@@ -1187,6 +1248,11 @@ function applyPreBattleSkillEffects() {
     applySpyConduct(side);
     applyCommanderStealth(side);
   }
+  state.units
+    .filter((unit) => isMobileSuit(unit) && unitHasSkill(unit, "mobileDiver"))
+    .forEach((unit) => {
+      unit.mobileDiverTurnsRemaining = MOBILE_DIVER_TURNS;
+    });
 }
 
 const SATURN_ENGINE_DANGER_MOVE_DISTANCE = 4;
@@ -1252,6 +1318,7 @@ function moveUnit(unit, x, y) {
 function endPlayerTurn() {
   if (state.outcome) return;
   if (state.phase !== "player") return;
+  applyFrontlineSupply("player");
   applyBattleshipSupport("player");
   applyGundamPassion("player");
   applyZakuPassion("player");
@@ -1488,6 +1555,7 @@ function finishEnemyTurn() {
     renderBattle();
     return;
   }
+  applyFrontlineSupply("enemy");
   applyBattleshipSupport("enemy");
   applyGundamPassion("enemy");
   applyZakuPassion("enemy");

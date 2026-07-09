@@ -550,6 +550,7 @@ function activeSkillText(unit) {
   if ((unit.learningStacks ?? 0) > 0) skills.push(`教育型補正${unit.learningStacks}`);
   if ((unit.examTurnsRemaining ?? 0) > 0) skills.push(`EXAM発動中${unit.examTurnsRemaining}`);
   if ((unit.hadesTurnsRemaining ?? 0) > 0) skills.push(`HADES発動中${unit.hadesTurnsRemaining}`);
+  if ((unit.mobileDiverTurnsRemaining ?? 0) > 0) skills.push(`高度維持限界${unit.mobileDiverTurnsRemaining}`);
   return skills.length > 0 ? specialsLabel(skills) : "なし";
 }
 
@@ -583,6 +584,7 @@ function tickTurnStartEffects(side) {
     if ((unit.freezyYardActiveTurns ?? 0) > 0) unit.freezyYardActiveTurns -= 1;
     tickExamSystem(unit);
     tickHadesSystem(unit);
+    tickMobileDiver(unit);
     if (!isAlive(unit)) return;
     advanceLearningComputer(unit);
     unit.attackTargetCounts = {};

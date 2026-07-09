@@ -35,6 +35,41 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "oggo",
+    "name": "オッゴ",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 65,
+    "armor": 145,
+    "energy": 40,
+    "agility": 10,
+    "mobility": 3,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "oggoRocket"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "mobilePod",
+      "supportPod",
+      "oggo"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "type61Tank",
     "name": "61式戦車",
     "faction": "federation",
@@ -141,6 +176,87 @@ window.GAME_DATA.mobileSuits = [
       "transform"
     ],
     "transformMsId": "hildolfrTankMode",
+    "imagePath": ""
+  },
+  {
+    "id": "assaultGuntankNormal",
+    "name": "陸戦強襲型ガンタンク（通常形態）",
+    "faction": "federation",
+    "cost": 280,
+    "armor": 450,
+    "energy": 95,
+    "agility": 11,
+    "mobility": 4,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "assaultGuntank220mmCurvedCannon",
+      "assaultGuntankArmBopGun",
+      "assaultGuntankFlamethrower"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "guntank",
+      "assaultGuntank",
+      "tank",
+      "groundVehicle",
+      "cannonMs",
+      "transformableMs"
+    ],
+    "specials": [
+      "transform"
+    ],
+    "transformMsId": "assaultGuntankAssaultGun",
+    "imagePath": ""
+  },
+  {
+    "id": "assaultGuntankAssaultGun",
+    "name": "陸戦強襲型ガンタンク（突撃砲形態）",
+    "faction": "federation",
+    "cost": 280,
+    "armor": 450,
+    "energy": 95,
+    "agility": 15,
+    "mobility": 5,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "assaultGuntank220mmHorizontalCannon",
+      "assaultGuntankMissilePod",
+      "assaultGuntankFuelBomb"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "guntank",
+      "assaultGuntank",
+      "tank",
+      "groundVehicle",
+      "cannonMs",
+      "missileMs",
+      "transformableMs"
+    ],
+    "specials": [
+      "transform"
+    ],
+    "transformMsId": "assaultGuntankNormal",
     "imagePath": ""
   },
   {
@@ -1222,6 +1338,78 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "gemCamouf",
+    "name": "ゲム・カモフ",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 105,
+    "armor": 220,
+    "energy": 55,
+    "agility": 15,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "shoulderTackle"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "gemCamouf",
+      "camouflageMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "zaku2WhiteOgre",
+    "name": "ザクII（ホワイトオーガー）",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 145,
+    "armor": 280,
+    "energy": 60,
+    "agility": 19,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk",
+      "zakuShoulderShield"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zaku2",
+      "whiteOgre",
+      "groundMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "zudah",
     "name": "ヅダ",
     "faction": "zeon",
@@ -1960,6 +2148,42 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "gelgoogKaspen",
+    "name": "ゲルググ（カスペン機）",
+    "faction": "zeon",
+    "cost": 315,
+    "armor": 405,
+    "energy": 125,
+    "agility": 23,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamNaginata"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gelgoog",
+      "kaspenCustom",
+      "commanderCustom",
+      "heavyMs"
+    ],
+    "specials": [
+      "commanderCustom"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "gyan",
     "name": "ギャン",
     "faction": "zeon",
@@ -2057,6 +2281,119 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "zegokMultiMissile",
+    "name": "ゼーゴック（マルチ・ミサイル・パス）",
+    "faction": "zeon",
+    "cost": 260,
+    "armor": 420,
+    "energy": 105,
+    "agility": 9,
+    "mobility": 4,
+    "weaponSlots": 0,
+    "optionSlots": 0,
+    "fixedWeaponIds": [
+      "zegokArmMegaParticleCannon",
+      "zegokMultiMissilePass"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "flying",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "flyingMa",
+      "mobileDiver",
+      "zegok",
+      "zgok"
+    ],
+    "specials": [
+      "mobileDiver"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zegokR1",
+    "name": "ゼーゴック（R-1）",
+    "faction": "zeon",
+    "cost": 280,
+    "armor": 440,
+    "energy": 105,
+    "agility": 8,
+    "mobility": 4,
+    "weaponSlots": 0,
+    "optionSlots": 0,
+    "fixedWeaponIds": [
+      "zegokArmMegaParticleCannon",
+      "zegokR1MissileLauncher"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "flying",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "flyingMa",
+      "mobileDiver",
+      "zegok",
+      "zgok",
+      "missileMa"
+    ],
+    "specials": [
+      "mobileDiver"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zegokKuebelme",
+    "name": "ゼーゴック（クーベルメ）",
+    "faction": "zeon",
+    "cost": 320,
+    "armor": 440,
+    "energy": 150,
+    "agility": 7,
+    "mobility": 4,
+    "weaponSlots": 0,
+    "optionSlots": 0,
+    "fixedWeaponIds": [
+      "zegokArmMegaParticleCannon",
+      "kuebelme"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "flying",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "flyingMa",
+      "mobileDiver",
+      "zegok",
+      "zgok",
+      "beamMa"
+    ],
+    "specials": [
+      "mobileDiver"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "bigro",
     "name": "ビグロ",
     "faction": "zeon",
@@ -2088,6 +2425,45 @@ window.GAME_DATA.mobileSuits = [
       "highMobility"
     ],
     "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "bigLang",
+    "name": "ビグ・ラング",
+    "faction": "zeon",
+    "cost": 390,
+    "armor": 560,
+    "energy": 165,
+    "agility": 6,
+    "mobility": 2,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "bigroMegaParticleCannon",
+      "bigLangGatling",
+      "mobileArmorMissile"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "spaceMa",
+      "heavyMa",
+      "supportMa",
+      "bigro",
+      "bigLang"
+    ],
+    "specials": [
+      "frontlineSupply"
+    ],
     "imagePath": ""
   },
   {
