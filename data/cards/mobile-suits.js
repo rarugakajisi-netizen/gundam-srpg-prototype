@@ -1338,6 +1338,43 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "groundHighMobilityZaku",
+    "name": "陸戦高機動型ザク",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 170,
+    "armor": 285,
+    "energy": 70,
+    "agility": 22,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zaku2",
+      "groundHighMobilityZaku",
+      "highMobility",
+      "groundMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "gemCamouf",
     "name": "ゲム・カモフ",
     "faction": "zeon",

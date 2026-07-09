@@ -1682,6 +1682,11 @@ window.GAME_DATA.compatibility = {
       "accuracyBonus": 5
     },
     {
+      "msId": "groundHighMobilityZaku",
+      "weaponId": "heatHawk",
+      "accuracyBonus": 6
+    },
+    {
       "msTag": "zudah",
       "weaponId": "heatHawk",
       "accuracyBonus": 6
