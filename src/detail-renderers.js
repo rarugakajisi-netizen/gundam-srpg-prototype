@@ -414,6 +414,12 @@ function unitIsConcealedFrom(defender, attacker) {
   return smokeConcealed || stealthConcealed || guerrillaConcealed;
 }
 
+function unitDetailsConcealedFromSide(defender, viewerSide) {
+  if (!isMobileSuit(defender) || defender.side === viewerSide) return false;
+  const viewers = state.units.filter((unit) => unit.side === viewerSide && isCombatUnit(unit) && isAlive(unit));
+  return viewers.length > 0 && viewers.every((viewer) => unitIsConcealedFrom(defender, viewer));
+}
+
 function revealStealth(unit, reason = "") {
   if (!isMobileSuit(unit) || !unitHasSkill(unit, "stealth") || unit.stealthRevealed) return;
   unit.stealthRevealed = true;
@@ -550,6 +556,9 @@ function activeSkillText(unit) {
   if ((unit.learningStacks ?? 0) > 0) skills.push(`教育型補正${unit.learningStacks}`);
   if ((unit.examTurnsRemaining ?? 0) > 0) skills.push(`EXAM発動中${unit.examTurnsRemaining}`);
   if ((unit.hadesTurnsRemaining ?? 0) > 0) skills.push(`HADES発動中${unit.hadesTurnsRemaining}`);
+  if ((unit.zeusTurnsRemaining ?? 0) > 0) skills.push(`ZEUS発動中${unit.zeusTurnsRemaining}`);
+  if ((unit.areusTurnsRemaining ?? 0) > 0) skills.push(`AREUS発動中${unit.areusTurnsRemaining}`);
+  if ((unit.themisTurnsRemaining ?? 0) > 0) skills.push(`THEMIS発動中${unit.themisTurnsRemaining}`);
   if ((unit.mobileDiverTurnsRemaining ?? 0) > 0) skills.push(`高度維持限界${unit.mobileDiverTurnsRemaining}`);
   return skills.length > 0 ? specialsLabel(skills) : "なし";
 }
@@ -584,6 +593,7 @@ function tickTurnStartEffects(side) {
     if ((unit.freezyYardActiveTurns ?? 0) > 0) unit.freezyYardActiveTurns -= 1;
     tickExamSystem(unit);
     tickHadesSystem(unit);
+    tickLimitedSystems(unit);
     tickMobileDiver(unit);
     if (!isAlive(unit)) return;
     advanceLearningComputer(unit);

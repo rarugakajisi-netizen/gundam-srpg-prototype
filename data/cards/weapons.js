@@ -274,6 +274,322 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "heatRapier",
+    "name": "ヒート・レイピア",
+    "cost": 0,
+    "power": 88,
+    "accuracy": 84,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "shekinahGatling",
+    "name": "シェキナー（ガトリング）",
+    "cost": 0,
+    "power": 135,
+    "accuracy": 76,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "gatling",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "shekinahMegaBeam",
+    "name": "シェキナー（メガビーム）",
+    "cost": 0,
+    "power": 270,
+    "accuracy": 62,
+    "range": 6,
+    "minRange": 2,
+    "consume": 48,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "mega-particle",
+    "attackType": "shooting",
+    "durability": 0,
+    "chargeRequired": 1,
+    "chargeCost": 30,
+    "chargeResetOnFire": true,
+    "fixedOnly": true,
+    "specials": [
+      "zeusChargeBypass"
+    ],
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "zweihander",
+    "name": "ツヴァイ・ハンダー",
+    "cost": 0,
+    "power": 170,
+    "accuracy": 72,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "shield",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 130,
+    "shieldAttackCost": 34,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "stunAnchor",
+    "name": "スタンアンカー",
+    "cost": 0,
+    "power": 78,
+    "accuracy": 80,
+    "range": 2,
+    "minRange": 1,
+    "consume": 16,
+    "kind": "special",
+    "ammo": 0,
+    "category": "special",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "blackRiderGrenadeLauncher",
+    "name": "腕部グレネード・ランチャー",
+    "cost": 0,
+    "power": 112,
+    "accuracy": 70,
+    "range": 3,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 3,
+    "category": "grenade",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "ignoresObstacles": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "activeCamo",
+    "name": "アクティブ・カモ",
+    "cost": 0,
+    "power": 0,
+    "accuracy": 0,
+    "range": 0,
+    "minRange": 0,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 2,
+    "category": "utility",
+    "attackType": "support",
+    "durability": 0,
+    "fixedOnly": true,
+    "utilityOnly": true,
+    "specials": [
+      "activeCamo"
+    ],
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "massProductionShekinahGatling",
+    "name": "量産型シェキナー（ガトリング）",
+    "cost": 0,
+    "power": 120,
+    "accuracy": 76,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "gatling",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "massProductionShekinahBeam",
+    "name": "量産型シェキナー（ビーム）",
+    "cost": 0,
+    "power": 145,
+    "accuracy": 72,
+    "range": 4,
+    "minRange": 1,
+    "consume": 28,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "zakuHeadVulcan",
+    "name": "頭部バルカン砲",
+    "cost": 0,
+    "power": 42,
+    "accuracy": 84,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 8,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "titaniaTwinBeamSaber",
+    "name": "ビームサーベル×2",
+    "cost": 0,
+    "power": 158,
+    "accuracy": 80,
+    "range": 1,
+    "minRange": 1,
+    "consume": 24,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "titaniaArmGatling",
+    "name": "前腕部ガトリング",
+    "cost": 0,
+    "power": 104,
+    "accuracy": 78,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "gatling",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "sawedOffShotgun",
+    "name": "ソードオフ・ショットガン",
+    "cost": 35,
+    "power": 86,
+    "accuracy": 90,
+    "range": 1,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "shotgun",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "zakuHalfCannonGatling120mm",
+    "name": "120mmガトリング砲",
+    "cost": 0,
+    "power": 118,
+    "accuracy": 74,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 5,
+    "category": "gatling",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "domNomidesHeatTomahawk",
+    "name": "大型ヒート・トマホーク",
+    "cost": 0,
+    "power": 175,
+    "accuracy": 70,
+    "range": 1,
+    "minRange": 1,
+    "consume": 0,
+    "kind": "melee",
+    "ammo": 0,
+    "category": "melee",
+    "attackType": "melee",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "domNomides30cmCannon",
+    "name": "30サンチ砲（通常弾）",
+    "cost": 0,
+    "power": 185,
+    "accuracy": 64,
+    "range": 6,
+    "minRange": 3,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "ignoresObstacles": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
     "id": "beamSaber",
     "name": "ビームサーベル",
     "cost": 0,

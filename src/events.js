@@ -287,6 +287,10 @@ battleScreen.addEventListener("click", (event) => {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) useSmokeSkill(unit);
   }
+  if (button?.dataset.action === "active-camo") {
+    const unit = state.units.find((item) => item.id === state.selectedUnitId);
+    if (unit) useActiveCamo(unit, weaponFor(button.dataset.weaponId));
+  }
   if (button?.dataset.action === "transform-ms") {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) transformMobileSuit(unit, button.dataset.msId);

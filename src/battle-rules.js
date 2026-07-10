@@ -229,6 +229,101 @@ function hadesSystemActive(unit) {
   return isMobileSuit(unit) && (unit.hadesTurnsRemaining ?? 0) > 0;
 }
 
+function limitedSystemConfig(skillId) {
+  return LIMITED_SYSTEMS[skillId] ?? null;
+}
+
+function limitedSystemActive(unit, skillId) {
+  const config = limitedSystemConfig(skillId);
+  return Boolean(config && isMobileSuit(unit) && (unit[config.turnsProp] ?? 0) > 0);
+}
+
+function anyLimitedSystemActive(unit) {
+  return Object.keys(LIMITED_SYSTEMS).some((skillId) => limitedSystemActive(unit, skillId));
+}
+
+function canActivateLimitedSystem(unit, skillId) {
+  const config = limitedSystemConfig(skillId);
+  return Boolean(config
+    && isMobileSuit(unit)
+    && isAlive(unit)
+    && unitHasSkill(unit, skillId)
+    && !unit[config.activatedProp]
+    && !limitedSystemActive(unit, skillId));
+}
+
+function exposeConcealedEnemies(source) {
+  const targets = state.units.filter((unit) =>
+    unit.side !== source.side
+    && isMobileSuit(unit)
+    && isAlive(unit)
+    && (
+      unitHasSkill(unit, "stealth")
+      || unitHasSkill(unit, "guerrillaTactics")
+      || (unit.smokeConcealedTurns ?? 0) > 0
+    )
+  );
+  targets.forEach((unit) => {
+    unit.infiltrationExposed = true;
+    unit.stealthRevealed = true;
+    unit.smokeConcealedTurns = 0;
+  });
+  if (targets.length > 0) state.log.push(`${unitName(source)}が敵隠密${targets.length}機を看破。`);
+}
+
+function activateLimitedSystem(unit, skillId, reason = "耐久低下") {
+  const config = limitedSystemConfig(skillId);
+  if (!canActivateLimitedSystem(unit, skillId)) return false;
+  unit[config.activatedProp] = true;
+  unit[config.turnsProp] = 3;
+  if (skillId === "themisSystem") exposeConcealedEnemies(unit);
+  state.log.push(`${unitName(unit)}の${config.name}発動（${reason}）。3ターン後に機体へ大きな負荷がかかります。`);
+  return true;
+}
+
+function activateLimitedSystemsByArmor(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit) || unit.maxArmor <= 0) return false;
+  if (unit.armor > Math.floor(unit.maxArmor / 3)) return false;
+  let activated = false;
+  Object.keys(LIMITED_SYSTEMS).forEach((skillId) => {
+    if (activateLimitedSystem(unit, skillId, "耐久低下")) activated = true;
+  });
+  return activated;
+}
+
+function overheatLimitedSystemUnit(unit, skillId) {
+  const config = limitedSystemConfig(skillId);
+  if (!config || !isMobileSuit(unit) || !isAlive(unit)) return false;
+  const armorLoss = Math.max(1, Math.ceil(unit.maxArmor * LIMITED_SYSTEM_OVERHEAT_ARMOR_LOSS_RATE));
+  const beforeArmor = unit.armor;
+  unit.armor = Math.max(0, unit.armor - armorLoss);
+  unit.energy = 0;
+  unit[config.turnsProp] = 0;
+  unit[config.overheatedProp] = true;
+  state.log.push(`${unitName(unit)}が${config.name}の限界に達し、耐久${beforeArmor - unit.armor}低下、EN0。`);
+  if (unit.armor === 0) {
+    state.log.push(`${unitName(unit)}は${config.name}の負荷で戦闘不能。`);
+    triggerSacrificialBoost(unit);
+    checkOutcome();
+  }
+  return true;
+}
+
+function tickLimitedSystem(unit, skillId) {
+  const config = limitedSystemConfig(skillId);
+  if (!config) return;
+  if (!limitedSystemActive(unit, skillId)) {
+    activateLimitedSystemsByArmor(unit);
+    return;
+  }
+  unit[config.turnsProp] -= 1;
+  if (unit[config.turnsProp] <= 0) overheatLimitedSystemUnit(unit, skillId);
+}
+
+function tickLimitedSystems(unit) {
+  Object.keys(LIMITED_SYSTEMS).forEach((skillId) => tickLimitedSystem(unit, skillId));
+}
+
 function characterIsNewtype(character) {
   return Boolean(character?.isNewtype)
     || (character?.tags ?? []).includes("newtype")
@@ -613,6 +708,7 @@ function setWeaponCharge(unit, weapon, value) {
 }
 
 function weaponCharged(unit, weapon) {
+  if (limitedSystemActive(unit, "zeusSystem") && weaponHasSkill(weapon, "zeusChargeBypass")) return true;
   return weaponChargeCount(unit, weapon) >= weaponChargeRequired(weapon);
 }
 
@@ -690,6 +786,9 @@ function skillAccuracyBonus(unit, defender, weapon) {
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus += 5;
   if (examSystemActive(unit)) bonus += 18;
   if (hadesSystemActive(unit)) bonus += HADES_ACCURACY_BONUS;
+  Object.values(LIMITED_SYSTEMS).forEach((config) => {
+    if ((unit[config.turnsProp] ?? 0) > 0 && (!config.attackType || config.attackType === weapon?.attackType)) bonus += config.accuracyBonus ?? 0;
+  });
   if (unitHasSkill(unit, "phantomSystem")) bonus += 10;
   const supportedByCommander = state.units.some((other) =>
     other.id !== unit.id
@@ -716,6 +815,9 @@ function skillEvasionBonus(unit) {
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus -= 4;
   if (examSystemActive(unit)) bonus += 18;
   if (hadesSystemActive(unit)) bonus += HADES_EVASION_BONUS;
+  Object.values(LIMITED_SYSTEMS).forEach((config) => {
+    if ((unit[config.turnsProp] ?? 0) > 0) bonus += config.evasionBonus ?? 0;
+  });
   if (unitHasSkill(unit, "phantomSystem")) bonus += 10;
   return bonus;
 }
@@ -808,6 +910,9 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) damage += 15;
   if (examSystemActive(attacker)) damage += 15;
   if (hadesSystemActive(attacker)) damage += HADES_DAMAGE_BONUS;
+  Object.values(LIMITED_SYSTEMS).forEach((config) => {
+    if ((attacker[config.turnsProp] ?? 0) > 0 && (!config.attackType || config.attackType === weapon.attackType)) damage += config.damageBonus ?? 0;
+  });
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "phantomSystem")) damage += 8;
   if (rivalryActive(attacker, defender)) damage += 12;
   if (oldSoldierPrideActive(attacker, defender)) damage += 8;
@@ -851,6 +956,9 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
   if (examSystemActive(attacker)) notes.push("EXAMシステム");
   if (hadesSystemActive(attacker)) notes.push("HADES");
+  Object.values(LIMITED_SYSTEMS).forEach((config) => {
+    if ((attacker[config.turnsProp] ?? 0) > 0 && (!config.attackType || config.attackType === weapon.attackType)) notes.push(config.name);
+  });
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "phantomSystem")) notes.push("ファントムシステム");
   if (schemingActive(attacker)) notes.push("策謀攻撃");
   if (rivalryActive(attacker, defender)) notes.push("対抗心");
@@ -937,6 +1045,60 @@ function useSmokeSkill(unit, renderAfter = true) {
   state.log.push(`${unitName(unit)}がスモークディスチャージャーを展開。射撃対象から外れやすくなった。`);
   if (renderAfter) renderBattle();
   return true;
+}
+
+function canUseActiveCamo(unit, weapon) {
+  return isMobileSuit(unit)
+    && weaponHasSkill(weapon, "activeCamo")
+    && !unit.acted
+    && !unit.moved
+    && !weaponUsed(unit, weapon.id)
+    && canPayCost(unit, weapon);
+}
+
+function useActiveCamo(unit, weapon, renderAfter = true) {
+  if (!canUseActiveCamo(unit, weapon)) return false;
+  payCost(unit, weapon);
+  markWeaponUsed(unit, weapon);
+  unit.temporarySkills = (unit.temporarySkills ?? []).filter((skillId) => skillId !== "stealth");
+  addTemporarySkill(unit, "stealth");
+  unit.stealthRevealed = false;
+  unit.infiltrationExposed = false;
+  unit.moved = true;
+  unit.acted = true;
+  pushDialogue(unit, "wait");
+  state.log.push(`${unitName(unit)}が${weapon.name}を起動し、ステルス状態へ移行。`);
+  if (renderAfter) renderBattle();
+  return true;
+}
+
+function nearestConcealedEnemyFor(source) {
+  return state.units
+    .filter((unit) =>
+      unit.side !== source.side
+      && isMobileSuit(unit)
+      && isAlive(unit)
+      && (
+        unitHasSkill(unit, "stealth")
+        || unitHasSkill(unit, "guerrillaTactics")
+        || (unit.smokeConcealedTurns ?? 0) > 0
+      )
+      && !unit.infiltrationExposed
+    )
+    .sort((a, b) => distance(source, a) - distance(source, b) || String(a.id).localeCompare(b.id))[0] ?? null;
+}
+
+function applyUndergroundSonar(side) {
+  state.units
+    .filter((unit) => unit.side === side && isMobileSuit(unit) && isAlive(unit) && unitHasSkill(unit, "undergroundSonar") && !unit.moved)
+    .forEach((unit) => {
+      const target = nearestConcealedEnemyFor(unit);
+      if (!target) return;
+      target.infiltrationExposed = true;
+      target.stealthRevealed = true;
+      target.smokeConcealedTurns = 0;
+      state.log.push(`${unitName(unit)}のアンダーグラウンドソナーが${unitName(target)}の隠密を看破。`);
+    });
 }
 
 function scatterMines(attacker, target, weapon) {
@@ -1094,6 +1256,10 @@ function attack(attacker, defender, weapon, renderAfter = true) {
   checkOutcome();
   attacker.acted = allAttackWeaponsUsed(attacker);
   attacker.moved = true;
+  if (limitedSystemActive(attacker, "areusSystem") && weapon.attackType === "melee" && isAlive(attacker)) {
+    attacker.moved = false;
+    state.log.push(`${attackerName}はAREUSにより追加移動可能。`);
+  }
   if (!isAlive(defender)) state.selectedTargetId = null;
   if (renderAfter) renderBattle();
 }
@@ -1118,6 +1284,7 @@ function applyDamage(unit, amount) {
   if (unit.armor === 0 && canUseCoreSystem(unit)) transformToCoreFighter(unit);
   activateExamSystemByArmor(unit);
   activateHadesSystemByArmor(unit);
+  activateLimitedSystemsByArmor(unit);
   if (unit.armor === 0) triggerSacrificialBoost(unit);
 }
 
@@ -1318,6 +1485,7 @@ function moveUnit(unit, x, y) {
 function endPlayerTurn() {
   if (state.outcome) return;
   if (state.phase !== "player") return;
+  applyUndergroundSonar("player");
   applyFrontlineSupply("player");
   applyBattleshipSupport("player");
   applyGundamPassion("player");
@@ -1555,6 +1723,7 @@ function finishEnemyTurn() {
     renderBattle();
     return;
   }
+  applyUndergroundSonar("enemy");
   applyFrontlineSupply("enemy");
   applyBattleshipSupport("enemy");
   applyGundamPassion("enemy");

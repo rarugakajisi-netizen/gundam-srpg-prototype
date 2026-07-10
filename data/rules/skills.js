@@ -72,7 +72,7 @@ window.GAME_DATA.skills = [
     "name": "ゲリラ戦術",
     "type": "キャラ/OP",
     "timing": "特殊地形で被射撃時",
-    "effect": "砂漠・森林・水・デブリ上にいる時、敵から2マス以内に近づかれるまで射撃武装の対象にならない。",
+    "effect": "砂漠・森林・水・デブリ上にいる時、敵から2マス以内に近づかれるまで射撃武装の対象にならず、機体詳細も確認されない。",
     "implemented": true
   },
   {
@@ -128,7 +128,7 @@ window.GAME_DATA.skills = [
     "name": "ステルス",
     "type": "機体/OP",
     "timing": "戦闘開始から初回行動まで",
-    "effect": "移動または攻撃を行うまで、3マス以上離れた敵の射撃対象にならない。偵察持ちや2マス以内の敵には見破られる。",
+    "effect": "移動または攻撃を行うまで、3マス以上離れた敵の射撃対象にならず、機体詳細も確認されない。偵察持ちや2マス以内の敵には見破られる。",
     "implemented": true
   },
   {
@@ -136,7 +136,7 @@ window.GAME_DATA.skills = [
     "name": "偵察",
     "type": "機体/OP",
     "timing": "常時",
-    "effect": "ステルスやゲリラ戦術による隠密を見破る。",
+    "effect": "ステルスやゲリラ戦術、煙幕などによる隠密を見破り、対象の機体詳細も確認できる。",
     "implemented": true
   },
   {
@@ -256,7 +256,7 @@ window.GAME_DATA.skills = [
     "name": "スモークディスチャージャー",
     "type": "機体/OP",
     "timing": "行動時",
-    "effect": "行動として発動し、2ターンの間、偵察を持たない敵の射撃対象にならない。",
+    "effect": "行動として発動し、2ターンの間、偵察を持たない敵の射撃対象にならず、機体詳細も確認されない。",
     "implemented": true
   },
   {
@@ -521,6 +521,54 @@ window.GAME_DATA.skills = [
     "type": "機体",
     "timing": "耐久低下時",
     "effect": "自機の耐久が3分の1以下になった時に発動。命中・回避+12、与ダメージ+10。発動後、自軍ターン開始を3回迎えると耐久が大きく低下し、EN0になる。",
+    "implemented": true
+  },
+  {
+    "id": "zeusSystem",
+    "name": "ZEUS",
+    "type": "機体",
+    "timing": "耐久低下時",
+    "effect": "自機の耐久が3分の1以下になった時に発動。射撃武装の命中・与ダメージが上昇し、一部チャージ武装を即使用できる。発動後、自軍ターン開始を3回迎えると耐久が大きく低下し、EN0になる。",
+    "implemented": true
+  },
+  {
+    "id": "areusSystem",
+    "name": "AREUS",
+    "type": "機体",
+    "timing": "耐久低下時",
+    "effect": "自機の耐久が3分の1以下になった時に発動。格闘武装の命中・与ダメージが上昇し、格闘攻撃後に追加移動できる。発動後、自軍ターン開始を3回迎えると耐久が大きく低下し、EN0になる。",
+    "implemented": true
+  },
+  {
+    "id": "themisSystem",
+    "name": "THEMIS",
+    "type": "機体",
+    "timing": "耐久低下時",
+    "effect": "自機の耐久が3分の1以下になった時に発動。発動時に敵の隠密状態を看破し、回避・与ダメージが上昇する。発動後、自軍ターン開始を3回迎えると耐久が大きく低下し、EN0になる。",
+    "implemented": true
+  },
+  {
+    "id": "zeusChargeBypass",
+    "name": "ZEUS連動",
+    "type": "武器",
+    "timing": "ZEUS発動中",
+    "effect": "ZEUS発動中、この武器のチャージを満たしたものとして扱う。",
+    "implemented": true
+  },
+  {
+    "id": "activeCamo",
+    "name": "アクティブ・カモ",
+    "type": "武器",
+    "timing": "行動時",
+    "effect": "固定武装の使用回数を消費してステルス状態へ移行する。",
+    "implemented": true
+  },
+  {
+    "id": "undergroundSonar",
+    "name": "アンダーグラウンドソナー",
+    "type": "機体",
+    "timing": "ターン終了時",
+    "effect": "移動せずにターンを終了した場合、最も近い敵MSの隠密状態を看破する。",
     "implemented": true
   },
   {

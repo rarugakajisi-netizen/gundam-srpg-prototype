@@ -28,6 +28,35 @@ const HADES_ACCURACY_BONUS = 12;
 const HADES_EVASION_BONUS = 12;
 const HADES_DAMAGE_BONUS = 10;
 const HADES_OVERHEAT_ARMOR_LOSS_RATE = 0.67;
+const LIMITED_SYSTEM_OVERHEAT_ARMOR_LOSS_RATE = 0.67;
+const LIMITED_SYSTEMS = {
+  zeusSystem: {
+    name: "ZEUS",
+    turnsProp: "zeusTurnsRemaining",
+    activatedProp: "zeusSystemActivated",
+    overheatedProp: "zeusSystemOverheated",
+    accuracyBonus: 14,
+    damageBonus: 12,
+    attackType: "shooting"
+  },
+  areusSystem: {
+    name: "AREUS",
+    turnsProp: "areusTurnsRemaining",
+    activatedProp: "areusSystemActivated",
+    overheatedProp: "areusSystemOverheated",
+    accuracyBonus: 14,
+    damageBonus: 12,
+    attackType: "melee"
+  },
+  themisSystem: {
+    name: "THEMIS",
+    turnsProp: "themisTurnsRemaining",
+    activatedProp: "themisSystemActivated",
+    overheatedProp: "themisSystemOverheated",
+    evasionBonus: 14,
+    damageBonus: 8
+  }
+};
 const GUERRILLA_TERRAINS = new Set(["desert", "forest", "water", "debris"]);
 const SAVE_KEY = "gundamSrpgPrototypeSaveV1";
 const FAVORITE_FORMATION_SLOTS = 20;

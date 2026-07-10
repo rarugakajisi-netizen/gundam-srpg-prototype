@@ -260,6 +260,573 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "gundamPixyLilith",
+    "name": "ガンダム・ピクシー（リリス機）",
+    "faction": "federation",
+    "cost": 275,
+    "armor": 335,
+    "energy": 95,
+    "agility": 32,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "twinBeamSpearRod",
+      "twinBeamSpearScythe",
+      "simpleSmallShield"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "pixy",
+      "meleeMs",
+      "armorPack",
+      "lilithCustom"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmTrainer",
+    "name": "ジム・トレーナー",
+    "faction": "federation",
+    "cost": 90,
+    "armor": 185,
+    "energy": 55,
+    "agility": 12,
+    "mobility": 4,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "trainerMs",
+      "federationMassProduction"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gmSpartanBlackDog",
+    "name": "ジム・スパルタン（ブラックドッグ隊）",
+    "faction": "federation",
+    "cost": 200,
+    "armor": 285,
+    "energy": 86,
+    "agility": 27,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatKnife"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "gmCommand",
+      "meleeMs",
+      "stealthMs",
+      "blackDog",
+      "federationMassProduction"
+    ],
+    "specials": [
+      "smokeDischarger"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "gmSniperCustomBlackDog",
+    "name": "ジム・スナイパーカスタム（ブラックドッグ隊）",
+    "faction": "federation",
+    "cost": 230,
+    "armor": 295,
+    "energy": 105,
+    "agility": 28,
+    "mobility": 5,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamGunUnit",
+      "beamSaberUnit"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gm",
+      "gmSniperCustom",
+      "sniperMs",
+      "precisionMs",
+      "blackDog",
+      "federationMassProduction"
+    ],
+    "specials": [
+      "longRangeScope"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "hoverTruckBlackDog",
+    "name": "ホバー・トラック（ブラックドッグ隊）",
+    "faction": "federation",
+    "cost": 65,
+    "armor": 130,
+    "energy": 35,
+    "agility": 13,
+    "mobility": 5,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": true,
+      "debris": false
+    },
+    "tags": [
+      "vehicle",
+      "groundVehicle",
+      "reconMs",
+      "blackDog",
+      "federationMassProduction"
+    ],
+    "specials": [
+      "recon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "whiteRider",
+    "name": "ホワイトライダー",
+    "faction": "federation",
+    "cost": 360,
+    "armor": 340,
+    "energy": 130,
+    "agility": 25,
+    "mobility": 5,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatRapier",
+      "shekinahGatling",
+      "shekinahMegaBeam"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "paleRider",
+      "whiteRider",
+      "unit4",
+      "unit5",
+      "zeusMs"
+    ],
+    "specials": [
+      "zeusSystem"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "redRider",
+    "name": "レッドライダー",
+    "faction": "federation",
+    "cost": 330,
+    "armor": 335,
+    "energy": 115,
+    "agility": 30,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "headVulcan",
+      "beamSaber",
+      "zweihander"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "paleRider",
+      "redRider",
+      "meleeMs",
+      "areusMs"
+    ],
+    "specials": [
+      "areusSystem"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "blackRider",
+    "name": "ブラックライダー",
+    "faction": "federation",
+    "cost": 340,
+    "armor": 320,
+    "energy": 110,
+    "agility": 31,
+    "mobility": 6,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatKnife",
+      "stunAnchor",
+      "blackRiderGrenadeLauncher",
+      "activeCamo"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "paleRider",
+      "blackRider",
+      "stealthMs",
+      "electronicWarfare",
+      "themisMs"
+    ],
+    "specials": [
+      "themisSystem"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "paleRiderCavalry",
+    "name": "ペイルライダー・キャバルリー",
+    "faction": "federation",
+    "cost": 310,
+    "armor": 330,
+    "energy": 115,
+    "agility": 24,
+    "mobility": 5,
+    "weaponSlots": 1,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "massProductionShekinahGatling",
+      "massProductionShekinahBeam"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "paleRider",
+      "paleRiderCavalry",
+      "hadesMs"
+    ],
+    "specials": [
+      "hadesSystem"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "groundHighMobilityZakuAlma",
+    "name": "陸戦高機動型ザク（アルマ機）",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 210,
+    "armor": 300,
+    "energy": 75,
+    "agility": 27,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatSaber",
+      "zakuHeadVulcan"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zaku2",
+      "groundHighMobilityZaku",
+      "highMobility",
+      "groundMs",
+      "almaCustom"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "titania",
+    "name": "ティターニア",
+    "faction": "zeon",
+    "cost": 390,
+    "armor": 360,
+    "energy": 115,
+    "agility": 35,
+    "mobility": 7,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "titaniaTwinBeamSaber",
+      "titaniaArmGatling"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "kampfer",
+      "titania",
+      "highMobility",
+      "assaultMs",
+      "meleeMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "zaku2Sniper",
+    "name": "ザクII狙撃型",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 145,
+    "armor": 250,
+    "energy": 60,
+    "agility": 10,
+    "mobility": 3,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zaku2",
+      "sniperMs",
+      "precisionMs",
+      "groundMs"
+    ],
+    "specials": [
+      "highPerformanceSight"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "efreetJaeger",
+    "name": "イフリート・イェーガー",
+    "faction": "zeon",
+    "cost": 245,
+    "armor": 300,
+    "energy": 80,
+    "agility": 22,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatKnife"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": true,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "efreet",
+      "gouf",
+      "dom",
+      "sniperMs",
+      "smokeMs",
+      "groundMs"
+    ],
+    "specials": [
+      "smokeDischarger"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "zakuHalfCannon",
+    "name": "ザク・ハーフキャノン",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 150,
+    "armor": 285,
+    "energy": 65,
+    "agility": 13,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "zakuHalfCannonGatling120mm"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zaku2",
+      "cannonMs",
+      "reconMs",
+      "groundMs"
+    ],
+    "specials": [
+      "undergroundSonar"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "domNomides",
+    "name": "ドム・ノーミーデス",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 360,
+    "armor": 520,
+    "energy": 100,
+    "agility": 10,
+    "mobility": 4,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "domNomidesHeatTomahawk",
+      "domNomides30cmCannon"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": true,
+      "debris": false
+    },
+    "tags": [
+      "dom",
+      "desert",
+      "heavyMs",
+      "cannonMs",
+      "groundMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "coreFighter",
     "name": "コア・ファイター",
     "faction": "federation",
@@ -1370,6 +1937,44 @@ window.GAME_DATA.mobileSuits = [
       "groundHighMobilityZaku",
       "highMobility",
       "groundMs"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "groundHighMobilityZakuVincent",
+    "name": "陸戦高機動型ザク（ヴィンセント機）",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 210,
+    "armor": 300,
+    "energy": 75,
+    "agility": 25,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zaku2",
+      "groundHighMobilityZaku",
+      "highMobility",
+      "groundMs",
+      "vincentCustom"
     ],
     "specials": [],
     "imagePath": ""

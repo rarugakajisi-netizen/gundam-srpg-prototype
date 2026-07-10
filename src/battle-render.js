@@ -48,7 +48,7 @@ function renderBattle() {
         ${selected ? renderUnitDetail(selected, target) : `<p class="small">${state.phase === "enemy" ? "敵行動を進めると、行動中の敵が表示されます。" : "自軍ユニットを選んでください。"}</p>`}
       </section>
       ${target ? `<details class="panel target-panel compact-target-panel">
-        <summary>敵ユニット: ${unitName(target)} / ${target.armor} / ${target.maxArmor}</summary>
+        <summary>${renderTargetSummary(target)}</summary>
         ${renderTargetDetail(target)}
       </details>` : ""}
     </aside>
@@ -155,20 +155,48 @@ function renderToken(unit) {
   const selected = unit.id === state.selectedUnitId ? "selected" : "";
   const battleship = isBattleship(unit) ? "battleship" : "";
   const defenseTarget = isDefenseTarget(unit) ? "defense-target" : "";
+  const displayName = concealedEnemyLabel(unit);
   const numberBadge = isMobileSuit(unit) && Number.isInteger(unit.sortieNumber)
     ? `<span class="token-number">${unit.sortieNumber}</span>`
     : isDefenseTarget(unit) ? `<span class="token-number">守</span>`
     : "";
   return `
-    <button class="token ${faction} ${unit.side} ${battleship} ${defenseTarget} ${selected}" data-unit-id="${unit.id}" title="${unitName(unit)}">
+    <button class="token ${faction} ${unit.side} ${battleship} ${defenseTarget} ${selected}" data-unit-id="${unit.id}" title="${displayName}">
       ${numberBadge}
-      <span class="token-name">${unitName(unit)}</span>
+      <span class="token-name">${displayName}</span>
       <span class="hp-bar"><span class="hp-fill" style="width:${hp}%"></span></span>
     </button>
   `;
 }
 
+function concealedEnemyLabel(unit) {
+  return unitDetailsConcealedFromSide(unit, "player") ? "???" : unitName(unit);
+}
+
+function renderTargetSummary(unit) {
+  if (unitDetailsConcealedFromSide(unit, "player")) return "敵ユニット: ??? / 詳細不明";
+  return `敵ユニット: ${unitName(unit)} / ${unit.armor} / ${unit.maxArmor}`;
+}
+
+function visibleTargetName(unit) {
+  return concealedEnemyLabel(unit);
+}
+
+function renderConcealedEnemyDetail() {
+  return `
+    <h3>???</h3>
+    <div class="stat-grid side-stat-grid">
+      <div class="stat"><span>機体</span>確認不能</div>
+      <div class="stat"><span>キャラ</span>確認不能</div>
+      <div class="stat"><span>装備</span>確認不能</div>
+      <div class="stat"><span>詳細能力</span>確認不能</div>
+    </div>
+    <p class="support-hint">隠密効果により、機体・キャラ・装備・詳細ステータスを確認できません。偵察持ちの味方や、効果ごとの看破条件を満たす味方がいれば確認できます。</p>
+  `;
+}
+
 function renderUnitDetail(unit, target) {
+  if (unitDetailsConcealedFromSide(unit, "player")) return renderConcealedEnemyDetail();
   if (isDefenseTarget(unit)) return renderDefenseTargetDetail(unit);
   if (isBattleship(unit)) return renderBattleshipDetail(unit, target);
   const ms = msFor(unit);
@@ -191,10 +219,11 @@ function renderUnitDetail(unit, target) {
     </div>
     ${state.phase === "deployment"
       ? `<p class="support-hint ready">配置フェイズ: 手前${deploymentRows("player")}列の明るいマスへ配置できます。</p>`
-      : target ? `<p class="support-hint ready"><strong>攻撃対象:</strong> ${unitName(target)}</p>` : `<p class="support-hint">敵をクリックすると攻撃対象になります。</p>`}
+      : target ? `<p class="support-hint ready"><strong>攻撃対象:</strong> ${visibleTargetName(target)}</p>` : `<p class="support-hint">敵をクリックすると攻撃対象になります。</p>`}
     <div class="actions">
       ${freezyYardButton(unit)}
       ${mineScatterButtons(unit)}
+      ${activeCamoButtons(unit)}
       ${smokeDischargerButtons(unit)}
       ${transformButtons(unit)}
       ${chargeWeaponButtons(unit)}
@@ -216,6 +245,7 @@ function renderUnitDetail(unit, target) {
 }
 
 function renderTargetDetail(unit) {
+  if (unitDetailsConcealedFromSide(unit, "player")) return renderConcealedEnemyDetail();
   if (isDefenseTarget(unit)) return renderDefenseTargetDetail(unit);
   if (isBattleship(unit)) return renderBattleshipTargetDetail(unit);
   const ms = msFor(unit);
@@ -299,7 +329,7 @@ function renderBattleshipDetail(unit, target) {
     <p class="small">撃沈されると、この陣営は即敗北します。隣接した味方機はターン終了時にEN+${support.energy}、実弾+${support.ammo}、装甲+${support.armor}、盾+${support.shield}を受けます。</p>
     ${state.phase === "deployment"
       ? `<p class="support-hint ready">配置フェイズ: 戦艦も手前${deploymentRows("player")}列の有効マスへ配置できます。</p>`
-      : target ? `<p><strong>攻撃対象:</strong> ${unitName(target)}</p>` : ""}
+      : target ? `<p><strong>攻撃対象:</strong> ${visibleTargetName(target)}</p>` : ""}
     <div class="actions">
       ${target ? attackButtons(unit, target) : ""}
     </div>
@@ -424,10 +454,31 @@ function smokeDischargerButtons(unit) {
   if (!isMobileSuit(unit)) return "";
   const skillButton = unitHasSkill(unit, "smokeDischarger") ? `
     <button data-action="smoke-skill" ${state.outcome || state.phase !== "player" || unit.side !== "player" || unit.acted || unit.moved || unit.smokeSkillUsed ? "disabled" : ""}>
-      スモーク<br><span class="button-detail">スキル / 射撃対象化を防ぐ${unit.smokeSkillUsed ? " / 使用済み" : ""}</span>
+      スモーク<br><span class="button-detail">スキル / 射撃・詳細確認を防ぐ${unit.smokeSkillUsed ? " / 使用済み" : ""}</span>
     </button>
   ` : "";
   return skillButton;
+}
+
+function activeCamoButtons(unit) {
+  if (!isMobileSuit(unit)) return "";
+  return unitWeaponObjects(unit)
+    .filter((weapon) => weaponHasSkill(weapon, "activeCamo"))
+    .map((weapon) => {
+      const usable = canUseActiveCamo(unit, weapon);
+      const runtime = runtimeWeapon(unit, weapon.id);
+      const status = [
+        `残り${runtime.ammo}`,
+        "行動終了",
+        weaponUsed(unit, weapon.id) ? "使用済み" : "",
+        unit.moved ? "移動後不可" : ""
+      ].filter(Boolean).join(" / ");
+      return `
+        <button data-action="active-camo" data-weapon-id="${weapon.id}" ${state.outcome || state.phase !== "player" || unit.side !== "player" || !usable ? "disabled" : ""}>
+          アクティブ・カモ<br><span class="button-detail">${weapon.name} / ${status}</span>
+        </button>
+      `;
+    }).join("");
 }
 
 function transformButtons(unit) {

@@ -776,6 +776,11 @@ window.GAME_DATA.compatibility = {
     },
     {
       "characterId": "vincentGleissner",
+      "msId": "groundHighMobilityZakuVincent",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "vincentGleissner",
       "msTag": "zaku",
       "evasionBonus": 6
     },
@@ -1512,6 +1517,146 @@ window.GAME_DATA.compatibility = {
       "accuracyBonus": 6
     },
     {
+      "msId": "gundamPixyLilith",
+      "weaponId": "twinBeamSpearRod",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gundamPixyLilith",
+      "weaponId": "twinBeamSpearScythe",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "gmTrainer",
+      "weaponId": "beamSaber",
+      "accuracyBonus": 5
+    },
+    {
+      "msId": "gmSpartanBlackDog",
+      "weaponId": "heatKnife",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "gmSniperCustomBlackDog",
+      "weaponId": "beamGunUnit",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "gmSniperCustomBlackDog",
+      "weaponId": "beamSaberUnit",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "whiteRider",
+      "weaponId": "heatRapier",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "whiteRider",
+      "weaponId": "shekinahGatling",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "whiteRider",
+      "weaponId": "shekinahMegaBeam",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "redRider",
+      "weaponId": "beamSaber",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "redRider",
+      "weaponId": "zweihander",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "blackRider",
+      "weaponId": "heatKnife",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "blackRider",
+      "weaponId": "stunAnchor",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "blackRider",
+      "weaponId": "blackRiderGrenadeLauncher",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "paleRiderCavalry",
+      "weaponId": "beamSaber",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "paleRiderCavalry",
+      "weaponId": "massProductionShekinahGatling",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "paleRiderCavalry",
+      "weaponId": "massProductionShekinahBeam",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "groundHighMobilityZakuAlma",
+      "weaponId": "heatSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "groundHighMobilityZakuAlma",
+      "weaponId": "zakuHeadVulcan",
+      "accuracyBonus": 6
+    },
+    {
+      "msId": "titania",
+      "weaponId": "titaniaTwinBeamSaber",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "titania",
+      "weaponId": "titaniaArmGatling",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "zaku2Sniper",
+      "weaponId": "zeonSniperRifle",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "zaku2Sniper",
+      "weaponId": "heatHawk",
+      "accuracyBonus": 5
+    },
+    {
+      "msId": "efreetJaeger",
+      "weaponId": "zeonSniperRifle",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "efreetJaeger",
+      "weaponId": "heatKnife",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "zakuHalfCannon",
+      "weaponId": "zakuHalfCannonGatling120mm",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "domNomides",
+      "weaponId": "domNomidesHeatTomahawk",
+      "accuracyBonus": 7
+    },
+    {
+      "msId": "domNomides",
+      "weaponId": "domNomides30cmCannon",
+      "accuracyBonus": 7
+    },
+    {
       "msTag": "gm",
       "weaponId": "beamSprayGun",
       "accuracyBonus": 7
@@ -1687,6 +1832,11 @@ window.GAME_DATA.compatibility = {
       "accuracyBonus": 6
     },
     {
+      "msId": "groundHighMobilityZakuVincent",
+      "weaponId": "heatHawk",
+      "accuracyBonus": 7
+    },
+    {
       "msTag": "zudah",
       "weaponId": "heatHawk",
       "accuracyBonus": 6
@@ -1720,6 +1870,21 @@ window.GAME_DATA.compatibility = {
       "msTag": "dom",
       "weaponId": "raketenBazooka",
       "accuracyBonus": 7
+    },
+    {
+      "msTag": "efreet",
+      "weaponId": "sawedOffShotgun",
+      "accuracyBonus": 7
+    },
+    {
+      "msTag": "kampfer",
+      "weaponId": "sawedOffShotgun",
+      "accuracyBonus": 7
+    },
+    {
+      "msTag": "zaku",
+      "weaponId": "sawedOffShotgun",
+      "accuracyBonus": 5
     },
     {
       "msTag": "gelgoog",
