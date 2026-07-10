@@ -3940,7 +3940,7 @@ window.GAME_DATA.characters = [
     "name": "ニムバス・シュターゼン",
     "characterKey": "nimbusSchterzen",
     "faction": "zeon",
-    "cost": 145,
+    "cost": 140,
     "shooting": 18,
     "melee": 26,
     "reaction": 23,
@@ -4011,7 +4011,7 @@ window.GAME_DATA.characters = [
     "name": "ヴィッシュ・ドナヒュー",
     "characterKey": "vischDonahue",
     "faction": "zeon",
-    "cost": 165,
+    "cost": 140,
     "shooting": 25,
     "melee": 22,
     "reaction": 26,
@@ -5457,6 +5457,191 @@ window.GAME_DATA.characters = [
       "pilot"
     ],
     "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "almaStirner",
+    "name": "アルマ・シュティルナー",
+    "characterKey": "almaStirner",
+    "faction": "zeon",
+    "cost": 120,
+    "shooting": 19,
+    "melee": 20,
+    "reaction": 22,
+    "awakening": 10,
+    "command": 13,
+    "support": 10,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "outstandingTalent"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "miaBrinkman",
+    "name": "ミア・ブリンクマン",
+    "characterKey": "miaBrinkman",
+    "faction": "zeon",
+    "cost": 90,
+    "shooting": 17,
+    "melee": 10,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 10,
+    "support": 18,
+    "maintenance": 24,
+    "roles": [
+      "pilot",
+      "mechanic",
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "helenaHegel",
+    "name": "ヘレナ・ヘーゲル",
+    "characterKey": "helenaHegel",
+    "faction": "zeon",
+    "cost": 105,
+    "shooting": 23,
+    "melee": 17,
+    "reaction": 21,
+    "awakening": 0,
+    "command": 9,
+    "support": 10,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "killyGarrett",
+    "name": "キリー・ギャレット",
+    "characterKey": "killyGarrett",
+    "faction": "zeon",
+    "cost": 140,
+    "shooting": 21,
+    "melee": 19,
+    "reaction": 21,
+    "awakening": 0,
+    "command": 27,
+    "support": 20,
+    "maintenance": 6,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "commanderStealth"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "barbaraHahli",
+    "name": "バルバラ・ハハリ",
+    "characterKey": "barbaraHahli",
+    "faction": "zeon",
+    "cost": 85,
+    "shooting": 7,
+    "melee": 5,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 22,
+    "support": 24,
+    "maintenance": 9,
+    "roles": [
+      "operator",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "irmelaGruber",
+    "name": "イルメラ・グルーバー",
+    "characterKey": "irmelaGruber",
+    "faction": "zeon",
+    "cost": 80,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 9,
+    "awakening": 0,
+    "command": 9,
+    "support": 20,
+    "maintenance": 27,
+    "roles": [
+      "mechanic",
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "lilithAiden",
+    "name": "リリス・エイデン",
+    "characterKey": "lilithAiden",
+    "faction": "federation",
+    "cost": 135,
+    "shooting": 19,
+    "melee": 25,
+    "reaction": 24,
+    "awakening": 8,
+    "command": 8,
+    "support": 5,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "barryAbbot",
+    "name": "バリー・アボット",
+    "characterKey": "barryAbbot",
+    "faction": "federation",
+    "cost": 120,
+    "shooting": 21,
+    "melee": 17,
+    "reaction": 20,
+    "awakening": 0,
+    "command": 24,
+    "support": 18,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "renatoGermi",
+    "name": "レナート・ジェルミ",
+    "characterKey": "renatoGermi",
+    "faction": "federation",
+    "cost": 115,
+    "shooting": 20,
+    "melee": 23,
+    "reaction": 22,
+    "awakening": 0,
+    "command": 20,
+    "support": 4,
+    "maintenance": 2,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "madness"
+    ],
     "imagePath": ""
   }
 ];

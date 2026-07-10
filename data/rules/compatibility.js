@@ -1438,6 +1438,86 @@ window.GAME_DATA.compatibility = {
       "characterId": "claudiaGhoul",
       "msTag": "psycommu",
       "evasionBonus": 5
+    },
+    {
+      "characterId": "almaStirner",
+      "msId": "groundHighMobilityZakuAlma",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "almaStirner",
+      "msId": "titania",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "miaBrinkman",
+      "msId": "zakuHalfCannon",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "miaBrinkman",
+      "msId": "domTropicalTest",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "miaBrinkman",
+      "msId": "domNomides",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "helenaHegel",
+      "msId": "zaku2Sniper",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "helenaHegel",
+      "msId": "efreet",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "helenaHegel",
+      "msId": "efreetJaeger",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "killyGarrett",
+      "msId": "zaku2",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "lilithAiden",
+      "msId": "groundGm",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "lilithAiden",
+      "msId": "gundamPixy",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "lilithAiden",
+      "msId": "gundamPixyLilith",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "barryAbbot",
+      "msId": "groundGm",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "barryAbbot",
+      "msId": "armoredGm",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "renatoGermi",
+      "msId": "gmSpartan",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "renatoGermi",
+      "msId": "gmSpartanBlackDog",
+      "evasionBonus": 10
     }
   ],
   "msWeapon": [

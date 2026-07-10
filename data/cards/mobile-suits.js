@@ -468,7 +468,6 @@ window.GAME_DATA.mobileSuits = [
       "debris": false
     },
     "tags": [
-      "gundam",
       "paleRider",
       "whiteRider",
       "unit4",
@@ -508,7 +507,6 @@ window.GAME_DATA.mobileSuits = [
       "debris": false
     },
     "tags": [
-      "gundam",
       "paleRider",
       "redRider",
       "meleeMs",
@@ -548,7 +546,6 @@ window.GAME_DATA.mobileSuits = [
       "debris": false
     },
     "tags": [
-      "gundam",
       "paleRider",
       "blackRider",
       "stealthMs",
@@ -588,7 +585,6 @@ window.GAME_DATA.mobileSuits = [
       "debris": false
     },
     "tags": [
-      "gundam",
       "paleRider",
       "paleRiderCavalry",
       "hadesMs"
@@ -8271,7 +8267,6 @@ window.GAME_DATA.mobileSuits = [
       "debris": false
     },
     "tags": [
-      "gundam",
       "groundGundam",
       "blueDestiny",
       "examMs"
@@ -8308,7 +8303,6 @@ window.GAME_DATA.mobileSuits = [
       "debris": false
     },
     "tags": [
-      "gundam",
       "gmCommand",
       "blueDestiny",
       "examMs"
@@ -8561,7 +8555,6 @@ window.GAME_DATA.mobileSuits = [
       "debris": true
     },
     "tags": [
-      "gundam",
       "blueDestiny",
       "examMs"
     ],
@@ -8668,7 +8661,6 @@ window.GAME_DATA.mobileSuits = [
       "debris": false
     },
     "tags": [
-      "gundam",
       "groundGundam",
       "paleRider",
       "hadesMs"
@@ -8705,7 +8697,6 @@ window.GAME_DATA.mobileSuits = [
       "debris": true
     },
     "tags": [
-      "gundam",
       "unit5",
       "paleRider",
       "hadesMs",
