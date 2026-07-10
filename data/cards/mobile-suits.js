@@ -8917,5 +8917,77 @@ window.GAME_DATA.mobileSuits = [
     ],
     "specials": [],
     "imagePath": ""
+  },
+  {
+    "id": "gundamEx",
+    "name": "ガンダムEX",
+    "faction": "federation",
+    "cost": 280,
+    "armor": 335,
+    "energy": 120,
+    "agility": 29,
+    "mobility": 6,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "beamSaber",
+      "gundamExHeadMachineGun",
+      "gundamExShoulderGatling"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "gundam",
+      "groundGundam",
+      "gundamEx",
+      "highMobility"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "zaku2FSolari",
+    "name": "ザクII F型（ソラリ機）",
+    "faction": "zeon",
+    "forbiddenWeaponKinds": [
+      "beam"
+    ],
+    "cost": 120,
+    "armor": 270,
+    "energy": 58,
+    "agility": 16,
+    "mobility": 4,
+    "weaponSlots": 2,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "heatHawk",
+      "solariShoulderShield"
+    ],
+    "mapTypes": [
+      "ground",
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "zaku",
+      "zaku2",
+      "solariCustom"
+    ],
+    "specials": [],
+    "imagePath": ""
   }
 ];

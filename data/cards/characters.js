@@ -4011,20 +4011,19 @@ window.GAME_DATA.characters = [
     "name": "ヴィッシュ・ドナヒュー",
     "characterKey": "vischDonahue",
     "faction": "zeon",
-    "cost": 140,
-    "shooting": 25,
-    "melee": 22,
-    "reaction": 26,
+    "cost": 135,
+    "shooting": 23,
+    "melee": 19,
+    "reaction": 23,
     "awakening": 0,
-    "command": 20,
-    "support": 12,
-    "maintenance": 8,
+    "command": 18,
+    "support": 10,
+    "maintenance": 5,
     "roles": [
       "pilot",
       "commander"
     ],
     "specials": [
-      "ace",
       "guerrillaTactics"
     ],
     "imagePath": ""
@@ -5526,7 +5525,7 @@ window.GAME_DATA.characters = [
     "name": "キリー・ギャレット",
     "characterKey": "killyGarrett",
     "faction": "zeon",
-    "cost": 140,
+    "cost": 130,
     "shooting": 21,
     "melee": 19,
     "reaction": 21,
@@ -5641,6 +5640,206 @@ window.GAME_DATA.characters = [
     ],
     "specials": [
       "madness"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "iriaSolari",
+    "name": "イリヤ・ソラリ",
+    "characterKey": "iriaSolari",
+    "faction": "zeon",
+    "cost": 115,
+    "shooting": 19,
+    "melee": 17,
+    "reaction": 21,
+    "awakening": 10,
+    "command": 20,
+    "support": 15,
+    "maintenance": 5,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "desperateRearGuard"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "kneelandLeSean",
+    "name": "ニーランド・ルショーン",
+    "characterKey": "kneelandLeSean",
+    "faction": "zeon",
+    "cost": 80,
+    "shooting": 17,
+    "melee": 16,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 11,
+    "support": 8,
+    "maintenance": 4,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "reidGhelfi",
+    "name": "リード・ゲルフィ",
+    "characterKey": "reidGhelfi",
+    "faction": "zeon",
+    "cost": 100,
+    "shooting": 20,
+    "melee": 17,
+    "reaction": 21,
+    "awakening": 0,
+    "command": 16,
+    "support": 13,
+    "maintenance": 4,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "kaleZavaleta",
+    "name": "ケイル・ザヴァレタ",
+    "characterKey": "kaleZavaleta",
+    "faction": "zeon",
+    "cost": 85,
+    "shooting": 21,
+    "melee": 11,
+    "reaction": 18,
+    "awakening": 0,
+    "command": 8,
+    "support": 6,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "anderHeaton",
+    "name": "アンダー・ヒートン",
+    "characterKey": "anderHeaton",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 14,
+    "melee": 8,
+    "reaction": 13,
+    "awakening": 0,
+    "command": 7,
+    "support": 9,
+    "maintenance": 8,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "onyKasuga",
+    "name": "オニー・カスガ",
+    "characterKey": "onyKasuga",
+    "faction": "zeon",
+    "cost": 55,
+    "shooting": 3,
+    "melee": 3,
+    "reaction": 8,
+    "awakening": 0,
+    "command": 7,
+    "support": 24,
+    "maintenance": 10,
+    "roles": [
+      "operator"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "haileyArhun",
+    "name": "ヘイリー・アーフン",
+    "characterKey": "haileyArhun",
+    "faction": "zeon",
+    "cost": 65,
+    "shooting": 16,
+    "melee": 18,
+    "reaction": 17,
+    "awakening": 0,
+    "command": 9,
+    "support": 8,
+    "maintenance": 3,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "alfeeZydos",
+    "name": "アルフィー・ザイドス",
+    "characterKey": "alfeeZydos",
+    "faction": "zeon",
+    "cost": 75,
+    "shooting": 6,
+    "melee": 5,
+    "reaction": 10,
+    "awakening": 0,
+    "command": 10,
+    "support": 18,
+    "maintenance": 25,
+    "roles": [
+      "mechanic",
+      "operator"
+    ],
+    "specials": [
+      "zakuPassion"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "rolphRonet",
+    "name": "ロルフ・ロネ",
+    "characterKey": "rolphRonet",
+    "faction": "zeon",
+    "cost": 45,
+    "shooting": 6,
+    "melee": 4,
+    "reaction": 6,
+    "awakening": 0,
+    "command": 14,
+    "support": 7,
+    "maintenance": 4,
+    "roles": [
+      "captain",
+      "commander"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
+    "id": "gundamExPilot",
+    "name": "謎の少年兵",
+    "characterKey": "gundamExPilot",
+    "faction": "federation",
+    "cost": 135,
+    "shooting": 23,
+    "melee": 22,
+    "reaction": 26,
+    "awakening": 18,
+    "command": 3,
+    "support": 4,
+    "maintenance": 2,
+    "roles": [
+      "pilot"
+    ],
+    "specials": [
+      "aiSenshi"
     ],
     "imagePath": ""
   }

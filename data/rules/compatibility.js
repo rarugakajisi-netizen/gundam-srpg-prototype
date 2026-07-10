@@ -1518,6 +1518,41 @@ window.GAME_DATA.compatibility = {
       "characterId": "renatoGermi",
       "msId": "gmSpartanBlackDog",
       "evasionBonus": 10
+    },
+    {
+      "characterId": "iriaSolari",
+      "msId": "zaku2FSolari",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "iriaSolari",
+      "msId": "zaku2",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "kneelandLeSean",
+      "msId": "zaku2",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "reidGhelfi",
+      "msId": "zaku2",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "kaleZavaleta",
+      "msId": "zaku2",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "anderHeaton",
+      "msId": "magellaAttack",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "gundamExPilot",
+      "msId": "gundamEx",
+      "evasionBonus": 10
     }
   ],
   "msWeapon": [
@@ -2600,6 +2635,26 @@ window.GAME_DATA.compatibility = {
       "msId": "heavyFullArmorGundamUnit7",
       "weaponId": "beamSaber",
       "accuracyBonus": 4
+    },
+    {
+      "msId": "gundamEx",
+      "weaponId": "gundamExBeamRifle",
+      "accuracyBonus": 10
+    },
+    {
+      "msId": "gundamEx",
+      "weaponId": "gundamExShield",
+      "accuracyBonus": 5
+    },
+    {
+      "msId": "zaku2FSolari",
+      "weaponId": "heatHawk",
+      "accuracyBonus": 8
+    },
+    {
+      "msId": "zaku2FSolari",
+      "weaponId": "solariShoulderShield",
+      "accuracyBonus": 5
     }
   ]
 };

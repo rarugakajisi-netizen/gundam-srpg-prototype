@@ -6257,5 +6257,101 @@ window.GAME_DATA.weapons = [
     "factions": [
       "zeon"
     ]
+  },
+  {
+    "id": "gundamExHeadMachineGun",
+    "name": "四連装頭部機関砲",
+    "cost": 0,
+    "power": 50,
+    "accuracy": 72,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 8,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "gundamExShoulderGatling",
+    "name": "ショルダー・ガトリング",
+    "cost": 0,
+    "power": 90,
+    "accuracy": 68,
+    "range": 3,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "gatling",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "specials": [
+      "antiAir"
+    ],
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "gundamExBeamRifle",
+    "name": "ビーム・ライフル（ガンダムEX）",
+    "cost": 65,
+    "power": 140,
+    "accuracy": 78,
+    "range": 4,
+    "minRange": 1,
+    "consume": 22,
+    "kind": "beam",
+    "ammo": 0,
+    "category": "beam-rifle",
+    "attackType": "shooting",
+    "durability": 0,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "gundamExShield",
+    "name": "シールド（ガンダムEX）",
+    "cost": 50,
+    "power": 0,
+    "accuracy": 0,
+    "range": 0,
+    "minRange": 0,
+    "consume": 0,
+    "kind": "shield",
+    "ammo": 0,
+    "category": "shield",
+    "attackType": "guard",
+    "durability": 190,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
+    "id": "solariShoulderShield",
+    "name": "大型肩部シールド（ソラリ機）",
+    "cost": 0,
+    "power": 0,
+    "accuracy": 0,
+    "range": 0,
+    "minRange": 0,
+    "consume": 0,
+    "kind": "shield",
+    "ammo": 0,
+    "category": "shield",
+    "attackType": "guard",
+    "durability": 100,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
   }
 ];
