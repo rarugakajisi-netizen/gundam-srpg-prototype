@@ -1,0 +1,72 @@
+/* Plicy embedded-player overrides. This file is injected only into the Plicy package. */
+body.plicy-build button,
+body.plicy-build select,
+body.plicy-build input {
+  min-height: 44px;
+}
+
+body.plicy-build.plicy-quick-nav-active {
+  padding-bottom: 64px;
+}
+
+.plicy-quick-nav {
+  position: fixed;
+  z-index: 100;
+  right: 12px;
+  bottom: 10px;
+  display: flex;
+  gap: 8px;
+  padding: 7px;
+  border: 1px solid rgba(44, 122, 104, 0.42);
+  border-radius: 10px;
+  background: rgba(255, 253, 248, 0.96);
+  box-shadow: 0 4px 18px rgba(29, 36, 40, 0.2);
+}
+
+.plicy-quick-nav[hidden] {
+  display: none;
+}
+
+.plicy-quick-nav button {
+  min-width: 104px;
+  border-color: transparent;
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+@media (max-width: 1320px) {
+  body.plicy-build .setup-layout > .panel:first-child {
+    order: 1;
+  }
+
+  body.plicy-build .setup-layout > .setup-roster-panel {
+    order: 2;
+    border-color: rgba(44, 122, 104, 0.48);
+    background: #f7fcf9;
+  }
+
+  body.plicy-build .setup-layout > section.panel {
+    order: 3;
+  }
+
+  body.plicy-build .setup-launch-button {
+    position: sticky;
+    z-index: 5;
+    top: 8px;
+    box-shadow: 0 3px 12px rgba(29, 36, 40, 0.16);
+  }
+}
+
+@media (max-width: 680px) {
+  .plicy-quick-nav {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+  }
+
+  .plicy-quick-nav button {
+    flex: 1 1 50%;
+    min-width: 0;
+  }
+}

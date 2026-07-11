@@ -99,6 +99,11 @@ setupScreen.addEventListener("change", (event) => {
     renderSetup();
   }
   if (event.target.id === "mapSelect") {
+    const nextMap = lookup().maps[event.target.value];
+    if (isFreeBattle() && !freeBattleMapAvailable(nextMap)) {
+      renderSetup();
+      return;
+    }
     state.selectedMapId = event.target.value;
     state.freeBattleEnemy = null;
     state.formation = [];
@@ -242,6 +247,11 @@ setupScreen.addEventListener("click", (event) => {
     renderStageSelect();
   }
   if (action === "select-free-battle-map") {
+    const map = lookup().maps[button.dataset.mapId];
+    if (!freeBattleMapAvailable(map)) {
+      renderFreeBattleSelect();
+      return;
+    }
     state.battleMode = "free";
     state.freeBattleEnemy = null;
     state.selectedMapId = button.dataset.mapId;

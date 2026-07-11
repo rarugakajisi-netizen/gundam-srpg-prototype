@@ -30,6 +30,8 @@
 - `package.json`: ローカル起動、データチェック、バランス診断の npm scripts。
 - `work/check-game-data.js`: 最終状態のゲームデータ整合性チェック。参照切れや編成不能など、壊れているデータを失敗扱いにする。
 - `work/card-balance-report.js`: カード枚数、コスト帯、連続攻撃命中、低コスト物量、多武装、高回避スタック、武器効率、広域スキル、ステージ敵総コストなどのバランス確認用スクリプト。強弱の再確認候補を出すための診断で、失敗判定用ではない。
+- `work/package-release.js`: 友人配布用のフォルダとZIPを `dist/` に生成する。開発用ファイルやGitHub設定は配布物に含めない。
+- `distribution/`: 配布物だけに追加する起動バッチと案内文。
 
 ## 作業時の基本方針
 
@@ -75,6 +77,16 @@
 4. プレイヤー向けに説明が必要なルールなら `README.md` を更新する。
 5. `npm run check` で、最終データとして壊れていないか確認する。
 6. バランスを見る場合は `npm run report:balance` を実行する。
+
+## 友人向け配布版の作成
+
+1. `npm run check` を実行し、ゲームデータと主要処理が正常であることを確認する。
+2. `npm run package` を実行する。
+3. `dist/gundam-srpg-prototype-<version>.zip` を友人へ渡す。
+
+配布版にはゲーム本体、プレイヤー向けREADME、起動バッチ、案内文だけを収録する。`work/`、`DEVELOPMENT_GUIDE.md`、`.github/`、`.git/`、ローカルのセーブデータは含めない。配布ファイル名のバージョンは `package.json` の `version` と同期する。
+
+Plicyへアップロードする場合は `npm run package:plicy` を実行し、`dist/gundam-srpg-prototype-plicy-<version>.zip` を使用する。Plicy版は通常版と同じゲームデータ・実装を使用し、生成時だけ `plicy.css` と `plicy.js` を追加する。起動バッチやローカル配布案内は含めない。
 
 ## カードデータの設計メモ
 

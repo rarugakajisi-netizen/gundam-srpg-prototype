@@ -22,7 +22,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  min-width: 1440px;
+  min-width: 0;
   background: var(--bg);
   color: var(--ink);
 }
@@ -1473,4 +1473,110 @@ select {
 
 .log-item:first-child {
   font-weight: 700;
+}
+
+@media (max-width: 1320px) {
+  .setup-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .setup-layout > .panel,
+  .setup-layout > .setup-roster-panel {
+    position: static;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .setup-roster-panel .roster-list {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 1180px) {
+  .app-shell {
+    width: min(100% - 24px, 960px);
+    padding-top: 12px;
+  }
+
+  .title-layout,
+  .stage-layout,
+  .battle-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stage-detail-panel,
+  .side-panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .title-panel {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 680px) {
+  .app-shell {
+    width: calc(100% - 16px);
+    padding-bottom: 16px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .topbar h1 {
+    font-size: clamp(20px, 7vw, 30px);
+  }
+
+  .phase-pill {
+    min-width: 0;
+    padding: 7px 10px;
+  }
+
+  .panel,
+  .board-wrap {
+    padding: 10px;
+  }
+
+  .title-panel {
+    min-height: 280px;
+    padding: 20px;
+  }
+
+  .title-panel h2 {
+    font-size: clamp(30px, 10vw, 44px);
+  }
+
+  .filter-bar label,
+  .filter-bar input,
+  .filter-bar select,
+  .filter-bar input[type="search"],
+  .stage-filter-bar label,
+  .stage-filter-bar input[type="search"] {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .stage-grid,
+  .stage-folder-grid,
+  .card-grid,
+  .picker-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .battle-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .battle-toolbar > div {
+    justify-content: flex-start;
+  }
+
+  .select-with-action {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
 }
