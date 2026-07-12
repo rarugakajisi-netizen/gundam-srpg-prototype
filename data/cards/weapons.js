@@ -42,6 +42,25 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "ballSharkMouthCannon",
+    "name": "ボール用強化キャノン",
+    "cost": 0,
+    "power": 125,
+    "accuracy": 62,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "cannon",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "federation"
+    ]
+  },
+  {
     "id": "oggoRocket",
     "name": "オッゴ用ロケット弾",
     "cost": 0,

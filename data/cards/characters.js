@@ -5823,6 +5823,28 @@ window.GAME_DATA.characters = [
     "imagePath": ""
   },
   {
+    "id": "federicoCzariano",
+    "name": "フェデリコ・ツァリアーノ",
+    "characterKey": "federicoCzariano",
+    "faction": "federation",
+    "cost": 100,
+    "shooting": 18,
+    "melee": 12,
+    "reaction": 15,
+    "awakening": 0,
+    "command": 19,
+    "support": 8,
+    "maintenance": 7,
+    "roles": [
+      "pilot",
+      "commander"
+    ],
+    "specials": [
+      "capturedOperation"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "gundamExPilot",
     "name": "謎の少年兵",
     "characterKey": "gundamExPilot",

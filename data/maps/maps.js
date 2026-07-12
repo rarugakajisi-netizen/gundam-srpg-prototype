@@ -319,6 +319,103 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "greatSerpentVanishesAtLoum",
+    "name": "大蛇はルウムに消えた",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 4,
+          "y": 9
+        },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 6, "y": 9 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 3,
+          "y": 0
+        },
+        "escortBattleships": [
+          { "x": 5, "y": 0 }
+        ],
+        "units": [
+          { "x": 0, "y": 1 },
+          { "x": 2, "y": 1 },
+          { "x": 4, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 3, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "debris", "space", "space", "space", "space", "space", "wreckage", "space",
+      "space", "space", "space", "space", "space", "debris", "space", "space",
+      "space", "wreckage", "space", "space", "debris", "space", "space", "space",
+      "debris", "space", "space", "space", "space", "space", "wreckage", "space",
+      "space", "space", "debris", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "wreckage", "space", "space", "space",
+      "space", "wreckage", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "debris", "space", "space", "space", "space",
+      "debris", "space", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "space", "space", "space", "space", "wreckage"
+    ]
+  },
+  {
+    "id": "howlStainedInTheSettingSun",
+    "name": "遠吠えは落日に染まった",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 4,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 3,
+          "y": 0
+        },
+        "units": [
+          { "x": 0, "y": 1 },
+          { "x": 2, "y": 1 },
+          { "x": 4, "y": 1 },
+          { "x": 7, "y": 1 },
+          { "x": 1, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 6, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "desert", "desert", "desert", "desert", "desert", "desert", "desert",
+      "desert", "plain", "plain", "desert", "desert", "plain", "plain", "desert",
+      "desert", "plain", "rock", "plain", "plain", "rock", "plain", "desert",
+      "plain", "plain", "plain", "desert", "desert", "plain", "plain", "plain",
+      "desert", "rock", "plain", "plain", "plain", "plain", "rock", "desert",
+      "desert", "plain", "plain", "ruin", "ruin", "plain", "plain", "desert",
+      "plain", "plain", "rock", "plain", "plain", "rock", "plain", "plain",
+      "desert", "plain", "plain", "base", "base", "plain", "plain", "desert",
+      "desert", "desert", "plain", "plain", "plain", "plain", "desert", "desert",
+      "desert", "desert", "desert", "desert", "desert", "desert", "desert", "desert"
+    ]
+  },
+  {
     "id": "garmaFalls",
     "name": "ガルマ散る",
     "type": "ground",

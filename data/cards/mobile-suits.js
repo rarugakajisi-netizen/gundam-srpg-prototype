@@ -35,6 +35,37 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "ballSharkMouth",
+    "name": "ボール（シャークマウス）",
+    "faction": "federation",
+    "cost": 70,
+    "armor": 150,
+    "energy": 35,
+    "agility": 8,
+    "mobility": 4,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "ballSharkMouthCannon"
+    ],
+    "mapTypes": [
+      "space"
+    ],
+    "movementType": "normal",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": true
+    },
+    "tags": [
+      "ball",
+      "supportPod"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "oggo",
     "name": "オッゴ",
     "faction": "zeon",

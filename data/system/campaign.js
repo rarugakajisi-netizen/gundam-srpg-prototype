@@ -251,6 +251,135 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "greatSerpentVanishesAtLoum",
+      "series": "msIgloo",
+      "order": 410,
+      "tags": [
+        "MS IGLOO",
+        "ジオン視点",
+        "宇宙",
+        "艦隊戦",
+        "ルウム",
+        "第603技術試験隊"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "magellan",
+      "enemyEscortBattleshipIds": ["salamis"],
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "ルウム宙域で、マゼランとサラミスを中核とする連邦艦隊をジオン側から迎撃します。既存のルウム戦場に、増強されたセイバーフィッシュ隊が展開します。",
+      "enemyFormations": {
+        "federation": [
+          {
+            "msId": "saberfish",
+            "characterIds": ["texanDimitry"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "saberfish",
+            "characterIds": ["federationVeteran"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "saberfish",
+            "characterIds": ["federationVeteran"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "saberfish",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "saberfish",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "howlStainedInTheSettingSun",
+      "series": "msIgloo",
+      "order": 420,
+      "tags": [
+        "MS IGLOO",
+        "ジオン視点",
+        "地上",
+        "砂漠",
+        "防衛",
+        "セモベンテ隊",
+        "鹵獲機"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": null,
+      "summary": "夕暮れのアリゾナ砂漠で、行動不能となったコムサイを連邦軍セモベンテ隊から守ります。61式戦車と鹵獲ザクIIの混成部隊を迎撃する防衛戦です。",
+      "defenseTargets": [
+        {
+          "name": "行動不能のコムサイ",
+          "x": 3,
+          "y": 7,
+          "armor": 360,
+          "mobility": 0
+        }
+      ],
+      "enemyFormations": {
+        "federation": [
+          {
+            "msId": "zaku2",
+            "characterIds": ["federicoCzariano"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": [],
+            "factionOverride": "federation"
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": [],
+            "factionOverride": "federation"
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": [],
+            "factionOverride": "federation"
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": [],
+            "factionOverride": "federation"
+          },
+          {
+            "msId": "type61Tank",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "type61Tank",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "type61Tank",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
       "mapId": "garmaFalls",
       "series": "main",
       "order": 20,

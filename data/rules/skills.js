@@ -620,6 +620,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "capturedOperation",
+    "name": "鹵獲運用",
+    "type": "キャラ",
+    "timing": "編成時",
+    "effect": "連邦部隊の編成時、ジオン軍のモビルスーツへ搭乗できる。",
+    "implemented": true
+  },
+  {
     "id": "transform",
     "name": "変形",
     "type": "機体",

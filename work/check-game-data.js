@@ -266,7 +266,12 @@ function createChecker(data) {
     }
     const ms = expectId(`${scope}.msId`, "mobileSuits", entry.msId);
     if (!ms) return;
-    if (ms.faction !== faction) error(scope, `機体勢力が編成勢力と一致しません: ${ms.faction} !== ${faction}`);
+    if (entry.factionOverride !== undefined) expectFaction(`${scope}.factionOverride`, entry.factionOverride);
+    const capturedOperator = list(entry.characterIds)
+      .map((id) => indexes.characters[id])
+      .find((character) => (character?.specials ?? []).includes("capturedOperation") && ms.faction === "zeon" && character.faction === faction);
+    const factionOverridden = entry.factionOverride === faction;
+    if (ms.faction !== faction && !capturedOperator && !factionOverridden) error(scope, `機体勢力が編成勢力と一致しません: ${ms.faction} !== ${faction}`);
     if (map && !mobileSuitCanDeployOnMap(ms, map)) error(scope, `${itemLabel(ms)} は ${map.name} に出撃できません。`);
     if (entry.armorOverride !== undefined) expectNumber(scope, entry, "armorOverride", { integer: true });
     if (entry.aiInactiveUntilTurn !== undefined) expectNumber(scope, entry, "aiInactiveUntilTurn", { integer: true });

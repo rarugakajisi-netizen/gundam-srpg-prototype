@@ -235,6 +235,25 @@ function characterUsableByFaction(character, faction) {
   return cardUsableByFaction(character, faction);
 }
 
+function characterCanPilotMobileSuit(character, ms, faction) {
+  if (!character || !ms || !characterUsableByFaction(character, faction)) return false;
+  if (cardUsableByFaction(ms, faction)) return true;
+  return faction === "federation"
+    && ms.faction === "zeon"
+    && (character.specials ?? []).includes("capturedOperation");
+}
+
+function mobileSuitUsableByFaction(ms, faction) {
+  if (!ms) return false;
+  if (cardUsableByFaction(ms, faction)) return true;
+  if (faction !== "federation" || ms.faction !== "zeon" || !state.data?.characters) return false;
+  return state.data.characters.some((character) =>
+    characterSelectable(character)
+    && hasCard("characters", character.id)
+    && characterCanPilotMobileSuit(character, ms, faction)
+  );
+}
+
 function characterSelectable(character) {
   return character?.selectable !== false;
 }
@@ -893,7 +912,7 @@ function selectionWithinOwnedCounts(type, ids) {
 function playableFactions() {
   return Object.keys(state.data.factions).filter((faction) => {
     const hasShip = state.data.battleships.some((ship) => ship.faction === faction && hasCard("battleships", ship.id));
-    const hasMs = state.data.mobileSuits.some((ms) => ms.faction === faction && hasCard("mobileSuits", ms.id));
+    const hasMs = state.data.mobileSuits.some((ms) => mobileSuitUsableByFaction(ms, faction) && hasCard("mobileSuits", ms.id));
     const hasCharacter = state.data.characters.some((character) => characterSelectable(character) && characterUsableByFaction(character, faction) && hasCard("characters", character.id));
     return hasShip && hasMs && hasCharacter;
   });
@@ -902,7 +921,7 @@ function playableFactions() {
 function playableFactionsOnMap(map = selectedMap()) {
   return playableFactions().filter((faction) => {
     const hasShip = state.data.battleships.some((ship) => ship.faction === faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship, map));
-    const hasMs = state.data.mobileSuits.some((ms) => ms.faction === faction && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms, map));
+    const hasMs = state.data.mobileSuits.some((ms) => mobileSuitUsableByFaction(ms, faction) && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms, map));
     return hasShip && hasMs;
   });
 }
@@ -916,7 +935,7 @@ function initializeSelections() {
     ? state.faction
     : mapFactions.includes(initialFaction) ? initialFaction : mapFactions[0] ?? initialFaction;
   const factionBattleship = state.data.battleships.find((ship) => ship.faction === state.faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship, currentMap));
-  const factionMs = state.data.mobileSuits.find((ms) => ms.faction === state.faction && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms, currentMap));
+  const factionMs = state.data.mobileSuits.find((ms) => mobileSuitUsableByFaction(ms, state.faction) && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms, currentMap));
   const factionCharacter = state.data.characters.find((character) => characterSelectable(character) && characterUsableByFaction(character, state.faction) && hasCard("characters", character.id));
   state.selectedBattleshipId = factionBattleship?.id ?? "";
   const bridge = defaultBridgeSelection(state.faction);
@@ -1020,7 +1039,7 @@ function restoreFormationSnapshot(profile) {
     const optionIds = Array.isArray(entry?.optionIds) ? entry.optionIds : [];
     const charactersValid = characterIds.every((id) => data.characters[id]
       && characterSelectable(data.characters[id])
-      && characterUsableByFaction(data.characters[id], state.faction)
+      && characterCanPilotMobileSuit(data.characters[id], ms, state.faction)
       && hasCard("characters", id)
       && !usedCharacters.has(id));
     const weaponsValid = Boolean(ms) && weaponIds.every((id) => data.weapons[id]
@@ -1031,7 +1050,7 @@ function restoreFormationSnapshot(profile) {
       && optionEquippableByMs(data.options[id], ms, map, state.faction));
     const restored = { msId: entry?.msId, characterIds, weaponIds, optionIds };
     const valid = ms
-      && ms.faction === state.faction
+      && mobileSuitUsableByFaction(ms, state.faction)
       && hasCard("mobileSuits", ms.id)
       && mobileSuitCanDeployOnMap(ms, map)
       && charactersValid
