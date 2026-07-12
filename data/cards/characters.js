@@ -928,7 +928,7 @@ window.GAME_DATA.characters = [
       "pilot"
     ],
     "specials": [
-      "outstandingTalent"
+      "spaceCombatAdaptation"
     ],
     "imagePath": ""
   },

@@ -194,6 +194,12 @@ function aquaticCombatAdaptationActive(unit) {
     && terrainAt(unit.x, unit.y) === "water";
 }
 
+function spaceCombatAdaptationActive(unit) {
+  return isMobileSuit(unit)
+    && unitHasSkill(unit, "spaceCombatAdaptation")
+    && ["space", "debris"].includes(terrainAt(unit.x, unit.y));
+}
+
 function mobileSuitIsAquaticOrSpaceOnly(unit) {
   if (!isMobileSuit(unit)) return false;
   const ms = msFor(unit);
@@ -781,6 +787,7 @@ function skillAccuracyBonus(unit, defender, weapon) {
   if (pilotSupplyActive(unit)) bonus += 5;
   if (marineSpaceSupportActive(unit)) bonus += 5;
   if (aquaticCombatAdaptationActive(unit)) bonus += 6;
+  if (spaceCombatAdaptationActive(unit)) bonus += 6;
   if (oldSoldierPrideActive(unit, defender)) bonus += 5;
   bonus += schemingAccuracyBonus(unit);
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus += 5;
@@ -812,6 +819,7 @@ function skillEvasionBonus(unit) {
   if (internalAuditActive(unit)) bonus += 4;
   if (marineSpaceSupportActive(unit)) bonus += 5;
   if (aquaticCombatAdaptationActive(unit)) bonus += 6;
+  if (spaceCombatAdaptationActive(unit)) bonus += 6;
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus -= 4;
   if (examSystemActive(unit)) bonus += 18;
   if (hadesSystemActive(unit)) bonus += HADES_EVASION_BONUS;
@@ -949,6 +957,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "allyBackup") && hasAllyAhead(attacker)) notes.push("味方援護");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "sandAmbush") && terrainAt(attacker.x, attacker.y) === "desert") notes.push("砂塵の伏兵");
   if (aquaticCombatAdaptationActive(attacker)) notes.push("水中戦適応");
+  if (spaceCombatAdaptationActive(attacker)) notes.push("空間戦適応");
   if (isMobileSuit(defender) && msFor(defender).movementType === "flying" && weaponHasSkill(weapon, "antiAir")) notes.push("対空中");
   if (terrainAt(defender.x, defender.y) === "desert" && (unitHasSkill(attacker, "antiDesert") || weaponHasSkill(weapon, "antiDesert"))) notes.push("対砂漠");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
@@ -972,6 +981,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (weapon.kind === "ammo" && freezyYardActive(defender)) notes.push("フリージーヤード");
   if (isMobileSuit(defender) && massProductionFormationActive(defender)) notes.push("量産機編成防御");
   if (aquaticCombatAdaptationActive(defender)) notes.push("水中戦適応防御");
+  if (spaceCombatAdaptationActive(defender)) notes.push("空間戦適応防御");
   if (schemingActive(defender)) notes.push("策謀防御");
   if (isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence")) notes.push("無垢な存在");
   if (isMobileSuit(defender) && unitHasSkill(defender, "oldSoldierPride")) notes.push("老兵の意地:回避低下");

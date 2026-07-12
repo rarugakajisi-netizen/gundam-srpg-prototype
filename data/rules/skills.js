@@ -156,6 +156,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "spaceCombatAdaptation",
+    "name": "空間戦適応",
+    "type": "キャラ",
+    "timing": "宇宙マス上",
+    "effect": "MS搭乗時、自分が宇宙空間・デブリマスにいる間、命中・回避+6。",
+    "implemented": true
+  },
+  {
     "id": "beamDisruption",
     "name": "ビーム撹乱幕",
     "type": "機体/武器",

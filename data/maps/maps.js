@@ -1088,6 +1088,79 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "jaburoFalls",
+    "name": "ジャブローに散る！",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          {
+            "x": 1,
+            "y": 8
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 4,
+            "y": 8
+          },
+          {
+            "x": 6,
+            "y": 8
+          }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
+            "x": 6,
+            "y": 1
+          },
+          {
+            "x": 4,
+            "y": 2
+          }
+        ]
+      }
+    },
+    "terrain": [
+      "rock", "urban", "urban", "water", "water", "urban", "urban", "rock",
+      "urban", "urban", "water", "water", "water", "water", "urban", "urban",
+      "rock", "urban", "water", "urban", "water", "urban", "urban", "rock",
+      "urban", "urban", "water", "urban", "water", "urban", "ruin", "urban",
+      "urban", "water", "water", "water", "water", "water", "water", "urban",
+      "urban", "water", "urban", "ruin", "urban", "urban", "water", "urban",
+      "rock", "water", "urban", "urban", "urban", "water", "water", "rock",
+      "urban", "water", "water", "water", "water", "water", "urban", "urban",
+      "urban", "urban", "ruin", "urban", "water", "urban", "urban", "urban",
+      "rock", "urban", "urban", "urban", "urban", "urban", "urban", "rock"
+    ]
+  },
+  {
     "id": "ballHell",
     "name": "ボール地獄",
     "type": "space",

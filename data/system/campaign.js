@@ -471,7 +471,10 @@ window.GAME_DATA.campaign = {
             "weaponIds": [
               "gatlingShield"
             ],
-            "optionIds": []
+            "optionIds": [
+              "optionBooster"
+            ],
+            "armorOverride": 450
           }
         ]
       }
@@ -512,6 +515,66 @@ window.GAME_DATA.campaign = {
           },
           {
             "msId": "zgok",
+            "characterIds": [
+              "zeonAquaticSoldier"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "jaburoFalls",
+      "series": "main",
+      "order": 50,
+      "tags": [
+        "本編",
+        "地上",
+        "地下基地",
+        "水路",
+        "ジャブロー",
+        "シャア"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "summary": "大小の水路が走る地下洞窟基地ジャブローで、シャア率いる水陸両用モビルスーツ部隊を迎え撃ちます。水路を使う敵の機動と、岩壁や基地遺構で分断された射線に注意が必要です。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "charZgok",
+            "characterIds": [
+              "char"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "zock",
+            "characterIds": [
+              "boraskiniv"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "acguy",
+            "characterIds": [
+              "akahana"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "acguy",
+            "characterIds": [
+              "zeonAquaticSoldier"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "gogg",
             "characterIds": [
               "zeonAquaticSoldier"
             ],

@@ -534,12 +534,14 @@ function stageRows() {
       + number(indexes.characters[stage.enemyFirstOfficerId]?.cost);
     const enemyCost = unitCost + number(indexes.battleships[stage.enemyBattleshipId]?.cost) + bridgeCost;
     const autoMargin = Math.max(80, Math.ceil(enemyCost * 0.15));
-    const costCap = Number.isFinite(stage.costCap) ? stage.costCap : Math.ceil((enemyCost + autoMargin) / 10) * 10;
+    const noEnemyBattleshipBonus = stage.enemyBattleshipId === null && !Number.isFinite(stage.costCap) ? 100 : 0;
+    const costCap = Number.isFinite(stage.costCap) ? stage.costCap : Math.ceil((enemyCost + autoMargin + noEnemyBattleshipBonus) / 10) * 10;
     const specialRules = [
       stage.turnLimit ? `turnLimit:${stage.turnLimit}` : "",
       stage.surviveTurns ? `survive:${stage.surviveTurns}` : "",
       stage.enemyReinforcements ? `reinforce:${stage.enemyReinforcements.countPerTurn ?? stage.enemyReinforcements.count ?? "?"}` : "",
       list(stage.defenseTargets).length ? `defense:${list(stage.defenseTargets).length}` : "",
+      noEnemyBattleshipBonus ? `noEnemyShipBonus:${noEnemyBattleshipBonus}` : "",
       stage.enemyBattleshipId ? `enemyShip:${stage.enemyBattleshipId}` : ""
     ].filter(Boolean);
     return {

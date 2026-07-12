@@ -429,7 +429,8 @@ function stageCostCap(mapId = state.selectedMapId) {
   const enemyCost = enemyTotalCostForStage(mapId);
   if (enemyCost <= 0) return state.data.costCap ?? 1200;
   const margin = Math.max(COST_CAP_MIN_MARGIN, Math.ceil(enemyCost * COST_CAP_MARGIN_RATE));
-  return Math.ceil((enemyCost + margin) / 10) * 10;
+  const noEnemyBattleshipBonus = stage.enemyBattleshipId === null ? NO_ENEMY_BATTLESHIP_COST_BONUS : 0;
+  return Math.ceil((enemyCost + margin + noEnemyBattleshipBonus) / 10) * 10;
 }
 
 function stagePlayable(map) {

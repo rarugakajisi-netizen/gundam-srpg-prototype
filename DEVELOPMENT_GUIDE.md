@@ -213,6 +213,7 @@ unit.weaponCharges = {
 - `enemyFormations`: 敵勢力ごとの編成。
 - `enemyBattleshipId`: 敵戦艦を固定したい時に指定する。`null` なら敵戦艦なし。
 - `costCap`: ステージ固有の出撃上限。未指定なら敵総コストをもとに自動計算。
+- `enemyBattleshipId: null` かつ `costCap` 未指定の通常ステージは、自軍だけが戦艦コストを負担する差を和らげるため、通常の自動計算へ100コストを追加する。明示した `costCap` とフリーバトルには適用しない。
 - `turnLimit`: 通常ステージ専用の特殊敗北条件。指定ターン終了までに敵を撃破できないと敗北。フリー対戦では反映しない。
 - `surviveTurns`: 通常ステージ専用の特殊勝利条件。指定ターン終了まで生き延びると勝利。フリー対戦では反映しない。
 - `enemyReinforcements`: 通常ステージ専用の敵増援。`{ startTurn, endTurn, countPerTurn, entries }` を指定し、自軍ターン開始時に空きマスへ敵を追加する。フリー対戦では反映しない。
