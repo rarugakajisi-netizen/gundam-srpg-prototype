@@ -469,6 +469,56 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "tripleDomAssault",
+      "series": "main",
+      "order": 35,
+      "tags": [
+        "本編",
+        "地上",
+        "荒野",
+        "黒い三連星",
+        "ドム",
+        "ジェット・ストリーム・アタック"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "summary": "開けた荒野で、黒い三連星のドム隊が高速連携攻撃を仕掛けます。少数のドップをかわしながら、ジャイアント・バズを構えた三機の隊列を崩して迎撃します。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "dom",
+            "characterIds": ["gaia"],
+            "weaponIds": ["giantBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "dom",
+            "characterIds": ["mash"],
+            "weaponIds": ["giantBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "dom",
+            "characterIds": ["ortega"],
+            "weaponIds": ["giantBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "dopp",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "dopp",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
       "mapId": "shudderingMountainPart1",
       "series": "08th",
       "order": 130,

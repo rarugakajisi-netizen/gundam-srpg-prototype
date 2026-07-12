@@ -871,6 +871,52 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "tripleDomAssault",
+    "name": "迫撃！トリプル・ドム！",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 3, "y": 1 },
+          { "x": 1, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 0, "y": 1 },
+          { "x": 7, "y": 1 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "desert", "desert", "desert", "desert", "desert", "desert", "desert",
+      "desert", "desert", "plain", "plain", "plain", "plain", "desert", "desert",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "desert",
+      "plain", "plain", "rock", "plain", "plain", "rock", "plain", "plain",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "plain", "rock", "plain", "plain", "plain", "plain", "rock", "plain",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "desert",
+      "desert", "desert", "plain", "rock", "rock", "plain", "desert", "desert",
+      "desert", "desert", "desert", "plain", "plain", "desert", "desert", "desert",
+      "desert", "desert", "desert", "desert", "desert", "desert", "desert", "desert"
+    ]
+  },
+  {
     "id": "shudderingMountainPart1",
     "name": "震える山(前編)",
     "type": "ground",
