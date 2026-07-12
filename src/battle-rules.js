@@ -935,7 +935,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "highOutputGenerator") && weapon.kind === "beam") damage += 12;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "precisionMeleeProgram") && weapon.attackType === "melee") damage += 12;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "sandAmbush") && terrainAt(attacker.x, attacker.y) === "desert") damage += 12;
-  if (isMobileSuit(defender) && msFor(defender).movementType === "flying" && weaponHasSkill(weapon, "antiAir")) damage += 18;
+  if (isMobileSuit(defender) && unitIsFlying(defender) && weaponHasSkill(weapon, "antiAir")) damage += 18;
   if (terrainAt(defender.x, defender.y) === "desert" && (unitHasSkill(attacker, "antiDesert") || weaponHasSkill(weapon, "antiDesert"))) damage += 18;
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) damage += 20;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) damage += 8;
@@ -985,7 +985,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "sandAmbush") && terrainAt(attacker.x, attacker.y) === "desert") notes.push("砂塵の伏兵");
   if (aquaticCombatAdaptationActive(attacker)) notes.push("水中戦適応");
   if (spaceCombatAdaptationActive(attacker)) notes.push("空間戦適応");
-  if (isMobileSuit(defender) && msFor(defender).movementType === "flying" && weaponHasSkill(weapon, "antiAir")) notes.push("対空中");
+  if (isMobileSuit(defender) && unitIsFlying(defender) && weaponHasSkill(weapon, "antiAir")) notes.push("対空中");
   if (terrainAt(defender.x, defender.y) === "desert" && (unitHasSkill(attacker, "antiDesert") || weaponHasSkill(weapon, "antiDesert"))) notes.push("対砂漠");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
@@ -1172,7 +1172,8 @@ function triggerMines(unit) {
 
 function canUseCoreSystem(unit) {
   if (!isMobileSuit(unit) || unit.coreSystemUsed || !msFor(unit).specials.includes("coreSystem")) return false;
-  return Boolean(lookup().ms[msFor(unit).escapeMsId ?? "coreFighter"]);
+  const escapeMs = lookup().ms[msFor(unit).escapeMsId ?? "coreFighter"];
+  return Boolean(escapeMs) && unitCanRemainAirborne(unit, escapeMs);
 }
 
 function additionalArmorTargetMs(unit) {
@@ -1187,11 +1188,14 @@ function canPurgeAdditionalArmor(unit) {
   if (!targetMs || targetMs.id === msFor(unit).id) return false;
   if (!cardUsableByFaction(targetMs, unit.faction)) return false;
   if (!cardCanStandAt(targetMs, unit.x, unit.y)) return false;
+  if (!unitCanRemainAirborne(unit, targetMs)) return false;
   return true;
 }
 
 function canUseEscapeShip(unit) {
-  return isBattleship(unit) && !unit.escapeShipUsed && Boolean(battleshipFor(unit).escapeShipId);
+  if (!isBattleship(unit) || unit.escapeShipUsed || !battleshipFor(unit).escapeShipId) return false;
+  const escapeShip = lookup().battleships[battleshipFor(unit).escapeShipId];
+  return Boolean(escapeShip) && unitCanRemainAirborne(unit, escapeShip);
 }
 
 function transformToCoreFighter(unit) {
@@ -1305,7 +1309,8 @@ function attack(attacker, defender, weapon, renderAfter = true) {
 
 function applyDamage(unit, amount) {
   const vehicleOption = activeVehicleOption(unit);
-  if (amount > 0 && isMobileSuit(unit) && vehicleOption && !unit.vehicleOptionDisabled) {
+  const airMapSfs = selectedMap().type === "air" && optionProvidesAirDeployment(vehicleOption);
+  if (amount > 0 && isMobileSuit(unit) && vehicleOption && !unit.vehicleOptionDisabled && !airMapSfs) {
     unit.vehicleOptionDisabled = true;
     state.log.push(`${unitName(unit)}の${vehicleOption.name ?? "乗り物"}が損傷し、効果を失った。`);
   }
@@ -1330,6 +1335,7 @@ function applyDamage(unit, amount) {
 function discardVehicleOption(unit, renderAfter = true) {
   const vehicleOption = activeVehicleOption(unit);
   if (!isMobileSuit(unit) || !vehicleOption || unit.vehicleOptionDisabled) return false;
+  if (selectedMap().type === "air" && optionProvidesAirDeployment(vehicleOption) && !mobileSuitNativelyAirborne(msFor(unit))) return false;
   unit.vehicleOptionDisabled = true;
   state.log.push(`${unitName(unit)}が${vehicleOption.name ?? "乗り物"}を切り離した。`);
   if (renderAfter) renderBattle();
@@ -1358,6 +1364,7 @@ function canTransformToMs(unit, targetMsId) {
   if (!transformTargetIds(unit).includes(targetMs.id)) return false;
   if (!cardUsableByFaction(targetMs, unit.faction)) return false;
   if (!cardCanStandAt(targetMs, unit.x, unit.y)) return false;
+  if (!unitCanRemainAirborne(unit, targetMs)) return false;
   return true;
 }
 

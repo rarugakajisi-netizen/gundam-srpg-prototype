@@ -541,7 +541,24 @@ function stageRows() {
     const bridgeCost = number(indexes.characters[stage.enemyCaptainId]?.cost)
       + number(indexes.characters[stage.enemyFirstOfficerId]?.cost);
     const escortShipCost = list(stage.enemyEscortBattleshipIds).reduce((sum, id) => sum + number(indexes.battleships[id]?.cost), 0);
-    const enemyCost = unitCost + number(indexes.battleships[stage.enemyBattleshipId]?.cost) + escortShipCost + bridgeCost;
+    const reinforcement = stage.enemyReinforcements;
+    const reinforcementEntries = list(reinforcement?.entries);
+    const reinforcementCount = Math.max(0, Math.floor(number(reinforcement?.countPerTurn ?? reinforcement?.count) || reinforcementEntries.length));
+    const reinforcementStart = Math.max(1, Math.floor(number(reinforcement?.startTurn) || 2));
+    const reinforcementEnd = Number.isFinite(Number(reinforcement?.endTurn)) ? Math.max(reinforcementStart, Math.floor(Number(reinforcement.endTurn))) : reinforcementStart;
+    const reinforcementTurns = reinforcement ? reinforcementEnd - reinforcementStart + 1 : 0;
+    const reinforcementMsCost = Array.from({ length: reinforcementCount }, (_, index) => {
+      const entry = reinforcementEntries[index % Math.max(1, reinforcementEntries.length)];
+      return entry ? number(indexes.mobileSuits[entry.msId]?.cost)
+        + list(entry.characterIds).reduce((sum, id) => sum + number(indexes.characters[id]?.cost), 0)
+        + list(entry.weaponIds).reduce((sum, id) => sum + number(indexes.weapons[id]?.cost), 0)
+        + list(entry.optionIds).reduce((sum, id) => sum + number(indexes.options[id]?.cost), 0) : 0;
+    }).reduce((sum, cost) => sum + cost, 0);
+    const reinforcementShipCost = list(reinforcement?.battleships).reduce((sum, entry) => sum
+      + number(indexes.battleships[entry.battleshipId]?.cost)
+      + list(entry.characterIds).reduce((crewSum, id) => crewSum + number(indexes.characters[id]?.cost), 0), 0);
+    const enemyCost = unitCost + number(indexes.battleships[stage.enemyBattleshipId]?.cost) + escortShipCost + bridgeCost
+      + reinforcementTurns * (reinforcementMsCost + reinforcementShipCost);
     const autoMargin = Math.max(80, Math.ceil(enemyCost * 0.15));
     const noEnemyBattleshipBonus = stage.enemyBattleshipId === null && !Number.isFinite(stage.costCap) ? 100 : 0;
     const costCap = Number.isFinite(stage.costCap) ? stage.costCap : Math.ceil((enemyCost + autoMargin + noEnemyBattleshipBonus) / 10) * 10;

@@ -453,7 +453,8 @@ window.GAME_DATA.options = [
     "cost": 85,
     "effectType": "vehicle",
     "grantsSkill": "subFlightSystem",
-    "effectText": "移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。ミサイルを追加する。",
+    "allowsAirDeployment": true,
+    "effectText": "移動力+2。効果中は格闘武器不可。通常マップでは被ダメージまたは任意切り離しで効果を失う。空中マップでは被弾解除されず、飛行維持中は切り離せない。ミサイルを追加する。",
     "value": 2,
     "forbidsMelee": true,
     "mapTypes": [
@@ -474,7 +475,8 @@ window.GAME_DATA.options = [
     "cost": 50,
     "effectType": "vehicle",
     "grantsSkill": "subFlightSystem",
-    "effectText": "移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。武装なしの運搬専門。",
+    "allowsAirDeployment": true,
+    "effectText": "移動力+2。効果中は格闘武器不可。通常マップでは被ダメージまたは任意切り離しで効果を失う。空中マップでは被弾解除されず、飛行維持中は切り離せない。武装なしの運搬専門。",
     "value": 2,
     "forbidsMelee": true,
     "uniqueSkill": true,
@@ -551,7 +553,8 @@ window.GAME_DATA.options = [
     "cost": 90,
     "effectType": "vehicle",
     "grantsSkill": "subFlightSystem",
-    "effectText": "地上専用の飛行SFS。移動力+2。効果中は格闘武器不可。被ダメージまたは任意切り離しで効果を失う。ミサイルを追加する。",
+    "allowsAirDeployment": true,
+    "effectText": "地上・空中用の飛行SFS。移動力+2。効果中は格闘武器不可。通常マップでは被ダメージまたは任意切り離しで効果を失う。空中マップでは被弾解除されず、飛行維持中は切り離せない。ミサイルを追加する。",
     "value": 2,
     "forbidsMelee": true,
     "mapTypes": [
@@ -571,8 +574,9 @@ window.GAME_DATA.options = [
     "name": "ライトライナー",
     "cost": 35,
     "effectType": "mobility",
+    "allowsAirDeployment": true,
     "value": 1,
-    "effectText": "地上専用の簡易飛行SFS。移動力+1。武装なしの安価な支援装備。",
+    "effectText": "地上・空中用の簡易飛行SFS。移動力+1。空中マップでは搭乗機と耐久を共有し、飛行維持中は解除できない。武装なしの安価な支援装備。",
     "mapTypes": [
       "ground"
     ],

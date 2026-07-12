@@ -23,6 +23,7 @@ function checkOutcome() {
   const infiltrator = state.units.find((unit) => unitReachedInfiltrationTarget(unit));
   const survivalLimit = stageSurvivalTurnLimit();
   const survivalComplete = survivalLimit !== null && state.phase === "player" && state.turnNumber > survivalLimit;
+  const reinforcementsPending = stageEnemyReinforcementsPending();
 
   if (!playerBattleshipAlive || !playerAlive) {
     state.outcome = "敗北";
@@ -47,7 +48,7 @@ function checkOutcome() {
     state.outcomeMessage = "";
     state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
     phaseLabel.textContent = state.outcome;
-  } else if (survivalLimit === null && ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive)) {
+  } else if (survivalLimit === null && !reinforcementsPending && ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive)) {
     state.outcome = "勝利";
     state.outcomeMessage = "";
     state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);

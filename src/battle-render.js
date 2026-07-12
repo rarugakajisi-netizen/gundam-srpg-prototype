@@ -362,7 +362,7 @@ function attackButtons(attacker, target) {
   if (!attackableTarget) return `<p class="small">敵を選ぶと、未使用の武器で攻撃できます。</p>`;
   return attackWeapons(attacker).map((weapon) => {
     const used = weaponUsed(attacker, weapon.id);
-    const cannotTarget = weapon.cannotTargetFlying && isMobileSuit(target) && msFor(target).movementType === "flying";
+    const cannotTarget = weapon.cannotTargetFlying && isMobileSuit(target) && unitIsFlying(target);
     const concealed = weapon.attackType === "shooting" && unitIsConcealedFrom(target, attacker);
     const reachable = weaponReachableByRange(attacker, target, weapon);
     const blocked = reachable && weaponBlockedByObstacle(attacker, target, weapon);
@@ -514,9 +514,10 @@ function vehicleOptionButton(unit) {
   if (!vehicleOption) return "";
   const mobilityValue = vehicleOption.value ?? 0;
   const mobilityLabel = mobilityValue >= 0 ? `移動+${mobilityValue}` : `移動${mobilityValue}`;
+  const airRequired = selectedMap().type === "air" && optionProvidesAirDeployment(vehicleOption) && !mobileSuitNativelyAirborne(msFor(unit));
   return `
-    <button data-action="discard-vehicle" ${state.outcome || state.phase !== "player" || unit.side !== "player" ? "disabled" : ""}>
-      切り離し<br><span class="button-detail">${vehicleOption.name} / ${mobilityLabel}${vehicleOption.forbidsMelee ? " / 格闘不可" : ""}</span>
+    <button data-action="discard-vehicle" ${state.outcome || state.phase !== "player" || unit.side !== "player" || airRequired ? "disabled" : ""}>
+      切り離し<br><span class="button-detail">${vehicleOption.name} / ${mobilityLabel}${vehicleOption.forbidsMelee ? " / 格闘不可" : ""}${airRequired ? " / 空中では解除不可" : ""}</span>
     </button>
   `;
 }

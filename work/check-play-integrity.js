@@ -98,12 +98,15 @@ function mapHasStandableCell(card, map) {
 }
 
 function mapDeployTypes(map) {
-  return map.type === "colony" ? ["ground", "space"] : [map.type];
+  if (map.type === "colony") return ["ground", "space"];
+  if (map.type === "air") return ["ground"];
+  return [map.type];
 }
 
 function mobileSuitCanDeployOnMap(ms, map) {
   const deployTypes = mapDeployTypes(map);
   return list(ms.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
+    && (map.type !== "air" || ms.movementType === "flying")
     && mapHasStandableCell(ms, map);
 }
 
@@ -111,6 +114,7 @@ function battleshipCanDeployOnMap(ship, map) {
   const deployTypes = mapDeployTypes(map);
   return ship.selectable !== false
     && list(ship.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
+    && (map.type !== "air" || ship.movementType === "flying")
     && mapHasStandableCell(ship, map);
 }
 

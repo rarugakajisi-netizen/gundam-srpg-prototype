@@ -614,6 +614,16 @@ function stageEnemyReinforcements(mapId = state.selectedMapId) {
   return config && typeof config === "object" ? config : null;
 }
 
+function stageEnemyReinforcementsPending(mapId = state.selectedMapId) {
+  const config = stageEnemyReinforcements(mapId);
+  if (!config) return false;
+  const startTurn = Math.max(1, Math.floor(Number(config.startTurn) || 2));
+  const endTurn = Number.isFinite(Number(config.endTurn))
+    ? Math.max(startTurn, Math.floor(Number(config.endTurn)))
+    : startTurn;
+  return state.turnNumber < endTurn;
+}
+
 function stageDefenseTargets(mapId = state.selectedMapId) {
   if (isFreeBattle()) return [];
   return Array.isArray(stageConfig(mapId).defenseTargets) ? stageConfig(mapId).defenseTargets : [];
@@ -921,7 +931,7 @@ function playableFactions() {
 function playableFactionsOnMap(map = selectedMap()) {
   return playableFactions().filter((faction) => {
     const hasShip = state.data.battleships.some((ship) => ship.faction === faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship, map));
-    const hasMs = state.data.mobileSuits.some((ms) => mobileSuitUsableByFaction(ms, faction) && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms, map));
+    const hasMs = state.data.mobileSuits.some((ms) => mobileSuitUsableByFaction(ms, faction) && hasCard("mobileSuits", ms.id) && mobileSuitCanPotentiallyDeployOnMap(ms, map, faction));
     return hasShip && hasMs;
   });
 }
@@ -935,7 +945,7 @@ function initializeSelections() {
     ? state.faction
     : mapFactions.includes(initialFaction) ? initialFaction : mapFactions[0] ?? initialFaction;
   const factionBattleship = state.data.battleships.find((ship) => ship.faction === state.faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship, currentMap));
-  const factionMs = state.data.mobileSuits.find((ms) => mobileSuitUsableByFaction(ms, state.faction) && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms, currentMap));
+  const factionMs = state.data.mobileSuits.find((ms) => mobileSuitUsableByFaction(ms, state.faction) && hasCard("mobileSuits", ms.id) && mobileSuitCanPotentiallyDeployOnMap(ms, currentMap, state.faction));
   const factionCharacter = state.data.characters.find((character) => characterSelectable(character) && characterUsableByFaction(character, state.faction) && hasCard("characters", character.id));
   state.selectedBattleshipId = factionBattleship?.id ?? "";
   const bridge = defaultBridgeSelection(state.faction);
@@ -991,7 +1001,7 @@ function applyStarterFormation() {
       const ms = lookup().ms[entry.msId];
       const characterIds = mobileSuitCanHavePilot(ms) ? (entry.characterIds ?? []).slice(0, mobileSuitPilotSlots(ms)) : [];
       const valid = hasCard("mobileSuits", entry.msId)
-        && mobileSuitCanDeployOnMap(ms, map)
+        && mobileSuitCanDeployOnMap(ms, map, entry.optionIds ?? [])
         && characterIds.every((id) => hasCard("characters", id))
         && entry.weaponIds.every((id) => hasCard("weapons", id))
         && (entry.optionIds ?? []).every((id) => hasCard("options", id) && optionEquippableByMs(lookup().options[id], ms, map, state.faction));
@@ -1052,7 +1062,7 @@ function restoreFormationSnapshot(profile) {
     const valid = ms
       && mobileSuitUsableByFaction(ms, state.faction)
       && hasCard("mobileSuits", ms.id)
-      && mobileSuitCanDeployOnMap(ms, map)
+      && mobileSuitCanDeployOnMap(ms, map, optionIds)
       && charactersValid
       && weaponsValid
       && optionsValid

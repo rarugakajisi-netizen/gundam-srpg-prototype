@@ -1101,6 +1101,10 @@ select {
   background: #d8dbe4;
 }
 
+.cell.terrain-air {
+  background: linear-gradient(145deg, #6eaed8, #c5e4f4);
+}
+
 .cell.terrain-debris {
   background: #c7c5ce;
 }

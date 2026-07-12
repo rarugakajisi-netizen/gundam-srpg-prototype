@@ -202,12 +202,15 @@ unit.weaponCharges = {
 - `factions`: 使用できる勢力。
 - `effectType` / `value`: 移動力やENなどを直接補正する場合に使う。
 - `maxMsCost`: 装備可能な機体の基礎コスト上限。省略時は制限なし。
+- `allowsAirDeployment`: 空中マップへの出撃を可能にする飛行SFSだけに `true` を指定する。移動砲台系SFSには付けない。
 
 オプションは、機体の個性を消す万能補助ではなく、弱点補助か方向性の強化に寄せます。
 
 ### ステージ
 
 `data/system/campaign.js` の `campaign.stages` に追加します。
+
+マップの `type: "air"` は空中戦専用です。`movementType: "flying"` の機体・戦艦だけが出撃でき、地上用MSは `allowsAirDeployment: true` のSFS装備時に限り出撃できます。空中では飛行を失う変形・脱出・パージと、飛行維持に必要なSFSの切り離しは不可です。飛行SFSは被弾で解除されず、搭乗MSの耐久がそのままSFSの耐久を兼ねます。
 
 - `mapId`: 使用するマップ。
 - `summary`: ステージ選択画面で見せる説明。
@@ -219,6 +222,7 @@ unit.weaponCharges = {
 - `turnLimit`: 通常ステージ専用の特殊敗北条件。指定ターン終了までに敵を撃破できないと敗北。フリー対戦では反映しない。
 - `surviveTurns`: 通常ステージ専用の特殊勝利条件。指定ターン終了まで生き延びると勝利。フリー対戦では反映しない。
 - `enemyReinforcements`: 通常ステージ専用の敵増援。`{ startTurn, endTurn, countPerTurn, entries }` を指定し、自軍ターン開始時に空きマスへ敵を追加する。フリー対戦では反映しない。
+- 敵増援の `battleships`: `[{ battleshipId, characterIds }]` で戦艦増援を指定する。MS増援と同じ条件ターンに敵側の空きマスへ出現する。
 - 敵編成/増援エントリの `armorOverride`: ステージギミック用に出撃時HPを上書きする。通常カード性能を変えずにHP1の的や特殊個体を作る場合に使う。
 - 敵編成エントリの `aiInactiveUntilTurn`: 指定ターン未満の敵AI行動を待機させる。`4`なら第1〜3ターンは行動せず、第4ターンから通常行動する。フリーバトルのランダム敵編成には引き継がれない。
 - 敵編成エントリの `factionOverride`: 鹵獲機など、カード本来の勢力とステージ上の所属が異なる個体の所属を上書きする。通常のプレイヤー編成ではキャラスキルによる搭乗許可を使う。

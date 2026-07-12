@@ -380,6 +380,72 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "phantomRacesInOrbit",
+      "series": "msIgloo",
+      "order": 430,
+      "tags": [
+        "MS IGLOO",
+        "ジオン視点",
+        "宇宙",
+        "地球直上",
+        "防衛",
+        "増援",
+        "HLV"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": null,
+      "costCap": 1500,
+      "enemyReinforcements": {
+        "startTurn": 3,
+        "endTurn": 3,
+        "countPerTurn": 3,
+        "entries": [
+          {
+            "msId": "earlyGm",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["beamSprayGun"],
+            "optionIds": []
+          }
+        ],
+        "battleships": [
+          {
+            "battleshipId": "salamis",
+            "characterIds": ["federationOfficer"]
+          }
+        ]
+      },
+      "summary": "地球直上の宙間で、地表から打ち上げられたHLV船団を護衛します。初期のシャークマウス隊を退けた後、第3ターンにサラミスと初期型ジム隊が増援として出現します。HLVが全滅すると敗北です。",
+      "defenseTargets": [
+        { "name": "HLV 1", "x": 0, "y": 5, "armor": 260, "mobility": 0 },
+        { "name": "HLV 2", "x": 2, "y": 6, "armor": 260, "mobility": 0 },
+        { "name": "HLV 3", "x": 4, "y": 5, "armor": 260, "mobility": 0 },
+        { "name": "HLV 4", "x": 6, "y": 6, "armor": 260, "mobility": 0 },
+        { "name": "HLV 5", "x": 7, "y": 4, "armor": 260, "mobility": 0 }
+      ],
+      "enemyFormations": {
+        "federation": [
+          {
+            "msId": "ballSharkMouth",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "ballSharkMouth",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "ballSharkMouth",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
       "mapId": "garmaFalls",
       "series": "main",
       "order": 20,

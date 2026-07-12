@@ -26,7 +26,7 @@ const DATA_PATHS = [
 const COUNTED_COLLECTION_TYPES = new Set(["mobileSuits", "weapons", "options"]);
 const COLLECTION_TYPES = ["mobileSuits", "battleships", "weapons", "characters", "options"];
 const TERRAIN_KEYS = ["water", "forest", "desert", "debris"];
-const MAP_TYPES = new Set(["ground", "space", "colony"]);
+const MAP_TYPES = new Set(["ground", "space", "colony", "air"]);
 const DEPLOY_TYPES = new Set(["ground", "space"]);
 const MOVEMENT_TYPES = new Set(["normal", "flying", "submarine"]);
 const BLOCKING_TERRAINS = new Set(["obstacle", "cliff", "rock", "building", "wreckage", "domeRuin", "ruin"]);
@@ -58,7 +58,9 @@ function isNonNegativeFinite(value) {
 }
 
 function mapDeployTypes(map) {
-  return map.type === "colony" ? ["ground", "space"] : [map.type];
+  if (map.type === "colony") return ["ground", "space"];
+  if (map.type === "air") return ["ground"];
+  return [map.type];
 }
 
 function terrainAt(map, x, y) {
@@ -88,9 +90,10 @@ function mapHasStandableCell(card, map) {
   return false;
 }
 
-function mobileSuitCanDeployOnMap(ms, map) {
+function mobileSuitCanDeployOnMap(ms, map, options = []) {
   const deployTypes = mapDeployTypes(map);
   return list(ms.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
+    && (map.type !== "air" || ms.movementType === "flying" || options.some((option) => option?.allowsAirDeployment === true))
     && mapHasStandableCell(ms, map);
 }
 
@@ -98,6 +101,7 @@ function battleshipCanDeployOnMap(ship, map) {
   const deployTypes = mapDeployTypes(map);
   return ship.selectable !== false
     && list(ship.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
+    && (map.type !== "air" || ship.movementType === "flying")
     && mapHasStandableCell(ship, map);
 }
 
@@ -272,13 +276,14 @@ function createChecker(data) {
       .find((character) => (character?.specials ?? []).includes("capturedOperation") && ms.faction === "zeon" && character.faction === faction);
     const factionOverridden = entry.factionOverride === faction;
     if (ms.faction !== faction && !capturedOperator && !factionOverridden) error(scope, `機体勢力が編成勢力と一致しません: ${ms.faction} !== ${faction}`);
-    if (map && !mobileSuitCanDeployOnMap(ms, map)) error(scope, `${itemLabel(ms)} は ${map.name} に出撃できません。`);
     if (entry.armorOverride !== undefined) expectNumber(scope, entry, "armorOverride", { integer: true });
     if (entry.aiInactiveUntilTurn !== undefined) expectNumber(scope, entry, "aiInactiveUntilTurn", { integer: true });
 
     const characterIds = list(entry.characterIds);
     const weaponIds = list(entry.weaponIds);
     const optionIds = list(entry.optionIds);
+    const entryOptions = optionIds.map((id) => indexes.options[id]).filter(Boolean);
+    if (map && !mobileSuitCanDeployOnMap(ms, map, entryOptions)) error(scope, `${itemLabel(ms)} は ${map.name} に出撃できません。`);
     const usedCharacters = new Set();
     const pilotSlots = mobileSuitPilotSlots(ms);
     if (characterIds.length > pilotSlots) {
@@ -433,6 +438,7 @@ function createChecker(data) {
       const scope = `options.${option.id}`;
       expectNumber(scope, option, "cost");
       expectNumber(scope, option, "maxMsCost", { integer: true, required: false });
+      if (option.allowsAirDeployment !== undefined && typeof option.allowsAirDeployment !== "boolean") error(scope, "allowsAirDeployment は真偽値で指定してください。");
       expectFactions(scope, option.factions, true);
       list(option.mapTypes).forEach((type) => {
         if (!DEPLOY_TYPES.has(type)) error(scope, `不明な mapTypes です: ${type}`);
@@ -533,11 +539,23 @@ function createChecker(data) {
             if (stage.enemyReinforcements[key] !== undefined) expectNumber(reinforcementScope, stage.enemyReinforcements, key, { integer: true });
           });
           const reinforcementEntries = list(stage.enemyReinforcements.entries);
-          if (reinforcementEntries.length === 0) {
-            error(`${reinforcementScope}.entries`, "1件以上の増援エントリが必要です。");
-          } else {
-            reinforcementEntries.forEach((entry, entryIndex) => validateFormationEntry(entry, `${reinforcementScope}.entries[${entryIndex}]`, stage.enemyFaction, map, { playerControlled: false }));
-          }
+          const reinforcementBattleships = list(stage.enemyReinforcements.battleships);
+          if (reinforcementEntries.length === 0 && reinforcementBattleships.length === 0) error(reinforcementScope, "MSまたは戦艦の増援エントリが1件以上必要です。");
+          reinforcementEntries.forEach((entry, entryIndex) => validateFormationEntry(entry, `${reinforcementScope}.entries[${entryIndex}]`, stage.enemyFaction, map, { playerControlled: false }));
+          reinforcementBattleships.forEach((entry, entryIndex) => {
+            const entryScope = `${reinforcementScope}.battleships[${entryIndex}]`;
+            if (!isPlainObject(entry)) {
+              error(entryScope, "オブジェクトである必要があります。");
+              return;
+            }
+            const ship = expectId(`${entryScope}.battleshipId`, "battleships", entry.battleshipId);
+            if (ship && ship.faction !== stage.enemyFaction) error(entryScope, `戦艦勢力が enemyFaction と一致しません: ${ship.faction} !== ${stage.enemyFaction}`);
+            if (ship && map && !battleshipCanDeployOnMap(ship, map)) error(entryScope, `${itemLabel(ship)} は ${map.name} に出撃できません。`);
+            list(entry.characterIds).forEach((id) => {
+              const character = expectId(`${entryScope}.characterIds`, "characters", id);
+              if (character && character.faction !== stage.enemyFaction) error(entryScope, `乗員勢力が enemyFaction と一致しません: ${character.faction} !== ${stage.enemyFaction}`);
+            });
+          });
         }
       }
       list(stage.defenseTargets).forEach((target, targetIndex) => {

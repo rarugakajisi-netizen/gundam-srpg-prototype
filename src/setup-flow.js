@@ -81,9 +81,9 @@ function normalizeSelections() {
     state.selectedBattleshipId = state.data.battleships.find((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, currentMap))?.id ?? "";
   }
   const selectedMs = ms[state.selectedMsId];
-  const selectedMsInvalid = !selectedMs || !hasCard("mobileSuits", selectedMs.id) || !mobileSuitUsableByFaction(selectedMs, state.faction) || !mobileSuitCanDeployOnMap(selectedMs, currentMap);
+  const selectedMsInvalid = !selectedMs || !hasCard("mobileSuits", selectedMs.id) || !mobileSuitUsableByFaction(selectedMs, state.faction) || !mobileSuitCanPotentiallyDeployOnMap(selectedMs, currentMap, state.faction);
   if (selectedMsInvalid) {
-    state.selectedMsId = state.data.mobileSuits.find((item) => mobileSuitUsableByFaction(item, state.faction) && hasCard("mobileSuits", item.id) && mobileSuitCanDeployOnMap(item, currentMap))?.id ?? "";
+    state.selectedMsId = state.data.mobileSuits.find((item) => mobileSuitUsableByFaction(item, state.faction) && hasCard("mobileSuits", item.id) && mobileSuitCanPotentiallyDeployOnMap(item, currentMap, state.faction))?.id ?? "";
   }
   const normalizedMs = ms[state.selectedMsId];
   if (normalizedMs) {
@@ -276,15 +276,21 @@ function freeBattleRandomWeapons(ms, remainingBudget) {
 
 function freeBattleRandomOptions(ms, faction, remainingBudget, map = selectedMap()) {
   const slots = Math.max(0, Number(ms.optionSlots ?? 1) || 0);
-  if (slots <= 0 || Math.random() > 0.35) return [];
-  return shuffled(state.data.options ?? [])
+  if (slots <= 0) return [];
+  const candidates = shuffled(state.data.options ?? [])
     .filter((option) => optionEquippableByMs(option, ms, map, faction) && (option.cost ?? 0) <= Math.max(35, remainingBudget * 0.2))
-    .slice(0, slots)
-    .map((option) => option.id);
+  if (map.type === "air" && !mobileSuitNativelyAirborne(ms)) {
+    return shuffled(state.data.options ?? [])
+      .filter((option) => optionProvidesAirDeployment(option) && optionEquippableByMs(option, ms, map, faction))
+      .slice(0, 1)
+      .map((option) => option.id);
+  }
+  if (Math.random() > 0.35) return [];
+  return candidates.slice(0, slots).map((option) => option.id);
 }
 
 function freeBattleRandomEntry(faction, map, usedKeys, remainingBudget) {
-  const candidates = state.data.mobileSuits.filter((ms) => ms.faction === faction && mobileSuitCanDeployOnMap(ms, map));
+  const candidates = state.data.mobileSuits.filter((ms) => ms.faction === faction && mobileSuitCanPotentiallyDeployOnMap(ms, map, faction));
   if (candidates.length === 0) return null;
   const ms = weightedRandomChoice(candidates, (item) => {
     const target = Math.max(60, remainingBudget * 0.55);
@@ -422,10 +428,26 @@ function enemyTotalCostForStage(mapId = state.selectedMapId) {
   const enemyBridge = enemyShip ? enemyBridgeForStage(mapId, faction) : {};
   const escortShipCost = stageEnemyEscortBattleshipIds(mapId)
     .reduce((sum, id) => sum + (lookup().battleships[id]?.cost ?? 0), 0);
+  const reinforcementConfig = stageConfig(mapId).enemyReinforcements;
+  const reinforcementEntries = Array.isArray(reinforcementConfig?.entries) ? reinforcementConfig.entries : [];
+  const reinforcementCount = Math.max(0, Math.floor(Number(reinforcementConfig?.countPerTurn ?? reinforcementConfig?.count) || reinforcementEntries.length));
+  const reinforcementStart = Math.max(1, Math.floor(Number(reinforcementConfig?.startTurn) || 2));
+  const reinforcementEnd = Number.isFinite(Number(reinforcementConfig?.endTurn))
+    ? Math.max(reinforcementStart, Math.floor(Number(reinforcementConfig.endTurn)))
+    : reinforcementStart;
+  const reinforcementTurns = reinforcementConfig ? reinforcementEnd - reinforcementStart + 1 : 0;
+  const reinforcementMsCostPerTurn = Array.from({ length: reinforcementCount }, (_, index) =>
+    reinforcementEntries.length > 0 ? formationEntryCost(reinforcementEntries[index % reinforcementEntries.length]) : 0
+  ).reduce((sum, cost) => sum + cost, 0);
+  const reinforcementShipCostPerTurn = (Array.isArray(reinforcementConfig?.battleships) ? reinforcementConfig.battleships : [])
+    .reduce((sum, entry) => sum
+      + (lookup().battleships[entry.battleshipId]?.cost ?? 0)
+      + crewCost(entry.characterIds ?? []), 0);
   return (enemyShip?.cost ?? 0)
     + escortShipCost
     + crewCost([enemyBridge.captainId, enemyBridge.firstOfficerId])
-    + enemyEntries.reduce((sum, entry) => sum + formationEntryCost(entry), 0);
+    + enemyEntries.reduce((sum, entry) => sum + formationEntryCost(entry), 0)
+    + reinforcementTurns * (reinforcementMsCostPerTurn + reinforcementShipCostPerTurn);
 }
 
 function stageCostCap(mapId = state.selectedMapId) {
@@ -1467,7 +1489,7 @@ function renderFormationPicker(kind, owner = "") {
   const selectedMapData = selectedMap();
   const title = kind === "mobileSuit" ? "機体を一覧から選ぶ" : kind === "battleship" ? "戦艦を一覧から選ぶ" : `${ownerLabel(owner)}を一覧から選ぶ`;
   const items = kind === "mobileSuit"
-    ? state.data.mobileSuits.filter((item) => mobileSuitUsableByFaction(item, state.faction) && hasCard("mobileSuits", item.id) && mobileSuitCanDeployOnMap(item, selectedMapData))
+    ? state.data.mobileSuits.filter((item) => mobileSuitUsableByFaction(item, state.faction) && hasCard("mobileSuits", item.id) && mobileSuitCanPotentiallyDeployOnMap(item, selectedMapData, state.faction))
     : kind === "battleship"
       ? state.data.battleships.filter((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, selectedMapData))
     : state.data.characters.filter((item) => characterSelectable(item)
@@ -1641,7 +1663,7 @@ function renderSetup() {
     ? `総コスト ${cost} / 上限なし（敵は出撃時に近いコスト帯でランダム生成）`
     : `総コスト ${cost} / ${cap}（敵総コスト${enemyCost}）`;
   const availableBattleships = state.data.battleships.filter((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, selectedMapData));
-  const availableMs = state.data.mobileSuits.filter((item) => mobileSuitUsableByFaction(item, state.faction) && hasCard("mobileSuits", item.id) && mobileSuitCanDeployOnMap(item, selectedMapData));
+  const availableMs = state.data.mobileSuits.filter((item) => mobileSuitUsableByFaction(item, state.faction) && hasCard("mobileSuits", item.id) && mobileSuitCanPotentiallyDeployOnMap(item, selectedMapData, state.faction));
   const selectedMsForCharacters = ms[state.selectedMsId] ?? availableMs[0];
   const availableCharacters = state.data.characters.filter((item) => characterSelectable(item) && characterCanPilotMobileSuit(item, selectedMsForCharacters, state.faction) && hasCard("characters", item.id));
   const selectedBattleship = battleships[state.selectedBattleshipId] ?? availableBattleships[0];
@@ -1653,6 +1675,7 @@ function renderSetup() {
     && weaponSlotCost(weapon) <= selectedWeaponSlots);
   const availableOptions = (state.data.options ?? []).filter((option) => remainingCardCopies("options", option.id) > 0 && optionEquippableByMs(option, selectedMs, selectedMapData, state.faction));
   const selectedOption = options[state.selectedOptionId];
+  const selectedEntryCanDeploy = selectedMs ? mobileSuitCanDeployOnMap(selectedMs, selectedMapData, state.selectedOptionId ? [state.selectedOptionId] : []) : false;
   const selectedCharacter = characters[state.selectedCharacterId];
   const selectedMsRemaining = selectedMs ? remainingCardCopies("mobileSuits", selectedMs.id) : 0;
   const selectedMsCanHavePilot = mobileSuitCanHavePilot(selectedMs);
@@ -1755,8 +1778,9 @@ function renderSetup() {
         </select>
         ${selectedOption ? renderOptionDetails(selectedOption, { open: true }) : `<p class="small">${(selectedMs.optionSlots ?? 1) > 0 ? "オプションなし" : "この機体はオプションを装備できません。"}</p>`}
       </div>
-      <button class="primary-button" data-action="add" ${(!free && projectedCost > cap) || selectedMsRemaining < 1 ? "disabled" : ""}>この組み合わせを追加（+${addCost}）</button>
+      <button class="primary-button" data-action="add" ${(!free && projectedCost > cap) || selectedMsRemaining < 1 || !selectedEntryCanDeploy ? "disabled" : ""}>この組み合わせを追加（+${addCost}）</button>
       ${selectedMsRemaining < 1 ? `<p class="support-hint">この機体カードの残り枚数がありません。</p>` : ""}
+      ${selectedMapData.type === "air" && !selectedEntryCanDeploy ? `<p class="support-hint">空中マップでは飛行機体、または飛行SFS装備の機体だけ出撃できます。</p>` : ""}
     </section>
 
     <aside class="panel stack setup-roster-panel">
@@ -1861,7 +1885,7 @@ function battleshipRosterCard(ship) {
 
 function chooseMobileSuit(msId) {
   const ms = lookup().ms[msId];
-  if (!ms || !hasCard("mobileSuits", ms.id) || !mobileSuitCanDeployOnMap(ms, selectedMap())) return;
+  if (!ms || !hasCard("mobileSuits", ms.id) || !mobileSuitCanPotentiallyDeployOnMap(ms, selectedMap(), state.faction)) return;
   state.selectedMsId = ms.id;
   state.selectedWeaponIds = defaultLoadout(ms);
   if (!mobileSuitCanHavePilot(ms)) state.selectedCharacterId = "";
@@ -1896,7 +1920,7 @@ function changeFaction(faction) {
   state.faction = faction;
   state.formation = [];
   const factionBattleship = state.data.battleships.find((ship) => ship.faction === faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship, currentMap));
-  const factionMs = state.data.mobileSuits.find((ms) => mobileSuitUsableByFaction(ms, faction) && hasCard("mobileSuits", ms.id) && mobileSuitCanDeployOnMap(ms, currentMap));
+  const factionMs = state.data.mobileSuits.find((ms) => mobileSuitUsableByFaction(ms, faction) && hasCard("mobileSuits", ms.id) && mobileSuitCanPotentiallyDeployOnMap(ms, currentMap, faction));
   const factionCharacter = state.data.characters.find((character) => characterSelectable(character) && characterUsableByFaction(character, faction) && hasCard("characters", character.id));
   state.selectedBattleshipId = factionBattleship?.id ?? "";
   const bridge = defaultBridgeSelection(faction);
@@ -1918,12 +1942,14 @@ function addFormationEntry() {
   if (!selectionWithinOwnedCounts("weapons", state.selectedWeaponIds)) return;
   if (state.selectedOptionId && !selectionWithinOwnedCounts("options", [state.selectedOptionId])) return;
   const selectedMs = lookup().ms[state.selectedMsId];
+  const optionIds = state.selectedOptionId ? [state.selectedOptionId] : [];
+  if (!mobileSuitCanDeployOnMap(selectedMs, selectedMap(), optionIds)) return;
   const characterIds = mobileSuitCanHavePilot(selectedMs) && state.selectedCharacterId ? [state.selectedCharacterId] : [];
   state.formation.push({
     msId: state.selectedMsId,
     characterIds,
     weaponIds: [...state.selectedWeaponIds],
-    optionIds: state.selectedOptionId ? [state.selectedOptionId] : []
+    optionIds
   });
   state.selectedCharacterId = mobileSuitCanHavePilot(selectedMs) ? (firstAvailableCharacter(state.faction)?.id ?? "") : "";
   state.selectedOptionId = "";
@@ -2117,7 +2143,8 @@ function spawnStageEnemyReinforcementsForTurn() {
     ? config.entries
     : (config.entry ? [config.entry] : []);
   const count = Math.max(0, Math.floor(Number(config.countPerTurn ?? config.count) || entries.length));
-  if (entries.length === 0 || count <= 0) return 0;
+  const battleshipEntries = Array.isArray(config.battleships) ? config.battleships : [];
+  if ((entries.length === 0 || count <= 0) && battleshipEntries.length === 0) return 0;
 
   const occupied = new Set(state.units.filter(isAlive).map((unit) => positionKey(unit.x, unit.y)));
   const spawned = [];
@@ -2140,14 +2167,29 @@ function spawnStageEnemyReinforcementsForTurn() {
     spawned.push(unit);
   }
 
-  if (spawned.length > 0) {
-    state.units.push(...spawned);
-    const name = lookup().ms[entries[0].msId]?.name ?? "敵";
-    state.log.push(`増援: ${name}が${spawned.length}機出現。`);
+  const spawnedBattleships = [];
+  for (const template of battleshipEntries) {
+    const ship = lookup().battleships[template.battleshipId];
+    if (!ship) continue;
+    const cell = reinforcementSpawnCells("enemy", occupied, ship)[0];
+    if (!cell) continue;
+    occupied.add(positionKey(cell.x, cell.y));
+    const unit = makeBattleship(ship.id, [...(template.characterIds ?? [])], "enemy", cell.x, cell.y);
+    unit.reinforcement = true;
+    spawnedBattleships.push(unit);
+  }
+
+  if (spawned.length > 0 || spawnedBattleships.length > 0) {
+    state.units.push(...spawned, ...spawnedBattleships);
+    if (spawned.length > 0) {
+      const name = lookup().ms[entries[0].msId]?.name ?? "敵";
+      state.log.push(`増援: ${name}が${spawned.length}機出現。`);
+    }
+    if (spawnedBattleships.length > 0) state.log.push(`増援: ${spawnedBattleships.map((unit) => unitName(unit)).join("、")}が出現。`);
   } else {
     state.log.push("増援: 出現可能な空きマスがありません。");
   }
-  return spawned.length;
+  return spawned.length + spawnedBattleships.length;
 }
 
 function deploymentRows(side, map = selectedMap()) {
@@ -2231,9 +2273,19 @@ function launchBattle() {
     renderSetup();
     return;
   }
+  if (!state.formation.every((entry) => formationEntryCanDeployOnMap(entry, selectedMap()))) {
+    state.log.push("空中出撃条件を満たしていない機体が編成に含まれています。");
+    renderSetup();
+    return;
+  }
   if (isFreeBattle()) prepareFreeBattleEnemy();
   const enemyFaction = enemyFactionForCurrentBattle();
   const enemyEntries = buildEnemyFormation(enemyFaction);
+  if (!enemyEntries.every((entry) => formationEntryCanDeployOnMap(entry, selectedMap()))) {
+    state.log.push("敵編成に、このマップへ出撃できない機体が含まれています。");
+    renderSetup();
+    return;
+  }
   const enemyBattleship = enemyBattleshipForCurrentBattle(state.selectedMapId, enemyFaction);
   const enemyEscortBattleships = stageEnemyEscortBattleshipIds()
     .map((id) => lookup().battleships[id])

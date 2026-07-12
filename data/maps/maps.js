@@ -416,6 +416,50 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "phantomRacesInOrbit",
+    "name": "軌道上に幻影は疾る",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 1, "y": 1 },
+          { "x": 4, "y": 1 },
+          { "x": 7, "y": 1 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "wreckage", "space", "space", "space", "space",
+      "space", "space", "debris", "space", "space", "debris", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "space", "wreckage", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
     "id": "garmaFalls",
     "name": "ガルマ散る",
     "type": "ground",

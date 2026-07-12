@@ -167,17 +167,20 @@ function inBounds(x, y, map = selectedMap()) {
 function mapTypeName(type) {
   if (type === "space") return "宇宙";
   if (type === "colony") return "コロニー";
+  if (type === "air") return "空中";
   return "地上";
 }
 
 function mapDeployTypes(map) {
   if (map.type === "colony") return ["ground", "space"];
+  if (map.type === "air") return ["ground"];
   return [map.type];
 }
 
 function terrainLabel(terrain) {
   return {
     plain: "平地",
+    air: "空中",
     forest: "森林",
     desert: "砂漠",
     water: "水中",
@@ -200,6 +203,7 @@ function terrainLabel(terrain) {
 
 function terrainShortLabel(terrain) {
   return {
+    air: "空",
     forest: "森",
     desert: "砂",
     water: "水",
@@ -221,7 +225,7 @@ function terrainAt(x, y) {
 }
 
 function terrainAtOnMap(map, x, y) {
-  return map.terrain[y * boardWidth(map) + x] ?? (map.type === "space" ? "space" : "plain");
+  return map.terrain[y * boardWidth(map) + x] ?? (map.type === "space" ? "space" : map.type === "air" ? "air" : "plain");
 }
 
 function terrainNeedsSuitability(terrain) {
@@ -336,7 +340,7 @@ function lineOfSightBlocked(attacker, defender) {
 }
 
 function weaponReachableByRange(attacker, defender, weapon) {
-  if (weapon.cannotTargetFlying && isMobileSuit(defender) && msFor(defender).movementType === "flying") return false;
+  if (weapon.cannotTargetFlying && isMobileSuit(defender) && unitIsFlying(defender)) return false;
   if (weapon.attackType === "shooting" && unitIsConcealedFrom(defender, attacker)) return false;
   const range = distance(attacker, defender);
   return range >= weaponMinRange(weapon) && range <= weaponMaxRange(attacker, weapon);
@@ -346,17 +350,56 @@ function weaponBlockedByObstacle(attacker, defender, weapon) {
   return !weapon.ignoresObstacles && lineOfSightBlocked(attacker, defender);
 }
 
-function mobileSuitCanDeployOnMap(ms, map = selectedMap()) {
+function optionProvidesAirDeployment(option) {
+  return option?.allowsAirDeployment === true;
+}
+
+function mobileSuitNativelyAirborne(ms) {
+  return ms?.movementType === "flying";
+}
+
+function mobileSuitCanDeployOnMap(ms, map = selectedMap(), optionIds = []) {
   const deployTypes = mapDeployTypes(map);
   return (ms.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
+    && (map.type !== "air" || mobileSuitNativelyAirborne(ms) || optionIds.some((id) => optionProvidesAirDeployment(lookup().options[id])))
     && mapHasStandableCell(ms, map);
+}
+
+function mobileSuitCanPotentiallyDeployOnMap(ms, map = selectedMap(), faction = state.faction) {
+  if (mobileSuitCanDeployOnMap(ms, map)) return true;
+  if (map.type !== "air" || (ms.optionSlots ?? 1) < 1) return false;
+  return (state.data.options ?? []).some((option) => optionProvidesAirDeployment(option) && optionEquippableByMs(option, ms, map, faction));
+}
+
+function formationEntryCanDeployOnMap(entry, map = selectedMap()) {
+  return mobileSuitCanDeployOnMap(lookup().ms[entry?.msId], map, entry?.optionIds ?? []);
 }
 
 function battleshipCanDeployOnMap(ship, map = selectedMap()) {
   const deployTypes = mapDeployTypes(map);
   return ship.selectable !== false
     && (ship.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
+    && (map.type !== "air" || ship.movementType === "flying")
     && mapHasStandableCell(ship, map);
+}
+
+function unitHasActiveAirDeploymentSfs(unit) {
+  return isMobileSuit(unit)
+    && !unit.vehicleOptionDisabled
+    && unitOptions(unit).some(optionProvidesAirDeployment);
+}
+
+function unitIsFlying(unit, targetMs = null) {
+  if (!unit) return false;
+  if (isBattleship(unit)) return battleshipFor(unit).movementType === "flying";
+  if (!isMobileSuit(unit)) return false;
+  return mobileSuitNativelyAirborne(targetMs ?? msFor(unit)) || unitHasActiveAirDeploymentSfs(unit);
+}
+
+function unitCanRemainAirborne(unit, targetCard = null) {
+  if (selectedMap().type !== "air") return true;
+  if (isBattleship(unit)) return (targetCard ?? battleshipFor(unit))?.movementType === "flying";
+  return unitIsFlying(unit, targetCard ?? msFor(unit));
 }
 
 function mobileSuitTerrainSuitability(ms, terrain) {
