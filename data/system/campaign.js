@@ -585,6 +585,218 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "zanzibarPursuit",
+      "series": "main",
+      "order": 60,
+      "tags": [
+        "本編",
+        "宇宙",
+        "地球上宙域",
+        "追撃戦",
+        "シャア"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "zanzibar",
+      "enemyCaptainId": "char",
+      "enemyFirstOfficerId": "",
+      "summary": "地球上宙域へ離脱したシャアのザンジバルを追撃します。開けた宙域に残る少数の戦艦残骸を盾に、リック・ドム隊と高速のビグロを突破して敵艦を捕捉します。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "rickDom",
+            "characterIds": [
+              "zeonSoldier"
+            ],
+            "weaponIds": [
+              "giantBazooka"
+            ],
+            "optionIds": []
+          },
+          {
+            "msId": "rickDom",
+            "characterIds": [
+              "zeonSoldier"
+            ],
+            "weaponIds": [
+              "giantBazooka"
+            ],
+            "optionIds": []
+          },
+          {
+            "msId": "bigro",
+            "characterIds": [
+              "tokwan"
+            ],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "battleOfSolomon",
+      "series": "main",
+      "order": 70,
+      "tags": [
+        "本編",
+        "宇宙",
+        "宇宙要塞",
+        "ソロモン",
+        "大規模戦",
+        "ドズル"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "dolos",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "宇宙要塞ソロモン周辺で、ドロス級空母を中核とする守備隊を攻略します。要塞外縁の岩塊と艦艇残骸を抜け、ドズルのビグ・ザムとガトー率いるモビルスーツ隊を撃破します。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "bigZam",
+            "characterIds": ["dozle"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "rickDomGato",
+            "characterIds": ["anavelGato"],
+            "weaponIds": ["beamBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "rickDom",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["giantBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "rickDom",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["giantBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["zakuBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "shiningSpace",
+      "series": "main",
+      "order": 80,
+      "tags": [
+        "本編",
+        "宇宙",
+        "ニュータイプ",
+        "エース",
+        "ララァ",
+        "シャア"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "summary": "静かな宇宙空間で、ララァのエルメスとシャア専用ゲルググに立ち向かいます。敵はわずか2機ながら、ビットによる長距離攻撃と高速のエース機が連携する決戦ステージです。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "elmeth",
+            "characterIds": ["lalah"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "charGelgoog",
+            "characterIds": ["char"],
+            "weaponIds": [
+              "zeonBeamRifle",
+              "gelgoogShield"
+            ],
+            "optionIds": ["rivalryOption"]
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "aBaoaQu",
+      "series": "main",
+      "order": 90,
+      "tags": [
+        "本編",
+        "最終ステージ",
+        "宇宙",
+        "宇宙要塞",
+        "ア・バオア・クー",
+        "大規模戦"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "dolos",
+      "enemyCaptainId": "eguilleDelaz",
+      "enemyFirstOfficerId": "",
+      "summary": "一年戦争最後の戦場、宇宙要塞ア・バオア・クーを攻略します。デラーズのドロス級を中核に、シャアのジオング、ガトーとエリクのゲルググ、残存モビルスーツ隊が要塞外縁で待ち受けます。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "zeong",
+            "characterIds": ["char"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "gelgoogGato",
+            "characterIds": ["anavelGato"],
+            "weaponIds": ["zeonBeamRifle", "gelgoogShield"],
+            "optionIds": []
+          },
+          {
+            "msId": "gelgoog",
+            "characterIds": ["erikBlanke"],
+            "weaponIds": ["zeonBeamRifle", "gelgoogShield"],
+            "optionIds": []
+          },
+          {
+            "msId": "rickDom",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["giantBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "rickDom",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["giantBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "rickDom",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["giantBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["zakuBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
       "mapId": "ballHell",
       "series": "other",
       "order": 900,

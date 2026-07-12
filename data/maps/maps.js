@@ -1161,6 +1161,210 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "zanzibarPursuit",
+    "name": "ザンジバル追撃！",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          {
+            "x": 1,
+            "y": 8
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 4,
+            "y": 8
+          },
+          {
+            "x": 6,
+            "y": 8
+          }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
+            "x": 4,
+            "y": 2
+          }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "wreckage", "wreckage", "space", "space", "space", "space",
+      "space", "space", "space", "wreckage", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "wreckage", "wreckage", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
+    "id": "battleOfSolomon",
+    "name": "ソロモン攻略戦",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 4, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 3, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 7, "y": 1 },
+          { "x": 2, "y": 2 },
+          { "x": 6, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "debris", "wreckage", "space", "space", "wreckage", "debris", "space",
+      "space", "space", "wreckage", "wreckage", "wreckage", "wreckage", "space", "space",
+      "space", "space", "debris", "wreckage", "wreckage", "debris", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "debris", "debris", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
+    "id": "shiningSpace",
+    "name": "光る宇宙",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 4, "y": 8 },
+          { "x": 6, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 3, "y": 1 },
+          { "x": 5, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "debris", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "space", "space", "debris", "space", "space",
+      "space", "space", "debris", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
+    "id": "aBaoaQu",
+    "name": "宇宙要塞ア・バオア・クー",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 3, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 7, "y": 1 },
+          { "x": 0, "y": 2 },
+          { "x": 2, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 7, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "debris", "debris", "space", "space", "space",
+      "space", "wreckage", "space", "wreckage", "wreckage", "space", "wreckage", "space",
+      "debris", "wreckage", "wreckage", "space", "space", "wreckage", "wreckage", "debris",
+      "space", "wreckage", "space", "debris", "debris", "space", "wreckage", "space",
+      "space", "space", "debris", "space", "space", "debris", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
     "id": "ballHell",
     "name": "ボール地獄",
     "type": "space",
