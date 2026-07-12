@@ -161,6 +161,51 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "vsWhiteBase1",
+      "series": "main",
+      "order": 15,
+      "tags": [
+        "本編",
+        "ジオン視点",
+        "コロニー",
+        "サイド7",
+        "ホワイトベース隊"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "whiteBase",
+      "enemyCaptainId": "bright",
+      "enemyFirstOfficerId": "sayla",
+      "summary": "サイド7から発進するホワイトベース隊を、ジオン側から迎え撃ちます。「ガンダム大地に立つ」のコロニーを上下反転し、基地側に布陣した連邦の新鋭部隊へ侵攻するステージです。",
+      "enemyFormations": {
+        "federation": [
+          {
+            "msId": "gundam",
+            "characterIds": ["amuro"],
+            "weaponIds": ["beamRifle", "shield"],
+            "optionIds": []
+          },
+          {
+            "msId": "guncannon",
+            "characterIds": ["kai"],
+            "weaponIds": ["guncannonBeamRifle"],
+            "optionIds": []
+          },
+          {
+            "msId": "guntank",
+            "characterIds": ["hayato"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "coreFighter",
+            "characterIds": ["ryu"],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
       "mapId": "battleOfLoum",
       "series": "originalHistory",
       "order": 210,
@@ -480,6 +525,116 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "vs08thTeam",
+      "series": "08th",
+      "order": 135,
+      "tags": [
+        "08小隊",
+        "ジオン視点",
+        "地上",
+        "森林",
+        "荒野",
+        "第08MS小隊"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "bigTray",
+      "enemyCaptainId": "kojima08",
+      "enemyFirstOfficerId": "",
+      "summary": "森林と荒野が接する戦場で、コジマのビッグ・トレーを旗艦とする08小隊をジオン側から迎え撃ちます。森林を進む近接部隊と、荒野から狙う長距離砲撃への対応が求められます。",
+      "enemyFormations": {
+        "federation": [
+          {
+            "msId": "gundamEz8",
+            "characterIds": ["shiroAmada"],
+            "weaponIds": ["federationMachineGun100mm", "smallShield"],
+            "optionIds": []
+          },
+          {
+            "msId": "groundGundamGmHead",
+            "characterIds": ["karenJoshua"],
+            "weaponIds": ["groundGundamBeamRifle", "smallShield"],
+            "optionIds": []
+          },
+          {
+            "msId": "groundGundam",
+            "characterIds": ["terrySandersJr"],
+            "weaponIds": ["cannon180mm"],
+            "optionIds": ["enhancedWarheadOption"]
+          },
+          {
+            "msId": "hoverTruck",
+            "characterIds": ["eledoreMassis"],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "shudderingMountainPart2",
+      "series": "08th",
+      "order": 140,
+      "tags": [
+        "08小隊",
+        "地上",
+        "ボス",
+        "山岳基地",
+        "アプサラス",
+        "ギニアス"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "kerguelen",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "kerguelenGirl",
+      "summary": "山岳基地の発着場で、ギニアスのアプサラスIIIと決戦します。ケルゲレンを背に、グフ・フライトタイプと戦闘ヘリ部隊が空から進軍を阻みます。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "apsaras3",
+            "characterIds": ["ghiniusSahalin"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "goufFlightType",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["tripleGatlingGun"],
+            "optionIds": []
+          },
+          {
+            "msId": "goufFlightType",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["tripleGatlingGun"],
+            "optionIds": []
+          },
+          {
+            "msId": "battleHelicopter08",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "battleHelicopter08",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "battleHelicopter08",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "battleHelicopter08",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
       "mapId": "atlanticBloodstained",
       "series": "main",
       "order": 40,
@@ -790,6 +945,144 @@ window.GAME_DATA.campaign = {
           {
             "msId": "zaku2",
             "characterIds": ["zeonSoldier"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "vsWhiteBase2",
+      "series": "main",
+      "order": 100,
+      "tags": [
+        "本編",
+        "ジオン視点",
+        "宇宙",
+        "ボス",
+        "ホワイトベース隊",
+        "デブリ帯"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "whiteBase",
+      "enemyCaptainId": "bright",
+      "enemyFirstOfficerId": "mirai",
+      "summary": "一年戦争末期、デブリ帯を進むホワイトベース隊とジオン側から決戦します。マグネット・コーティングを施したガンダムを中心に、完成された連携で迫る連邦の精鋭部隊を撃破します。",
+      "enemyFormations": {
+        "federation": [
+          {
+            "msId": "gundamMc",
+            "characterIds": ["amuroAwakened"],
+            "weaponIds": ["hyperBazooka", "beamRifle"],
+            "optionIds": []
+          },
+          {
+            "msId": "guncannon",
+            "characterIds": ["kai"],
+            "weaponIds": ["guncannonBeamRifle"],
+            "optionIds": []
+          },
+          {
+            "msId": "guncannon",
+            "characterIds": ["hayato"],
+            "weaponIds": ["guncannonBeamRifle"],
+            "optionIds": []
+          },
+          {
+            "msId": "coreBooster",
+            "characterIds": ["sayla"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "coreBooster",
+            "characterIds": ["sleggar"],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "acePilotZaku",
+      "series": "other",
+      "order": 910,
+      "tags": [
+        "その他",
+        "オールスター",
+        "コロニー",
+        "エース",
+        "専用機",
+        "ザク"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "summary": "地上用・宇宙用を問わず、専用ザクを駆るジオンのエースたちがコロニー内部に集結します。11機の専用機が一斉に迫る、ザク系オールスター戦です。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "charZaku2S",
+            "characterIds": ["char"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": []
+          },
+          {
+            "msId": "dozleZaku2",
+            "characterIds": ["dozle"],
+            "weaponIds": ["zakuBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "rambaZaku1",
+            "characterIds": ["ramba"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": []
+          },
+          {
+            "msId": "garmaZaku2S",
+            "characterIds": ["garma"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": []
+          },
+          {
+            "msId": "johnnyHighMobilityZaku",
+            "characterIds": ["johnnyRidden"],
+            "weaponIds": ["zakuBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "matsunagaHighMobilityZaku",
+            "characterIds": ["shinMatsunaga"],
+            "weaponIds": ["zakuBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku1Gerhart",
+            "characterIds": ["gerhartSchmitzer"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2WhiteOgre",
+            "characterIds": ["elmerSnell"],
+            "weaponIds": ["zakuBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "groundHighMobilityZakuAlma",
+            "characterIds": ["almaStirner"],
+            "weaponIds": ["zakuMachineGun"],
+            "optionIds": []
+          },
+          {
+            "msId": "groundHighMobilityZakuVincent",
+            "characterIds": ["vincentGleissner"],
+            "weaponIds": ["zakuBazooka"],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2FSolari",
+            "characterIds": ["iriaSolari"],
             "weaponIds": ["zakuMachineGun"],
             "optionIds": []
           }

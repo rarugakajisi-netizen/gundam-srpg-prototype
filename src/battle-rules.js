@@ -116,7 +116,8 @@ function mobilityFor(unit) {
   const vehicleBonus = activeVehicleOptions(unit).reduce((total, option) => total + (option.value ?? 0), 0);
   const stopMovementPenalty = hinderedByStopMovement(unit) ? 1 : 0;
   const retreatBonus = retreatMobilitySupportActive(unit) ? 1 : 0;
-  return Math.max(1, msFor(unit).mobility + optionBonus + vehicleBonus + retreatBonus - unitTerrainPenalty(unit).mobility - stopMovementPenalty);
+  const modernizationBonus = massProductionModernizationActive(unit) ? 1 : 0;
+  return Math.max(1, msFor(unit).mobility + optionBonus + vehicleBonus + retreatBonus + modernizationBonus - unitTerrainPenalty(unit).mobility - stopMovementPenalty);
 }
 
 function runtimeWeapon(unit, weaponId) {
@@ -134,6 +135,28 @@ function alliedBattleship(side) {
 
 function sideHasSkill(side, skillId) {
   return state.units.some((unit) => unit.side === side && isCombatUnit(unit) && isAlive(unit) && unitHasSkill(unit, skillId));
+}
+
+function massProductionModernizationSource(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit)) return null;
+  return state.units.find((source) => {
+    if (source.side !== unit.side || !isMobileSuit(source) || !isAlive(source)) return false;
+    if (source.msId !== unit.msId || distance(source, unit) > 3) return false;
+    const option = unitOptions(source).find((item) => item.grantsSkill === "massProductionModernization");
+    if (!option || Number(msFor(source).cost) > Number(option.maxMsCost ?? 150)) return false;
+    return state.units.some((ally) =>
+      ally.id !== source.id
+      && ally.side === source.side
+      && isMobileSuit(ally)
+      && isAlive(ally)
+      && ally.msId === source.msId
+      && distance(source, ally) <= 3
+    );
+  }) ?? null;
+}
+
+function massProductionModernizationActive(unit) {
+  return Boolean(massProductionModernizationSource(unit));
 }
 
 function alliedBattleshipInDanger(side) {
@@ -780,6 +803,7 @@ function skillAccuracyBonus(unit, defender, weapon) {
   if (unitHasSkill(unit, "commanderCustom")) bonus += 3;
   if (unitHasSkill(unit, "teamwork") && hasTeamworkAlly(unit)) bonus += 5;
   if (massProductionFormationActive(unit)) bonus += 4;
+  if (massProductionModernizationActive(unit)) bonus += 6;
   if (unitHasSkill(unit, "educationalComputer")) bonus += Math.min(EDUCATIONAL_COMPUTER_ACCURACY_CAP, unit.learningStacks ?? 0);
   if (unitHasSkill(unit, "stationaryInterception") && !unit.moved) bonus += 8;
   if (unitHasSkill(unit, "highPerformanceSight") && weapon?.attackType === "shooting" && defender && distance(unit, defender) >= 4) bonus += 8;
@@ -820,6 +844,7 @@ function skillEvasionBonus(unit) {
   if (marineSpaceSupportActive(unit)) bonus += 5;
   if (aquaticCombatAdaptationActive(unit)) bonus += 6;
   if (spaceCombatAdaptationActive(unit)) bonus += 6;
+  if (massProductionModernizationActive(unit)) bonus += 5;
   if (unitHasSkill(unit, "mourningResolve") && alliedMobileSuitDestroyed(unit.side)) bonus -= 4;
   if (examSystemActive(unit)) bonus += 18;
   if (hadesSystemActive(unit)) bonus += HADES_EVASION_BONUS;
@@ -915,6 +940,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) damage += 20;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) damage += 8;
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) damage += 8;
+  if (isMobileSuit(attacker) && massProductionModernizationActive(attacker)) damage += 12;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) damage += 15;
   if (examSystemActive(attacker)) damage += 15;
   if (hadesSystemActive(attacker)) damage += HADES_DAMAGE_BONUS;
@@ -937,6 +963,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(defender) && weapon.attackType === "melee" && unitHasSkill(defender, "impactDiffusionArmor")) damage -= 15;
   if (isMobileSuit(defender) && unitHasSkill(defender, "aiSenshi") && alliedMobileSuitDestroyed(defender.side)) damage -= 10;
   if (isMobileSuit(defender) && massProductionFormationActive(defender)) damage -= 8;
+  if (isMobileSuit(defender) && massProductionModernizationActive(defender)) damage -= 10;
   if (isMobileSuit(defender) && unitHasSkill(defender, "guardedPersons")) damage -= 10;
   if (desperateRearGuardActive(defender)) damage -= 15;
   if (peaceWillDefensiveActive(defender)) damage -= 8;
@@ -962,6 +989,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (terrainAt(defender.x, defender.y) === "desert" && (unitHasSkill(attacker, "antiDesert") || weaponHasSkill(weapon, "antiDesert"))) notes.push("対砂漠");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
+  if (isMobileSuit(attacker) && massProductionModernizationActive(attacker)) notes.push("量産機近代化改修");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
   if (examSystemActive(attacker)) notes.push("EXAMシステム");
   if (hadesSystemActive(attacker)) notes.push("HADES");
@@ -980,6 +1008,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) notes.push("対水中");
   if (weapon.kind === "ammo" && freezyYardActive(defender)) notes.push("フリージーヤード");
   if (isMobileSuit(defender) && massProductionFormationActive(defender)) notes.push("量産機編成防御");
+  if (isMobileSuit(defender) && massProductionModernizationActive(defender)) notes.push("量産機近代化改修防御");
   if (aquaticCombatAdaptationActive(defender)) notes.push("水中戦適応防御");
   if (spaceCombatAdaptationActive(defender)) notes.push("空間戦適応防御");
   if (schemingActive(defender)) notes.push("策謀防御");

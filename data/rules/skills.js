@@ -236,6 +236,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "massProductionModernization",
+    "name": "量産機近代化改修",
+    "type": "OP",
+    "timing": "常時",
+    "effect": "装備機の3マス以内に同一機体がいる間、装備機と範囲内の同一機体は命中+6、回避+5、与ダメージ+12、被ダメージ-10、移動+1。",
+    "implemented": true
+  },
+  {
     "id": "enhancedWarhead",
     "name": "強化弾頭",
     "type": "OP",

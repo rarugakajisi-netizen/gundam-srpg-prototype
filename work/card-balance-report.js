@@ -33,6 +33,8 @@ const BALANCE_CONSTANTS = {
   EDUCATIONAL_COMPUTER_ACCURACY_CAP: 9,
   EDUCATIONAL_COMPUTER_EVASION_CAP: 6,
   HARO_EVASION_BONUS: 4,
+  MASS_PRODUCTION_MODERNIZATION_ACCURACY_BONUS: 6,
+  MASS_PRODUCTION_MODERNIZATION_EVASION_BONUS: 5,
   HADES_ACCURACY_BONUS: 12,
   HADES_EVASION_BONUS: 12,
   HADES_DAMAGE_BONUS: 10
@@ -42,6 +44,7 @@ const WATCHED_WIDE_SKILLS = {
   forcedMarch: "全体与ダメージ上昇/被ダメージ増加",
   barrageSupport: "周囲3マスの敵回避-8",
   massProductionFormation: "同型量産機の命中/攻防補助",
+  massProductionModernization: "低コスト同一機体の命中/回避/攻防/移動補助",
   enemyIntel: "最初の敵ターンのみ相手全体命中-8",
   pilotSupply: "戦艦隣接MSの命中/回避+5",
   retreatSupport: "低耐久味方MSの回避+10",
@@ -53,6 +56,7 @@ const WATCHED_OPTIONS = new Set([
   "forcedMarch",
   "barrageSupport",
   "massProductionFormation",
+  "massProductionModernization",
   "enemyIntel",
   "educationalComputer",
   "haroSupport",
@@ -161,6 +165,7 @@ function cardUsableByFaction(card, faction) {
 
 function optionEquippableByMs(option, ms) {
   if (option?.grantsSkill === "examSystem" && list(ms.specials).includes("hadesSystem")) return false;
+  if (Number.isFinite(Number(option?.maxMsCost)) && number(ms.cost) > number(option.maxMsCost)) return false;
   return cardUsableByFaction(option, ms.faction);
 }
 
@@ -341,6 +346,7 @@ function skillAccuracyBonusFromStatic(ms, character, optionIds = []) {
   const skills = new Set([...list(ms.specials), ...list(character.specials), ...optionIds.map((id) => indexes.options[id]?.grantsSkill).filter(Boolean)]);
   let bonus = 0;
   if (skills.has("commanderCustom")) bonus += 3;
+  if (skills.has("massProductionModernization")) bonus += constants.MASS_PRODUCTION_MODERNIZATION_ACCURACY_BONUS;
   if (skills.has("educationalComputer")) bonus += constants.EDUCATIONAL_COMPUTER_ACCURACY_CAP;
   if (skills.has("phantomSystem")) bonus += 10;
   if (skills.has("examSystem")) bonus += 18;
@@ -352,6 +358,7 @@ function skillEvasionBonusFromStatic(ms, character, optionIds = [], examActive =
   let bonus = 0;
   if (skills.has("educationalComputer")) bonus += constants.EDUCATIONAL_COMPUTER_EVASION_CAP;
   if (skills.has("haroSupport")) bonus += constants.HARO_EVASION_BONUS;
+  if (skills.has("massProductionModernization")) bonus += constants.MASS_PRODUCTION_MODERNIZATION_EVASION_BONUS;
   if (skills.has("phantomSystem")) bonus += 10;
   if (examActive && skills.has("examSystem")) bonus += 18;
   if (hadesActive && skills.has("hadesSystem")) bonus += constants.HADES_EVASION_BONUS;
@@ -380,6 +387,7 @@ function evasionCombos() {
       if (number(ms.optionSlots, 1) > 0) {
         if (optionEquippableByMs(indexes.options.haro, ms)) optionScenarios.push({ label: "ハロ", optionIds: ["haro"], examActive: false, hadesActive: false });
         if (optionEquippableByMs(indexes.options.educationalComputer, ms)) optionScenarios.push({ label: "教育型最大", optionIds: ["educationalComputer"], examActive: false, hadesActive: false });
+        if (optionEquippableByMs(indexes.options.massProductionModernizationPlan, ms)) optionScenarios.push({ label: "量産機近代化（編成成立）", optionIds: ["massProductionModernizationPlan"], examActive: false, hadesActive: false });
         if (!list(ms.specials).includes("examSystem") && optionEquippableByMs(indexes.options.examSystemOption, ms)) {
           optionScenarios.push({ label: "EXAM OP発動", optionIds: ["examSystemOption"], examActive: true, hadesActive: false });
         }
@@ -656,7 +664,7 @@ function warningsFromReport(draft) {
 
   for (const option of data.options ?? []) {
     if (WATCHED_OPTIONS.has(option.grantsSkill)) {
-      const severity = ["forcedMarch", "enemyIntel", "examSystem", "iField"].includes(option.grantsSkill) ? "high" : "medium";
+      const severity = ["forcedMarch", "enemyIntel", "examSystem", "iField", "massProductionModernization"].includes(option.grantsSkill) ? "high" : "medium";
       add(severity, "rule-sensitive-option", option, "ルール影響が大きいOPです。コストと発動条件を継続監視してください。", {
         skill: option.grantsSkill,
         cost: option.cost

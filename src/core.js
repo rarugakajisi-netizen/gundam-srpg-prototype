@@ -224,6 +224,7 @@ function optionUsableOnMap(option, map = selectedMap()) {
 
 function optionEquippableByMs(option, ms, map = selectedMap(), faction = ms?.faction) {
   if (option?.grantsSkill === "examSystem" && (ms?.specials ?? []).includes("hadesSystem")) return false;
+  if (Number.isFinite(Number(option?.maxMsCost)) && Number(ms?.cost) > Number(option.maxMsCost)) return false;
   return Boolean(option)
     && Boolean(ms)
     && optionUsableByFaction(option, faction)

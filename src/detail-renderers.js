@@ -990,6 +990,7 @@ function renderOptionDetails(option, options = {}) {
         ["種別", option.effectType],
         ["付与", option.grantsSkill ? specialsLabel([option.grantsSkill]) : "直接効果"],
         ["効果", option.effectText],
+        ...(Number.isFinite(Number(option.maxMsCost)) ? [["機体コスト条件", `${option.maxMsCost}以下`]] : []),
         ["出撃", optionMapTypesText(option)],
         ["重複", option.uniqueSkill ? "同名効果と重複なし" : "重複可"],
         ["使用勢力", factions]

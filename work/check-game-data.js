@@ -303,6 +303,9 @@ function createChecker(data) {
       const option = expectId(`${scope}.optionIds`, "options", id);
       if (option && !optionUsableByFaction(option, faction)) error(scope, `${itemLabel(option)} は ${faction} で使用できません。`);
       if (option && map && !optionUsableOnMap(option, map)) error(scope, `${itemLabel(option)} は ${map.name} に出撃できません。`);
+      if (option && Number.isFinite(Number(option.maxMsCost)) && Number(ms.cost) > Number(option.maxMsCost)) {
+        error(scope, `${itemLabel(option)} の機体コスト上限を超えています: ${ms.cost} > ${option.maxMsCost}`);
+      }
     });
     if (optionIds.length > (ms.optionSlots ?? 1)) {
       error(scope, `オプションスロット超過: ${optionIds.length} / ${ms.optionSlots ?? 1}`);
@@ -423,6 +426,7 @@ function createChecker(data) {
     data.options.forEach((option) => {
       const scope = `options.${option.id}`;
       expectNumber(scope, option, "cost");
+      expectNumber(scope, option, "maxMsCost", { integer: true, required: false });
       expectFactions(scope, option.factions, true);
       list(option.mapTypes).forEach((type) => {
         if (!DEPLOY_TYPES.has(type)) error(scope, `不明な mapTypes です: ${type}`);

@@ -139,6 +139,51 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "vsWhiteBase1",
+    "name": "VSホワイトベース隊①",
+    "type": "colony",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 2, "y": 8 },
+          { "x": 4, "y": 8 },
+          { "x": 1, "y": 9 },
+          { "x": 6, "y": 9 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 3,
+          "y": 0
+        },
+        "units": [
+          { "x": 1, "y": 1 },
+          { "x": 3, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 6, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "base", "base", "base", "base", "base", "building", "base", "base",
+      "base", "building", "base", "base", "base", "base", "base", "base",
+      "base", "base", "base", "building", "base", "base", "building", "base",
+      "green", "green", "green", "green", "building", "green", "green", "green",
+      "green", "building", "green", "green", "green", "green", "green", "green",
+      "green", "green", "green", "green", "green", "building", "green", "green",
+      "green", "green", "building", "green", "green", "green", "green", "green",
+      "plain", "rock", "plain", "plain", "plain", "plain", "building", "plain",
+      "rock", "plain", "plain", "plain", "plain", "plain", "plain", "rock",
+      "cliff", "cliff", "rock", "gate", "gate", "rock", "cliff", "cliff"
+    ]
+  },
+  {
     "id": "battleOfLoum",
     "name": "ルウムの戦い",
     "type": "space",
@@ -953,6 +998,99 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "vs08thTeam",
+    "name": "VS08小隊",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 1, "y": 1 },
+          { "x": 3, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 4, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "forest", "forest", "forest", "forest", "desert", "desert", "desert", "desert",
+      "forest", "forest", "forest", "rock", "desert", "desert", "desert", "desert",
+      "forest", "forest", "forest", "forest", "desert", "rock", "desert", "desert",
+      "forest", "rock", "forest", "forest", "desert", "desert", "desert", "desert",
+      "forest", "forest", "forest", "forest", "desert", "desert", "rock", "desert",
+      "forest", "forest", "rock", "forest", "desert", "desert", "desert", "desert",
+      "forest", "forest", "forest", "forest", "rock", "desert", "desert", "desert",
+      "forest", "rock", "forest", "forest", "desert", "desert", "desert", "desert",
+      "forest", "forest", "forest", "forest", "desert", "rock", "desert", "desert",
+      "forest", "forest", "forest", "forest", "desert", "desert", "desert", "desert"
+    ]
+  },
+  {
+    "id": "shudderingMountainPart2",
+    "name": "震える山（後編）",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 4, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 0, "y": 2 },
+          { "x": 2, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 7, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "cliff", "base", "base", "base", "base", "base", "base", "cliff",
+      "rock", "plain", "plain", "base", "base", "plain", "plain", "rock",
+      "cliff", "plain", "rock", "plain", "plain", "rock", "plain", "cliff",
+      "rock", "plain", "plain", "ruin", "ruin", "plain", "plain", "rock",
+      "cliff", "rock", "plain", "plain", "plain", "plain", "rock", "cliff",
+      "cliff", "plain", "plain", "rock", "rock", "plain", "plain", "cliff",
+      "rock", "plain", "ruin", "plain", "plain", "ruin", "plain", "rock",
+      "cliff", "plain", "plain", "plain", "plain", "plain", "plain", "cliff",
+      "rock", "plain", "plain", "plain", "plain", "plain", "plain", "rock",
+      "cliff", "cliff", "plain", "plain", "plain", "plain", "cliff", "cliff"
+    ]
+  },
+  {
     "id": "atlanticBloodstained",
     "name": "大西洋、血に染めて",
     "type": "ground",
@@ -1362,6 +1500,104 @@ window.GAME_DATA.maps = [
       "space", "debris", "space", "space", "space", "space", "debris", "space",
       "space", "space", "space", "space", "space", "space", "space", "space",
       "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
+    "id": "vsWhiteBase2",
+    "name": "VSホワイトベース隊②",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 3, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 2, "y": 2 },
+          { "x": 5, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "debris", "debris", "debris", "space", "space", "debris", "debris", "debris",
+      "space", "debris", "debris", "debris", "debris", "debris", "debris", "space",
+      "debris", "debris", "space", "debris", "debris", "space", "debris", "debris",
+      "space", "debris", "debris", "space", "space", "debris", "debris", "space",
+      "space", "space", "debris", "space", "space", "debris", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
+    "id": "acePilotZaku",
+    "name": "エースパイロット・ザク編",
+    "type": "colony",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 0, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 2, "y": 1 },
+          { "x": 3, "y": 1 },
+          { "x": 4, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 7, "y": 1 },
+          { "x": 1, "y": 2 },
+          { "x": 4, "y": 2 },
+          { "x": 6, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "urban", "urban", "urban", "urban", "urban", "urban", "urban", "urban",
+      "urban", "plain", "plain", "plain", "plain", "plain", "plain", "urban",
+      "urban", "plain", "ruin", "plain", "plain", "ruin", "plain", "urban",
+      "urban", "plain", "plain", "urban", "urban", "plain", "plain", "urban",
+      "urban", "ruin", "plain", "urban", "urban", "plain", "ruin", "urban",
+      "urban", "plain", "plain", "plain", "plain", "plain", "plain", "urban",
+      "urban", "plain", "urban", "plain", "plain", "urban", "plain", "urban",
+      "urban", "plain", "plain", "ruin", "plain", "plain", "plain", "urban",
+      "urban", "plain", "plain", "plain", "plain", "plain", "plain", "urban",
+      "urban", "urban", "urban", "urban", "urban", "urban", "urban", "urban"
     ]
   },
   {

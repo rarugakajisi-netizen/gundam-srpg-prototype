@@ -214,6 +214,21 @@ window.GAME_DATA.options = [
     "imagePath": ""
   },
   {
+    "id": "massProductionModernizationPlan",
+    "name": "量産機近代化改修計画",
+    "cost": 300,
+    "effectType": "skill",
+    "grantsSkill": "massProductionModernization",
+    "effectText": "基礎コスト150以下の機体のみ装備可。同一機体が3マス以内にいる間、自身と範囲内の同一機体は命中+6、回避+5、与ダメージ+12、被ダメージ-10、移動+1。",
+    "maxMsCost": 150,
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "highPerformanceRadar",
     "name": "高性能レーダー",
     "cost": 35,
