@@ -1654,6 +1654,22 @@ function enemyMineScatterWeapon(unit, targets, attackPlan) {
   return unitWeaponObjects(unit).find((weapon) => canUseMineScatter(unit, weapon)) ?? null;
 }
 
+function infiltrationTargetDistance(unit) {
+  if (unit.side !== "enemy" || !isMobileSuit(unit)) return null;
+  const targets = stageInfiltrationTargets();
+  if (targets.length === 0) return null;
+  return Math.min(...targets.map((target) => Math.abs(unit.x - target.x) + Math.abs(unit.y - target.y)));
+}
+
+function infiltrationObjectiveScore(unit) {
+  const targetDistance = infiltrationTargetDistance(unit);
+  return targetDistance === null ? 0 : 1600 - targetDistance * 260;
+}
+
+function targetBlocksInfiltration(target) {
+  return stageInfiltrationTargets().some((cell) => cell.x === target.x && cell.y === target.y);
+}
+
 function enemyMoveCandidates(unit) {
   return [
     { x: unit.x, y: unit.y, current: true },
@@ -1669,7 +1685,8 @@ function bestEnemyMove(unit, targets) {
       const futureAttack = bestAttackPlan(unit, targets);
       const supportScore = supportPositionScore(unit);
       const approachScore = nearestTargetApproachScore(unit, targets);
-      const score = (futureAttack ? AI_ATTACK_POSITION_BONUS + futureAttack.score : approachScore) + supportScore;
+      const objectiveScore = infiltrationObjectiveScore(unit);
+      const score = (futureAttack ? AI_ATTACK_POSITION_BONUS + futureAttack.score : approachScore) + supportScore + objectiveScore;
       return { futureAttack, supportScore, score };
     });
     if (!best || result.score > best.score) best = { ...cell, ...result };
@@ -1692,6 +1709,15 @@ function advanceEnemyTurn() {
       continue;
     }
 
+    if (Number.isFinite(enemy.aiInactiveUntilTurn) && state.turnNumber < enemy.aiInactiveUntilTurn) {
+      enemy.acted = true;
+      enemy.moved = true;
+      state.enemyQueue.shift();
+      state.log.push(`${unitName(enemy)}は起動待機中。第${enemy.aiInactiveUntilTurn}ターンから行動します。`);
+      renderBattle();
+      return;
+    }
+
     const targets = state.units.filter((unit) => unit.side === "player" && isAttackTarget(unit));
     if (targets.length === 0) {
       checkOutcome();
@@ -1699,7 +1725,9 @@ function advanceEnemyTurn() {
       return;
     }
 
-    const attackPlan = bestAttackPlan(enemy, targets);
+    const infiltrationMission = infiltrationTargetDistance(enemy) !== null;
+    const blockingTargets = infiltrationMission ? targets.filter((target) => targetBlocksInfiltration(target)) : [];
+    const attackPlan = bestAttackPlan(enemy, blockingTargets.length > 0 ? blockingTargets : (infiltrationMission ? [] : targets));
 
     if (shouldEnemyActivateFreezyYard(enemy, targets, attackPlan)) {
       state.selectedUnitId = enemy.id;
@@ -1796,6 +1824,8 @@ function moveEnemyUnit(unit, movePlan) {
   revealStealth(unit, "移動");
   triggerMines(unit);
   if (!isAlive(unit) || state.outcome) return true;
+  checkOutcome();
+  if (state.outcome) return true;
   if (resolveSaturnEngineAfterMove(unit, movedDistance(from, unit))) return true;
   pushDialogue(unit, "move");
   state.log.push(`${unitName(unit)}が${movePlan.reason}。`);

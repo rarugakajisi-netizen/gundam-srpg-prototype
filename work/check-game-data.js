@@ -269,6 +269,7 @@ function createChecker(data) {
     if (ms.faction !== faction) error(scope, `機体勢力が編成勢力と一致しません: ${ms.faction} !== ${faction}`);
     if (map && !mobileSuitCanDeployOnMap(ms, map)) error(scope, `${itemLabel(ms)} は ${map.name} に出撃できません。`);
     if (entry.armorOverride !== undefined) expectNumber(scope, entry, "armorOverride", { integer: true });
+    if (entry.aiInactiveUntilTurn !== undefined) expectNumber(scope, entry, "aiInactiveUntilTurn", { integer: true });
 
     const characterIds = list(entry.characterIds);
     const weaponIds = list(entry.weaponIds);
@@ -496,6 +497,11 @@ function createChecker(data) {
       const ship = expectId(`${scope}.enemyBattleshipId`, "battleships", stage.enemyBattleshipId, true);
       if (ship && stage.enemyFaction && ship.faction !== stage.enemyFaction) error(scope, `敵戦艦勢力が enemyFaction と一致しません: ${ship.faction} !== ${stage.enemyFaction}`);
       if (ship && map && !battleshipCanDeployOnMap(ship, map)) error(scope, `${itemLabel(ship)} は ${map.name} に出撃できません。`);
+      list(stage.enemyEscortBattleshipIds).forEach((id, escortIndex) => {
+        const escort = expectId(`${scope}.enemyEscortBattleshipIds[${escortIndex}]`, "battleships", id);
+        if (escort && stage.enemyFaction && escort.faction !== stage.enemyFaction) error(scope, `随伴艦勢力が enemyFaction と一致しません: ${escort.faction} !== ${stage.enemyFaction}`);
+        if (escort && map && !battleshipCanDeployOnMap(escort, map)) error(scope, `${itemLabel(escort)} は ${map.name} に出撃できません。`);
+      });
       expectId(`${scope}.enemyCaptainId`, "characters", stage.enemyCaptainId, true);
       expectId(`${scope}.enemyFirstOfficerId`, "characters", stage.enemyFirstOfficerId, true);
       if (!stage.series || typeof stage.series !== "string") warning(scope, "検索/分類用の series が未設定です。");
@@ -542,6 +548,25 @@ function createChecker(data) {
           }
         }
       });
+
+      list(stage.infiltrationTargets).forEach((target, targetIndex) => {
+        const targetScope = `${scope}.infiltrationTargets[${targetIndex}]`;
+        if (!isPlainObject(target)) {
+          error(targetScope, "オブジェクトである必要があります。");
+          return;
+        }
+        ["x", "y"].forEach((key) => expectNumber(targetScope, target, key, { integer: true }));
+        if (map && Number.isInteger(target.x) && Number.isInteger(target.y)) {
+          if (target.x < 0 || target.y < 0 || target.x >= map.width || target.y >= map.height) {
+            error(targetScope, `マップ外です: ${target.x},${target.y}`);
+          } else if (terrainBlocksMovement(terrainAt(map, target.x, target.y))) {
+            error(targetScope, `侵入不能地形です: ${target.x},${target.y}`);
+          }
+        }
+      });
+
+      const infiltrationKeys = list(stage.infiltrationTargets).map((target) => `${target?.x},${target?.y}`);
+      if (new Set(infiltrationKeys).size !== infiltrationKeys.length) error(`${scope}.infiltrationTargets`, "同じ座標が重複しています。");
 
       const formations = stage.enemyFormations ?? {};
       if (!isPlainObject(formations)) {

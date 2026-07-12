@@ -61,7 +61,9 @@ function renderBattleRuleStatus() {
   const survivalLimit = stageSurvivalTurnLimit();
   const reinforcements = stageEnemyReinforcements();
   const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
-  if ((limit === null && survivalLimit === null && !reinforcements && defenseTargets.length === 0) || state.outcome) return "";
+  const infiltrationTargets = stageInfiltrationTargets();
+  const inactiveEnemies = state.units.filter((unit) => unit.side === "enemy" && isCombatUnit(unit) && isAlive(unit) && Number.isFinite(unit.aiInactiveUntilTurn) && state.turnNumber < unit.aiInactiveUntilTurn);
+  if ((limit === null && survivalLimit === null && !reinforcements && defenseTargets.length === 0 && infiltrationTargets.length === 0 && inactiveEnemies.length === 0) || state.outcome) return "";
   const remaining = Math.max(0, limit - state.turnNumber + 1);
   const survivalRemaining = Math.max(0, survivalLimit - state.turnNumber + 1);
   const aliveDefenseTargets = defenseTargets.filter((unit) => isAlive(unit)).length;
@@ -73,6 +75,8 @@ function renderBattleRuleStatus() {
         ${survivalLimit !== null ? `<p class="small">生存戦: 第${survivalLimit}ターン終了まで生き延びると勝利です。現在${state.turnNumber}ターン目 / 残り${survivalRemaining}ターン。</p>` : ""}
         ${reinforcements ? `<p class="small">増援: 条件ターン中、自軍ターン開始時に敵増援が出現します。</p>` : ""}
         ${defenseTargets.length > 0 ? `<p class="small">防衛対象: ${aliveDefenseTargets} / ${defenseTargets.length} 残存。すべて破壊されると敗北します。</p>` : ""}
+        ${infiltrationTargets.length > 0 ? `<p class="small">進入阻止: 敵機が赤枠の指定マスへ到達すると敗北します。味方ユニットで塞ぐことができます。</p>` : ""}
+        ${inactiveEnemies.length > 0 ? `<p class="small">起動待機: ${inactiveEnemies.map((unit) => `${unitName(unit)}は第${unit.aiInactiveUntilTurn}ターンから行動`).join(" / ")}</p>` : ""}
       </div>
     </section>
   `;
@@ -136,13 +140,15 @@ function renderCells(selected) {
     const y = Math.floor(index / width);
     const unit = state.units.find((candidate) => candidate.x === x && candidate.y === y && isAlive(candidate));
     const terrain = terrainAt(x, y);
+    const infiltrationTarget = stageInfiltrationTargets().some((target) => target.x === x && target.y === y);
     const canMove = !state.outcome && !unit && reachable.has(positionKey(x, y));
     const canDeploy = !state.outcome && deployable.has(positionKey(x, y));
     const canTarget = !state.outcome && state.phase === "player" && isCombatUnit(selected) && isAttackTarget(unit) && unit.side !== selected.side && activeAttacks.some((weapon) => weaponInRange(selected, unit, weapon));
     const mine = state.mines?.find((item) => item.x === x && item.y === y);
-    const classes = ["cell", `terrain-${terrain}`, canMove ? "move-ok" : "", canDeploy ? "deploy-ok" : "", canTarget ? "target-ok" : ""].filter(Boolean).join(" ");
+    const classes = ["cell", `terrain-${terrain}`, infiltrationTarget ? "infiltration-target" : "", canMove ? "move-ok" : "", canDeploy ? "deploy-ok" : "", canTarget ? "target-ok" : ""].filter(Boolean).join(" ");
     return `<div class="${classes}" data-x="${x}" data-y="${y}" title="${terrainLabel(terrain)}">
       ${terrainShortLabel(terrain) ? `<span class="terrain-badge">${terrainShortLabel(terrain)}</span>` : ""}
+      ${infiltrationTarget ? `<span class="terrain-badge infiltration-badge">阻止</span>` : ""}
       ${mine ? `<span class="terrain-badge mine-badge">機雷</span>` : ""}
       ${unit ? renderToken(unit) : ""}
     </div>`;

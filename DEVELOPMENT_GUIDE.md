@@ -213,13 +213,16 @@ unit.weaponCharges = {
 - `summary`: ステージ選択画面で見せる説明。
 - `enemyFormations`: 敵勢力ごとの編成。
 - `enemyBattleshipId`: 敵戦艦を固定したい時に指定する。`null` なら敵戦艦なし。
+- `enemyEscortBattleshipIds`: 通常ステージで旗艦に加えて配置する随伴艦IDの配列。随伴艦も敵戦艦として行動し、全敵戦艦撃破まで艦隊撃破勝利にならない。フリーバトルには反映しない。
 - `costCap`: ステージ固有の出撃上限。未指定なら敵総コストをもとに自動計算。
 - `enemyBattleshipId: null` かつ `costCap` 未指定の通常ステージは、自軍だけが戦艦コストを負担する差を和らげるため、通常の自動計算へ100コストを追加する。明示した `costCap` とフリーバトルには適用しない。
 - `turnLimit`: 通常ステージ専用の特殊敗北条件。指定ターン終了までに敵を撃破できないと敗北。フリー対戦では反映しない。
 - `surviveTurns`: 通常ステージ専用の特殊勝利条件。指定ターン終了まで生き延びると勝利。フリー対戦では反映しない。
 - `enemyReinforcements`: 通常ステージ専用の敵増援。`{ startTurn, endTurn, countPerTurn, entries }` を指定し、自軍ターン開始時に空きマスへ敵を追加する。フリー対戦では反映しない。
 - 敵編成/増援エントリの `armorOverride`: ステージギミック用に出撃時HPを上書きする。通常カード性能を変えずにHP1の的や特殊個体を作る場合に使う。
+- 敵編成エントリの `aiInactiveUntilTurn`: 指定ターン未満の敵AI行動を待機させる。`4`なら第1〜3ターンは行動せず、第4ターンから通常行動する。フリーバトルのランダム敵編成には引き継がれない。
 - `defenseTargets`: 通常ステージ専用の防衛対象。`[{ name, x, y, armor, mobility }]` を指定し、すべて破壊されると敗北。敵AIは優先的に攻撃します。`mobility` は任意で、未指定なら移動不可。フリー対戦では反映しない。
+- `infiltrationTargets`: 通常ステージ専用の進入阻止地点。`[{ x, y }]` を指定し、生存中の敵MSがいずれかへ到達すると敗北。敵AIは指定地点への前進を優先し、味方ユニットで地点を塞げる。フリーバトルでは反映しない。
 - 報酬はステージ別には持たせず、`campaign.commonDropRewards` による全体ランダムドロップを使います。
 - `commonDropRewards.categoryWeights` は、まずどの種別を抽選するかの重みです。機体やキャラが増えても、戦艦など少数カテゴリがカード枚数差で埋もれないようにここで調整します。
 - `commonDropRewards.ownershipBias` は、種別内での候補カード重みです。`newCard` は未所持、`ownedFew` は少数所持、`ownedMany` は上限に近い所持カードに使われます。

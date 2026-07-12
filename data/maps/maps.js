@@ -1595,6 +1595,147 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "howManyMilesToTheBattlefield",
+    "name": "戦場までは何マイル？",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 4, "y": 8 },
+          { "x": 6, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 1, "y": 1 },
+          { "x": 3, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 7, "y": 1 }
+        ]
+      }
+    },
+    "terrain": [
+      "water", "water", "water", "water", "water", "water", "water", "water",
+      "water", "water", "water", "water", "water", "water", "water", "water",
+      "water", "water", "rock", "water", "water", "rock", "water", "water",
+      "water", "rock", "water", "water", "water", "water", "rock", "water",
+      "water", "water", "water", "base", "base", "water", "water", "water",
+      "rock", "plain", "base", "base", "base", "base", "plain", "rock",
+      "plain", "base", "base", "building", "building", "base", "base", "plain",
+      "base", "base", "building", "base", "base", "building", "base", "base",
+      "base", "base", "base", "base", "base", "base", "base", "base",
+      "base", "base", "base", "base", "base", "base", "base", "base"
+    ]
+  },
+  {
+    "id": "acrossTheRiverAndThroughTheTrees",
+    "name": "河を渡って木立を抜けて",
+    "type": "colony",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "units": [
+          { "x": 4, "y": 1 },
+          { "x": 1, "y": 3 },
+          { "x": 6, "y": 3 },
+          { "x": 2, "y": 4 },
+          { "x": 5, "y": 4 },
+          { "x": 3, "y": 4 }
+        ]
+      }
+    },
+    "terrain": [
+      "urban", "urban", "building", "urban", "urban", "building", "urban", "urban",
+      "urban", "base", "base", "urban", "urban", "base", "base", "urban",
+      "urban", "urban", "building", "urban", "urban", "building", "urban", "urban",
+      "green", "forest", "green", "green", "green", "green", "forest", "green",
+      "forest", "green", "forest", "green", "green", "forest", "green", "forest",
+      "water", "water", "water", "bridge", "bridge", "water", "water", "water",
+      "water", "water", "water", "bridge", "bridge", "water", "water", "water",
+      "forest", "green", "forest", "green", "green", "forest", "green", "forest",
+      "green", "green", "green", "base", "base", "green", "green", "green",
+      "base", "base", "base", "base", "base", "base", "base", "base"
+    ]
+  },
+  {
+    "id": "warInThePocketFinal",
+    "name": "ポケットの中の戦争",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": {
+          "x": 3,
+          "y": 9
+        },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": {
+          "x": 4,
+          "y": 0
+        },
+        "escortBattleships": [
+          { "x": 1, "y": 0 }
+        ],
+        "units": [
+          { "x": 3, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 1, "y": 2 },
+          { "x": 6, "y": 2 },
+          { "x": 4, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "wreckage", "wreckage", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "debris", "space", "space", "debris", "space", "space",
+      "space", "space", "space", "wreckage", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
     "id": "acePilotZaku",
     "name": "エースパイロット・ザク編",
     "type": "colony",

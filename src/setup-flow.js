@@ -398,7 +398,8 @@ function enemyFormationForStage(mapId, faction) {
     characterIds: [...(entry.characterIds ?? [])],
     weaponIds: [...(entry.weaponIds ?? [])],
     optionIds: [...(entry.optionIds ?? [])],
-    armorOverride: entry.armorOverride
+    armorOverride: entry.armorOverride,
+    aiInactiveUntilTurn: entry.aiInactiveUntilTurn
   }));
 }
 
@@ -418,7 +419,10 @@ function enemyTotalCostForStage(mapId = state.selectedMapId) {
   const enemyEntries = enemyFormationForStage(mapId, faction);
   const enemyShip = enemyBattleshipForStage(mapId, faction);
   const enemyBridge = enemyShip ? enemyBridgeForStage(mapId, faction) : {};
+  const escortShipCost = stageEnemyEscortBattleshipIds(mapId)
+    .reduce((sum, id) => sum + (lookup().battleships[id]?.cost ?? 0), 0);
   return (enemyShip?.cost ?? 0)
+    + escortShipCost
     + crewCost([enemyBridge.captainId, enemyBridge.firstOfficerId])
     + enemyEntries.reduce((sum, entry) => sum + formationEntryCost(entry), 0);
 }
@@ -440,7 +444,7 @@ function stagePlayable(map) {
 const STAGE_SERIES_LABELS = {
   main: "本編",
   "08th": "08小隊",
-  originalHistory: "史実再現オリジナル",
+  warInPocket: "ポケットの中の戦争",
   other: "その他"
 };
 
@@ -505,7 +509,7 @@ function stageSeriesSortValue(series) {
   return {
     main: 10,
     "08th": 20,
-    originalHistory: 30,
+    warInPocket: 30,
     other: 90
   }[series] ?? 80;
 }
@@ -902,6 +906,12 @@ function renderStageRuleChips(stage) {
   if (stage.enemyReinforcements) chips.push("敵増援: 毎ターン出現");
   const defenseTargets = Array.isArray(stage.defenseTargets) ? stage.defenseTargets : [];
   if (defenseTargets.length > 0) chips.push(`防衛対象: ${defenseTargets.length}個 / 全破壊で敗北`);
+  const infiltrationTargets = Array.isArray(stage.infiltrationTargets) ? stage.infiltrationTargets : [];
+  if (infiltrationTargets.length > 0) chips.push(`進入阻止: 指定${infiltrationTargets.length}マス到達で敗北`);
+  const delayedEnemy = Object.values(stage.enemyFormations ?? {}).flat().find((entry) => Number.isFinite(Number(entry.aiInactiveUntilTurn)));
+  if (delayedEnemy) chips.push(`敵起動待機: 第${Math.floor(Number(delayedEnemy.aiInactiveUntilTurn))}ターンから行動`);
+  const escortShips = Array.isArray(stage.enemyEscortBattleshipIds) ? stage.enemyEscortBattleshipIds : [];
+  if (escortShips.length > 0) chips.push(`敵随伴艦: ${escortShips.length}隻`);
   return chips.length > 0 ? `<div class="reward-list">${chips.map((text) => `<span class="reward-chip">${text}</span>`).join("")}</div>` : "";
 }
 
@@ -1951,6 +1961,9 @@ function makeUnit(entry, side, x, y, index) {
     y,
     usedWeaponIds: [],
     weaponCharges: {},
+    aiInactiveUntilTurn: Number.isFinite(Number(entry.aiInactiveUntilTurn))
+      ? Math.max(1, Math.floor(Number(entry.aiInactiveUntilTurn)))
+      : null,
     acted: false,
     moved: false
   };
@@ -2000,8 +2013,10 @@ function makeDefenseTarget(config, index, x, y) {
 function defaultDeploymentPosition(side, kind, index = 0, map = selectedMap()) {
   const width = boardWidth(map);
   const height = boardHeight(map);
-  if (kind === "battleship") {
-    return { x: Math.floor(width / 2), y: side === "player" ? height - 1 : 0 };
+  if (kind === "battleship" || kind === "escortBattleship") {
+    const center = Math.floor(width / 2);
+    const escortOffset = kind === "escortBattleship" ? (index % 2 === 0 ? -2 - Math.floor(index / 2) : 2 + Math.floor(index / 2)) : 0;
+    return { x: clamp(center + escortOffset, 0, width - 1), y: side === "player" ? height - 1 : 0 };
   }
   const center = Math.floor(width / 2);
   const lanes = [center - 1, center + 1, center - 2, center + 2, center, center - 3, center + 3]
@@ -2015,7 +2030,11 @@ function defaultDeploymentPosition(side, kind, index = 0, map = selectedMap()) {
 
 function configuredDeploymentPosition(side, kind, index = 0, map = selectedMap()) {
   const sideConfig = map.deployment?.[side];
-  const configured = kind === "battleship" ? sideConfig?.battleship : sideConfig?.units?.[index];
+  const configured = kind === "battleship"
+    ? sideConfig?.battleship
+    : kind === "escortBattleship"
+      ? sideConfig?.escortBattleships?.[index]
+      : sideConfig?.units?.[index];
   return configured ? { x: configured.x, y: configured.y } : defaultDeploymentPosition(side, kind, index, map);
 }
 
@@ -2206,10 +2225,16 @@ function launchBattle() {
   const enemyFaction = enemyFactionForCurrentBattle();
   const enemyEntries = buildEnemyFormation(enemyFaction);
   const enemyBattleship = enemyBattleshipForCurrentBattle(state.selectedMapId, enemyFaction);
+  const enemyEscortBattleships = stageEnemyEscortBattleshipIds()
+    .map((id) => lookup().battleships[id])
+    .filter((ship) => ship?.faction === enemyFaction && battleshipCanDeployOnMap(ship, selectedMap()));
   const occupied = new Set();
   const playerShip = lookup().battleships[state.selectedBattleshipId];
   const playerShipPosition = reserveDeploymentCell("player", "battleship", 0, occupied, playerShip);
   const enemyShipPosition = enemyBattleship ? reserveDeploymentCell("enemy", "battleship", 0, occupied, enemyBattleship) : null;
+  const enemyEscortShipPositions = enemyEscortBattleships.map((ship, index) =>
+    reserveDeploymentCell("enemy", "escortBattleship", index, occupied, ship)
+  );
   const playerUnits = state.formation.map((entry, index) => {
     const position = reserveDeploymentCell("player", "unit", index, occupied, lookup().ms[entry.msId]);
     return makeUnit(entry, "player", position.x, position.y, index);
@@ -2226,6 +2251,10 @@ function launchBattle() {
   if (enemyBattleship && enemyShipPosition) {
     battleships.push(makeBattleship(enemyBattleship.id, enemyCrewIds, "enemy", enemyShipPosition.x, enemyShipPosition.y));
   }
+  enemyEscortBattleships.forEach((ship, index) => {
+    const position = enemyEscortShipPositions[index];
+    if (position) battleships.push(makeBattleship(ship.id, [], "enemy", position.x, position.y));
+  });
   const defenseTargets = stageDefenseTargets().map((target, index) => {
     const position = reserveDefenseTargetCell(target, index, occupied);
     return makeDefenseTarget(target, index, position.x, position.y);

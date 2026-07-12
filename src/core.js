@@ -600,6 +600,25 @@ function stageDefenseTargets(mapId = state.selectedMapId) {
   return Array.isArray(stageConfig(mapId).defenseTargets) ? stageConfig(mapId).defenseTargets : [];
 }
 
+function stageEnemyEscortBattleshipIds(mapId = state.selectedMapId) {
+  if (isFreeBattle()) return [];
+  const ids = stageConfig(mapId).enemyEscortBattleshipIds;
+  return Array.isArray(ids) ? ids.filter((id) => typeof id === "string" && id) : [];
+}
+
+function stageInfiltrationTargets(mapId = state.selectedMapId) {
+  if (isFreeBattle()) return [];
+  const targets = stageConfig(mapId).infiltrationTargets;
+  return Array.isArray(targets)
+    ? targets.filter((target) => Number.isInteger(target?.x) && Number.isInteger(target?.y))
+    : [];
+}
+
+function unitReachedInfiltrationTarget(unit) {
+  if (!unit || unit.side !== "enemy" || !isMobileSuit(unit) || !isAlive(unit)) return false;
+  return stageInfiltrationTargets().some((target) => target.x === unit.x && target.y === unit.y);
+}
+
 function commonDropConfig() {
   const config = state.data.campaign?.commonDropRewards ?? {};
   return {

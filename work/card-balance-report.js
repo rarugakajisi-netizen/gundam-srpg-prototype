@@ -540,7 +540,8 @@ function stageRows() {
       + list(entry.optionIds).reduce((value, id) => value + number(indexes.options[id]?.cost), 0), 0);
     const bridgeCost = number(indexes.characters[stage.enemyCaptainId]?.cost)
       + number(indexes.characters[stage.enemyFirstOfficerId]?.cost);
-    const enemyCost = unitCost + number(indexes.battleships[stage.enemyBattleshipId]?.cost) + bridgeCost;
+    const escortShipCost = list(stage.enemyEscortBattleshipIds).reduce((sum, id) => sum + number(indexes.battleships[id]?.cost), 0);
+    const enemyCost = unitCost + number(indexes.battleships[stage.enemyBattleshipId]?.cost) + escortShipCost + bridgeCost;
     const autoMargin = Math.max(80, Math.ceil(enemyCost * 0.15));
     const noEnemyBattleshipBonus = stage.enemyBattleshipId === null && !Number.isFinite(stage.costCap) ? 100 : 0;
     const costCap = Number.isFinite(stage.costCap) ? stage.costCap : Math.ceil((enemyCost + autoMargin + noEnemyBattleshipBonus) / 10) * 10;
@@ -549,8 +550,11 @@ function stageRows() {
       stage.surviveTurns ? `survive:${stage.surviveTurns}` : "",
       stage.enemyReinforcements ? `reinforce:${stage.enemyReinforcements.countPerTurn ?? stage.enemyReinforcements.count ?? "?"}` : "",
       list(stage.defenseTargets).length ? `defense:${list(stage.defenseTargets).length}` : "",
+      list(stage.infiltrationTargets).length ? `infiltration:${list(stage.infiltrationTargets).length}` : "",
+      Object.values(stage.enemyFormations ?? {}).flat().some((entry) => entry.aiInactiveUntilTurn) ? `delayedEnemy:${Math.min(...Object.values(stage.enemyFormations ?? {}).flat().map((entry) => number(entry.aiInactiveUntilTurn)).filter(Boolean))}` : "",
       noEnemyBattleshipBonus ? `noEnemyShipBonus:${noEnemyBattleshipBonus}` : "",
-      stage.enemyBattleshipId ? `enemyShip:${stage.enemyBattleshipId}` : ""
+      stage.enemyBattleshipId ? `enemyShip:${stage.enemyBattleshipId}` : "",
+      list(stage.enemyEscortBattleshipIds).length ? `escortShips:${list(stage.enemyEscortBattleshipIds).length}` : ""
     ].filter(Boolean);
     return {
       id: stage.id,

@@ -207,14 +207,14 @@ window.GAME_DATA.campaign = {
     },
     {
       "mapId": "battleOfLoum",
-      "series": "originalHistory",
-      "order": 210,
+      "series": "main",
+      "order": 5,
       "tags": [
-        "史実再現",
-        "オリジナル",
+        "本編",
         "宇宙",
         "艦隊戦",
-        "ジオン視点"
+        "ジオン視点",
+        "ルウム"
       ],
       "enemyFaction": "federation",
       "enemyBattleshipId": "salamis",
@@ -1049,6 +1049,165 @@ window.GAME_DATA.campaign = {
             "characterIds": ["sleggar"],
             "weaponIds": [],
             "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "howManyMilesToTheBattlefield",
+      "series": "warInPocket",
+      "order": 310,
+      "tags": [
+        "ポケットの中の戦争",
+        "地上",
+        "北極基地",
+        "水陸両用MS",
+        "進入阻止",
+        "サイクロプス隊"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "infiltrationTargets": [
+        { "x": 2, "y": 9 },
+        { "x": 5, "y": 9 }
+      ],
+      "summary": "北極基地へ海上から奇襲を仕掛けるサイクロプス隊を迎撃します。敵機が基地最奥の侵入阻止地点へ到達すると敗北しますが、味方機で地点を塞いで持ちこたえることもできます。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "zgokE",
+            "characterIds": ["hardieSteiner"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "hyGogg",
+            "characterIds": ["mikhailKaminsky"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "hyGogg",
+            "characterIds": ["andyStrauss"],
+            "weaponIds": [],
+            "optionIds": []
+          },
+          {
+            "msId": "hyGogg",
+            "characterIds": ["gabrielRamirezGarcia"],
+            "weaponIds": [],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "acrossTheRiverAndThroughTheTrees",
+      "series": "warInPocket",
+      "order": 320,
+      "tags": [
+        "ポケットの中の戦争",
+        "ジオン視点",
+        "コロニー",
+        "河川",
+        "市街地",
+        "スカーレット隊",
+        "アレックス"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": null,
+      "summary": "コロニー内の木立を抜け、橋の架かった河川を渡って市街地へ進攻します。河岸を守るスカーレット隊を突破し、起動前のアレックスを撃破します。",
+      "enemyFormations": {
+        "federation": [
+          {
+            "msId": "alex",
+            "characterIds": ["christinaMackenzie"],
+            "weaponIds": [],
+            "optionIds": [],
+            "aiInactiveUntilTurn": 4
+          },
+          {
+            "msId": "gmSniper2",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["bullpupMachineGun", "gmCommandShield"],
+            "optionIds": []
+          },
+          {
+            "msId": "gmSniper2",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["bullpupMachineGun", "gmCommandShield"],
+            "optionIds": []
+          },
+          {
+            "msId": "gmCommandGround",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["bullpupMachineGun", "gmCommandShield"],
+            "optionIds": []
+          },
+          {
+            "msId": "gmCommandGround",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["bullpupMachineGun", "gmCommandShield"],
+            "optionIds": []
+          },
+          {
+            "msId": "massProductionGuncannon",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["bullpupMachineGun"],
+            "optionIds": []
+          }
+        ]
+      }
+    },
+    {
+      "mapId": "warInThePocketFinal",
+      "series": "warInPocket",
+      "order": 330,
+      "tags": [
+        "ポケットの中の戦争",
+        "最終ステージ",
+        "宇宙",
+        "艦隊戦",
+        "コロニー外宙域",
+        "フォン・ヘルシング"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "chibe",
+      "enemyEscortBattleshipIds": ["musai"],
+      "enemyCaptainId": "vonHellsing",
+      "enemyFirstOfficerId": "",
+      "summary": "コロニー外宙域へ接近するフォン・ヘルシングのチベと随伴ムサイを迎撃します。新鋭機で固められた護衛部隊を突破し、二隻の敵艦を撃破する最終艦隊戦です。",
+      "enemyFormations": {
+        "zeon": [
+          {
+            "msId": "zaku2Kai",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["zakuMachineGunGrenade"],
+            "optionIds": []
+          },
+          {
+            "msId": "zaku2Kai",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["zakuMachineGunGrenade"],
+            "optionIds": []
+          },
+          {
+            "msId": "rickDom2",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["giantBazooka2"],
+            "optionIds": []
+          },
+          {
+            "msId": "rickDom2",
+            "characterIds": ["zeonSoldier"],
+            "weaponIds": ["giantBazooka2"],
+            "optionIds": []
+          },
+          {
+            "msId": "gelgoogJ",
+            "characterIds": ["zeonVeteran"],
+            "weaponIds": ["beamMachineGun"],
+            "optionIds": ["highOutputGeneratorOption"]
           }
         ]
       }

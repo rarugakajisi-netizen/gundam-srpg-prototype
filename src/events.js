@@ -20,6 +20,7 @@ function checkOutcome() {
   const enemyAlive = state.units.some((unit) => unit.side === "enemy" && isMobileSuit(unit) && isAlive(unit));
   const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
   const defenseTargetsDestroyed = defenseTargets.length > 0 && defenseTargets.every((unit) => !isAlive(unit));
+  const infiltrator = state.units.find((unit) => unitReachedInfiltrationTarget(unit));
   const survivalLimit = stageSurvivalTurnLimit();
   const survivalComplete = survivalLimit !== null && state.phase === "player" && state.turnNumber > survivalLimit;
 
@@ -32,6 +33,10 @@ function checkOutcome() {
     state.outcomeMessage = defenseTargets.length === 1
       ? "防衛対象が破壊されました。敵の攻撃から守り切ってください。"
       : "すべての防衛対象が破壊されました。最低1つは守り切ってください。";
+    phaseLabel.textContent = state.outcome;
+  } else if (infiltrator) {
+    state.outcome = "敗北";
+    state.outcomeMessage = `${unitName(infiltrator)}の基地侵入を許しました。指定された侵入阻止マスを塞いでください。`;
     phaseLabel.textContent = state.outcome;
   } else if (stageTurnLimit() !== null && state.phase === "player" && state.turnNumber > stageTurnLimit()) {
     state.outcome = "敗北";
