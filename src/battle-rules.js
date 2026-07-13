@@ -63,12 +63,14 @@ function supportForBattleship(unit) {
 
 function unitName(unit) {
   if (isDefenseTarget(unit)) return unit.name ?? "防衛対象";
+  if (isDestructionTarget(unit)) return unit.name ?? "破壊目標";
   if (isBattleship(unit)) return battleshipFor(unit).name;
   return msFor(unit).name;
 }
 
 function unitFaction(unit) {
   if (isDefenseTarget(unit)) return unit.faction ?? "federation";
+  if (isDestructionTarget(unit)) return unit.faction ?? "federation";
   return isBattleship(unit) ? battleshipFor(unit).faction : msFor(unit).faction;
 }
 
@@ -109,6 +111,7 @@ function enemyIntelAccuracyPenalty(attacker) {
 
 function mobilityFor(unit) {
   if (isDefenseTarget(unit)) return Math.max(0, Number(unit.mobility) || 0);
+  if (isDestructionTarget(unit)) return Math.max(0, Number(unit.mobility) || 0);
   if (isBattleship(unit)) return battleshipFor(unit).mobility;
   const optionBonus = unitOptions(unit)
     .filter((option) => option.effectType === "mobility")
@@ -774,7 +777,10 @@ function characterMsCompatibility(unit) {
   if (!isMobileSuit(unit)) return null;
   const characterId = unit.characterIds?.[0];
   const unitMs = msFor(unit);
-  return (state.data.compatibility?.characterMs ?? []).find((item) => item.characterId === characterId && characterMsCompatibilityMatches(item, unitMs));
+  const matches = (state.data.compatibility?.characterMs ?? [])
+    .filter((item) => item.characterId === characterId && characterMsCompatibilityMatches(item, unitMs));
+  return matches.find((item) => item.msId === unitMs.id)
+    ?? matches.reduce((best, item) => !best || Number(item.evasionBonus) > Number(best.evasionBonus) ? item : best, null);
 }
 
 function characterMsBonus(unit) {
@@ -876,7 +882,7 @@ function minimumHitRate(unit, attackOrdinal = (unit.usedWeaponIds?.length ?? 0) 
 }
 
 function evasion(unit, options = {}) {
-  if (isDefenseTarget(unit)) return 0;
+  if (isDefenseTarget(unit) || isDestructionTarget(unit)) return 0;
   if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit) + schemingEvasionBonus(unit);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);

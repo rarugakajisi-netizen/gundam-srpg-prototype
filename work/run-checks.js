@@ -15,7 +15,9 @@ const JS_FILES = [
   "src/battle-rules.js",
   "src/events.js",
   "work/check-game-data.js",
-  "work/check-play-integrity.js"
+  "work/check-play-integrity.js",
+  "work/package-release.js",
+  "distribution/plicy/plicy.js"
 ];
 
 function runNode(args) {

@@ -669,13 +669,19 @@ function mapSuitabilityLabel(ms) {
   const labels = [];
   const mapTypes = ms.mapTypes ?? ["ground", "space"];
   if (mapTypes.length === 1) labels.push(`${mapTypeName(mapTypes[0])}専用`);
-  if (ms.movementType === "flying") labels.push("飛行");
-  if (ms.movementType === "submarine") labels.push("水中専用");
   ["water", "forest", "desert", "debris"].forEach((id) => {
     if (ms.movementType === "submarine" && id === "water") return;
     if (ms.terrainSuitability?.[id]) labels.push(`${terrainLabel(id)}適性`);
   });
   return labels.length > 0 ? labels.join(" / ") : "なし";
+}
+
+function movementTypeLabel(card) {
+  if (card?.movementType === "flying") return "飛行";
+  if (card?.movementType === "submarine") return "潜航";
+  if ((card?.mapTypes ?? []).includes("ground")) return "陸走";
+  if ((card?.mapTypes ?? []).includes("space")) return "宇宙航行";
+  return "通常移動";
 }
 
 function statItems(items) {
@@ -860,13 +866,14 @@ function unitCompatibilityText(unit) {
 function renderMobileSuitDetails(ms, options = {}) {
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
-      <summary>${ms.name} 詳細</summary>
+      <summary>${ms.name} 詳細 / ${movementTypeLabel(ms)}</summary>
       ${statItems([
         ["コスト", ms.cost],
         ["装甲", ms.armor],
         ["EN", ms.energy],
         ["運動", ms.agility],
         ["移動", ms.mobility],
+        ["移動方式", movementTypeLabel(ms)],
         ["搭乗", mobileSuitCanHavePilot(ms) ? `パイロット${mobileSuitPilotSlots(ms)}名` : "パイロット不可"],
         ["装備枠", `武器${ms.weaponSlots ?? 2} / OP${ms.optionSlots ?? 1}`],
         ["携行武器制限", mobileSuitWeaponRestrictionText(ms)],
@@ -905,7 +912,7 @@ function renderMapDetails(map, options = {}) {
 function renderBattleshipDataDetails(ship, options = {}) {
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
-      <summary>${ship.name} 詳細</summary>
+      <summary>${ship.name} 詳細 / ${movementTypeLabel(ship)}</summary>
       ${statItems([
         ["コスト", ship.cost],
         ["耐久", ship.armor],
@@ -913,7 +920,7 @@ function renderBattleshipDataDetails(ship, options = {}) {
         ["回避基礎", ship.agility],
         ["移動", ship.mobility],
         ["出撃", (ship.mapTypes ?? ["ground", "space"]).map(mapTypeName).join(" / ")],
-        ["航行", ship.movementType === "submarine" ? "水中専用" : "通常"],
+        ["移動方式", movementTypeLabel(ship)],
         ["脱出", ship.escapeShipId ? `${lookup().battleships[ship.escapeShipId]?.name ?? ship.escapeShipId}` : "なし"],
         ["補給", `装甲${ship.support.armor} / 盾${ship.support.shield} / EN${ship.support.energy} / 弾${ship.support.ammo}`]
       ])}

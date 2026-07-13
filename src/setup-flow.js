@@ -931,6 +931,8 @@ function renderStageRuleChips(stage) {
   if (stage.enemyReinforcements) chips.push("敵増援: 毎ターン出現");
   const defenseTargets = Array.isArray(stage.defenseTargets) ? stage.defenseTargets : [];
   if (defenseTargets.length > 0) chips.push(`防衛対象: ${defenseTargets.length}個 / 全破壊で敗北`);
+  const destructionTargets = Array.isArray(stage.destructionTargets) ? stage.destructionTargets : [];
+  if (destructionTargets.length > 0) chips.push(`破壊目標: ${destructionTargets.length}個 / 全破壊で勝利`);
   const infiltrationTargets = Array.isArray(stage.infiltrationTargets) ? stage.infiltrationTargets : [];
   if (infiltrationTargets.length > 0) chips.push(`進入阻止: 指定${infiltrationTargets.length}マス到達で敗北`);
   const delayedEnemy = Object.values(stage.enemyFormations ?? {}).flat().find((entry) => Number.isFinite(Number(entry.aiInactiveUntilTurn)));
@@ -1097,6 +1099,8 @@ function itemSearchText(type, item) {
     cardTypeLabel(type),
     ...itemFactionIds(item).map((faction) => state.data.factions[faction] ?? faction),
     ...(item.mapTypes ?? []),
+    item.movementType,
+    (type === "mobileSuits" || type === "battleships") ? movementTypeLabel(item) : "",
     ...(item.tags ?? []),
     ...(item.roles ?? []),
     ...(item.specials ?? []),
@@ -2046,6 +2050,22 @@ function makeDefenseTarget(config, index, x, y) {
   };
 }
 
+function makeDestructionTarget(config, index, x, y) {
+  const armor = Math.max(1, Number(config.armor) || 220);
+  return {
+    id: `destruction-target-${index + 1}-${makeId()}`,
+    type: "destructionTarget",
+    side: "enemy",
+    faction: config.faction ?? stageConfig(state.selectedMapId).enemyFaction ?? "federation",
+    name: config.name ?? `破壊目標${index + 1}`,
+    armor,
+    maxArmor: armor,
+    mobility: Math.max(0, Number(config.mobility) || 0),
+    x,
+    y
+  };
+}
+
 function defaultDeploymentPosition(side, kind, index = 0, map = selectedMap()) {
   const width = boardWidth(map);
   const height = boardHeight(map);
@@ -2321,8 +2341,12 @@ function launchBattle() {
     const position = reserveDefenseTargetCell(target, index, occupied);
     return makeDefenseTarget(target, index, position.x, position.y);
   });
+  const destructionTargets = stageDestructionTargets().map((target, index) => {
+    const position = reserveDefenseTargetCell(target, index, occupied);
+    return makeDestructionTarget(target, index, position.x, position.y);
+  });
 
-  state.units = [...battleships, ...playerUnits, ...defenseTargets, ...enemyUnits];
+  state.units = [...battleships, ...playerUnits, ...defenseTargets, ...destructionTargets, ...enemyUnits];
   state.phase = "deployment";
   state.outcome = null;
   state.outcomeMessage = "";

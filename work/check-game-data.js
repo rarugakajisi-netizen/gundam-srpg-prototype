@@ -22,6 +22,8 @@ const DATA_PATHS = [
   path.join(ROOT, "data", "cards", "options.js"),
   path.join(ROOT, "data", "rules", "compatibility.js")
 ];
+const DIALOGUE_PATH = path.join(ROOT, "src", "dialogue.js");
+const DIALOGUE_TYPES = ["attack", "hit", "miss", "move", "wait", "evade", "damaged"];
 
 const COUNTED_COLLECTION_TYPES = new Set(["mobileSuits", "weapons", "options"]);
 const COLLECTION_TYPES = ["mobileSuits", "battleships", "weapons", "characters", "options"];
@@ -39,6 +41,13 @@ function loadGameData() {
   }
   if (!sandbox.window.GAME_DATA) throw new Error("window.GAME_DATA was not defined.");
   return sandbox.window.GAME_DATA;
+}
+
+function loadDialogueData() {
+  const sandbox = { window: {} };
+  const source = `${fs.readFileSync(DIALOGUE_PATH, "utf8")}\nwindow.__CHARACTER_DIALOGUE__ = characterDialogue;`;
+  vm.runInNewContext(source, sandbox, { filename: DIALOGUE_PATH });
+  return sandbox.window.__CHARACTER_DIALOGUE__ ?? {};
 }
 
 function byId(items = []) {
@@ -153,7 +162,7 @@ function itemLabel(item) {
   return item ? `${item.name ?? "(no name)"} (${item.id ?? "no-id"})` : "(missing)";
 }
 
-function createChecker(data) {
+function createChecker(data, dialogues = {}) {
   const errors = [];
   const warnings = [];
   const indexes = {};
@@ -227,6 +236,12 @@ function createChecker(data) {
     });
   }
 
+  function expectUniqueList(scope, values) {
+    if (!Array.isArray(values)) return;
+    const duplicateValues = [...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
+    if (duplicateValues.length > 0) error(scope, `同じ値が重複しています: ${duplicateValues.join(", ")}`);
+  }
+
   function validateCollection(collection, scope) {
     if (!isPlainObject(collection)) {
       error(scope, "collection がオブジェクトではありません。");
@@ -252,6 +267,7 @@ function createChecker(data) {
           error(`${scope}.${type}`, "配列である必要があります。");
           continue;
         }
+        expectUniqueList(`${scope}.${type}`, value);
         value.forEach((id) => expectId(`${scope}.${type}`, type, id));
       }
     }
@@ -282,6 +298,9 @@ function createChecker(data) {
     const characterIds = list(entry.characterIds);
     const weaponIds = list(entry.weaponIds);
     const optionIds = list(entry.optionIds);
+    expectUniqueList(`${scope}.characterIds`, characterIds);
+    expectUniqueList(`${scope}.weaponIds`, weaponIds);
+    expectUniqueList(`${scope}.optionIds`, optionIds);
     const entryOptions = optionIds.map((id) => indexes.options[id]).filter(Boolean);
     if (map && !mobileSuitCanDeployOnMap(ms, map, entryOptions)) error(scope, `${itemLabel(ms)} は ${map.name} に出撃できません。`);
     const usedCharacters = new Set();
@@ -369,6 +388,9 @@ function createChecker(data) {
       });
       if (ms.movementType !== undefined && !MOVEMENT_TYPES.has(ms.movementType)) error(scope, `不明な movementType です: ${ms.movementType}`);
       if (!isPlainObject(ms.terrainSuitability ?? {})) error(scope, "terrainSuitability はオブジェクトである必要があります。");
+      ["mapTypes", "fixedWeaponIds", "allowedWeaponIds", "escapeWeaponIds", "forbiddenWeaponKinds", "tags", "specials"].forEach((key) => {
+        expectUniqueList(`${scope}.${key}`, ms[key]);
+      });
       TERRAIN_KEYS.forEach((key) => {
         if (ms.terrainSuitability?.[key] !== undefined && typeof ms.terrainSuitability[key] !== "boolean") {
           error(scope, `terrainSuitability.${key} は真偽値である必要があります。`);
@@ -386,6 +408,9 @@ function createChecker(data) {
       expectId(`${scope}.escapeMsId`, "mobileSuits", ms.escapeMsId, true);
       expectId(`${scope}.purgeMsId`, "mobileSuits", ms.purgeMsId, true);
       const transformMs = expectId(`${scope}.transformMsId`, "mobileSuits", ms.transformMsId, true);
+      if (transformMs && transformMs.transformMsId !== ms.id) {
+        warning(scope, `変形先 ${itemLabel(transformMs)} から変形元へ戻る transformMsId がありません。`);
+      }
       if (
         transformMs
         && Number(ms.cost) !== Number(transformMs.cost)
@@ -405,6 +430,7 @@ function createChecker(data) {
       });
       if (ship.movementType !== undefined && !MOVEMENT_TYPES.has(ship.movementType)) error(scope, `不明な movementType です: ${ship.movementType}`);
       if (!isPlainObject(ship.support)) error(scope, "support が未設定です。");
+      ["mapTypes", "weaponIds"].forEach((key) => expectUniqueList(`${scope}.${key}`, ship[key]));
       ["armor", "shield", "energy", "ammo"].forEach((key) => expectNumber(`${scope}.support`, ship.support ?? {}, key));
       list(ship.weaponIds).forEach((id) => {
         const weapon = expectId(`${scope}.weaponIds`, "weapons", id);
@@ -419,6 +445,14 @@ function createChecker(data) {
         expectNumber(scope, weapon, key, { required: false });
       });
       if ((weapon.minRange ?? 1) > (weapon.range ?? 1)) error(scope, `minRange が range を超えています: ${weapon.minRange} > ${weapon.range}`);
+      ["factions", "extraAttackIds", "specials"].forEach((key) => expectUniqueList(`${scope}.${key}`, weapon[key]));
+      if (weapon.chargeRequired !== undefined) {
+        if (!Number.isInteger(weapon.chargeRequired) || weapon.chargeRequired <= 0) error(scope, "chargeRequired は1以上の整数である必要があります。");
+        if (!Number.isFinite(weapon.chargeCost) || weapon.chargeCost < 0) error(scope, "チャージ武器には0以上の chargeCost が必要です。");
+        if (weapon.chargeResetOnFire !== undefined && typeof weapon.chargeResetOnFire !== "boolean") error(scope, "chargeResetOnFire は真偽値で指定してください。");
+      } else if (weapon.chargeCost !== undefined || weapon.chargeResetOnFire !== undefined) {
+        warning(scope, "chargeRequired のない武器にチャージ設定があります。");
+      }
       expectFactions(scope, weapon.factions, true);
       list(weapon.extraAttackIds).forEach((id) => expectId(`${scope}.extraAttackIds`, "weapons", id));
       list(weapon.specials).forEach((id) => expectId(`${scope}.specials`, "skills", id));
@@ -431,6 +465,7 @@ function createChecker(data) {
       ["cost", "shooting", "melee", "reaction", "awakening", "command", "support", "maintenance"].forEach((key) => expectNumber(scope, character, key));
       if (!character.characterKey || typeof character.characterKey !== "string") error(scope, "characterKey が文字列ではありません。");
       if (!Array.isArray(character.roles) || character.roles.length === 0) warning(scope, "roles が未設定です。");
+      ["factions", "roles", "tags", "specials"].forEach((key) => expectUniqueList(`${scope}.${key}`, character[key]));
       list(character.specials).forEach((id) => expectId(`${scope}.specials`, "skills", id));
     });
 
@@ -439,6 +474,7 @@ function createChecker(data) {
       expectNumber(scope, option, "cost");
       expectNumber(scope, option, "maxMsCost", { integer: true, required: false });
       if (option.allowsAirDeployment !== undefined && typeof option.allowsAirDeployment !== "boolean") error(scope, "allowsAirDeployment は真偽値で指定してください。");
+      ["factions", "mapTypes", "weaponIds"].forEach((key) => expectUniqueList(`${scope}.${key}`, option[key]));
       expectFactions(scope, option.factions, true);
       list(option.mapTypes).forEach((type) => {
         if (!DEPLOY_TYPES.has(type)) error(scope, `不明な mapTypes です: ${type}`);
@@ -446,6 +482,48 @@ function createChecker(data) {
       expectId(`${scope}.grantsSkill`, "skills", option.grantsSkill, true);
       list(option.weaponIds).forEach((id) => expectId(`${scope}.weaponIds`, "weapons", id));
       if (!option.effectText || typeof option.effectText !== "string") warning(scope, "effectText が未設定です。");
+    });
+  }
+
+  function validateCardReachability() {
+    const referencedWeaponIds = new Set();
+    const addWeaponIds = (ids) => list(ids).forEach((id) => referencedWeaponIds.add(id));
+    data.mobileSuits.forEach((ms) => {
+      addWeaponIds(ms.fixedWeaponIds);
+      addWeaponIds(ms.escapeWeaponIds);
+    });
+    data.battleships.forEach((ship) => addWeaponIds(ship.weaponIds));
+    data.options.forEach((option) => addWeaponIds(option.weaponIds));
+    data.weapons.forEach((weapon) => addWeaponIds(weapon.extraAttackIds));
+
+    data.weapons.forEach((weapon) => {
+      const scope = `weapons.${weapon.id}`;
+      if (weapon.fixedOnly && !referencedWeaponIds.has(weapon.id)) {
+        warning(scope, "fixedOnly ですが、機体・戦艦・オプション・追加攻撃のどこからも参照されていません。");
+      }
+      if (!weapon.fixedOnly && !data.mobileSuits.some((ms) => weaponEquippableByMs(ms, weapon) && weaponSlotCost(weapon) <= (ms.weaponSlots ?? 2))) {
+        error(scope, "通常武器ですが、装備可能な機体が1機もありません。");
+      }
+    });
+
+    data.options.forEach((option) => {
+      const hasEligibleMs = data.mobileSuits.some((ms) =>
+        (ms.optionSlots ?? 1) > 0
+        && optionUsableByFaction(option, ms.faction)
+        && (!Number.isFinite(Number(option.maxMsCost)) || Number(ms.cost) <= Number(option.maxMsCost))
+      );
+      if (!hasEligibleMs) error(`options.${option.id}`, "装備可能な機体が1機もありません。");
+    });
+
+    const referencedSkillIds = new Set();
+    [data.mobileSuits, data.weapons, data.characters].forEach((items) => {
+      items.forEach((item) => list(item.specials).forEach((id) => referencedSkillIds.add(id)));
+    });
+    data.options.forEach((option) => {
+      if (option.grantsSkill) referencedSkillIds.add(option.grantsSkill);
+    });
+    data.skills.forEach((skill) => {
+      if (!referencedSkillIds.has(skill.id)) warning(`skills.${skill.id}`, "カードまたはオプションから参照されていません。");
     });
   }
 
@@ -501,8 +579,19 @@ function createChecker(data) {
       if (ship && !list(initialCollection.battleships).includes(ship.id)) warning(scope, `${ship.id} は初期コレクションに含まれていません。`);
     }
 
-    list(campaign.stages).forEach((stage, index) => {
+    const stages = list(campaign.stages);
+    const seenStageMaps = new Map();
+    const seenStageOrders = new Map();
+    stages.forEach((stage, index) => {
       const scope = `campaign.stages[${index}:${stage.mapId ?? "no-map"}]`;
+      if (seenStageMaps.has(stage.mapId)) error(scope, `同じ mapId が別ステージでも使われています: ${stage.mapId}`);
+      else seenStageMaps.set(stage.mapId, index);
+      const orderKey = `${stage.series ?? ""}|${stage.order ?? ""}`;
+      if (stage.series && stage.order !== undefined && seenStageOrders.has(orderKey)) {
+        warning(scope, `同じ series 内で order が重複しています: ${stage.series} / ${stage.order}`);
+      } else if (stage.series && stage.order !== undefined) {
+        seenStageOrders.set(orderKey, index);
+      }
       const map = expectId(`${scope}.mapId`, "maps", stage.mapId);
       expectFaction(`${scope}.enemyFaction`, stage.enemyFaction);
       const ship = expectId(`${scope}.enemyBattleshipId`, "battleships", stage.enemyBattleshipId, true);
@@ -572,6 +661,28 @@ function createChecker(data) {
         }
       });
 
+      list(stage.destructionTargets).forEach((target, targetIndex) => {
+        const targetScope = `${scope}.destructionTargets[${targetIndex}]`;
+        if (!isPlainObject(target)) {
+          error(targetScope, "オブジェクトである必要があります。");
+          return;
+        }
+        if (!target.name || typeof target.name !== "string") warning(targetScope, "name が未設定です。");
+        ["x", "y", "armor"].forEach((key) => expectNumber(targetScope, target, key, { integer: true }));
+        if (target.mobility !== undefined) expectNumber(targetScope, target, "mobility", { integer: true });
+        if (target.faction !== undefined) expectFaction(`${targetScope}.faction`, target.faction);
+        if (map && Number.isInteger(target.x) && Number.isInteger(target.y)) {
+          if (target.x < 0 || target.y < 0 || target.x >= map.width || target.y >= map.height) {
+            error(targetScope, `マップ外です: ${target.x},${target.y}`);
+          } else if (terrainBlocksMovement(terrainAt(map, target.x, target.y))) {
+            error(targetScope, `配置不能地形です: ${target.x},${target.y}`);
+          }
+        }
+      });
+
+      const destructionTargetKeys = list(stage.destructionTargets).map((target) => `${target?.x},${target?.y}`);
+      if (new Set(destructionTargetKeys).size !== destructionTargetKeys.length) error(`${scope}.destructionTargets`, "同じ座標が重複しています。");
+
       list(stage.infiltrationTargets).forEach((target, targetIndex) => {
         const targetScope = `${scope}.infiltrationTargets[${targetIndex}]`;
         if (!isPlainObject(target)) {
@@ -606,6 +717,11 @@ function createChecker(data) {
       if (stage.dropRewards !== undefined) {
         error(scope, "ステージ別 dropRewards は廃止済みです。全体ランダム報酬 commonDropRewards を使います。");
       }
+    });
+
+    const stageMapIds = new Set(stages.map((stage) => stage.mapId));
+    data.maps.forEach((map) => {
+      if (!stageMapIds.has(map.id)) warning(`maps.${map.id}`, "対応するキャンペーンステージがなく、フリー対戦を解放できません。");
     });
 
     const commonDrop = campaign.commonDropRewards;
@@ -660,16 +776,24 @@ function createChecker(data) {
     if (!Array.isArray(msWeapon)) error("compatibility.msWeapon", "配列ではありません。");
 
     const allMsTags = new Set(data.mobileSuits.flatMap((ms) => [ms.id, ...list(ms.tags)]));
+    const seenCharacterMs = new Set();
     list(characterMs).forEach((entry, index) => {
       const scope = `compatibility.characterMs[${index}]`;
+      const selectorKey = `${entry.characterId ?? ""}|${entry.msId ?? ""}|${entry.msTag ?? ""}`;
+      if (seenCharacterMs.has(selectorKey)) error(scope, `同じ相性条件が重複しています: ${selectorKey}`);
+      seenCharacterMs.add(selectorKey);
       expectId(`${scope}.characterId`, "characters", entry.characterId);
       if (entry.msId) expectId(`${scope}.msId`, "mobileSuits", entry.msId);
       if (entry.msTag && !allMsTags.has(entry.msTag)) error(scope, `一致する機体タグがありません: ${entry.msTag}`);
       if (!entry.msId && !entry.msTag) error(scope, "msId または msTag が必要です。");
       expectNumber(scope, entry, "evasionBonus", { required: false });
     });
+    const seenMsWeapon = new Set();
     list(msWeapon).forEach((entry, index) => {
       const scope = `compatibility.msWeapon[${index}]`;
+      const selectorKey = `${entry.msId ?? ""}|${entry.msTag ?? ""}|${entry.weaponId ?? ""}|${entry.category ?? ""}`;
+      if (seenMsWeapon.has(selectorKey)) error(scope, `同じ相性条件が重複しています: ${selectorKey}`);
+      seenMsWeapon.add(selectorKey);
       if (entry.msId) expectId(`${scope}.msId`, "mobileSuits", entry.msId);
       if (entry.msTag && !allMsTags.has(entry.msTag)) error(scope, `一致する機体タグがありません: ${entry.msTag}`);
       if (!entry.msId && !entry.msTag) error(scope, "msId または msTag が必要です。");
@@ -680,13 +804,41 @@ function createChecker(data) {
     });
   }
 
+  function validateDialogues() {
+    if (!isPlainObject(dialogues)) {
+      error("dialogues", "キャラクターセリフがオブジェクトではありません。");
+      return;
+    }
+    const characterKeys = new Set(data.characters.map((character) => character.characterKey));
+    for (const characterKey of characterKeys) {
+      if (!dialogues[characterKey]) error(`dialogues.${characterKey}`, "対応するキャラクターのセリフがありません。");
+    }
+    for (const [characterKey, dialogue] of Object.entries(dialogues)) {
+      const scope = `dialogues.${characterKey}`;
+      if (!characterKeys.has(characterKey)) warning(scope, "対応する characterKey がありません。");
+      if (!isPlainObject(dialogue)) {
+        error(scope, "セリフセットがオブジェクトではありません。");
+        continue;
+      }
+      for (const type of DIALOGUE_TYPES) {
+        if (!Array.isArray(dialogue[type]) || dialogue[type].length === 0) {
+          error(`${scope}.${type}`, "セリフが1件以上必要です。");
+        } else if (dialogue[type].some((line) => typeof line !== "string" || !line.trim())) {
+          error(`${scope}.${type}`, "空でない文字列だけを指定してください。");
+        }
+      }
+    }
+  }
+
   function run() {
     validateDataShape();
     if (errors.length > 0) return { errors, warnings };
     validateCards();
+    validateCardReachability();
     validateMaps();
     validateCampaign();
     validateCompatibility();
+    validateDialogues();
     return { errors, warnings };
   }
 
@@ -720,10 +872,12 @@ function main() {
   }
 
   const data = loadGameData();
-  const result = createChecker(data).run();
+  const dialogues = loadDialogueData();
+  const result = createChecker(data, dialogues).run();
   const source = DATA_PATHS
     .filter(fs.existsSync)
     .map((dataPath) => path.relative(ROOT, dataPath).replaceAll("\\", "/"));
+  source.push(path.relative(ROOT, DIALOGUE_PATH).replaceAll("\\", "/"));
 
   if (args.json) {
     console.log(JSON.stringify({ source, ...result }, null, 2));

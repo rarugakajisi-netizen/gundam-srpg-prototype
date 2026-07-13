@@ -61,20 +61,23 @@ function renderBattleRuleStatus() {
   const survivalLimit = stageSurvivalTurnLimit();
   const reinforcements = stageEnemyReinforcements();
   const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
+  const destructionTargets = state.units.filter((unit) => isDestructionTarget(unit));
   const infiltrationTargets = stageInfiltrationTargets();
   const inactiveEnemies = state.units.filter((unit) => unit.side === "enemy" && isCombatUnit(unit) && isAlive(unit) && Number.isFinite(unit.aiInactiveUntilTurn) && state.turnNumber < unit.aiInactiveUntilTurn);
-  if ((limit === null && survivalLimit === null && !reinforcements && defenseTargets.length === 0 && infiltrationTargets.length === 0 && inactiveEnemies.length === 0) || state.outcome) return "";
+  if ((limit === null && survivalLimit === null && !reinforcements && defenseTargets.length === 0 && destructionTargets.length === 0 && infiltrationTargets.length === 0 && inactiveEnemies.length === 0) || state.outcome) return "";
   const remaining = Math.max(0, limit - state.turnNumber + 1);
   const survivalRemaining = Math.max(0, survivalLimit - state.turnNumber + 1);
   const aliveDefenseTargets = defenseTargets.filter((unit) => isAlive(unit)).length;
+  const aliveDestructionTargets = destructionTargets.filter((unit) => isAlive(unit)).length;
   return `
     <section class="panel deployment-panel">
       <div>
         <h2>特殊ルール</h2>
-        ${limit !== null ? `<p class="small">時間稼ぎ: 第${limit}ターン終了までに敵を撃破してください。現在${state.turnNumber}ターン目 / 残り${remaining}ターン。</p>` : ""}
+        ${limit !== null ? `<p class="small">${destructionTargets.length > 0 ? "時間制限: 期限までにすべての破壊目標を撃破" : "時間稼ぎ: 期限までに敵を撃破"}してください。第${limit}ターン終了が期限です。現在${state.turnNumber}ターン目 / 残り${remaining}ターン。</p>` : ""}
         ${survivalLimit !== null ? `<p class="small">生存戦: 第${survivalLimit}ターン終了まで生き延びると勝利です。現在${state.turnNumber}ターン目 / 残り${survivalRemaining}ターン。</p>` : ""}
         ${reinforcements ? `<p class="small">増援: 条件ターン中、自軍ターン開始時に敵増援が出現します。</p>` : ""}
         ${defenseTargets.length > 0 ? `<p class="small">防衛対象: ${aliveDefenseTargets} / ${defenseTargets.length} 残存。すべて破壊されると敗北します。</p>` : ""}
+        ${destructionTargets.length > 0 ? `<p class="small">破壊目標: ${aliveDestructionTargets} / ${destructionTargets.length} 残存。制限ターン内にすべて破壊してください。</p>` : ""}
         ${infiltrationTargets.length > 0 ? `<p class="small">進入阻止: 敵機が赤枠の指定マスへ到達すると敗北します。味方ユニットで塞ぐことができます。</p>` : ""}
         ${inactiveEnemies.length > 0 ? `<p class="small">起動待機: ${inactiveEnemies.map((unit) => `${unitName(unit)}は第${unit.aiInactiveUntilTurn}ターンから行動`).join(" / ")}</p>` : ""}
       </div>
@@ -161,13 +164,15 @@ function renderToken(unit) {
   const selected = unit.id === state.selectedUnitId ? "selected" : "";
   const battleship = isBattleship(unit) ? "battleship" : "";
   const defenseTarget = isDefenseTarget(unit) ? "defense-target" : "";
+  const destructionTarget = isDestructionTarget(unit) ? "destruction-target" : "";
   const displayName = concealedEnemyLabel(unit);
   const numberBadge = isMobileSuit(unit) && Number.isInteger(unit.sortieNumber)
     ? `<span class="token-number">${unit.sortieNumber}</span>`
     : isDefenseTarget(unit) ? `<span class="token-number">守</span>`
+    : isDestructionTarget(unit) ? `<span class="token-number">破</span>`
     : "";
   return `
-    <button class="token ${faction} ${unit.side} ${battleship} ${defenseTarget} ${selected}" data-unit-id="${unit.id}" title="${displayName}">
+    <button class="token ${faction} ${unit.side} ${battleship} ${defenseTarget} ${destructionTarget} ${selected}" data-unit-id="${unit.id}" title="${displayName}">
       ${numberBadge}
       <span class="token-name">${displayName}</span>
       <span class="hp-bar"><span class="hp-fill" style="width:${hp}%"></span></span>
@@ -203,7 +208,7 @@ function renderConcealedEnemyDetail() {
 
 function renderUnitDetail(unit, target) {
   if (unitDetailsConcealedFromSide(unit, "player")) return renderConcealedEnemyDetail();
-  if (isDefenseTarget(unit)) return renderDefenseTargetDetail(unit);
+  if (isDefenseTarget(unit) || isDestructionTarget(unit)) return renderDefenseTargetDetail(unit);
   if (isBattleship(unit)) return renderBattleshipDetail(unit, target);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
@@ -252,7 +257,7 @@ function renderUnitDetail(unit, target) {
 
 function renderTargetDetail(unit) {
   if (unitDetailsConcealedFromSide(unit, "player")) return renderConcealedEnemyDetail();
-  if (isDefenseTarget(unit)) return renderDefenseTargetDetail(unit);
+  if (isDefenseTarget(unit) || isDestructionTarget(unit)) return renderDefenseTargetDetail(unit);
   if (isBattleship(unit)) return renderBattleshipTargetDetail(unit);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
@@ -388,16 +393,19 @@ function attackButtons(attacker, target) {
 }
 
 function renderDefenseTargetDetail(unit) {
+  const destruction = isDestructionTarget(unit);
   return `
     <h3>${unitName(unit)}</h3>
     <div class="stat-grid side-stat-grid">
-      <div class="stat"><span>種別</span>防衛対象</div>
+      <div class="stat"><span>種別</span>${destruction ? "破壊目標" : "防衛対象"}</div>
       <div class="stat"><span>耐久</span>${unit.armor} / ${unit.maxArmor}</div>
       <div class="stat"><span>移動</span>${mobilityFor(unit)}</div>
       <div class="stat"><span>位置</span>${unit.x}, ${unit.y}</div>
       <div class="stat"><span>回避補正</span>0</div>
     </div>
-    <p class="support-hint ready">この対象を守ってください。複数ある場合は、すべて破壊されると敗北します。移動${mobilityFor(unit)}の範囲で退避できます。</p>
+    <p class="support-hint ready">${destruction
+      ? "制限ターン内にすべての破壊目標を撃破してください。護衛機を全滅させるだけでは勝利になりません。"
+      : `この対象を守ってください。複数ある場合は、すべて破壊されると敗北します。移動${mobilityFor(unit)}の範囲で退避できます。`}</p>
   `;
 }
 

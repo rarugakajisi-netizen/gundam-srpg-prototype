@@ -20,6 +20,8 @@ function checkOutcome() {
   const enemyAlive = state.units.some((unit) => unit.side === "enemy" && isMobileSuit(unit) && isAlive(unit));
   const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
   const defenseTargetsDestroyed = defenseTargets.length > 0 && defenseTargets.every((unit) => !isAlive(unit));
+  const destructionTargets = state.units.filter((unit) => isDestructionTarget(unit));
+  const destructionTargetsDestroyed = destructionTargets.length > 0 && destructionTargets.every((unit) => !isAlive(unit));
   const infiltrator = state.units.find((unit) => unitReachedInfiltrationTarget(unit));
   const survivalLimit = stageSurvivalTurnLimit();
   const survivalComplete = survivalLimit !== null && state.phase === "player" && state.turnNumber > survivalLimit;
@@ -39,16 +41,23 @@ function checkOutcome() {
     state.outcome = "敗北";
     state.outcomeMessage = `${unitName(infiltrator)}の基地侵入を許しました。指定された侵入阻止マスを塞いでください。`;
     phaseLabel.textContent = state.outcome;
+  } else if (destructionTargetsDestroyed) {
+    state.outcome = "勝利";
+    state.outcomeMessage = "";
+    state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
+    phaseLabel.textContent = state.outcome;
   } else if (stageTurnLimit() !== null && state.phase === "player" && state.turnNumber > stageTurnLimit()) {
     state.outcome = "敗北";
-    state.outcomeMessage = `敵の時間稼ぎを許しました。${stageTurnLimit()}ターン以内に敵を撃破してください。`;
+    state.outcomeMessage = destructionTargets.length > 0
+      ? `打ち上げ阻止に失敗しました。${stageTurnLimit()}ターン以内にすべての破壊目標を撃破してください。`
+      : `敵の時間稼ぎを許しました。${stageTurnLimit()}ターン以内に敵を撃破してください。`;
     phaseLabel.textContent = state.outcome;
   } else if (survivalComplete) {
     state.outcome = "勝利";
     state.outcomeMessage = "";
     state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
     phaseLabel.textContent = state.outcome;
-  } else if (survivalLimit === null && !reinforcementsPending && ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive)) {
+  } else if (destructionTargets.length === 0 && survivalLimit === null && !reinforcementsPending && ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive)) {
     state.outcome = "勝利";
     state.outcomeMessage = "";
     state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);

@@ -446,6 +446,41 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "sawTheOceanAboveJaburo",
+      "series": "msIgloo",
+      "order": 440,
+      "tags": [
+        "MS IGLOO",
+        "ジオン視点",
+        "空中",
+        "大気圏",
+        "ジャブロー",
+        "打ち上げ阻止",
+        "破壊目標",
+        "ターン制限"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": null,
+      "costCap": 1600,
+      "turnLimit": 8,
+      "summary": "ジャブロー上空の大気圏で、宇宙へ打ち上げられる連邦艦艇を追撃します。コア・ブースターとTINコッドの迎撃をかわし、8ターン以内に低耐久のマゼラン1隻・サラミス2隻をすべて破壊してください。",
+      "destructionTargets": [
+        { "name": "マゼラン（打ち上げ中）", "x": 4, "y": 3, "armor": 260, "mobility": 0, "faction": "federation" },
+        { "name": "サラミス1（打ち上げ中）", "x": 1, "y": 2, "armor": 210, "mobility": 0, "faction": "federation" },
+        { "name": "サラミス2（打ち上げ中）", "x": 6, "y": 2, "armor": 210, "mobility": 0, "faction": "federation" }
+      ],
+      "enemyFormations": {
+        "federation": [
+          { "msId": "coreBooster", "characterIds": ["federationVeteran"], "weaponIds": [], "optionIds": [] },
+          { "msId": "coreBooster", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "tinCod", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "tinCod", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "tinCod", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "tinCod", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
       "mapId": "garmaFalls",
       "series": "main",
       "order": 20,

@@ -200,8 +200,10 @@ function characterMsCompatibilityMatches(row, ms) {
 }
 
 function characterMsBonus(character, ms) {
-  const match = list(data.compatibility?.characterMs)
-    .find((row) => row.characterId === character.id && characterMsCompatibilityMatches(row, ms));
+  const matches = list(data.compatibility?.characterMs)
+    .filter((row) => row.characterId === character.id && characterMsCompatibilityMatches(row, ms));
+  const match = matches.find((row) => row.msId === ms.id)
+    ?? matches.reduce((best, row) => !best || number(row.evasionBonus) > number(best.evasionBonus) ? row : best, null);
   return number(match?.evasionBonus);
 }
 

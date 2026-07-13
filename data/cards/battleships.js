@@ -15,6 +15,7 @@ window.GAME_DATA.battleships = [
     "mapTypes": [
       "ground"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "gunperryMissile",
       "antiAirGun"
@@ -39,6 +40,7 @@ window.GAME_DATA.battleships = [
     "mapTypes": [
       "ground"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "antiAirGun"
     ],
@@ -137,6 +139,7 @@ window.GAME_DATA.battleships = [
       "ground",
       "space"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "dualMegaParticleCannon",
       "federationShipMissile",
@@ -260,6 +263,7 @@ window.GAME_DATA.battleships = [
       "ground",
       "space"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "dualMegaParticleCannon",
       "federationShipMissile",
@@ -286,6 +290,7 @@ window.GAME_DATA.battleships = [
       "ground",
       "space"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "dualMegaParticleCannon",
       "federationShipMissile",
@@ -312,6 +317,7 @@ window.GAME_DATA.battleships = [
       "ground",
       "space"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "pegasusMegaParticleCannon",
       "federationShipMissile",
@@ -337,6 +343,7 @@ window.GAME_DATA.battleships = [
     "mapTypes": [
       "ground"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "dualMegaParticleCannon",
       "antiGroundBombing"
@@ -361,6 +368,7 @@ window.GAME_DATA.battleships = [
     "mapTypes": [
       "ground"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "singleMegaParticleCannon",
       "shipMissile"
@@ -486,6 +494,7 @@ window.GAME_DATA.battleships = [
       "ground",
       "space"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "dualMegaParticleCannon",
       "shipMissile",
@@ -655,6 +664,7 @@ window.GAME_DATA.battleships = [
       "ground",
       "space"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "dualMegaParticleCannon",
       "shipMissile",
@@ -681,6 +691,7 @@ window.GAME_DATA.battleships = [
       "ground",
       "space"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "zanzibarTwoMegaParticleCannon",
       "dualMegaParticleCannon",
@@ -732,6 +743,7 @@ window.GAME_DATA.battleships = [
       "ground",
       "space"
     ],
+    "movementType": "flying",
     "weaponIds": [
       "dualMegaParticleCannon",
       "federationShipMissile"

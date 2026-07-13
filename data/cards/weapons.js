@@ -2170,25 +2170,6 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
-    "id": "acguyHeadVulcan",
-    "name": "頭部バルカン砲",
-    "cost": 0,
-    "power": 50,
-    "accuracy": 82,
-    "range": 2,
-    "minRange": 1,
-    "consume": 1,
-    "kind": "ammo",
-    "ammo": 8,
-    "category": "machine-gun",
-    "attackType": "shooting",
-    "durability": 0,
-    "fixedOnly": true,
-    "factions": [
-      "zeon"
-    ]
-  },
-  {
     "id": "acguyArmMissileLauncher",
     "name": "腕部ミサイルランチャー",
     "cost": 0,
@@ -3359,26 +3340,6 @@ window.GAME_DATA.weapons = [
     "durability": 0,
     "fixedOnly": true,
     "factions": [
-      "zeon"
-    ]
-  },
-  {
-    "id": "megaParticleCannon",
-    "name": "メガ粒子砲",
-    "cost": 0,
-    "power": 125,
-    "accuracy": 68,
-    "range": 5,
-    "minRange": 2,
-    "consume": 28,
-    "kind": "beam",
-    "ammo": 0,
-    "category": "ship-gun",
-    "attackType": "shooting",
-    "durability": 0,
-    "fixedOnly": true,
-    "factions": [
-      "federation",
       "zeon"
     ]
   },

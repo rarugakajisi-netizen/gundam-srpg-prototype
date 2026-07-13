@@ -460,6 +460,47 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "sawTheOceanAboveJaburo",
+    "name": "ジャブロー上空に海原を見た",
+    "type": "air",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 3, "y": 9 },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 0, "y": 1 },
+          { "x": 2, "y": 1 },
+          { "x": 3, "y": 0 },
+          { "x": 4, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 7, "y": 0 }
+        ]
+      }
+    },
+    "terrain": [
+      "air", "air", "air", "air", "air", "air", "air", "air",
+      "air", "air", "air", "air", "air", "air", "air", "air",
+      "air", "air", "air", "air", "air", "air", "air", "air",
+      "air", "air", "air", "air", "air", "air", "air", "air",
+      "air", "air", "air", "air", "air", "air", "air", "air",
+      "air", "air", "air", "air", "air", "air", "air", "air",
+      "air", "air", "air", "air", "air", "air", "air", "air",
+      "air", "air", "air", "air", "air", "air", "air", "air",
+      "air", "air", "air", "air", "air", "air", "air", "air",
+      "air", "air", "air", "air", "air", "air", "air", "air"
+    ]
+  },
+  {
     "id": "garmaFalls",
     "name": "ガルマ散る",
     "type": "ground",
