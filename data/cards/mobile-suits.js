@@ -2917,6 +2917,40 @@ window.GAME_DATA.mobileSuits = [
     "imagePath": ""
   },
   {
+    "id": "azzamOrga",
+    "name": "アッザム・オルガ",
+    "faction": "zeon",
+    "cost": 255,
+    "armor": 430,
+    "energy": 115,
+    "agility": 12,
+    "mobility": 4,
+    "weaponSlots": 0,
+    "optionSlots": 1,
+    "fixedWeaponIds": [
+      "azzamOrgaMissileLauncher",
+      "azzamOrgaGroundMachineGun",
+      "azzamLeader"
+    ],
+    "mapTypes": [
+      "ground"
+    ],
+    "movementType": "flying",
+    "terrainSuitability": {
+      "water": false,
+      "forest": false,
+      "desert": false,
+      "debris": false
+    },
+    "tags": [
+      "mobileArmor",
+      "flyingMa",
+      "azzamOrga"
+    ],
+    "specials": [],
+    "imagePath": ""
+  },
+  {
     "id": "jormungand",
     "name": "ヨルムンガンド",
     "faction": "zeon",

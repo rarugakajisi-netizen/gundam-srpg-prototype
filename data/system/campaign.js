@@ -766,6 +766,138 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "dogsOfWar",
+      "series": "fallenColony",
+      "order": 610,
+      "tags": [
+        "コロニーの落ちた地で...",
+        "連邦視点",
+        "地上",
+        "オーストラリア",
+        "アリススプリングス",
+        "荒野",
+        "市街戦",
+        "ヴィッシュ・ドナヒュー"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "summary": "オーストラリア中央部の荒野を越え、アリススプリングス市街を守るジオン部隊へ侵攻します。少数のザクIIとドップを率いるのは、『荒野の迅雷』ヴィッシュ・ドナヒューのグフです。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "gouf", "characterIds": ["vischDonahue"], "weaponIds": ["goufShield"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "dopp", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "dopp", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "astaroth",
+      "series": "fallenColony",
+      "order": 620,
+      "tags": [
+        "コロニーの落ちた地で...",
+        "連邦視点",
+        "地上",
+        "渓谷",
+        "崖",
+        "防衛",
+        "ミデア",
+        "ギャロップ"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "gallop",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "崖の狭間を縫う進軍路で、墜落して行動不能となったミデアをジオン部隊から守ります。ギャロップの砲撃と、ザクII、マゼラ・アタック、グフの接近を食い止める防衛戦です。",
+      "defenseTargets": [
+        {
+          "name": "行動不能のミデア",
+          "x": 5,
+          "y": 8,
+          "armor": 600,
+          "mobility": 0
+        }
+      ],
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "gouf", "characterIds": ["zeonVeteran"], "weaponIds": [], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["cracker"], "optionIds": [] },
+          { "msId": "magellaAttack", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "magellaAttack", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "stairwayToTheMoon",
+      "series": "fallenColony",
+      "order": 630,
+      "tags": [
+        "コロニーの落ちた地で...",
+        "連邦視点",
+        "地上",
+        "オーストラリア",
+        "クイーンズランド",
+        "ヒューエンデン",
+        "要塞基地",
+        "HLV",
+        "アッザム・オルガ"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "gaw",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "生物兵器アスタロスの月面基地グラナダへの移送を阻止するため、HLV打ち上げ施設を有するクイーンズランド州ヒューエンデン要塞基地へ侵攻します。ガウ航空隊とアッザム・オルガ、グフを隊長機とする地上守備隊が待ち構えます。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "azzamOrga", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "dopp", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "dopp", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "dopp", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "gouf", "characterIds": ["zeonVeteran"], "weaponIds": [], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "zakuCannon", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "fallenColonyFinal",
+      "series": "fallenColony",
+      "order": 640,
+      "tags": [
+        "コロニーの落ちた地で...",
+        "連邦視点",
+        "地上",
+        "ヒューエンデン",
+        "要塞基地",
+        "HLV",
+        "破壊目標",
+        "ターン制限",
+        "ヴィッシュ・ドナヒュー",
+        "陸戦型ゲルググ"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "turnLimit": 12,
+      "summary": "ヒューエンデン要塞基地へ再突入し、生物兵器アスタロスを積んでグラナダへ向かう打ち上げ前のHLV 3基を破壊します。12ターンの余裕を使い、ヴィッシュの陸戦型ゲルググと重装守備隊を突破してください。",
+      "destructionTargets": [
+        { "name": "HLV 1", "x": 2, "y": 1, "armor": 280, "mobility": 0, "faction": "zeon" },
+        { "name": "HLV 2", "x": 5, "y": 1, "armor": 280, "mobility": 0, "faction": "zeon" },
+        { "name": "HLV 3", "x": 8, "y": 1, "armor": 280, "mobility": 0, "faction": "zeon" }
+      ],
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "gelgoogGround", "characterIds": ["vischDonahue"], "weaponIds": ["zeonBeamRifle", "spikeShield"], "optionIds": ["stopMovementOperation"] },
+          { "msId": "rhinoSaras", "characterIds": ["zeonVeteran"], "weaponIds": [], "optionIds": [] },
+          { "msId": "gouf", "characterIds": ["zeonVeteran"], "weaponIds": [], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zakuCannon", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] }
+        ]
+      }
+    },
+    {
       "mapId": "garmaFalls",
       "series": "main",
       "order": 20,

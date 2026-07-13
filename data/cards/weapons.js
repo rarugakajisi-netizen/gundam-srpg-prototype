@@ -2842,6 +2842,45 @@ window.GAME_DATA.weapons = [
     ]
   },
   {
+    "id": "azzamOrgaMissileLauncher",
+    "name": "ミサイル・ランチャー（アッザム・オルガ）",
+    "cost": 0,
+    "power": 105,
+    "accuracy": 72,
+    "range": 4,
+    "minRange": 2,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 4,
+    "category": "missile",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
+    "id": "azzamOrgaGroundMachineGun",
+    "name": "対地機銃（アッザム・オルガ）",
+    "cost": 0,
+    "power": 55,
+    "accuracy": 84,
+    "range": 2,
+    "minRange": 1,
+    "consume": 1,
+    "kind": "ammo",
+    "ammo": 6,
+    "category": "machine-gun",
+    "attackType": "shooting",
+    "durability": 0,
+    "fixedOnly": true,
+    "cannotTargetFlying": true,
+    "factions": [
+      "zeon"
+    ]
+  },
+  {
     "id": "bigroClaw",
     "name": "クロー",
     "cost": 0,

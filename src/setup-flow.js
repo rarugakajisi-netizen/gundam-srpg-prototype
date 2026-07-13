@@ -472,6 +472,7 @@ const STAGE_SERIES_LABELS = {
   warInPocket: "ポケットの中の戦争",
   msIgloo: "MS IGLOO",
   blueDestiny: "THE BLUE DESTINY",
+  fallenColony: "コロニーの落ちた地で...",
   other: "その他"
 };
 
@@ -539,6 +540,7 @@ function stageSeriesSortValue(series) {
     warInPocket: 30,
     msIgloo: 40,
     blueDestiny: 50,
+    fallenColony: 60,
     other: 90
   }[series] ?? 80;
 }

@@ -894,6 +894,182 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "dogsOfWar",
+    "name": "戦争の犬たち",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 4, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 2, "y": 3 },
+          { "x": 5, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "building", "base", "base", "base", "base", "base", "base", "building",
+      "building", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "building", "plain", "building", "plain", "plain", "building", "plain", "building",
+      "building", "plain", "plain", "plain", "plain", "plain", "plain", "building",
+      "desert", "plain", "rock", "plain", "plain", "rock", "plain", "desert",
+      "plain", "plain", "plain", "plain", "rock", "plain", "plain", "plain",
+      "desert", "rock", "plain", "plain", "plain", "plain", "rock", "desert",
+      "plain", "plain", "plain", "rock", "plain", "plain", "plain", "plain",
+      "desert", "plain", "plain", "desert", "desert", "plain", "plain", "desert",
+      "desert", "desert", "rock", "desert", "desert", "rock", "desert", "desert"
+    ]
+  },
+  {
+    "id": "astaroth",
+    "name": "アスタロス",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 1, "y": 10 },
+          { "x": 3, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 3, "y": 11 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 3, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 4, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 3, "y": 3 },
+          { "x": 6, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "cliff", "cliff", "cliff", "base", "base", "base", "base", "cliff", "cliff", "cliff",
+      "cliff", "cliff", "cliff", "plain", "plain", "plain", "plain", "cliff", "cliff", "cliff",
+      "cliff", "cliff", "rock", "plain", "plain", "plain", "plain", "cliff", "cliff", "cliff",
+      "cliff", "cliff", "cliff", "plain", "rock", "plain", "plain", "cliff", "cliff", "cliff",
+      "cliff", "cliff", "plain", "plain", "plain", "plain", "cliff", "cliff", "cliff", "cliff",
+      "cliff", "cliff", "plain", "plain", "plain", "rock", "plain", "cliff", "cliff", "cliff",
+      "cliff", "cliff", "cliff", "plain", "plain", "plain", "plain", "plain", "cliff", "cliff",
+      "cliff", "cliff", "cliff", "plain", "rock", "plain", "plain", "plain", "cliff", "cliff",
+      "cliff", "cliff", "cliff", "plain", "plain", "plain", "plain", "cliff", "cliff", "cliff",
+      "cliff", "cliff", "plain", "plain", "plain", "plain", "plain", "plain", "cliff", "cliff",
+      "cliff", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "cliff",
+      "cliff", "cliff", "desert", "desert", "base", "base", "desert", "desert", "cliff", "cliff"
+    ]
+  },
+  {
+    "id": "stairwayToTheMoon",
+    "name": "月の階段",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 1, "y": 10 },
+          { "x": 3, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 3, "y": 11 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 5, "y": 1 },
+          { "x": 2, "y": 1 },
+          { "x": 7, "y": 1 },
+          { "x": 5, "y": 2 },
+          { "x": 4, "y": 3 },
+          { "x": 2, "y": 4 },
+          { "x": 7, "y": 4 },
+          { "x": 5, "y": 4 }
+        ]
+      }
+    },
+    "terrain": [
+      "building", "base", "base", "base", "base", "base", "base", "base", "base", "building",
+      "building", "base", "plain", "plain", "plain", "plain", "plain", "plain", "base", "building",
+      "building", "base", "building", "plain", "base", "base", "plain", "building", "base", "building",
+      "cliff", "base", "plain", "plain", "plain", "plain", "plain", "plain", "base", "cliff",
+      "cliff", "plain", "plain", "building", "plain", "plain", "building", "plain", "plain", "cliff",
+      "cliff", "plain", "rock", "plain", "plain", "plain", "plain", "rock", "plain", "cliff",
+      "desert", "plain", "plain", "plain", "rock", "rock", "plain", "plain", "plain", "desert",
+      "desert", "plain", "rock", "plain", "plain", "plain", "plain", "rock", "plain", "desert",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "desert", "plain", "plain", "rock", "plain", "plain", "rock", "plain", "plain", "desert",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "desert",
+      "desert", "desert", "desert", "desert", "base", "base", "desert", "desert", "desert", "desert"
+    ]
+  },
+  {
+    "id": "fallenColonyFinal",
+    "name": "コロニーの落ちた地で...",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 1, "y": 10 },
+          { "x": 3, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 3, "y": 11 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 5, "y": 3 },
+          { "x": 3, "y": 3 },
+          { "x": 7, "y": 3 },
+          { "x": 4, "y": 5 },
+          { "x": 6, "y": 5 }
+        ]
+      }
+    },
+    "terrain": [
+      "building", "base", "base", "base", "base", "base", "base", "base", "base", "building",
+      "building", "base", "plain", "base", "base", "base", "base", "base", "base", "building",
+      "building", "base", "building", "plain", "base", "base", "plain", "building", "base", "building",
+      "cliff", "base", "plain", "plain", "plain", "plain", "plain", "plain", "base", "cliff",
+      "cliff", "plain", "plain", "building", "plain", "plain", "building", "plain", "plain", "cliff",
+      "cliff", "plain", "rock", "plain", "plain", "plain", "plain", "rock", "plain", "cliff",
+      "desert", "plain", "plain", "plain", "rock", "rock", "plain", "plain", "plain", "desert",
+      "desert", "plain", "rock", "plain", "plain", "plain", "plain", "rock", "plain", "desert",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "desert", "plain", "plain", "rock", "plain", "plain", "rock", "plain", "plain", "desert",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "desert",
+      "desert", "desert", "desert", "desert", "base", "base", "desert", "desert", "desert", "desert"
+    ]
+  },
+  {
     "id": "garmaFalls",
     "name": "ガルマ散る",
     "type": "ground",
