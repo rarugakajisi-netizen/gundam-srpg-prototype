@@ -630,7 +630,11 @@ function createChecker(data, dialogues = {}) {
           const reinforcementEntries = list(stage.enemyReinforcements.entries);
           const reinforcementBattleships = list(stage.enemyReinforcements.battleships);
           if (reinforcementEntries.length === 0 && reinforcementBattleships.length === 0) error(reinforcementScope, "MSまたは戦艦の増援エントリが1件以上必要です。");
-          reinforcementEntries.forEach((entry, entryIndex) => validateFormationEntry(entry, `${reinforcementScope}.entries[${entryIndex}]`, stage.enemyFaction, map, { playerControlled: false }));
+          reinforcementEntries.forEach((entry, entryIndex) => {
+            const reinforcementFaction = entry?.faction ?? stage.enemyFaction;
+            if (entry?.faction !== undefined) expectFaction(`${reinforcementScope}.entries[${entryIndex}].faction`, entry.faction);
+            validateFormationEntry(entry, `${reinforcementScope}.entries[${entryIndex}]`, reinforcementFaction, map, { playerControlled: false });
+          });
           reinforcementBattleships.forEach((entry, entryIndex) => {
             const entryScope = `${reinforcementScope}.battleships[${entryIndex}]`;
             if (!isPlainObject(entry)) {

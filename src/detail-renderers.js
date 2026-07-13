@@ -599,7 +599,8 @@ function activeSkillText(unit) {
   if ((unit.freezyYardActiveTurns ?? 0) > 0) skills.push(`フリージーヤード効果中${unit.freezyYardActiveTurns}`);
   if ((unit.smokeConcealedTurns ?? 0) > 0) skills.push(`煙幕隠蔽中${unit.smokeConcealedTurns}`);
   if ((unit.learningStacks ?? 0) > 0) skills.push(`教育型補正${unit.learningStacks}`);
-  if ((unit.examTurnsRemaining ?? 0) > 0) skills.push(`EXAM発動中${unit.examTurnsRemaining}`);
+  if (unit.examAlwaysActive) skills.push("EXAM暴走（常時発動）");
+  else if ((unit.examTurnsRemaining ?? 0) > 0) skills.push(`EXAM発動中${unit.examTurnsRemaining}`);
   if ((unit.hadesTurnsRemaining ?? 0) > 0) skills.push(`HADES発動中${unit.hadesTurnsRemaining}`);
   if ((unit.zeusTurnsRemaining ?? 0) > 0) skills.push(`ZEUS発動中${unit.zeusTurnsRemaining}`);
   if ((unit.areusTurnsRemaining ?? 0) > 0) skills.push(`AREUS発動中${unit.areusTurnsRemaining}`);

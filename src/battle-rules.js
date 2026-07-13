@@ -469,6 +469,11 @@ function tickHadesSystem(unit) {
 }
 
 function tickExamSystem(unit) {
+  if (unit.examAlwaysActive) {
+    unit.examSystemActivated = true;
+    unit.examTurnsRemaining = 1;
+    return;
+  }
   if (!examSystemActive(unit)) {
     activateExamSystemByArmor(unit);
     return;
@@ -1177,7 +1182,7 @@ function triggerMines(unit) {
 }
 
 function canUseCoreSystem(unit) {
-  if (!isMobileSuit(unit) || unit.coreSystemUsed || !msFor(unit).specials.includes("coreSystem")) return false;
+  if (!isMobileSuit(unit) || unit.disableCoreSystem || unit.coreSystemUsed || !msFor(unit).specials.includes("coreSystem")) return false;
   const escapeMs = lookup().ms[msFor(unit).escapeMsId ?? "coreFighter"];
   return Boolean(escapeMs) && unitCanRemainAirborne(unit, escapeMs);
 }

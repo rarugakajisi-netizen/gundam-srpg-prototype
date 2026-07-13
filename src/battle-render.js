@@ -75,7 +75,9 @@ function renderBattleRuleStatus() {
         <h2>特殊ルール</h2>
         ${limit !== null ? `<p class="small">${destructionTargets.length > 0 ? "時間制限: 期限までにすべての破壊目標を撃破" : "時間稼ぎ: 期限までに敵を撃破"}してください。第${limit}ターン終了が期限です。現在${state.turnNumber}ターン目 / 残り${remaining}ターン。</p>` : ""}
         ${survivalLimit !== null ? `<p class="small">生存戦: 第${survivalLimit}ターン終了まで生き延びると勝利です。現在${state.turnNumber}ターン目 / 残り${survivalRemaining}ターン。</p>` : ""}
-        ${reinforcements ? `<p class="small">増援: 条件ターン中、自軍ターン開始時に敵増援が出現します。</p>` : ""}
+        ${reinforcements?.trigger === "enemyWipedOut"
+          ? `<p class="small">増援: 初期配備の敵を全滅させると、新たな敵が出現します。</p>`
+          : (reinforcements ? `<p class="small">増援: 条件ターン中、自軍ターン開始時に敵増援が出現します。</p>` : "")}
         ${defenseTargets.length > 0 ? `<p class="small">防衛対象: ${aliveDefenseTargets} / ${defenseTargets.length} 残存。すべて破壊されると敗北します。</p>` : ""}
         ${destructionTargets.length > 0 ? `<p class="small">破壊目標: ${aliveDestructionTargets} / ${destructionTargets.length} 残存。制限ターン内にすべて破壊してください。</p>` : ""}
         ${infiltrationTargets.length > 0 ? `<p class="small">進入阻止: 敵機が赤枠の指定マスへ到達すると敗北します。味方ユニットで塞ぐことができます。</p>` : ""}

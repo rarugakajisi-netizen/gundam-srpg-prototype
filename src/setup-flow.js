@@ -406,7 +406,9 @@ function enemyFormationForStage(mapId, faction) {
     optionIds: [...(entry.optionIds ?? [])],
     armorOverride: entry.armorOverride,
     aiInactiveUntilTurn: entry.aiInactiveUntilTurn,
-    factionOverride: entry.factionOverride
+    factionOverride: entry.factionOverride,
+    examAlwaysActive: entry.examAlwaysActive === true,
+    disableCoreSystem: entry.disableCoreSystem === true
   }));
 }
 
@@ -469,6 +471,7 @@ const STAGE_SERIES_LABELS = {
   "08th": "08小隊",
   warInPocket: "ポケットの中の戦争",
   msIgloo: "MS IGLOO",
+  blueDestiny: "THE BLUE DESTINY",
   other: "その他"
 };
 
@@ -535,6 +538,7 @@ function stageSeriesSortValue(series) {
     "08th": 20,
     warInPocket: 30,
     msIgloo: 40,
+    blueDestiny: 50,
     other: 90
   }[series] ?? 80;
 }
@@ -928,7 +932,8 @@ function renderStageRuleChips(stage) {
   if (Number.isFinite(turnLimit) && turnLimit > 0) chips.push(`敗北条件: ${Math.floor(turnLimit)}ターン経過`);
   const surviveTurns = Number(stage.surviveTurns);
   if (Number.isFinite(surviveTurns) && surviveTurns > 0) chips.push(`勝利条件: ${Math.floor(surviveTurns)}ターン生存`);
-  if (stage.enemyReinforcements) chips.push("敵増援: 毎ターン出現");
+  if (stage.enemyReinforcements?.trigger === "enemyWipedOut") chips.push("敵増援: 初期敵全滅で出現");
+  else if (stage.enemyReinforcements) chips.push("敵増援: 毎ターン出現");
   const defenseTargets = Array.isArray(stage.defenseTargets) ? stage.defenseTargets : [];
   if (defenseTargets.length > 0) chips.push(`防衛対象: ${defenseTargets.length}個 / 全破壊で敗北`);
   const destructionTargets = Array.isArray(stage.destructionTargets) ? stage.destructionTargets : [];
@@ -2001,6 +2006,10 @@ function makeUnit(entry, side, x, y, index) {
     y,
     usedWeaponIds: [],
     weaponCharges: {},
+    examAlwaysActive: entry.examAlwaysActive === true,
+    examSystemActivated: entry.examAlwaysActive === true,
+    examTurnsRemaining: entry.examAlwaysActive === true ? 1 : 0,
+    disableCoreSystem: entry.disableCoreSystem === true,
     aiInactiveUntilTurn: Number.isFinite(Number(entry.aiInactiveUntilTurn))
       ? Math.max(1, Math.floor(Number(entry.aiInactiveUntilTurn)))
       : null,
@@ -2151,6 +2160,7 @@ function reinforcementSpawnCells(side, occupied, card = null, map = selectedMap(
 function spawnStageEnemyReinforcementsForTurn() {
   const config = stageEnemyReinforcements();
   if (!config || state.outcome) return 0;
+  if (config.trigger === "enemyWipedOut") return 0;
   const turn = state.turnNumber;
   const startTurn = Math.max(1, Math.floor(Number(config.startTurn) || 2));
   const survivalLimit = stageSurvivalTurnLimit();
@@ -2158,7 +2168,10 @@ function spawnStageEnemyReinforcementsForTurn() {
     ? Math.max(startTurn, Math.floor(Number(config.endTurn)))
     : (survivalLimit ?? startTurn);
   if (turn < startTurn || turn > endTurn) return 0;
+  return spawnStageEnemyReinforcementWave(config);
+}
 
+function spawnStageEnemyReinforcementWave(config) {
   const entries = Array.isArray(config.entries) && config.entries.length > 0
     ? config.entries
     : (config.entry ? [config.entry] : []);
@@ -2181,7 +2194,10 @@ function spawnStageEnemyReinforcementsForTurn() {
       characterIds: [...(template.characterIds ?? [])],
       weaponIds: [...(template.weaponIds ?? [])],
       optionIds: [...(template.optionIds ?? [])],
-      armorOverride: template.armorOverride
+      armorOverride: template.armorOverride,
+      factionOverride: template.factionOverride,
+      examAlwaysActive: template.examAlwaysActive === true,
+      disableCoreSystem: template.disableCoreSystem === true
     }, "enemy", cell.x, cell.y, state.stageReinforcementSerial);
     unit.reinforcement = true;
     spawned.push(unit);
@@ -2210,6 +2226,17 @@ function spawnStageEnemyReinforcementsForTurn() {
     state.log.push("増援: 出現可能な空きマスがありません。");
   }
   return spawned.length + spawnedBattleships.length;
+}
+
+function spawnStageEnemyReinforcementsOnEnemyWipe() {
+  const config = stageEnemyReinforcements();
+  if (!config || config.trigger !== "enemyWipedOut" || state.outcome || state.stageReinforcementTriggerComplete) return 0;
+  const initialEnemyAlive = state.units.some((unit) => unit.side === "enemy" && isCombatUnit(unit) && isAlive(unit) && !unit.reinforcement);
+  if (initialEnemyAlive) return 0;
+  state.stageReinforcementTriggerComplete = true;
+  const spawned = spawnStageEnemyReinforcementWave(config);
+  if (spawned > 0) state.log.push("初期配備部隊の全滅を検知。新たな敵影が戦場へ突入しました。");
+  return spawned;
 }
 
 function deploymentRows(side, map = selectedMap()) {
@@ -2357,6 +2384,7 @@ function launchBattle() {
   state.mines = [];
   state.sacrificialBoostSides = {};
   state.stageReinforcementSerial = 0;
+  state.stageReinforcementTriggerComplete = false;
   state.battleGrowthEligible = false;
   state.battleGrowthAwarded = false;
   state.battleGrowthCharacterIds = playerCharacterIdsForGrowth();

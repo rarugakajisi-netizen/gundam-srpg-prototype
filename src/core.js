@@ -107,6 +107,7 @@ const state = {
   mines: [],
   sacrificialBoostSides: {},
   stageReinforcementSerial: 0,
+  stageReinforcementTriggerComplete: false,
   battleGrowthEligible: false,
   battleGrowthAwarded: false,
   battleGrowthCharacterIds: [],
@@ -618,6 +619,7 @@ function stageEnemyReinforcements(mapId = state.selectedMapId) {
 function stageEnemyReinforcementsPending(mapId = state.selectedMapId) {
   const config = stageEnemyReinforcements(mapId);
   if (!config) return false;
+  if (config.trigger === "enemyWipedOut") return !state.stageReinforcementTriggerComplete;
   const startTurn = Math.max(1, Math.floor(Number(config.startTurn) || 2));
   const endTurn = Number.isFinite(Number(config.endTurn))
     ? Math.max(startTurn, Math.floor(Number(config.endTurn)))

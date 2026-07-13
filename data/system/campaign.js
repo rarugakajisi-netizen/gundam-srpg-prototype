@@ -380,6 +380,67 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "kingOfTheLandForward",
+      "series": "msIgloo",
+      "order": 421,
+      "tags": [
+        "MS IGLOO",
+        "ジオン視点",
+        "地上",
+        "荒野",
+        "低難度",
+        "ホワイトオーガー"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "costCap": 1200,
+      "summary": "乾いた荒野で、エルマー・スネルのホワイトオーガーを中心とするジオン地上部隊を全滅させます。ザクII 2機とマゼラ・アタック3両が随伴する、比較的低難度の地上戦です。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "zaku2WhiteOgre", "characterIds": ["elmerSnell"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "magellaAttack", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "magellaAttack", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "magellaAttack", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [], "disableCoreSystem": true }
+        ]
+      }
+    },
+    {
+      "mapId": "odessaIronStorm",
+      "series": "msIgloo",
+      "order": 422,
+      "tags": [
+        "MS IGLOO",
+        "ジオン視点",
+        "地上",
+        "オデッサ",
+        "荒野",
+        "崖",
+        "大規模戦"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "bigTray",
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "",
+      "costCap": 3200,
+      "summary": "崖が戦線を分断するオデッサの荒野で、ビッグ・トレーを旗艦とする連邦軍を迎撃します。アリーヌ、ドロバ、ミロスの陸戦強襲型ガンタンク3両に、陸戦型ジムと61式戦車隊が随伴する大規模地上戦です。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "assaultGuntankNormal", "characterIds": ["alineNazon"], "weaponIds": [], "optionIds": [] },
+          { "msId": "assaultGuntankNormal", "characterIds": ["drobaKuzwayo"], "weaponIds": [], "optionIds": [] },
+          { "msId": "assaultGuntankNormal", "characterIds": ["milosKarppi"], "weaponIds": [], "optionIds": [] },
+          { "msId": "groundGm", "characterIds": ["federationSoldier"], "weaponIds": ["federationMachineGun100mm", "smallShield"], "optionIds": [] },
+          { "msId": "groundGm", "characterIds": ["federationSoldier"], "weaponIds": ["federationMachineGun100mm", "smallShield"], "optionIds": [] },
+          { "msId": "groundGm", "characterIds": ["federationSoldier"], "weaponIds": ["rocketLauncher"], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
       "mapId": "phantomRacesInOrbit",
       "series": "msIgloo",
       "order": 430,
@@ -477,6 +538,175 @@ window.GAME_DATA.campaign = {
           { "msId": "tinCod", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
           { "msId": "tinCod", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
           { "msId": "tinCod", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "soulsReturnToThunder",
+      "series": "msIgloo",
+      "order": 450,
+      "tags": [
+        "MS IGLOO",
+        "ジオン視点",
+        "宇宙",
+        "ア・バオア・クー",
+        "大規模戦",
+        "艦隊戦",
+        "ユーグ・クーロ"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "magellan",
+      "enemyEscortBattleshipIds": ["salamis", "salamis"],
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "",
+      "costCap": 3900,
+      "summary": "ア・バオア・クー外縁のデブリ宙域で、マゼランと2隻のサラミスを中核とする連邦軍大部隊を迎撃します。ボールとジムの物量に加え、ユーグのジム・コマンドと虎の子のガンキャノンが戦線を押し上げます。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "ball", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "ball", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "ball", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "ball", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "gm", "characterIds": ["federationSoldier"], "weaponIds": ["beamSprayGun", "shield"], "optionIds": [] },
+          { "msId": "gm", "characterIds": ["federationSoldier"], "weaponIds": ["beamSprayGun", "shield"], "optionIds": [] },
+          { "msId": "gm", "characterIds": ["federationSoldier"], "weaponIds": ["beamSprayGun", "shield"], "optionIds": [] },
+          { "msId": "gm", "characterIds": ["federationSoldier"], "weaponIds": ["hyperBazooka", "shield"], "optionIds": [] },
+          { "msId": "gm", "characterIds": ["federationVeteran"], "weaponIds": ["hyperBazooka", "shield"], "optionIds": [] },
+          { "msId": "gmCommandSpace", "characterIds": ["huguesCourand"], "weaponIds": ["beamGun", "gmCommandShield"], "optionIds": [] },
+          { "msId": "gmCommandSpace", "characterIds": ["federationVeteran"], "weaponIds": ["beamGun", "gmCommandShield"], "optionIds": [] },
+          { "msId": "guncannon", "characterIds": ["federationVeteran"], "weaponIds": ["guncannonBeamRifle"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "vs603TechnicalTestUnit",
+      "series": "msIgloo",
+      "order": 460,
+      "tags": [
+        "MS IGLOO",
+        "連邦視点",
+        "宇宙",
+        "ア・バオア・クー",
+        "ボス",
+        "第603技術試験隊",
+        "オッゴ",
+        "ヅダ",
+        "カスペン",
+        "ゲルググ"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "jotunheim",
+      "enemyCaptainId": "martinProchnow",
+      "enemyFirstOfficerId": "",
+      "costCap": 2300,
+      "summary": "ア・バオア・クー外縁で、第603技術試験隊と交戦します。マルティンのヨーツンヘイムを中心に、マイのビグ・ラング、モニクとワシヤのヅダ、カスペン専用ゲルググ、少数のオッゴ隊が補給支援を受けながら迎撃します。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "bigLang", "characterIds": ["oliverMay"], "weaponIds": [], "optionIds": [] },
+          { "msId": "zudahCommander", "characterIds": ["moniqueCadillac"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zudah", "characterIds": ["hidetoWashiya"], "weaponIds": ["antiShipRifle"], "optionIds": [] },
+          { "msId": "gelgoogKaspen", "characterIds": ["herbertVonKaspen"], "weaponIds": ["zeonBeamRifle", "gelgoogShield"], "optionIds": [] },
+          { "msId": "oggo", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "oggo", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "oggo", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuBazooka"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "blueTremor",
+      "series": "blueDestiny",
+      "order": 510,
+      "tags": [
+        "THE BLUE DESTINY",
+        "連邦視点",
+        "地上",
+        "ジオン基地",
+        "増援",
+        "EXAM",
+        "ブルーディスティニー1号機"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "costCap": 1450,
+      "enemyReinforcements": {
+        "trigger": "enemyWipedOut",
+        "count": 1,
+        "entries": [
+          {
+            "msId": "blueDestiny1",
+            "faction": "federation",
+            "characterIds": ["federationSoldier"],
+            "weaponIds": ["federationMachineGun100mm", "smallShield"],
+            "optionIds": [],
+            "examAlwaysActive": true
+          }
+        ]
+      },
+      "summary": "地上のジオン基地を攻撃し、ザクII 2機とマゼラ・アタックを撃破します。初期部隊を全滅させると、無名兵が搭乗する暴走中のブルーディスティニー1号機が敵として出現。EXAMは常時発動し、ターン経過でも解除されません。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "magellaAttack", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "fatefulShowdown",
+      "series": "blueDestiny",
+      "order": 520,
+      "tags": [
+        "THE BLUE DESTINY",
+        "連邦視点",
+        "地上",
+        "キャリフォルニア基地",
+        "基地戦",
+        "ニムバス",
+        "イフリート改",
+        "EXAM"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "dabude",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "",
+      "costCap": 2050,
+      "summary": "ジオン軍キャリフォルニア基地へ進攻し、ダブデを中核とする守備隊と交戦します。ザクII、グフ、ドムの防衛線を突破し、腕部3連装ミサイル・ランチャーを装備したニムバスのイフリート改との宿命の対決に挑みます。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "efreetCustom", "characterIds": ["nimbusSchterzen"], "weaponIds": ["armTripleMissileLauncher"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "gouf", "characterIds": ["zeonVeteran"], "weaponIds": [], "optionIds": [] },
+          { "msId": "dom", "characterIds": ["zeonSoldier"], "weaponIds": ["giantBazooka"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "theJudged",
+      "series": "blueDestiny",
+      "order": 530,
+      "tags": [
+        "THE BLUE DESTINY",
+        "連邦視点",
+        "宇宙",
+        "コロニー外部",
+        "艦隊戦",
+        "ニムバス",
+        "ブルーディスティニー2号機",
+        "EXAM"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "musai",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "",
+      "costCap": 2700,
+      "summary": "コロニー外部の宙域で、ムサイ級を中核とするジオン部隊と決戦します。ザクIIと大型シールド装備のゲルググ隊を突破し、強化型ビーム・ライフルを構えたニムバスのブルーディスティニー2号機を撃破します。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "blueDestiny2", "characterIds": ["nimbusSchterzen"], "weaponIds": ["enhancedZeonBeamRifle", "gelgoogShield"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "gelgoog", "characterIds": ["zeonVeteran"], "weaponIds": ["zeonBeamRifle", "gelgoogShield"], "optionIds": [] },
+          { "msId": "gelgoog", "characterIds": ["zeonSoldier"], "weaponIds": ["zeonBeamRifle", "gelgoogShield"], "optionIds": [] }
         ]
       }
     },
@@ -1439,6 +1669,41 @@ window.GAME_DATA.campaign = {
             "weaponIds": ["beamMachineGun"],
             "optionIds": ["highOutputGeneratorOption"]
           }
+        ]
+      }
+    },
+    {
+      "mapId": "ifJaburoAssault",
+      "series": "other",
+      "order": 920,
+      "tags": [
+        "その他",
+        "IF",
+        "高難度",
+        "ジャブロー",
+        "地上",
+        "ジャングル",
+        "大河",
+        "水陸両用MS",
+        "オールスター"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "kerguelen",
+      "enemyCaptainId": "ghiniusSahalin",
+      "enemyFirstOfficerId": "kerguelenGirl",
+      "costCap": 4300,
+      "summary": "もしジオン軍が各方面の戦力を失わず、万全の状態でジャブロー地上へ総攻撃を行っていたら――。密林と大河を越え、ケルゲレン、アプサラスIII、歴戦のエース、水陸両用MS、ジャブロー攻略用試作機が一斉に押し寄せる高難度IFステージです。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "apsaras3", "characterIds": ["ainaSahalin"], "weaponIds": [], "optionIds": [] },
+          { "msId": "goufCustom", "characterIds": ["norrisPackard"], "weaponIds": ["gatlingShield"], "optionIds": [] },
+          { "msId": "zgok", "characterIds": ["char"], "weaponIds": [], "optionIds": [] },
+          { "msId": "acguy", "characterIds": ["akahana"], "weaponIds": [], "optionIds": [] },
+          { "msId": "zock", "characterIds": ["boraskiniv"], "weaponIds": [], "optionIds": [] },
+          { "msId": "zogok", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "agg", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "agguguy", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "juaggu", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] }
         ]
       }
     },

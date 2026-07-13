@@ -416,6 +416,96 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "kingOfTheLandForward",
+    "name": "陸の王者、前へ！",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 3, "y": 0 },
+        "units": [
+          { "x": 3, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 0, "y": 2 },
+          { "x": 4, "y": 2 },
+          { "x": 7, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "desert", "desert", "base", "base", "desert", "desert", "desert",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "desert",
+      "plain", "plain", "rock", "plain", "plain", "rock", "plain", "plain",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "desert",
+      "plain", "rock", "plain", "plain", "plain", "plain", "rock", "plain",
+      "desert", "plain", "plain", "rock", "rock", "plain", "plain", "desert",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "desert", "plain", "rock", "plain", "plain", "rock", "plain", "desert",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "desert",
+      "desert", "desert", "desert", "base", "base", "desert", "desert", "desert"
+    ]
+  },
+  {
+    "id": "odessaIronStorm",
+    "name": "オデッサ、鉄の嵐！",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 9, "y": 11 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 2, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 8, "y": 1 },
+          { "x": 1, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 8, "y": 2 },
+          { "x": 0, "y": 3 },
+          { "x": 3, "y": 3 },
+          { "x": 6, "y": 3 },
+          { "x": 9, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "desert", "base", "base", "base", "base", "base", "base", "desert", "desert",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "desert",
+      "plain", "plain", "rock", "plain", "plain", "plain", "plain", "rock", "plain", "plain",
+      "plain", "plain", "plain", "plain", "rock", "plain", "plain", "plain", "plain", "plain",
+      "desert", "cliff", "cliff", "plain", "rock", "plain", "cliff", "cliff", "plain", "desert",
+      "desert", "plain", "cliff", "plain", "plain", "plain", "cliff", "plain", "plain", "desert",
+      "plain", "plain", "cliff", "cliff", "plain", "plain", "cliff", "cliff", "plain", "plain",
+      "plain", "rock", "plain", "cliff", "plain", "plain", "cliff", "plain", "rock", "plain",
+      "desert", "plain", "plain", "cliff", "cliff", "cliff", "cliff", "plain", "plain", "desert",
+      "desert", "plain", "rock", "plain", "plain", "plain", "plain", "rock", "plain", "desert",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "desert", "desert", "desert", "base", "base", "base", "base", "desert", "desert", "desert"
+    ]
+  },
+  {
     "id": "phantomRacesInOrbit",
     "name": "軌道上に幻影は疾る",
     "type": "space",
@@ -498,6 +588,229 @@ window.GAME_DATA.maps = [
       "air", "air", "air", "air", "air", "air", "air", "air",
       "air", "air", "air", "air", "air", "air", "air", "air",
       "air", "air", "air", "air", "air", "air", "air", "air"
+    ]
+  },
+  {
+    "id": "soulsReturnToThunder",
+    "name": "雷鳴に魂は還る",
+    "type": "space",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 5, "y": 10 },
+          { "x": 7, "y": 10 },
+          { "x": 9, "y": 10 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "escortBattleships": [
+          { "x": 2, "y": 0 },
+          { "x": 8, "y": 0 }
+        ],
+        "units": [
+          { "x": 0, "y": 1 },
+          { "x": 2, "y": 1 },
+          { "x": 4, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 8, "y": 1 },
+          { "x": 1, "y": 2 },
+          { "x": 3, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 7, "y": 2 },
+          { "x": 9, "y": 2 },
+          { "x": 2, "y": 3 },
+          { "x": 7, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "debris", "space", "space", "debris", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "wreckage", "space", "debris", "debris", "space", "wreckage", "space", "space",
+      "space", "debris", "space", "wreckage", "space", "space", "wreckage", "space", "debris", "space",
+      "space", "space", "debris", "space", "wreckage", "wreckage", "space", "debris", "space", "space",
+      "space", "debris", "space", "space", "debris", "debris", "space", "space", "debris", "space",
+      "space", "space", "wreckage", "space", "space", "space", "space", "wreckage", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "debris", "space", "space", "debris", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
+    "id": "vs603TechnicalTestUnit",
+    "name": "VS603技術試験隊",
+    "type": "space",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 9, "y": 9 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 5, "y": 1 },
+          { "x": 2, "y": 1 },
+          { "x": 7, "y": 1 },
+          { "x": 0, "y": 2 },
+          { "x": 3, "y": 2 },
+          { "x": 6, "y": 2 },
+          { "x": 9, "y": 2 },
+          { "x": 5, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "debris", "space", "space", "debris", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "wreckage", "space", "debris", "debris", "space", "wreckage", "space", "space",
+      "space", "debris", "space", "wreckage", "space", "space", "wreckage", "space", "debris", "space",
+      "space", "space", "debris", "space", "wreckage", "wreckage", "space", "debris", "space", "space",
+      "space", "debris", "space", "space", "debris", "debris", "space", "space", "debris", "space",
+      "space", "space", "wreckage", "space", "space", "space", "space", "wreckage", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "debris", "space", "space", "debris", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
+    "id": "blueTremor",
+    "name": "戦慄のブルー",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 2, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 4, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "cliff", "base", "base", "base", "base", "base", "base", "cliff",
+      "rock", "base", "base", "plain", "plain", "base", "base", "rock",
+      "cliff", "plain", "plain", "plain", "plain", "plain", "plain", "cliff",
+      "rock", "plain", "ruin", "plain", "plain", "ruin", "plain", "rock",
+      "plain", "plain", "plain", "rock", "rock", "plain", "plain", "plain",
+      "plain", "rock", "plain", "plain", "plain", "plain", "rock", "plain",
+      "plain", "plain", "ruin", "plain", "plain", "ruin", "plain", "plain",
+      "rock", "plain", "plain", "plain", "plain", "plain", "plain", "rock",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "plain", "plain", "plain", "base", "base", "plain", "plain", "plain"
+    ]
+  },
+  {
+    "id": "fatefulShowdown",
+    "name": "宿命の対決",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 4, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 2, "y": 2 },
+          { "x": 6, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "cliff", "base", "base", "base", "base", "base", "base", "cliff",
+      "building", "base", "base", "plain", "plain", "base", "base", "building",
+      "cliff", "plain", "plain", "base", "base", "plain", "plain", "cliff",
+      "building", "plain", "building", "plain", "plain", "building", "plain", "building",
+      "plain", "plain", "plain", "gate", "gate", "plain", "plain", "plain",
+      "rock", "plain", "plain", "plain", "plain", "plain", "plain", "rock",
+      "plain", "ruin", "plain", "rock", "rock", "plain", "ruin", "plain",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "rock", "plain", "plain", "plain", "plain", "plain", "plain", "rock",
+      "plain", "plain", "plain", "base", "base", "plain", "plain", "plain"
+    ]
+  },
+  {
+    "id": "theJudged",
+    "name": "裁かれし者",
+    "type": "space",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 1, "y": 10 },
+          { "x": 3, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 7, "y": 11 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 5, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 8, "y": 1 },
+          { "x": 3, "y": 2 },
+          { "x": 7, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "obstacle", "wreckage", "space", "space", "space", "space", "space", "space", "wreckage", "obstacle",
+      "obstacle", "space", "space", "space", "space", "space", "space", "space", "space", "obstacle",
+      "obstacle", "space", "debris", "space", "space", "space", "space", "debris", "space", "obstacle",
+      "wreckage", "space", "space", "space", "debris", "debris", "space", "space", "space", "wreckage",
+      "space", "space", "debris", "space", "wreckage", "wreckage", "space", "debris", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "wreckage", "space", "space", "space", "space", "wreckage", "space", "space",
+      "space", "debris", "space", "space", "debris", "debris", "space", "space", "debris", "space",
+      "wreckage", "space", "space", "debris", "space", "space", "debris", "space", "space", "wreckage",
+      "obstacle", "space", "debris", "space", "space", "space", "space", "debris", "space", "obstacle",
+      "obstacle", "space", "space", "space", "space", "space", "space", "space", "space", "obstacle",
+      "obstacle", "wreckage", "space", "space", "space", "space", "space", "space", "wreckage", "obstacle"
     ]
   },
   {
@@ -1967,6 +2280,55 @@ window.GAME_DATA.maps = [
       "urban", "plain", "plain", "ruin", "plain", "plain", "plain", "urban",
       "urban", "plain", "plain", "plain", "plain", "plain", "plain", "urban",
       "urban", "urban", "urban", "urban", "urban", "urban", "urban", "urban"
+    ]
+  },
+  {
+    "id": "ifJaburoAssault",
+    "name": "IF・ジャブロー攻略戦",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 8, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 5, "y": 10 },
+          { "x": 7, "y": 10 },
+          { "x": 9, "y": 10 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 4, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 8, "y": 1 },
+          { "x": 0, "y": 2 },
+          { "x": 3, "y": 2 },
+          { "x": 6, "y": 2 },
+          { "x": 9, "y": 2 },
+          { "x": 2, "y": 3 },
+          { "x": 5, "y": 3 },
+          { "x": 8, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "forest", "forest", "plain", "forest", "forest", "plain", "forest", "forest", "forest", "forest",
+      "forest", "plain", "plain", "forest", "plain", "plain", "forest", "plain", "plain", "forest",
+      "forest", "plain", "rock", "forest", "plain", "forest", "forest", "rock", "plain", "forest",
+      "forest", "forest", "plain", "plain", "forest", "forest", "plain", "plain", "forest", "forest",
+      "forest", "plain", "plain", "forest", "forest", "plain", "forest", "plain", "plain", "forest",
+      "water", "water", "bridge", "water", "water", "water", "water", "bridge", "water", "water",
+      "water", "water", "bridge", "water", "water", "water", "water", "bridge", "water", "water",
+      "water", "water", "bridge", "water", "water", "water", "water", "bridge", "water", "water",
+      "forest", "plain", "plain", "forest", "forest", "plain", "forest", "plain", "plain", "forest",
+      "forest", "plain", "rock", "plain", "forest", "forest", "plain", "rock", "plain", "forest",
+      "forest", "plain", "plain", "base", "base", "base", "base", "plain", "plain", "forest",
+      "forest", "forest", "plain", "base", "base", "base", "base", "plain", "forest", "forest"
     ]
   },
   {

@@ -8563,12 +8563,12 @@ window.GAME_DATA.mobileSuits = [
     "id": "blueDestiny2",
     "name": "ブルーディスティニー2号機",
     "faction": "zeon",
-    "cost": 310,
+    "cost": 300,
     "armor": 330,
     "energy": 105,
-    "agility": 28,
-    "mobility": 6,
-    "weaponSlots": 1,
+    "agility": 27,
+    "mobility": 5,
+    "weaponSlots": 2,
     "optionSlots": 1,
     "fixedWeaponIds": [
       "beamSaber",
@@ -8583,9 +8583,10 @@ window.GAME_DATA.mobileSuits = [
       "water": false,
       "forest": false,
       "desert": false,
-      "debris": true
+      "debris": false
     },
     "tags": [
+      "gmCommand",
       "blueDestiny",
       "examMs"
     ],

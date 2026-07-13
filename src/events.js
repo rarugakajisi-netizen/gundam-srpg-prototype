@@ -17,7 +17,11 @@ function checkOutcome() {
   const enemyBattleshipExists = state.units.some((unit) => unit.side === "enemy" && isBattleship(unit));
   const enemyBattleshipAlive = state.units.some((unit) => unit.side === "enemy" && isBattleship(unit) && isAlive(unit));
   const playerAlive = state.units.some((unit) => unit.side === "player" && isMobileSuit(unit) && isAlive(unit));
-  const enemyAlive = state.units.some((unit) => unit.side === "enemy" && isMobileSuit(unit) && isAlive(unit));
+  let enemyAlive = state.units.some((unit) => unit.side === "enemy" && isMobileSuit(unit) && isAlive(unit));
+  if (playerBattleshipAlive && playerAlive && !enemyAlive) {
+    spawnStageEnemyReinforcementsOnEnemyWipe();
+    enemyAlive = state.units.some((unit) => unit.side === "enemy" && isMobileSuit(unit) && isAlive(unit));
+  }
   const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
   const defenseTargetsDestroyed = defenseTargets.length > 0 && defenseTargets.every((unit) => !isAlive(unit));
   const destructionTargets = state.units.filter((unit) => isDestructionTarget(unit));
