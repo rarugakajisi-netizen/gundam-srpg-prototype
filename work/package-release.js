@@ -20,7 +20,6 @@ const zipPath = path.resolve(distRoot, `${releaseName}.zip`);
 const releaseEntries = [
   "index.html",
   "styles.css",
-  "main.js",
   "assets",
   "data",
   "src"

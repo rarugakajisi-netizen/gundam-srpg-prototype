@@ -8,21 +8,8 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const vm = require("node:vm");
-
-const ROOT = path.resolve(__dirname, "..");
-const DATA_PATHS = [
-  path.join(ROOT, "data", "game-data.js"),
-  path.join(ROOT, "data", "system", "campaign.js"),
-  path.join(ROOT, "data", "rules", "skills.js"),
-  path.join(ROOT, "data", "maps", "maps.js"),
-  path.join(ROOT, "data", "cards", "mobile-suits.js"),
-  path.join(ROOT, "data", "cards", "battleships.js"),
-  path.join(ROOT, "data", "cards", "weapons.js"),
-  path.join(ROOT, "data", "cards", "characters.js"),
-  path.join(ROOT, "data", "cards", "options.js"),
-  path.join(ROOT, "data", "rules", "compatibility.js")
-];
+const { PROJECT_ROOT: ROOT, BROWSER_SCRIPT_FILES } = require("./project-files");
+const { loadGameData } = require("./load-game-data");
 const SOURCE_PATHS = [
   path.join(ROOT, "src", "setup-flow.js"),
   path.join(ROOT, "src", "battle-render.js"),
@@ -31,14 +18,6 @@ const SOURCE_PATHS = [
 const COUNTED_CARD_TYPES = new Set(["mobileSuits", "weapons", "options"]);
 const COLLECTION_TYPES = ["mobileSuits", "battleships", "weapons", "characters", "options"];
 const BLOCKING_TERRAINS = new Set(["obstacle", "cliff", "rock", "building", "wreckage", "domeRuin", "ruin"]);
-
-function loadGameData() {
-  const sandbox = { window: {} };
-  for (const dataPath of DATA_PATHS) {
-    vm.runInNewContext(fs.readFileSync(dataPath, "utf8"), sandbox, { filename: dataPath });
-  }
-  return sandbox.window.GAME_DATA;
-}
 
 function byId(items = []) {
   return Object.fromEntries(items.map((item) => [item.id, item]));
@@ -304,15 +283,7 @@ function createChecker(data) {
   function validateLoadOrder() {
     const index = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
     const scriptPaths = [...index.matchAll(/<script src="\.\/([^"?]+)(?:\?[^"]*)?"><\/script>/g)].map((match) => match[1]);
-    const requiredOrder = [
-      "src/core.js",
-      "src/detail-renderers.js",
-      "src/setup-flow.js",
-      "src/battle-render.js",
-      "src/dialogue.js",
-      "src/battle-rules.js",
-      "src/events.js"
-    ];
+    const requiredOrder = BROWSER_SCRIPT_FILES;
     let lastIndex = -1;
     for (const script of requiredOrder) {
       const current = scriptPaths.indexOf(script);

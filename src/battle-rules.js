@@ -270,10 +270,6 @@ function limitedSystemActive(unit, skillId) {
   return Boolean(config && isMobileSuit(unit) && (unit[config.turnsProp] ?? 0) > 0);
 }
 
-function anyLimitedSystemActive(unit) {
-  return Object.keys(LIMITED_SYSTEMS).some((skillId) => limitedSystemActive(unit, skillId));
-}
-
 function canActivateLimitedSystem(unit, skillId) {
   const config = limitedSystemConfig(skillId);
   return Boolean(config

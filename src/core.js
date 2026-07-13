@@ -909,15 +909,6 @@ function remainingCardCopies(type, id) {
   return Math.max(0, cardCount(type, id) - usedCountInFormation(type, id));
 }
 
-function selectedCount(ids, id) {
-  return ids.filter((itemId) => itemId === id).length;
-}
-
-function canSelectCountedCard(type, id, selectedIds = []) {
-  if (!isCountedCardType(type)) return hasCard(type, id);
-  return cardCount(type, id) > usedCountInFormation(type, id) + selectedCount(selectedIds, id);
-}
-
 function selectionWithinOwnedCounts(type, ids) {
   if (!isCountedCardType(type)) return true;
   const counts = ids.reduce((memo, id) => {

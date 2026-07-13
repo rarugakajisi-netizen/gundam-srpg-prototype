@@ -4,6 +4,15 @@
 window.GAME_DATA = window.GAME_DATA ?? {};
 window.GAME_DATA.campaign = {
   "title": "一年戦争カードタクティクス",
+  "stageSeries": {
+    "main": { "label": "本編", "order": 10 },
+    "08th": { "label": "08小隊", "order": 20 },
+    "warInPocket": { "label": "ポケットの中の戦争", "order": 30 },
+    "msIgloo": { "label": "MS IGLOO", "order": 40 },
+    "blueDestiny": { "label": "THE BLUE DESTINY", "order": 50 },
+    "fallenColony": { "label": "コロニーの落ちた地で...", "order": 60 },
+    "other": { "label": "その他", "order": 90 }
+  },
   "initialFaction": "federation",
   "initialCollection": {
     "mobileSuits": {

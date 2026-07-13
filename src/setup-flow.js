@@ -223,8 +223,8 @@ function enemyFormationForCurrentBattle(mapId = state.selectedMapId, faction = e
   return isFreeBattle() ? freeBattleEnemyFormation() : enemyFormationForStage(mapId, faction);
 }
 
-function enemyBattleshipForCurrentBattle(mapId = state.selectedMapId, faction = enemyFactionForCurrentBattle(mapId)) {
-  return isFreeBattle() ? freeBattleEnemyBattleship() : enemyBattleshipForStage(mapId, faction);
+function enemyBattleshipForCurrentBattle(mapId = state.selectedMapId) {
+  return isFreeBattle() ? freeBattleEnemyBattleship() : enemyBattleshipForStage(mapId);
 }
 
 function enemyBridgeForCurrentBattle(mapId = state.selectedMapId, faction = enemyFactionForCurrentBattle(mapId)) {
@@ -379,35 +379,8 @@ function prepareFreeBattleEnemy() {
   return state.freeBattleEnemy;
 }
 
-function fallbackEnemyFormationForMap(map, faction) {
-  if (faction === "zeon") {
-    if (map.type === "space") {
-      return [
-        { msId: "zaku2", characterIds: ["gene"], weaponIds: ["zakuMachineGun", "zakuBazooka"], optionIds: [] },
-        { msId: "rickDom", characterIds: ["ramba"], weaponIds: ["zakuBazooka", "cracker"], optionIds: [] }
-      ];
-    }
-    return [
-      { msId: "zaku2", characterIds: ["gene"], weaponIds: ["zakuMachineGun", "zakuBazooka"], optionIds: [] },
-      { msId: "gouf", characterIds: ["ramba"], weaponIds: ["zakuBazooka"], optionIds: [] }
-    ];
-  }
-  if (map.type === "space") {
-    return [
-      { msId: "gm", characterIds: ["hayato"], weaponIds: ["beamRifle", "shield"], optionIds: [] },
-      { msId: "ball", characterIds: ["kai"], weaponIds: [], optionIds: [] }
-    ];
-  }
-  return [
-    { msId: "gm", characterIds: ["hayato"], weaponIds: ["beamRifle", "shield"], optionIds: [] },
-    { msId: "guncannon", characterIds: ["kai"], weaponIds: ["shield"], optionIds: [] }
-  ];
-}
-
 function enemyFormationForStage(mapId, faction) {
-  const stageEntries = stageConfig(mapId).enemyFormations?.[faction];
-  const map = lookup().maps[mapId] ?? selectedMap();
-  const entries = stageEntries?.length ? stageEntries : fallbackEnemyFormationForMap(map, faction);
+  const entries = stageConfig(mapId).enemyFormations?.[faction] ?? [];
   return entries.map((entry) => ({
     msId: entry.msId,
     characterIds: [...(entry.characterIds ?? [])],
@@ -421,21 +394,15 @@ function enemyFormationForStage(mapId, faction) {
   }));
 }
 
-function enemyBattleshipForStage(mapId, faction) {
-  const stage = stageConfig(mapId);
-  if (stage.enemyBattleshipId === null) return null;
-  const map = lookup().maps[mapId] ?? selectedMap();
-  if (stage.enemyBattleshipId) {
-    const configured = lookup().battleships[stage.enemyBattleshipId];
-    return configured?.faction === faction && battleshipCanDeployOnMap(configured, map) ? configured : null;
-  }
-  return state.data.battleships.find((ship) => ship.faction === faction && battleshipCanDeployOnMap(ship, map));
+function enemyBattleshipForStage(mapId) {
+  const battleshipId = stageConfig(mapId).enemyBattleshipId;
+  return battleshipId ? lookup().battleships[battleshipId] ?? null : null;
 }
 
 function enemyTotalCostForStage(mapId = state.selectedMapId) {
   const faction = stageEnemyFaction(mapId);
   const enemyEntries = enemyFormationForStage(mapId, faction);
-  const enemyShip = enemyBattleshipForStage(mapId, faction);
+  const enemyShip = enemyBattleshipForStage(mapId);
   const enemyBridge = enemyShip ? enemyBridgeForStage(mapId, faction) : {};
   const escortShipCost = stageEnemyEscortBattleshipIds(mapId)
     .reduce((sum, id) => sum + (lookup().battleships[id]?.cost ?? 0), 0);
@@ -474,16 +441,6 @@ function stageCostCap(mapId = state.selectedMapId) {
 function stagePlayable(map) {
   return playableFactionsOnMap(map).length > 0;
 }
-
-const STAGE_SERIES_LABELS = {
-  main: "本編",
-  "08th": "08小隊",
-  warInPocket: "ポケットの中の戦争",
-  msIgloo: "MS IGLOO",
-  blueDestiny: "THE BLUE DESTINY",
-  fallenColony: "コロニーの落ちた地で...",
-  other: "その他"
-};
 
 function renderTitle() {
   state.screen = "title";
@@ -534,24 +491,14 @@ function campaignStageEntries() {
     .filter((entry) => entry.map);
 }
 
-function campaignStageEntryForMap(mapId) {
-  return campaignStageEntries().find((entry) => entry.map.id === mapId) ?? null;
-}
-
 function stageSeriesLabel(series) {
-  return STAGE_SERIES_LABELS[series] ?? STAGE_SERIES_LABELS.other;
+  return state.data.campaign?.stageSeries?.[series]?.label
+    ?? state.data.campaign?.stageSeries?.other?.label
+    ?? "その他";
 }
 
 function stageSeriesSortValue(series) {
-  return {
-    main: 10,
-    "08th": 20,
-    warInPocket: 30,
-    msIgloo: 40,
-    blueDestiny: 50,
-    fallenColony: 60,
-    other: 90
-  }[series] ?? 80;
+  return Number(state.data.campaign?.stageSeries?.[series]?.order ?? 80);
 }
 
 function stageSeriesIds() {
@@ -1069,13 +1016,6 @@ function renderCommonDropSummary() {
   if (choice.firstClearTickets > 0) chips.push(`<span class="reward-chip">初回クリア: 引換券${choice.firstClearTickets}枚</span>`);
   if (choice.repeatClearTickets > 0 && choice.repeatClearChance > 0) chips.push(`<span class="reward-chip owned">再クリア: 引換券${Math.round(choice.repeatClearChance * 100)}%</span>`);
   return chips.join("") || `<span class="reward-chip owned">追加報酬候補なし</span>`;
-}
-
-function renderDropRewardChip(reward) {
-  const owned = hasCard(reward.type, reward.id);
-  const countText = isCountedCardType(reward.type) ? ` x${Math.max(1, Number(reward.count) || 1)} / 所持${cardCount(reward.type, reward.id)}枚` : owned ? " 所持済み" : "";
-  const weightText = reward.weight ? ` / 重み${reward.weight}` : "";
-  return `<span class="reward-chip ${owned ? "owned" : ""}">${cardTypeLabel(reward.type)}: ${cardName(reward.type, reward.id)}${countText}${weightText}</span>`;
 }
 
 function normalizeSearchText(value) {
@@ -2374,7 +2314,7 @@ function launchBattle() {
     renderSetup();
     return;
   }
-  const enemyBattleship = enemyBattleshipForCurrentBattle(state.selectedMapId, enemyFaction);
+  const enemyBattleship = enemyBattleshipForCurrentBattle(state.selectedMapId);
   const enemyEscortBattleships = stageEnemyEscortBattleshipIds()
     .map((id) => lookup().battleships[id])
     .filter((ship) => ship?.faction === enemyFaction && battleshipCanDeployOnMap(ship, selectedMap()));

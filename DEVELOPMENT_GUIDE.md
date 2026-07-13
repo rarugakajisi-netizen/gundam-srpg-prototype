@@ -8,7 +8,6 @@
 
 - `index.html`: 画面の土台。
 - `styles.css`: 画面レイアウトと見た目。
-- `main.js`: 旧入口の案内だけを残したファイル。実装本体は `src/` 配下。
 - `src/core.js`: 定数、状態、セーブ、所持カード、報酬、編成復元。
 - `src/detail-renderers.js`: 共通ラベル、地形/射程/スキル判定、カード詳細表示。
 - `src/setup-flow.js`: タイトル、ステージ選択、カード一覧、引換、編成画面、出撃開始。
@@ -29,6 +28,8 @@
 - `assets/ms-token.svg`: マップ上の仮トークン画像。
 - `package.json`: ローカル起動、データチェック、バランス診断の npm scripts。
 - `work/check-game-data.js`: 最終状態のゲームデータ整合性チェック。参照切れや編成不能など、壊れているデータを失敗扱いにする。
+- `work/project-files.js`: ブラウザで読み込むデータ・実装ファイルの正規順序。検査側もこの一覧を共有する。
+- `work/load-game-data.js`: 各検査・診断が共有するゲームデータ読込処理。
 - `work/card-balance-report.js`: カード枚数、コスト帯、連続攻撃命中、低コスト物量、多武装、高回避スタック、武器効率、広域スキル、ステージ敵総コストなどのバランス確認用スクリプト。強弱の再確認候補を出すための診断で、失敗判定用ではない。
 - `work/package-release.js`: 友人配布用のフォルダとZIPを `dist/` に生成する。開発用ファイルやGitHub設定は配布物に含めない。
 - `distribution/`: 配布物だけに追加する起動バッチと案内文。
@@ -211,12 +212,14 @@ unit.weaponCharges = {
 
 `data/system/campaign.js` の `campaign.stages` に追加します。
 
+タイトル分類を増やす場合は、同じファイルの `campaign.stageSeries` に表示名と並び順を追加します。画面側へタイトル名を直書きする必要はありません。
+
 マップの `type: "air"` は空中戦専用です。`movementType: "flying"` の機体・戦艦だけが出撃でき、地上用MSは `allowsAirDeployment: true` のSFS装備時に限り出撃できます。空中では飛行を失う変形・脱出・パージと、飛行維持に必要なSFSの切り離しは不可です。飛行SFSは被弾で解除されず、搭乗MSの耐久がそのままSFSの耐久を兼ねます。
 
 - `mapId`: 使用するマップ。
 - `summary`: ステージ選択画面で見せる説明。
 - `enemyFormations`: 敵勢力ごとの編成。
-- `enemyBattleshipId`: 敵戦艦を固定したい時に指定する。`null` なら敵戦艦なし。
+- `enemyBattleshipId`: 必須。敵戦艦のIDを指定し、戦艦なしなら `null` を明示する。省略時の自動選択は行わない。
 - `enemyEscortBattleshipIds`: 通常ステージで旗艦に加えて配置する随伴艦IDの配列。随伴艦も敵戦艦として行動し、全敵戦艦撃破まで艦隊撃破勝利にならない。フリーバトルには反映しない。
 - `costCap`: ステージ固有の出撃上限。未指定なら敵総コストをもとに自動計算。
 - `enemyBattleshipId: null` かつ `costCap` 未指定の通常ステージは、自軍だけが戦艦コストを負担する差を和らげるため、通常の自動計算へ100コストを追加する。明示した `costCap` とフリーバトルには適用しない。

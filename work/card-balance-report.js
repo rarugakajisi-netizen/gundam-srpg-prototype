@@ -6,21 +6,8 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const vm = require("node:vm");
-
-const ROOT = path.resolve(__dirname, "..");
-const DATA_PATHS = [
-  path.join(ROOT, "data", "game-data.js"),
-  path.join(ROOT, "data", "system", "campaign.js"),
-  path.join(ROOT, "data", "rules", "skills.js"),
-  path.join(ROOT, "data", "maps", "maps.js"),
-  path.join(ROOT, "data", "cards", "mobile-suits.js"),
-  path.join(ROOT, "data", "cards", "battleships.js"),
-  path.join(ROOT, "data", "cards", "weapons.js"),
-  path.join(ROOT, "data", "cards", "characters.js"),
-  path.join(ROOT, "data", "cards", "options.js"),
-  path.join(ROOT, "data", "rules", "compatibility.js")
-];
+const { PROJECT_ROOT: ROOT, DATA_FILES } = require("./project-files");
+const { loadGameData } = require("./load-game-data");
 
 const CORE_PATH = path.join(ROOT, "src", "core.js");
 const BALANCE_CONSTANTS = {
@@ -72,18 +59,6 @@ const REPRESENTATIVE_DEFENDERS = [
   { label: "高回避75", evasion: 75 },
   { label: "極高回避90", evasion: 90 }
 ];
-
-function loadGameData() {
-  const sandbox = { window: {} };
-  sandbox.window.window = sandbox.window;
-  vm.createContext(sandbox);
-  for (const dataPath of DATA_PATHS) {
-    if (!fs.existsSync(dataPath)) continue;
-    vm.runInContext(fs.readFileSync(dataPath, "utf8"), sandbox, { filename: dataPath });
-  }
-  if (!sandbox.window.GAME_DATA) throw new Error("window.GAME_DATA was not defined.");
-  return sandbox.window.GAME_DATA;
-}
 
 function loadConstants() {
   if (!fs.existsSync(CORE_PATH)) return { ...BALANCE_CONSTANTS };
@@ -724,7 +699,7 @@ function buildReport() {
   const weaponRows = weaponEfficiencyRows();
   const report = {
     generatedAt: new Date().toISOString(),
-    source: DATA_PATHS.filter(fs.existsSync).map((dataPath) => path.relative(ROOT, dataPath).replaceAll("\\", "/")).join(" + "),
+    source: DATA_FILES.join(" + "),
     constants,
     counts: {
       mobileSuits: data.mobileSuits.length,

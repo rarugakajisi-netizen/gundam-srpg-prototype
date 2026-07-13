@@ -5,24 +5,8 @@
 // Unlike card-balance-report.js, this script fails on broken references,
 // malformed values, impossible starter/stage formations, and map shape errors.
 
-const fs = require("node:fs");
-const path = require("node:path");
-const vm = require("node:vm");
-
-const ROOT = path.resolve(__dirname, "..");
-const DATA_PATHS = [
-  path.join(ROOT, "data", "game-data.js"),
-  path.join(ROOT, "data", "system", "campaign.js"),
-  path.join(ROOT, "data", "rules", "skills.js"),
-  path.join(ROOT, "data", "maps", "maps.js"),
-  path.join(ROOT, "data", "cards", "mobile-suits.js"),
-  path.join(ROOT, "data", "cards", "battleships.js"),
-  path.join(ROOT, "data", "cards", "weapons.js"),
-  path.join(ROOT, "data", "cards", "characters.js"),
-  path.join(ROOT, "data", "cards", "options.js"),
-  path.join(ROOT, "data", "rules", "compatibility.js")
-];
-const DIALOGUE_PATH = path.join(ROOT, "src", "dialogue.js");
+const { DATA_FILES } = require("./project-files");
+const { DIALOGUE_FILE, loadGameData, loadDialogueData } = require("./load-game-data");
 const DIALOGUE_TYPES = ["attack", "hit", "miss", "move", "wait", "evade", "damaged"];
 
 const COUNTED_COLLECTION_TYPES = new Set(["mobileSuits", "weapons", "options"]);
@@ -32,23 +16,6 @@ const MAP_TYPES = new Set(["ground", "space", "colony", "air"]);
 const DEPLOY_TYPES = new Set(["ground", "space"]);
 const MOVEMENT_TYPES = new Set(["normal", "flying", "submarine"]);
 const BLOCKING_TERRAINS = new Set(["obstacle", "cliff", "rock", "building", "wreckage", "domeRuin", "ruin"]);
-
-function loadGameData() {
-  const sandbox = { window: {} };
-  for (const dataPath of DATA_PATHS) {
-    if (!fs.existsSync(dataPath)) continue;
-    vm.runInNewContext(fs.readFileSync(dataPath, "utf8"), sandbox, { filename: dataPath });
-  }
-  if (!sandbox.window.GAME_DATA) throw new Error("window.GAME_DATA was not defined.");
-  return sandbox.window.GAME_DATA;
-}
-
-function loadDialogueData() {
-  const sandbox = { window: {} };
-  const source = `${fs.readFileSync(DIALOGUE_PATH, "utf8")}\nwindow.__CHARACTER_DIALOGUE__ = characterDialogue;`;
-  vm.runInNewContext(source, sandbox, { filename: DIALOGUE_PATH });
-  return sandbox.window.__CHARACTER_DIALOGUE__ ?? {};
-}
 
 function byId(items = []) {
   return Object.fromEntries(items.map((item) => [item.id, item]));
@@ -579,6 +546,24 @@ function createChecker(data, dialogues = {}) {
       if (ship && !list(initialCollection.battleships).includes(ship.id)) warning(scope, `${ship.id} は初期コレクションに含まれていません。`);
     }
 
+    const stageSeries = campaign.stageSeries ?? {};
+    if (!isPlainObject(stageSeries)) {
+      error("campaign.stageSeries", "オブジェクトではありません。");
+    } else {
+      const seriesOrders = new Map();
+      for (const [seriesId, config] of Object.entries(stageSeries)) {
+        const seriesScope = `campaign.stageSeries.${seriesId}`;
+        if (!isPlainObject(config)) {
+          error(seriesScope, "オブジェクトではありません。");
+          continue;
+        }
+        if (typeof config.label !== "string" || !config.label.trim()) error(`${seriesScope}.label`, "空でない文字列である必要があります。");
+        expectNumber(seriesScope, config, "order");
+        if (seriesOrders.has(config.order)) warning(seriesScope, `別のタイトル分類と order が重複しています: ${config.order}`);
+        else seriesOrders.set(config.order, seriesId);
+      }
+    }
+
     const stages = list(campaign.stages);
     const seenStageMaps = new Map();
     const seenStageOrders = new Map();
@@ -594,6 +579,9 @@ function createChecker(data, dialogues = {}) {
       }
       const map = expectId(`${scope}.mapId`, "maps", stage.mapId);
       expectFaction(`${scope}.enemyFaction`, stage.enemyFaction);
+      if (!Object.prototype.hasOwnProperty.call(stage, "enemyBattleshipId")) {
+        error(`${scope}.enemyBattleshipId`, "戦艦IDまたは戦艦なしを示す null を明示してください。");
+      }
       const ship = expectId(`${scope}.enemyBattleshipId`, "battleships", stage.enemyBattleshipId, true);
       if (ship && stage.enemyFaction && ship.faction !== stage.enemyFaction) error(scope, `敵戦艦勢力が enemyFaction と一致しません: ${ship.faction} !== ${stage.enemyFaction}`);
       if (ship && map && !battleshipCanDeployOnMap(ship, map)) error(scope, `${itemLabel(ship)} は ${map.name} に出撃できません。`);
@@ -605,6 +593,7 @@ function createChecker(data, dialogues = {}) {
       expectId(`${scope}.enemyCaptainId`, "characters", stage.enemyCaptainId, true);
       expectId(`${scope}.enemyFirstOfficerId`, "characters", stage.enemyFirstOfficerId, true);
       if (!stage.series || typeof stage.series !== "string") warning(scope, "検索/分類用の series が未設定です。");
+      else if (isPlainObject(stageSeries) && !stageSeries[stage.series]) warning(scope, `stageSeries に未登録の分類です: ${stage.series}`);
       if (stage.order === undefined) warning(scope, "物語順ソート用の order が未設定です。");
       else expectNumber(scope, stage, "order", { integer: true });
       if (stage.tags !== undefined) {
@@ -710,9 +699,17 @@ function createChecker(data, dialogues = {}) {
       if (!isPlainObject(formations)) {
         error(`${scope}.enemyFormations`, "オブジェクトではありません。");
       } else {
+        const primaryFormation = formations[stage.enemyFaction];
+        if (!Array.isArray(primaryFormation) || primaryFormation.length === 0) {
+          error(`${scope}.enemyFormations.${stage.enemyFaction}`, "enemyFaction の固定敵編成を1件以上指定してください。");
+        }
         for (const [faction, entries] of Object.entries(formations)) {
           expectFaction(`${scope}.enemyFormations`, faction);
-          list(entries).forEach((entry, entryIndex) => validateFormationEntry(entry, `${scope}.enemyFormations.${faction}[${entryIndex}]`, faction, map, { playerControlled: false }));
+          if (!Array.isArray(entries)) {
+            error(`${scope}.enemyFormations.${faction}`, "配列である必要があります。");
+            continue;
+          }
+          entries.forEach((entry, entryIndex) => validateFormationEntry(entry, `${scope}.enemyFormations.${faction}[${entryIndex}]`, faction, map, { playerControlled: false }));
           const slots = list(map?.deployment?.enemy?.units).length;
           if (map && entries.length > slots) warning(`${scope}.enemyFormations.${faction}`, `敵配置枠よりユニット数が多いです: ${entries.length} > ${slots}`);
         }
@@ -878,10 +875,7 @@ function main() {
   const data = loadGameData();
   const dialogues = loadDialogueData();
   const result = createChecker(data, dialogues).run();
-  const source = DATA_PATHS
-    .filter(fs.existsSync)
-    .map((dataPath) => path.relative(ROOT, dataPath).replaceAll("\\", "/"));
-  source.push(path.relative(ROOT, DIALOGUE_PATH).replaceAll("\\", "/"));
+  const source = [...DATA_FILES, DIALOGUE_FILE];
 
   if (args.json) {
     console.log(JSON.stringify({ source, ...result }, null, 2));

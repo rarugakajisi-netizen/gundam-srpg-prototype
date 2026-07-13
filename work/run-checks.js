@@ -2,23 +2,7 @@
 "use strict";
 
 const { spawnSync } = require("node:child_process");
-const path = require("node:path");
-
-const ROOT = path.resolve(__dirname, "..");
-const JS_FILES = [
-  "main.js",
-  "src/core.js",
-  "src/detail-renderers.js",
-  "src/setup-flow.js",
-  "src/battle-render.js",
-  "src/dialogue.js",
-  "src/battle-rules.js",
-  "src/events.js",
-  "work/check-game-data.js",
-  "work/check-play-integrity.js",
-  "work/package-release.js",
-  "distribution/plicy/plicy.js"
-];
+const { PROJECT_ROOT: ROOT, SYNTAX_CHECK_FILES } = require("./project-files");
 
 function runNode(args) {
   const result = spawnSync(process.execPath, args, {
@@ -31,11 +15,16 @@ function runNode(args) {
 }
 
 function runSyntaxChecks() {
-  for (const file of JS_FILES) runNode(["--check", file]);
+  for (const file of SYNTAX_CHECK_FILES) runNode(["--check", file]);
 }
 
 function main() {
+  const args = process.argv.slice(2);
+  const syntaxOnly = args.includes("--syntax-only");
+  const unknown = args.filter((arg) => arg !== "--syntax-only");
+  if (unknown.length > 0) throw new Error(`Unknown argument: ${unknown.join(", ")}`);
   runSyntaxChecks();
+  if (syntaxOnly) return;
   runNode(["work/check-game-data.js"]);
   runNode(["work/check-play-integrity.js"]);
 }
