@@ -1551,7 +1551,7 @@ function mobileSuitPickerCard(ms) {
         ["移動", ms.mobility],
         ["装備枠", `武器${ms.weaponSlots ?? 2} / OP${ms.optionSlots ?? 1}`]
       ])}
-      ${renderMobileSuitDetails(ms)}
+      ${renderMobileSuitDetails(ms, { omitCoreStats: true })}
       <button class="primary-button" data-action="choose-ms" data-id="${ms.id}">この機体にする</button>
     </article>
   `;
@@ -1572,7 +1572,7 @@ function battleshipPickerCard(ship) {
         ["移動", ship.mobility],
         ["補給", `装甲${ship.support.armor} / EN${ship.support.energy} / 弾${ship.support.ammo}`]
       ])}
-      ${renderBattleshipDataDetails(ship)}
+      ${renderBattleshipDataDetails(ship, { omitCoreStats: true })}
       <button class="primary-button" data-action="choose-battleship" data-id="${ship.id}">この戦艦にする</button>
     </article>
   `;
@@ -1613,7 +1613,7 @@ function characterPickerCard(character, owner) {
         ["指揮", character.command],
         ["整備", character.maintenance]
       ])}
-      ${renderCharacterDetails(character)}
+      ${renderCharacterDetails(character, { omitCoreStats: true })}
       <button class="primary-button" data-action="choose-character" data-owner="${owner}" data-id="${character.id}" ${disabled ? "disabled" : ""}>このキャラにする</button>
     </article>
   `;
@@ -1774,7 +1774,7 @@ function renderSetup() {
                 <strong>${weapon.name}</strong>
               </label>
               <span class="small">使用枠${weaponSlotCost(weapon)} / 残り${remainingCardCopies("weapons", weapon.id)}枚 / コスト${weapon.cost} / ${weapon.kind === "shield" ? `盾耐久${weapon.durability}${weaponCanAttack(weapon) ? ` / 盾攻撃 威力${weapon.power} 命中${weapon.accuracy}` : ""}` : `威力${weapon.power} 命中${weapon.accuracy} ${weaponRangeLabel(weapon)}`}</span>
-              ${renderWeaponDetails(weapon)}
+              ${renderWeaponDetails(weapon, { omitCoreStats: true })}
             </div>
           `).join("")}
         </div>

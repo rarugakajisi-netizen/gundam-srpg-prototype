@@ -577,7 +577,7 @@ function renderOptionInventory(unit) {
         <strong>${option.name}</strong>
         ${renderOptionDetails(option)}
       </div>
-      <span>${option.effectType}</span>
+      <span>${optionEffectTypeLabel(option.effectType)}</span>
     </div>
   `).join("")}</div>`;
 }

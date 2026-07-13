@@ -770,6 +770,7 @@ function msTagLabel(tag) {
     gmCommand: "ジム・コマンド系",
     gmSniper: "ジム・スナイパー系",
     immortal4th: "不死身の第四小隊仕様",
+    whiteDingo: "ホワイト・ディンゴ隊仕様",
     armoredGm: "ジム装甲強化型",
     groundGm: "陸戦型ジム系",
     guncannon: "ガンキャノン系",
@@ -813,7 +814,23 @@ function msTagLabel(tag) {
     meleeMs: "格闘型MS",
     stealthMs: "ステルスMS",
     smokeMs: "煙幕装備MS",
-    assaultMs: "強襲型MS"
+    assaultMs: "強襲型MS",
+    alex: "アレックス系",
+    assaultGuntank: "強襲型ガンタンク系",
+    blueDestiny: "ブルーディスティニー系",
+    commanderCustom: "指揮官機",
+    desertMs: "砂漠戦用MS",
+    examMs: "EXAM搭載機",
+    gLine: "Gライン系",
+    gmDominance: "ジム・ドミナンス系",
+    gmKai: "ジム改系",
+    groundGelgoog: "陸戦型ゲルググ系",
+    groundMa: "地上用モビルアーマー",
+    gtFour: "GT-FOUR系",
+    kampfer: "ケンプファー系",
+    paleRider: "ペイルライダー系",
+    zegok: "ゼーゴック系",
+    zudah: "ヅダ系"
   }[tag] ?? tag;
 }
 
@@ -822,34 +839,74 @@ function compatibilityTargetName(item) {
   return item.msTag ? msTagLabel(item.msTag) : "対象未設定";
 }
 
+function compatibilityText(items, nameFor, bonusLabel) {
+  const byName = new Map();
+  items.forEach((item) => {
+    const name = nameFor(item);
+    const bonus = Number(item.bonus) || 0;
+    byName.set(name, Math.max(byName.get(name) ?? 0, bonus));
+  });
+  return byName.size > 0
+    ? [...byName].map(([name, bonus]) => `<span class="compatibility-chip">${name}（${bonusLabel}+${bonus}）</span>`).join("")
+    : "なし";
+}
+
+function effectiveCharacterCompatibility(matches, ms) {
+  const exact = matches.find((item) => item.msId === ms.id);
+  return exact ?? matches.reduce((best, item) => !best || Number(item.evasionBonus) > Number(best.evasionBonus) ? item : best, null);
+}
+
+function renderCompatibilityRow(label, text) {
+  return `
+    <div class="compatibility-row">
+      <strong>${label}</strong>
+      <span class="compatibility-values">${text}</span>
+    </div>
+  `;
+}
+
 function characterMsCompatibilityText(character) {
   const matches = (state.data.compatibility?.characterMs ?? []).filter((item) => item.characterId === character.id);
-  return matches.length > 0
-    ? matches.map((item) => `${compatibilityTargetName(item)} 回避+${item.evasionBonus}`).join(" / ")
-    : "なし";
+  return compatibilityText(
+    matches.map((item) => ({ ...item, bonus: item.evasionBonus })),
+    compatibilityTargetName,
+    "回避"
+  );
 }
 
 function mobileSuitCharacterCompatibilityText(ms) {
   const characters = lookup().characters;
   const matches = (state.data.compatibility?.characterMs ?? []).filter((item) => characterMsCompatibilityMatches(item, ms));
-  return matches.length > 0
-    ? matches.map((item) => `${characters[item.characterId]?.name ?? item.characterId} 回避+${item.evasionBonus}`).join(" / ")
-    : "なし";
+  const byCharacter = new Map();
+  matches.forEach((item) => {
+    const characterMatches = byCharacter.get(item.characterId) ?? [];
+    characterMatches.push(item);
+    byCharacter.set(item.characterId, characterMatches);
+  });
+  const effective = [...byCharacter].map(([characterId, characterMatches]) => {
+    const match = effectiveCharacterCompatibility(characterMatches, ms);
+    return { characterId, bonus: match?.evasionBonus ?? 0 };
+  });
+  return compatibilityText(effective, (item) => characters[item.characterId]?.name ?? item.characterId, "回避");
 }
 
 function mobileSuitWeaponCompatibilityText(ms) {
   const weapons = lookup().weapons;
   const matches = (state.data.compatibility?.msWeapon ?? []).filter((item) => compatibilityMatchesMs(item, ms));
-  return matches.length > 0
-    ? matches.map((item) => `${item.weaponId ? weapons[item.weaponId]?.name ?? item.weaponId : weaponCategoryLabel(item.category)} 命中+${item.accuracyBonus}`).join(" / ")
-    : "なし";
+  return compatibilityText(
+    matches.map((item) => ({ ...item, bonus: item.accuracyBonus })),
+    (item) => item.weaponId ? weapons[item.weaponId]?.name ?? item.weaponId : weaponCategoryLabel(item.category),
+    "命中"
+  );
 }
 
 function weaponCompatibilityText(weapon) {
   const matches = (state.data.compatibility?.msWeapon ?? []).filter((item) => item.weaponId === weapon.id || (!item.weaponId && item.category === weapon.category));
-  return matches.length > 0
-    ? matches.map((item) => `${compatibilityTargetName(item)} 命中+${item.accuracyBonus}`).join(" / ")
-    : "なし";
+  return compatibilityText(
+    matches.map((item) => ({ ...item, bonus: item.accuracyBonus })),
+    compatibilityTargetName,
+    "命中"
+  );
 }
 
 function unitCompatibilityText(unit) {
@@ -865,30 +922,35 @@ function unitCompatibilityText(unit) {
 }
 
 function renderMobileSuitDetails(ms, options = {}) {
+  const weaponRestriction = mobileSuitWeaponRestrictionText(ms);
+  const purgeTarget = mobileSuitPurgeTargetText(ms);
+  const mapSuitability = mapSuitabilityLabel(ms);
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
-      <summary>${ms.name} 詳細 / ${movementTypeLabel(ms)}</summary>
+      <summary>性能・固定武装</summary>
       ${statItems([
-        ["コスト", ms.cost],
-        ["装甲", ms.armor],
-        ["EN", ms.energy],
-        ["運動", ms.agility],
-        ["移動", ms.mobility],
+        ...(options.omitCoreStats ? [] : [
+          ["コスト", ms.cost],
+          ["装甲", ms.armor],
+          ["EN", ms.energy],
+          ["運動", ms.agility],
+          ["移動", ms.mobility]
+        ]),
         ["移動方式", movementTypeLabel(ms)],
         ["搭乗", mobileSuitCanHavePilot(ms) ? `パイロット${mobileSuitPilotSlots(ms)}名` : "パイロット不可"],
-        ["装備枠", `武器${ms.weaponSlots ?? 2} / OP${ms.optionSlots ?? 1}`],
-        ["携行武器制限", mobileSuitWeaponRestrictionText(ms)],
-        ["特殊", specialsLabel(ms.specials)],
-        ["脱出先", (ms.specials ?? []).includes("coreSystem") ? (lookup().ms[ms.escapeMsId ?? "coreFighter"]?.name ?? ms.escapeMsId ?? "コア・ファイター") : "なし"],
-        ["パージ先", mobileSuitPurgeTargetText(ms)],
-        ["地形適性", mapSuitabilityLabel(ms)]
+        ...(options.omitCoreStats ? [] : [["装備枠", `武器${ms.weaponSlots ?? 2} / OP${ms.optionSlots ?? 1}`]]),
+        ...(weaponRestriction !== "なし" ? [["携行武器制限", weaponRestriction]] : []),
+        ...((ms.specials ?? []).includes("coreSystem") ? [["脱出先", lookup().ms[ms.escapeMsId ?? "coreFighter"]?.name ?? ms.escapeMsId ?? "コア・ファイター"]] : []),
+        ...(purgeTarget !== "なし" ? [["パージ先", purgeTarget]] : []),
+        ...(mapSuitability !== "なし" ? [["地形適性", mapSuitability]] : [])
       ])}
       <div class="detail-list">
         ${renderSkillDetails(ms.specials)}
-        <p class="small">キャラ相性: ${mobileSuitCharacterCompatibilityText(ms)}</p>
-        <p class="small">武器相性: ${mobileSuitWeaponCompatibilityText(ms)}</p>
-        <p class="small">固定武装</p>
-        ${ms.fixedWeaponIds.length > 0 ? ms.fixedWeaponIds.map((id) => renderWeaponDetails(weaponFor(id))).join("") : `<p class="small">なし</p>`}
+        <div class="compatibility-list">
+          ${renderCompatibilityRow("キャラ相性", mobileSuitCharacterCompatibilityText(ms))}
+          ${renderCompatibilityRow("武器相性", mobileSuitWeaponCompatibilityText(ms))}
+        </div>
+        ${ms.fixedWeaponIds.length > 0 ? ms.fixedWeaponIds.map((id) => renderWeaponDetails(weaponFor(id), { showName: true })).join("") : `<p class="small">固定武装なし</p>`}
       </div>
     </details>
   `;
@@ -913,20 +975,22 @@ function renderMapDetails(map, options = {}) {
 function renderBattleshipDataDetails(ship, options = {}) {
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
-      <summary>${ship.name} 詳細 / ${movementTypeLabel(ship)}</summary>
+      <summary>性能・艦載武装</summary>
       ${statItems([
-        ["コスト", ship.cost],
-        ["耐久", ship.armor],
-        ["EN", ship.energy],
-        ["回避基礎", ship.agility],
-        ["移動", ship.mobility],
+        ...(options.omitCoreStats ? [] : [
+          ["コスト", ship.cost],
+          ["耐久", ship.armor],
+          ["EN", ship.energy],
+          ["回避基礎", ship.agility],
+          ["移動", ship.mobility]
+        ]),
         ["出撃", (ship.mapTypes ?? ["ground", "space"]).map(mapTypeName).join(" / ")],
         ["移動方式", movementTypeLabel(ship)],
-        ["脱出", ship.escapeShipId ? `${lookup().battleships[ship.escapeShipId]?.name ?? ship.escapeShipId}` : "なし"],
+        ...(ship.escapeShipId ? [["脱出", lookup().battleships[ship.escapeShipId]?.name ?? ship.escapeShipId]] : []),
         ["補給", `装甲${ship.support.armor} / 盾${ship.support.shield} / EN${ship.support.energy} / 弾${ship.support.ammo}`]
       ])}
       <div class="detail-list">
-        ${ship.weaponIds.map((id) => renderWeaponDetails(weaponFor(id))).join("")}
+        ${ship.weaponIds.map((id) => renderWeaponDetails(weaponFor(id), { showName: true })).join("")}
       </div>
     </details>
   `;
@@ -977,25 +1041,31 @@ function renderCharacterDetails(character, options = {}) {
     ?? character.faction;
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
-      <summary>${character.name} 詳細</summary>
+      <summary>能力・相性・スキル</summary>
       ${statItems([
         ["使用勢力", factions],
-        ["コスト", character.cost],
-        ["射撃", characterStatDisplay(character, "shooting")],
-        ["格闘", characterStatDisplay(character, "melee")],
-        ["反応", characterStatDisplay(character, "reaction")],
+        ...(options.omitCoreStats ? [] : [
+          ["コスト", character.cost],
+          ["射撃", characterStatDisplay(character, "shooting")],
+          ["格闘", characterStatDisplay(character, "melee")],
+          ["反応", characterStatDisplay(character, "reaction")]
+        ]),
         ["覚醒", character.awakening],
-        ["指揮", characterStatDisplay(character, "command")],
+        ...(options.omitCoreStats ? [] : [["指揮", characterStatDisplay(character, "command")]]),
         ["支援", characterStatDisplay(character, "support")],
-        ["整備", characterStatDisplay(character, "maintenance")],
+        ...(options.omitCoreStats ? [] : [["整備", characterStatDisplay(character, "maintenance")]]),
         ["得意", characterRolesLabel(character)]
       ])}
       ${renderCharacterGrowthPanel(character)}
       <div class="detail-list">
-        <p class="small">特殊: ${specialsLabel(character.specials)}</p>
-        <p class="small">MS搭乗時: ${characterMsContributionText(grownCharacter)}</p>
-        <p class="small">戦艦搭乗時: ${characterBridgeContributionText(grownCharacter)}</p>
-        <p class="small">機体相性: ${characterMsCompatibilityText(character)}</p>
+        <div class="compatibility-list">
+          ${renderCompatibilityRow("機体相性", characterMsCompatibilityText(character))}
+        </div>
+        <details class="derived-detail">
+          <summary>搭乗時の能力反映</summary>
+          <p class="small">MS: ${characterMsContributionText(grownCharacter)}</p>
+          <p class="small">戦艦: ${characterBridgeContributionText(grownCharacter)}</p>
+        </details>
         ${renderSkillDetails(character.specials)}
       </div>
     </details>
@@ -1007,48 +1077,64 @@ function renderWeaponDetails(weapon, options = {}) {
   const shieldCanAttack = weapon.kind === "shield" && weapon.attackType !== "guard" && weapon.power > 0;
   return `
     <details class="detail-box weapon-detail" ${options.open ? "open" : ""}>
-      <summary>${weapon.name} 詳細</summary>
+      <summary>${options.showName ? `${weapon.name} / ` : ""}性能・相性</summary>
       ${weapon.kind === "shield" ? statItems([
-        ["コスト", weapon.cost],
-        ["盾耐久", weapon.durability],
-        ["攻撃", shieldCanAttack ? `威力${weapon.power} / 命中${weapon.accuracy} / ${weaponRangeLabel(weapon)} / 耐久消費${shieldAttackCost(weapon)}` : "不可"],
-        ["使用勢力", factions],
-        ["機体相性", weaponCompatibilityText(weapon)]
+        ...(options.omitCoreStats ? [] : [
+          ["コスト", weapon.cost],
+          ["盾耐久", weapon.durability],
+          ["攻撃", shieldCanAttack ? `威力${weapon.power} / 命中${weapon.accuracy} / ${weaponRangeLabel(weapon)} / 耐久消費${shieldAttackCost(weapon)}` : "不可"]
+        ]),
+        ["使用勢力", factions]
       ]) : statItems([
-        ["コスト", weapon.cost],
-        ["威力", weapon.power],
-        ["命中", weapon.accuracy],
-        ["射程", weaponRangeLabel(weapon).replace("射程", "")],
+        ...(options.omitCoreStats ? [] : [
+          ["コスト", weapon.cost],
+          ["威力", weapon.power],
+          ["命中", weapon.accuracy],
+          ["射程", weaponRangeLabel(weapon).replace("射程", "")]
+        ]),
         ["消費", weaponConsumptionLabel(weapon)],
-        ["チャージ", weapon.chargeRequired ? `${weapon.chargeRequired}回 / EN${weapon.chargeCost ?? 0}` : "不要"],
-        ["弾数", weapon.kind === "ammo" ? weapon.ammo : "-"],
-        ["覚醒条件", weapon.requiredAwakening ? `${weapon.requiredAwakening}以上` : "なし"],
+        ...(weapon.chargeRequired ? [["チャージ", `${weapon.chargeRequired}回 / EN${weapon.chargeCost ?? 0}`]] : []),
+        ...(weapon.kind === "ammo" ? [["弾数", weapon.ammo]] : []),
+        ...(weapon.requiredAwakening ? [["覚醒条件", `${weapon.requiredAwakening}以上`]] : []),
         ["種別", weapon.attackType === "melee" ? "格闘" : "射撃"],
-        ["障害物", weapon.ignoresObstacles ? "無視" : "遮られる"],
-        ["使用勢力", factions],
-        ["機体相性", weaponCompatibilityText(weapon)]
+        ...(weapon.ignoresObstacles ? [["障害物", "無視"]] : []),
+        ["使用勢力", factions]
       ])}
+      <div class="compatibility-list">${renderCompatibilityRow("機体相性", weaponCompatibilityText(weapon))}</div>
       ${renderSkillDetails(weapon.specials)}
     </details>
   `;
+}
+
+function optionEffectTypeLabel(effectType) {
+  return {
+    ammo: "弾薬補助",
+    energy: "EN補助",
+    "defense-ammo": "実弾防御",
+    "defense-beam": "ビーム防御",
+    "defense-melee": "格闘防御",
+    range: "射程補助",
+    mobility: "移動補助",
+    skill: "特殊能力",
+    vehicle: "搭乗装備"
+  }[effectType] ?? "特殊効果";
 }
 
 function renderOptionDetails(option, options = {}) {
   const factions = option.factions?.map((faction) => state.data.factions[faction]).join(" / ") ?? "共通";
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
-      <summary>${option.name} 詳細</summary>
+      <summary>効果・装備条件</summary>
       ${statItems([
         ["コスト", option.cost],
-        ["種別", option.effectType],
-        ["付与", option.grantsSkill ? specialsLabel([option.grantsSkill]) : "直接効果"],
+        ["種別", optionEffectTypeLabel(option.effectType)],
+        ...(option.grantsSkill && skillName(option.grantsSkill) !== option.name ? [["付与スキル", skillName(option.grantsSkill)]] : []),
         ["効果", option.effectText],
         ...(Number.isFinite(Number(option.maxMsCost)) ? [["機体コスト条件", `${option.maxMsCost}以下`]] : []),
         ["出撃", optionMapTypesText(option)],
-        ["重複", option.uniqueSkill ? "同名効果と重複なし" : "重複可"],
+        ...(option.uniqueSkill ? [["重複", "同名効果と重複なし"]] : []),
         ["使用勢力", factions]
       ])}
-      ${option.grantsSkill ? renderSkillDetails([option.grantsSkill]) : ""}
     </details>
   `;
 }
