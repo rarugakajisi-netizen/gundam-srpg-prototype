@@ -284,6 +284,23 @@ function createChecker(data) {
     }
   }
 
+  function validateWeaponCountControls() {
+    const setupSource = fs.readFileSync(path.join(ROOT, "src", "setup-flow.js"), "utf8");
+    const eventSource = fs.readFileSync(path.join(ROOT, "src", "events.js"), "utf8");
+    if (!setupSource.includes('class="weapon-count-control"')) {
+      error("ui.weaponCount", "武器の装備数コントロールが編成画面にありません。");
+    }
+    if (!setupSource.includes("replaceSelectedWeaponCopies")) {
+      error("ui.weaponCount", "同一武器を複数枚選択する更新処理がありません。");
+    }
+    if (!eventSource.includes('event.target.matches(".weapon-count-control")')) {
+      error("ui.weaponCount", "武器の装備数変更イベントが処理されていません。");
+    }
+    if (eventSource.includes('.weapon-list input[type="checkbox"]')) {
+      error("ui.weaponCount", "同一武器を1枚に制限する旧チェックボックス処理が残っています。");
+    }
+  }
+
   function validateLoadOrder() {
     const index = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
     const scriptPaths = [...index.matchAll(/<script src="\.\/([^"?]+)(?:\?[^"]*)?"><\/script>/g)].map((match) => match[1]);
@@ -311,6 +328,7 @@ function createChecker(data) {
     validateEquipmentPools();
     validateFreeBattlePools();
     validateSourceActions();
+    validateWeaponCountControls();
     validateLoadOrder();
     return { errors, warnings };
   }

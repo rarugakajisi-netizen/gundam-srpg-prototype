@@ -5450,7 +5450,7 @@ window.GAME_DATA.mobileSuits = [
   },
   {
     "energy": 75,
-    "weaponSlots": 1,
+    "weaponSlots": 2,
     "optionSlots": 1,
     "fixedWeaponIds": [
       "massProductionGuncannonCannon",
@@ -5484,7 +5484,7 @@ window.GAME_DATA.mobileSuits = [
   },
   {
     "energy": 82,
-    "weaponSlots": 1,
+    "weaponSlots": 2,
     "optionSlots": 1,
     "fixedWeaponIds": [
       "massProductionGuncannonCannon",
@@ -8000,7 +8000,7 @@ window.GAME_DATA.mobileSuits = [
     "energy": 75,
     "agility": 11,
     "mobility": 3,
-    "weaponSlots": 1,
+    "weaponSlots": 2,
     "optionSlots": 1,
     "fixedWeaponIds": [
       "massProductionGuncannonCannon",

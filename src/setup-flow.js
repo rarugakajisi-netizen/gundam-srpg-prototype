@@ -92,7 +92,15 @@ function normalizeSelections() {
         && weaponEquippableByMs(normalizedMs, weapon)
         && weaponSlotCost(weapon) <= weaponSlotCount(normalizedMs))
       .map((weapon) => weapon.id);
-    state.selectedWeaponIds = fitWeaponIdsToSlots(state.selectedWeaponIds.filter((id) => availableWeaponIds.includes(id)), normalizedMs);
+    const selectedCounts = {};
+    const availableSelection = state.selectedWeaponIds.filter((id) => {
+      if (!availableWeaponIds.includes(id)) return false;
+      const nextCount = (selectedCounts[id] ?? 0) + 1;
+      if (nextCount > remainingCardCopies("weapons", id)) return false;
+      selectedCounts[id] = nextCount;
+      return true;
+    });
+    state.selectedWeaponIds = fitWeaponIdsToSlots(availableSelection, normalizedMs);
   }
   const selectedOption = lookup().options[state.selectedOptionId];
   if (state.selectedOptionId && (!selectedOption || remainingCardCopies("options", selectedOption.id) < 1 || !optionEquippableByMs(selectedOption, normalizedMs, currentMap, state.faction) || (normalizedMs?.optionSlots ?? 1) < 1)) {
@@ -263,7 +271,8 @@ function freeBattleRandomWeapons(ms, remainingBudget) {
       usedSlots += weaponSlotCost(shield);
     }
   }
-  for (const weapon of shuffled(candidates.filter((item) => !weapons.includes(item.id)))) {
+  // 先に選ばれた武器も候補に残し、同一武器カードの複数装備を許可する。
+  for (const weapon of shuffled(candidates)) {
     if (Math.random() > 0.35) continue;
     const cost = weaponSlotCost(weapon);
     if (usedSlots + cost > slots) continue;
@@ -1769,16 +1778,24 @@ function renderSetup() {
         <h3>手持ち武装</h3>
         <p class="small">装備枠: ${usedWeaponSlots} / ${selectedWeaponSlots}</p>
         <div class="weapon-list">
-          ${availableWeapons.length === 0 ? `<p class="small">この機体は手持ち武器を装備できません。</p>` : availableWeapons.map((weapon) => `
+          ${availableWeapons.length === 0 ? `<p class="small">この機体は手持ち武器を装備できません。</p>` : availableWeapons.map((weapon) => {
+            const selectedCopies = selectedWeaponCopyCount(weapon.id);
+            const otherUsedSlots = usedWeaponSlots - selectedCopies * weaponSlotCost(weapon);
+            const maxBySlots = Math.max(0, Math.floor((selectedWeaponSlots - otherUsedSlots) / weaponSlotCost(weapon)));
+            const maxCopies = Math.min(remainingCardCopies("weapons", weapon.id), maxBySlots);
+            const countOptions = Array.from({ length: maxCopies + 1 }, (_, count) => `<option value="${count}" ${count === selectedCopies ? "selected" : ""}>${count}</option>`).join("");
+            return `
             <div class="choice-card">
               <label>
-                <input type="checkbox" value="${weapon.id}" ${state.selectedWeaponIds.includes(weapon.id) ? "checked" : ""} ${usedWeaponSlots + weaponSlotCost(weapon) > selectedWeaponSlots && !state.selectedWeaponIds.includes(weapon.id) ? "disabled" : ""} />
+                <span class="weapon-count-field">装備数
+                  <select class="weapon-count-control" data-weapon-id="${weapon.id}" aria-label="${escapeAttr(weapon.name)}の装備数" ${maxCopies === 0 && selectedCopies === 0 ? "disabled" : ""}>${countOptions}</select>
+                </span>
                 <strong>${weapon.name}</strong>
               </label>
-              <span class="small">使用枠${weaponSlotCost(weapon)} / 残り${remainingCardCopies("weapons", weapon.id)}枚 / コスト${weapon.cost} / ${weapon.kind === "shield" ? `盾耐久${weapon.durability}${weaponCanAttack(weapon) ? ` / 盾攻撃 威力${weapon.power} 命中${weapon.accuracy}` : ""}` : `威力${weapon.power} 命中${weapon.accuracy} ${weaponRangeLabel(weapon)}`}</span>
+              <span class="small">1つにつき使用枠${weaponSlotCost(weapon)} / 使用可能${remainingCardCopies("weapons", weapon.id)}枚 / コスト${weapon.cost} / ${weapon.kind === "shield" ? `盾耐久${weapon.durability}${weaponCanAttack(weapon) ? ` / 盾攻撃 威力${weapon.power} 命中${weapon.accuracy}` : ""}` : `威力${weapon.power} 命中${weapon.accuracy} ${weaponRangeLabel(weapon)}`}</span>
               ${renderWeaponDetails(weapon, { omitCoreStats: true })}
             </div>
-          `).join("")}
+          `; }).join("")}
         </div>
       </div>
       <div class="form-row">
@@ -1806,6 +1823,28 @@ function renderSetup() {
 
   setupScreen.classList.remove("hidden");
   battleScreen.classList.add("hidden");
+}
+
+function selectedWeaponCopyCount(weaponId) {
+  return state.selectedWeaponIds.filter((id) => id === weaponId).length;
+}
+
+function replaceSelectedWeaponCopies(ids, weaponId, desiredCount) {
+  const next = [];
+  let inserted = false;
+  ids.forEach((id) => {
+    if (id !== weaponId) {
+      next.push(id);
+      return;
+    }
+    if (inserted) return;
+    for (let count = 0; count < desiredCount; count += 1) next.push(weaponId);
+    inserted = true;
+  });
+  if (!inserted) {
+    for (let count = 0; count < desiredCount; count += 1) next.push(weaponId);
+  }
+  return next;
 }
 
 function crewRoleLabel(role) {

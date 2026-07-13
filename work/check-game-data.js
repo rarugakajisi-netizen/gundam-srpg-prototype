@@ -299,7 +299,7 @@ function createChecker(data, dialogues = {}) {
     const weaponIds = list(entry.weaponIds);
     const optionIds = list(entry.optionIds);
     expectUniqueList(`${scope}.characterIds`, characterIds);
-    expectUniqueList(`${scope}.weaponIds`, weaponIds);
+    // 同一武器カードの複数装備は有効。重複分も下のスロット計算で個別に数える。
     expectUniqueList(`${scope}.optionIds`, optionIds);
     const entryOptions = optionIds.map((id) => indexes.options[id]).filter(Boolean);
     if (map && !mobileSuitCanDeployOnMap(ms, map, entryOptions)) error(scope, `${itemLabel(ms)} は ${map.name} に出撃できません。`);

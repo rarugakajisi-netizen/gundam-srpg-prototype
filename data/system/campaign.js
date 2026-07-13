@@ -898,6 +898,61 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "vsWhiteDingoTeam1",
+      "series": "fallenColony",
+      "order": 650,
+      "tags": [
+        "コロニーの落ちた地で...",
+        "ジオン視点",
+        "地上",
+        "オーストラリア",
+        "荒野",
+        "ホワイト・ディンゴ隊",
+        "ジム",
+        "敵艦なし"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": null,
+      "summary": "コロニー落としによって一面の荒野と化したオーストラリアで、ホワイト・ディンゴ隊をジオン側から迎え撃ちます。異なる装備で役割分担したジム隊と、アニタのホバー・トラックが連携します。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "gmWhiteDingo", "characterIds": ["masterPRayer"], "weaponIds": ["prototypeBeamRifle", "shield"], "optionIds": ["externalGenerator"] },
+          { "msId": "gmWhiteDingo", "characterIds": ["maximilianBerger"], "weaponIds": ["federationMachineGun100mm", "shield"], "optionIds": [] },
+          { "msId": "gmCannonWhiteDingo", "characterIds": ["leungLeeFei"], "weaponIds": ["hyperBazooka"], "optionIds": [] },
+          { "msId": "hoverTruck", "characterIds": ["anitaJulian"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "vsWhiteDingoTeam2",
+      "series": "fallenColony",
+      "order": 660,
+      "tags": [
+        "コロニーの落ちた地で...",
+        "ジオン視点",
+        "地上",
+        "オーストラリア",
+        "荒野",
+        "ホワイト・ディンゴ隊",
+        "ヘビィ・フォーク",
+        "ジム・スナイパーII",
+        "量産型ガンキャノン"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "heavyFork",
+      "enemyCaptainId": "stanleyHawkins",
+      "enemyFirstOfficerId": "bobRock",
+      "summary": "荒廃したオーストラリアの広域戦場で、ヘビィ・フォークを母艦とするホワイト・ディンゴ隊と決戦します。長短二種のビーム・ライフルを使い分けるジム・スナイパーII隊と、二挺の100mmマシンガンを構えた量産型ガンキャノンが射線を重ねます。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "gmSniper2WhiteDingo", "characterIds": ["masterPRayer"], "weaponIds": ["groundGundamBeamRifle", "smallShield"], "optionIds": [] },
+          { "msId": "massProductionGuncannonWhiteDingo", "characterIds": ["maximilianBerger"], "weaponIds": ["federationMachineGun100mm", "federationMachineGun100mm"], "optionIds": [] },
+          { "msId": "gmSniper2WhiteDingo", "characterIds": ["leungLeeFei"], "weaponIds": ["longRangeBeamRifle"], "optionIds": [] },
+          { "msId": "hoverTruck", "characterIds": ["anitaJulian"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
       "mapId": "garmaFalls",
       "series": "main",
       "order": 20,

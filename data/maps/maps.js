@@ -1070,6 +1070,90 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "vsWhiteDingoTeam1",
+    "name": "VSホワイト・ディンゴ隊①",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 4, "y": 8 },
+          { "x": 6, "y": 8 },
+          { "x": 1, "y": 9 },
+          { "x": 7, "y": 9 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 1, "y": 1 },
+          { "x": 3, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 7, "y": 1 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "desert", "desert", "desert", "desert", "desert", "desert", "desert",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "plain", "plain", "rock", "plain", "plain", "rock", "plain", "desert",
+      "desert", "cliff", "cliff", "plain", "plain", "cliff", "cliff", "desert",
+      "plain", "cliff", "plain", "plain", "plain", "plain", "cliff", "plain",
+      "plain", "cliff", "plain", "rock", "rock", "plain", "cliff", "plain",
+      "desert", "cliff", "cliff", "plain", "plain", "cliff", "cliff", "desert",
+      "plain", "rock", "plain", "ruin", "plain", "plain", "rock", "plain",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "desert", "desert", "desert", "desert", "desert", "desert", "desert", "desert"
+    ]
+  },
+  {
+    "id": "vsWhiteDingoTeam2",
+    "name": "VSホワイト・ディンゴ隊②",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 1, "y": 10 },
+          { "x": 3, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 3, "y": 11 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 2, "y": 2 },
+          { "x": 4, "y": 2 },
+          { "x": 7, "y": 2 },
+          { "x": 5, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "desert", "desert", "desert", "base", "base", "base", "desert", "desert", "desert",
+      "desert", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "desert",
+      "plain", "plain", "plain", "rock", "plain", "plain", "rock", "plain", "plain", "plain",
+      "desert", "plain", "ruin", "plain", "plain", "plain", "plain", "ruin", "plain", "desert",
+      "plain", "plain", "cliff", "cliff", "plain", "plain", "cliff", "cliff", "plain", "plain",
+      "desert", "rock", "plain", "plain", "plain", "plain", "plain", "plain", "rock", "desert",
+      "plain", "plain", "plain", "rock", "plain", "plain", "rock", "plain", "plain", "plain",
+      "desert", "cliff", "plain", "plain", "plain", "plain", "plain", "plain", "cliff", "desert",
+      "plain", "plain", "ruin", "plain", "plain", "plain", "plain", "ruin", "plain", "plain",
+      "desert", "plain", "plain", "plain", "rock", "rock", "plain", "plain", "plain", "desert",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "desert", "desert", "desert", "desert", "base", "base", "desert", "desert", "desert", "desert"
+    ]
+  },
+  {
     "id": "garmaFalls",
     "name": "ガルマ散る",
     "type": "ground",

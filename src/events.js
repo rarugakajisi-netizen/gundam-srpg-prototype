@@ -150,9 +150,20 @@ setupScreen.addEventListener("change", (event) => {
     state.selectedOptionId = event.target.value;
     renderSetup();
   }
-  if (event.target.matches('.weapon-list input[type="checkbox"]')) {
-    const checked = [...setupScreen.querySelectorAll('.weapon-list input[type="checkbox"]:checked')].map((input) => input.value);
-    state.selectedWeaponIds = fitWeaponIdsToSlots(checked, lookup().ms[state.selectedMsId]);
+  if (event.target.matches(".weapon-count-control")) {
+    const ms = lookup().ms[state.selectedMsId];
+    const weaponId = event.target.dataset.weaponId;
+    const weapon = lookup().weapons[weaponId];
+    if (!ms || !weapon) return;
+    const currentCopies = selectedWeaponCopyCount(weaponId);
+    const otherUsedSlots = selectedWeaponSlotCost(state.selectedWeaponIds) - currentCopies * weaponSlotCost(weapon);
+    const maxBySlots = Math.max(0, Math.floor((weaponSlotCount(ms) - otherUsedSlots) / weaponSlotCost(weapon)));
+    const desiredCopies = Math.min(
+      Math.max(0, Number(event.target.value) || 0),
+      remainingCardCopies("weapons", weaponId),
+      maxBySlots
+    );
+    state.selectedWeaponIds = fitWeaponIdsToSlots(replaceSelectedWeaponCopies(state.selectedWeaponIds, weaponId, desiredCopies), ms);
     renderSetup();
   }
 });
