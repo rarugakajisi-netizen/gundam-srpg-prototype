@@ -814,6 +814,86 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "vsGuineaPigTeam1",
+    "name": "VSモルモット隊①",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 4, "y": 1 },
+          { "x": 1, "y": 2 },
+          { "x": 6, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "building", "base", "base", "base", "base", "base", "base", "building",
+      "building", "base", "plain", "plain", "plain", "plain", "base", "building",
+      "plain", "plain", "plain", "base", "base", "plain", "plain", "plain",
+      "building", "plain", "building", "plain", "plain", "building", "plain", "building",
+      "plain", "plain", "plain", "gate", "gate", "plain", "plain", "plain",
+      "rock", "plain", "plain", "plain", "plain", "plain", "plain", "rock",
+      "plain", "ruin", "plain", "rock", "rock", "plain", "ruin", "plain",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "rock", "plain", "plain", "plain", "plain", "plain", "plain", "rock",
+      "plain", "plain", "plain", "base", "base", "plain", "plain", "plain"
+    ]
+  },
+  {
+    "id": "vsGuineaPigTeam2",
+    "name": "VSモルモット隊②",
+    "type": "space",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 9, "y": 11 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 5, "y": 1 },
+          { "x": 2, "y": 2 },
+          { "x": 8, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "debris", "space", "space", "space", "space", "debris", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "wreckage", "space", "debris", "debris", "space", "wreckage", "space", "space",
+      "space", "debris", "space", "wreckage", "space", "space", "wreckage", "space", "debris", "space",
+      "space", "space", "debris", "space", "space", "space", "space", "debris", "space", "space",
+      "space", "debris", "space", "space", "wreckage", "wreckage", "space", "space", "debris", "space",
+      "space", "space", "wreckage", "space", "space", "space", "space", "wreckage", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "debris", "space", "space", "debris", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
     "id": "garmaFalls",
     "name": "ガルマ散る",
     "type": "ground",

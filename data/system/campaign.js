@@ -711,6 +711,61 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "vsGuineaPigTeam1",
+      "series": "blueDestiny",
+      "order": 540,
+      "tags": [
+        "THE BLUE DESTINY",
+        "ジオン視点",
+        "地上",
+        "基地戦",
+        "モルモット隊",
+        "ブルーディスティニー1号機",
+        "ジム・コマンド"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "medea",
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "maureenKitamura",
+      "costCap": 1900,
+      "summary": "地上基地で、ミデアを母艦とするモルモット隊をジオン側から迎え撃ちます。ユウのブルーディスティニー1号機を前衛に、フィリップとサマナのジム・コマンド地上戦仕様が異なる射撃装備で連携します。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "blueDestiny1", "characterIds": ["youKajima"], "weaponIds": ["federationMachineGun100mm", "smallShield"], "optionIds": [] },
+          { "msId": "gmCommandGround", "characterIds": ["philipHughes"], "weaponIds": ["beamGun", "gmCommandShield"], "optionIds": [] },
+          { "msId": "gmCommandGround", "characterIds": ["samanaFulis"], "weaponIds": ["hyperBazooka", "gmCommandShield"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "vsGuineaPigTeam2",
+      "series": "blueDestiny",
+      "order": 550,
+      "tags": [
+        "THE BLUE DESTINY",
+        "ジオン視点",
+        "宇宙",
+        "デブリ帯",
+        "モルモット隊",
+        "ブルーディスティニー3号機",
+        "ジム・ドミナンス",
+        "ジム・コマンド"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "magellan",
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "maureenKitamura",
+      "costCap": 2250,
+      "summary": "デブリの漂う宇宙空間で、マゼランを旗艦とするモルモット隊と決戦します。ユウのブルーディスティニー3号機、フィリップのジム・ドミナンス、長距離射撃に対応したサマナのジム・コマンド宇宙戦仕様が連携します。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "blueDestiny3", "characterIds": ["youKajima"], "weaponIds": ["groundGundamBeamRifle", "gmCommandShield"], "optionIds": [] },
+          { "msId": "gmDominance", "characterIds": ["philipHughes"], "weaponIds": ["hyperBazooka", "gmCommandShield"], "optionIds": [] },
+          { "msId": "gmCommandSpace", "characterIds": ["samanaFulis"], "weaponIds": ["beamGun", "gmCommandShield"], "optionIds": ["longRangeScope"] }
+        ]
+      }
+    },
+    {
       "mapId": "garmaFalls",
       "series": "main",
       "order": 20,
