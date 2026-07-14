@@ -1826,7 +1826,7 @@ function renderBridgeSelectors() {
 }
 
 function characterSummary(character) {
-  return `${characterRolesLabel(character)} / 射撃${character.shooting} / 格闘${character.melee} / 反応${character.reaction} / 指揮${character.command} / 支援${character.support} / 整備${character.maintenance}`;
+  return `${characterRolesLabel(character)} / 射撃${character.shooting} / 格闘${character.melee} / 反応${character.reaction} / 指揮${character.command} / 通信${character.support} / 整備${character.maintenance}`;
 }
 
 function rosterCard(entry, index) {

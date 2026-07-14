@@ -234,7 +234,7 @@ window.GAME_DATA.options = [
     "cost": 35,
     "effectType": "skill",
     "grantsSkill": "recon",
-    "effectText": "偵察スキルを付与する。隠密や敵情報表示の拡張用。",
+    "effectText": "偵察スキルを付与する。通信に応じた索敵範囲内の隠密を看破し、味方全体が詳細確認と射撃を行える。",
     "uniqueSkill": true,
     "factions": [
       "federation",

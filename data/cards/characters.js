@@ -472,9 +472,7 @@ window.GAME_DATA.characters = [
     "roles": [
       "operator"
     ],
-    "specials": [
-      "recon"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {
@@ -4296,9 +4294,7 @@ window.GAME_DATA.characters = [
       "pilot",
       "commander"
     ],
-    "specials": [
-      "recon"
-    ],
+    "specials": [],
     "imagePath": ""
   },
   {

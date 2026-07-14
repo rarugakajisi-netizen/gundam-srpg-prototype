@@ -68,7 +68,7 @@ const CHARACTER_GROWTH_STAT_LABELS = {
   melee: "格闘",
   reaction: "反応",
   command: "指揮",
-  support: "支援",
+  support: "通信",
   maintenance: "整備"
 };
 const setupScreen = document.querySelector("#setupScreen");

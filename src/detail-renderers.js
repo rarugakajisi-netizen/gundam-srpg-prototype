@@ -441,17 +441,41 @@ function unitHasSkill(unit, skillId) {
   return unitSpecials(unit).includes(skillId);
 }
 
+function characterCommunication(character) {
+  return Math.max(0, Number(character?.support) || 0);
+}
+
+function reconDetectionRange(unit) {
+  if (!isMobileSuit(unit) || !unitHasSkill(unit, "recon")) return 0;
+  const communication = characterCommunication(primaryCharacterFor(unit));
+  if (communication >= 18) return 5;
+  if (communication >= 14) return 4;
+  if (communication >= 8) return 3;
+  return 2;
+}
+
+function sideReconDetects(defender, viewerSide) {
+  return state.units.some((unit) =>
+    unit.side === viewerSide
+    && isMobileSuit(unit)
+    && isAlive(unit)
+    && unitHasSkill(unit, "recon")
+    && distance(unit, defender) <= reconDetectionRange(unit)
+  );
+}
+
 function unitIsConcealedFrom(defender, attacker) {
   if (!isMobileSuit(defender)) return false;
   if (defender.infiltrationExposed) return false;
-  if (unitHasSkill(attacker, "recon")) return false;
+  const reconDetected = sideReconDetects(defender, attacker.side);
   const nearbyScout = state.units.some((unit) => unit.side === attacker.side && isCombatUnit(unit) && distance(unit, defender) <= 2);
-  const smokeConcealed = (defender.smokeConcealedTurns ?? 0) > 0;
-  const stealthConcealed = unitHasSkill(defender, "stealth") && !defender.stealthRevealed && distance(defender, attacker) > 2 && !nearbyScout;
+  const smokeConcealed = (defender.smokeConcealedTurns ?? 0) > 0 && !reconDetected;
+  const stealthConcealed = unitHasSkill(defender, "stealth") && !defender.stealthRevealed && distance(defender, attacker) > 2 && !nearbyScout && !reconDetected;
   const guerrillaConcealed = unitHasSkill(defender, "guerrillaTactics")
     && GUERRILLA_TERRAINS.has(terrainAt(defender.x, defender.y))
     && distance(defender, attacker) > 2
-    && !nearbyScout;
+    && !nearbyScout
+    && !reconDetected;
   return smokeConcealed || stealthConcealed || guerrillaConcealed;
 }
 
@@ -592,6 +616,7 @@ function weaponHasSkill(weapon, skillId) {
 
 function activeSkillText(unit) {
   const skills = [...new Set(unitSpecials(unit))];
+  if (unitHasSkill(unit, "recon")) skills.push(`偵察範囲${reconDetectionRange(unit)}（通信${characterCommunication(primaryCharacterFor(unit))}）`);
   if ((unit.freezyYardActiveTurns ?? 0) > 0) skills.push(`フリージーヤード効果中${unit.freezyYardActiveTurns}`);
   if ((unit.smokeConcealedTurns ?? 0) > 0) skills.push(`煙幕隠蔽中${unit.smokeConcealedTurns}`);
   if ((unit.learningStacks ?? 0) > 0) skills.push(`教育型補正${unit.learningStacks}`);
@@ -1048,7 +1073,7 @@ function renderCharacterDetails(character, options = {}) {
         ]),
         ["覚醒", character.awakening],
         ...(options.omitCoreStats ? [] : [["指揮", characterStatDisplay(character, "command")]]),
-        ["支援", characterStatDisplay(character, "support")],
+        ["通信", characterStatDisplay(character, "support")],
         ...(options.omitCoreStats ? [] : [["整備", characterStatDisplay(character, "maintenance")]]),
         ["得意", characterRolesLabel(character)]
       ])}
