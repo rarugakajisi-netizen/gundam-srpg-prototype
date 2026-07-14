@@ -11,6 +11,7 @@
     "check:data": "node work/check-game-data.js",
     "check:data:strict": "node work/check-game-data.js --warnings-as-errors",
     "check:play": "node work/check-play-integrity.js",
+    "check:images": "node work/check-card-images.js",
     "package": "node work/package-release.js",
     "package:plicy": "node work/package-release.js --target plicy",
     "report:balance": "node work/card-balance-report.js",

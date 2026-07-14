@@ -28,12 +28,7 @@ function renderBattle() {
           <button class="primary-button" data-action="end-turn" ${state.phase !== "player" || state.outcome ? "disabled" : ""}>ターン終了</button>
         </div>
       </div>
-      ${state.phase === "deployment" && !state.outcome ? `<section class="panel deployment-panel">
-        <div>
-          <h2>出撃配置</h2>
-          <p class="small">自軍ユニットを選び、手前${deploymentRows("player")}列の明るいマスへ置き直せます。配置を終えたら「配置完了」で戦闘開始です。</p>
-        </div>
-      </section>` : ""}
+      ${state.phase === "deployment" && !state.outcome ? `<div class="deployment-guide" role="status"><strong>出撃配置</strong><span>自軍を選び、手前${deploymentRows("player")}列の明るいマスへ移動。終わったら「配置完了」を押します。</span></div>` : ""}
       ${renderBattleRuleStatus()}
       ${state.outcome ? renderBattleResultPanel() : ""}
       <div class="board" style="--board-width: ${boardWidth()}; --board-height: ${boardHeight()};">
@@ -120,17 +115,19 @@ function renderResultRewardChip(reward) {
 }
 
 function renderBattleLogPanel() {
+  const open = state.phase === "enemy" || Boolean(state.outcome);
+  const latest = state.log.at(-1) ?? "戦闘開始後の行動がここに記録されます。";
   return `
-    <section class="panel log-panel battle-log-panel">
-      <div class="panel-heading">
-        <h2>戦闘ログ</h2>
+    <details class="panel log-panel battle-log-panel" ${open ? "open" : ""}>
+      <summary><strong>戦闘ログ</strong><span class="battle-log-latest">${latest}</span><span class="section-count">${state.log.length}件</span></summary>
+      <div class="panel-heading battle-log-actions">
         ${state.phase === "enemy" && !state.outcome ? `<button class="primary-button compact-button" data-action="advance-enemy">敵行動を進める</button>` : ""}
       </div>
       ${state.phase === "enemy" && !state.outcome ? `<p class="small">ログを確認してから、ボタンで敵の次の行動へ進めます。</p>` : ""}
       <div class="log-list">
         ${state.log.slice(-12).reverse().map((item) => `<div class="log-item">${item}</div>`).join("")}
       </div>
-    </section>
+    </details>
   `;
 }
 
@@ -168,6 +165,12 @@ function renderToken(unit) {
   const defenseTarget = isDefenseTarget(unit) ? "defense-target" : "";
   const destructionTarget = isDestructionTarget(unit) ? "destruction-target" : "";
   const displayName = concealedEnemyLabel(unit);
+  const concealed = unitDetailsConcealedFromSide(unit, "player");
+  const cardImage = concealed || (!isMobileSuit(unit) && !isBattleship(unit))
+    ? ""
+    : isBattleship(unit)
+      ? renderCardImage("battleships", battleshipFor(unit), { size: "token", eager: true })
+      : renderCardImage("mobileSuits", msFor(unit), { size: "token", eager: true });
   const numberBadge = isMobileSuit(unit) && Number.isInteger(unit.sortieNumber)
     ? `<span class="token-number">${unit.sortieNumber}</span>`
     : isDefenseTarget(unit) ? `<span class="token-number">守</span>`
@@ -175,10 +178,20 @@ function renderToken(unit) {
     : "";
   return `
     <button class="token ${faction} ${unit.side} ${battleship} ${defenseTarget} ${destructionTarget} ${selected}" data-unit-id="${unit.id}" title="${displayName}">
+      ${cardImage}
       ${numberBadge}
       <span class="token-name">${displayName}</span>
       <span class="hp-bar"><span class="hp-fill" style="width:${hp}%"></span></span>
     </button>
+  `;
+}
+
+function renderBattleIdentity(title, entries) {
+  return `
+    <div class="battle-identity">
+      ${renderCardImageGroup(entries, { size: "sm", eager: true })}
+      <h3>${title}</h3>
+    </div>
   `;
 }
 
@@ -216,7 +229,10 @@ function renderUnitDetail(unit, target) {
   const character = primaryCharacterFor(unit);
   const shield = activeShield(unit);
   return `
-    <h3>${unitName(unit)} / ${character.name}</h3>
+    ${renderBattleIdentity(`${unitName(unit)} / ${character.name}`, [
+      { type: "mobileSuits", item: ms },
+      { type: "characters", item: character }
+    ])}
     <div class="stat-grid side-stat-grid">
       <div class="stat"><span>機番</span>${Number.isInteger(unit.sortieNumber) ? `${unit.sortieNumber}番機` : "なし"}</div>
       <div class="stat"><span>装甲</span>${unit.armor} / ${unit.maxArmor}</div>
@@ -248,8 +264,8 @@ function renderUnitDetail(unit, target) {
     <details class="side-collapse">
       <summary>機体・キャラ・装備詳細</summary>
       <div class="side-detail-stack">
-        ${renderMobileSuitDetails(ms)}
-        ${renderCharacterDetails(character)}
+        ${renderMobileSuitDetails(ms, { omitImage: true })}
+        ${renderCharacterDetails(character, { omitImage: true })}
         ${renderOptionInventory(unit)}
         ${renderWeaponInventory(unit)}
       </div>
@@ -265,7 +281,10 @@ function renderTargetDetail(unit) {
   const character = primaryCharacterFor(unit);
   const shield = activeShield(unit);
   return `
-    <h3>${unitName(unit)} / ${character.name}</h3>
+    ${renderBattleIdentity(`${unitName(unit)} / ${character.name}`, [
+      { type: "mobileSuits", item: ms },
+      { type: "characters", item: character }
+    ])}
     <div class="stat-grid side-stat-grid">
       <div class="stat"><span>機番</span>${Number.isInteger(unit.sortieNumber) ? `${unit.sortieNumber}番機` : "なし"}</div>
       <div class="stat"><span>装甲</span>${unit.armor} / ${unit.maxArmor}</div>
@@ -283,8 +302,8 @@ function renderTargetDetail(unit) {
     <details class="side-collapse">
       <summary>敵の機体・キャラ・装備詳細</summary>
       <div class="side-detail-stack">
-        ${renderMobileSuitDetails(ms)}
-        ${renderCharacterDetails(character)}
+        ${renderMobileSuitDetails(ms, { omitImage: true })}
+        ${renderCharacterDetails(character, { omitImage: true })}
         ${renderOptionInventory(unit)}
         ${renderWeaponInventory(unit)}
       </div>
@@ -296,7 +315,10 @@ function renderBattleshipTargetDetail(unit) {
   const ship = battleshipFor(unit);
   const crew = battleshipCrew(unit);
   return `
-    <h3>${ship.name}</h3>
+    ${renderBattleIdentity(ship.name, [
+      { type: "battleships", item: ship },
+      { type: "characters", item: crew[0] }
+    ])}
     <div class="stat-grid side-stat-grid">
       <div class="stat"><span>耐久</span>${unit.armor} / ${unit.maxArmor}</div>
       <div class="stat"><span>EN</span>${unit.energy} / ${unit.maxEnergy}</div>
@@ -312,7 +334,7 @@ function renderBattleshipTargetDetail(unit) {
     <details class="side-collapse">
       <summary>敵戦艦・武装詳細</summary>
       <div class="side-detail-stack">
-        ${renderBattleshipDataDetails(ship)}
+        ${renderBattleshipDataDetails(ship, { omitImage: true })}
         ${renderWeaponInventory(unit)}
       </div>
     </details>
@@ -324,7 +346,10 @@ function renderBattleshipDetail(unit, target) {
   const support = supportForBattleship(unit);
   const crew = battleshipCrew(unit);
   return `
-    <h3>${ship.name}</h3>
+    ${renderBattleIdentity(ship.name, [
+      { type: "battleships", item: ship },
+      { type: "characters", item: crew[0] }
+    ])}
     <div class="stat-grid side-stat-grid">
       <div class="stat"><span>耐久</span>${unit.armor} / ${unit.maxArmor}</div>
       <div class="stat"><span>EN</span>${unit.energy} / ${unit.maxEnergy}</div>
@@ -349,7 +374,7 @@ function renderBattleshipDetail(unit, target) {
     <details class="side-collapse">
       <summary>戦艦・武装詳細</summary>
       <div class="side-detail-stack">
-        ${renderBattleshipDataDetails(ship)}
+        ${renderBattleshipDataDetails(ship, { omitImage: true })}
         ${renderWeaponInventory(unit)}
       </div>
     </details>

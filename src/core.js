@@ -116,9 +116,9 @@ const state = {
   revealAllCards: false,
   libraryFilter: {
     query: "",
-    type: "all",
+    type: "mobileSuits",
     faction: "all",
-    ownership: "all",
+    ownership: "owned",
     sort: "name"
   },
   stageFilter: {

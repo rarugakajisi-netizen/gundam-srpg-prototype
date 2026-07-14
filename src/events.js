@@ -214,8 +214,12 @@ setupScreen.addEventListener("click", (event) => {
     state.revealAllCards = !state.revealAllCards;
     renderCardList();
   }
+  if (action === "library-type") {
+    state.libraryFilter.type = button.dataset.type ?? "mobileSuits";
+    renderCardList();
+  }
   if (action === "reset-library-filter") {
-    state.libraryFilter = { query: "", type: "all", faction: "all", ownership: "all", sort: "name" };
+    state.libraryFilter = { query: "", type: "mobileSuits", faction: "all", ownership: "owned", sort: "name" };
     renderCardList();
   }
   if (action === "reset-stage-filter") {

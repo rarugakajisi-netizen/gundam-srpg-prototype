@@ -7,6 +7,7 @@ const PROJECT_ROOT = path.resolve(__dirname, "..");
 // Browser load order. Data files must be evaluated before the runtime files.
 const DATA_FILES = [
   "data/game-data.js",
+  "data/card-images.js",
   "data/system/campaign.js",
   "data/rules/skills.js",
   "data/maps/maps.js",
@@ -20,6 +21,7 @@ const DATA_FILES = [
 
 const RUNTIME_FILES = [
   "src/core.js",
+  "src/card-images.js",
   "src/detail-renderers.js",
   "src/setup-flow.js",
   "src/battle-render.js",
@@ -35,6 +37,7 @@ const TOOL_FILES = [
   "work/check-cli.js",
   "work/check-game-data.js",
   "work/check-play-integrity.js",
+  "work/check-card-images.js",
   "work/card-balance-report.js",
   "work/package-release.js",
   "work/run-checks.js",

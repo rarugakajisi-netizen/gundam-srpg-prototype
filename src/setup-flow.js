@@ -447,10 +447,12 @@ function renderTitle() {
   phaseLabel.textContent = "タイトル";
   setupScreen.className = "screen title-layout";
   setupScreen.innerHTML = `
-    <section class="title-panel">
-      <p class="eyebrow">Card Tactical SRPG</p>
-      <h2>${state.data.campaign?.title ?? "カードタクティクス"}</h2>
-      <p>手持ちカードで部隊を組み、ステージ報酬で戦力を広げていく試作版です。</p>
+    <section class="title-panel home-command-panel">
+      <div>
+        <p class="eyebrow">司令メニュー</p>
+        <h2>次の戦場を選ぶ</h2>
+        <p>手持ちカードで部隊を編成し、ステージを攻略して戦力を広げます。</p>
+      </div>
       <div class="title-actions">
         <button class="primary-button" data-action="stage-select">ステージ選択</button>
         <button class="primary-button" data-action="free-battle-select">フリー対戦</button>
@@ -458,11 +460,19 @@ function renderTitle() {
         <button data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換</button>
       </div>
     </section>
-    <section class="panel stack">
-      <h2>現在の進行</h2>
+    <section class="panel stack campaign-progress-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">プレイ状況</p>
+          <h2>現在の進行</h2>
+        </div>
+      </div>
       ${campaignSummaryStats()}
-      <p class="small">連邦はマチルダのガンペリーとジム2機、ジオンはドレンのパプアとザクII／ザクIで開始します。</p>
-      <button class="danger-button" data-action="reset-save">進行を初期化</button>
+      <details class="save-management">
+        <summary>セーブデータの管理</summary>
+        <p class="small">進行、所持カード、編成記録を初期状態へ戻します。</p>
+        <button class="danger-outline-button" data-action="reset-save">進行を初期化</button>
+      </details>
     </section>
   `;
   setupScreen.classList.remove("hidden");
@@ -526,14 +536,10 @@ function stageFolderEntries() {
 function stageFolderStats(entries) {
   const cleared = entries.filter((entry) => stageCleared(entry.map.id)).length;
   const playable = entries.filter((entry) => stagePlayable(entry.map)).length;
-  const terrains = [...new Set(entries.map((entry) => mapTypeName(entry.map.type)))];
-  const next = nextUnclearedStageEntry(entries);
   return {
     total: entries.length,
     cleared,
-    playable,
-    terrains,
-    next
+    playable
   };
 }
 
@@ -743,11 +749,8 @@ function renderStageFolderPicker() {
   return `
     <section class="stage-folder-panel">
       <div class="panel-heading">
-        <div>
-          <p class="eyebrow">Title Folders</p>
-          <h3>タイトル別フォルダ</h3>
-        </div>
-        <span class="small">作品・分類ごとにステージを絞り込みます。</span>
+        <h3>タイトル別</h3>
+        <span class="small">横にスクロールできます</span>
       </div>
       <div class="stage-folder-grid">
         ${folders.map((folder) => stageFolderCard(folder)).join("")}
@@ -759,20 +762,16 @@ function renderStageFolderPicker() {
 function stageFolderCard(folder) {
   const stats = stageFolderStats(folder.entries);
   const selected = state.stageFilter.series === folder.id;
-  const terrainText = stats.terrains.length > 0 ? stats.terrains.join(" / ") : "地形なし";
   return `
     <button type="button" class="stage-folder-card ${selected ? "selected" : ""}" data-action="select-stage-folder" data-series="${folder.id}">
       <span class="stage-folder-head">
         <span>
-          <span class="eyebrow">Folder</span>
           <strong>${folder.label}</strong>
         </span>
         <span class="status-pill ${stats.playable > 0 ? "ready" : ""}">${stats.cleared} / ${stats.total} CLEAR</span>
       </span>
       <span class="stage-folder-meta">
-        <span>${terrainText}</span>
-        <span>出撃可 ${stats.playable}</span>
-        <span>次: ${stats.next?.map.name ?? "なし"}</span>
+        <span>全${stats.total}件・出撃可${stats.playable}件</span>
       </span>
     </button>
   `;
@@ -793,8 +792,7 @@ function renderStageSelect() {
         <button data-action="title">タイトルへ</button>
       </div>
       <div class="stage-quick-actions">
-        <button class="primary-button" data-action="select-next-uncleared-stage" data-map-id="${nextEntry?.map.id ?? ""}" ${nextEntry ? "" : "disabled"}>次の未クリアを表示</button>
-        ${selectedEntry ? `<button data-action="select-stage" data-map-id="${selectedEntry.map.id}" ${stagePlayable(selectedEntry.map) ? "" : "disabled"}>選択中ステージへ</button>` : ""}
+        <button class="primary-button" data-action="select-next-uncleared-stage" data-map-id="${nextEntry?.map.id ?? ""}" ${nextEntry ? "" : "disabled"}>次の未クリアを選択</button>
       </div>
       ${renderStageFolderPicker()}
       ${renderStageControls(entries)}
@@ -804,10 +802,14 @@ function renderStageSelect() {
     </section>
     <aside class="panel stack stage-detail-panel">
       ${renderStageDetail(selectedEntry)}
-      <h2>進行状況</h2>
-      ${campaignSummaryStats()}
-      <button data-action="card-list">カード一覧を見る</button>
-      <button class="primary-button" data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換券を使う</button>
+      <details class="stage-progress-details">
+        <summary>進行状況とカード管理</summary>
+        ${campaignSummaryStats()}
+        <div class="toolbar-actions">
+          <button data-action="card-list">カード一覧</button>
+          <button data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換</button>
+        </div>
+      </details>
     </aside>
   `;
   setupScreen.classList.remove("hidden");
@@ -831,17 +833,15 @@ function stageCard(entry, selected = false) {
         </div>
         <span class="status-pill ${playable ? "ready" : ""}">${cleared ? "CLEAR" : playable ? "出撃可" : "未解禁"}</span>
       </div>
-      <p class="small">${stage.summary ?? "ステージ説明は未設定です。"}</p>
       <div class="stage-meta-line">
         <span class="reward-chip">${factionName(enemyFaction)}戦</span>
         <span class="reward-chip">敵${enemyCost}</span>
         <span class="reward-chip">上限${cap}</span>
-        ${stageCleared(map.id) ? `<span class="reward-chip owned">クリア済</span>` : ""}
       </div>
       ${renderStageRuleChips(stage)}
       <div class="stage-card-actions">
-        <button data-action="select-stage-detail" data-map-id="${map.id}">詳細</button>
-        <button class="primary-button" data-action="select-stage" data-map-id="${map.id}" ${playable ? "" : "disabled"}>出撃準備へ</button>
+        <button data-action="select-stage-detail" data-map-id="${map.id}">内容を見る</button>
+        <button class="primary-button" data-action="select-stage" data-map-id="${map.id}" ${playable ? "" : "disabled"}>編成へ</button>
       </div>
     </article>
   `;
@@ -868,6 +868,7 @@ function renderStageDetail(entry) {
       <h2>${map.name}</h2>
       <span class="status-pill ${playable ? "ready" : ""}">${cleared ? "CLEAR" : playable ? "出撃可" : "未解禁"}</span>
     </div>
+    <button class="primary-button stage-detail-launch" data-action="select-stage" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このステージの編成へ</button>
     <p class="small">${stage.summary ?? "ステージ説明は未設定です。"}</p>
     <div class="reward-list">
       <span class="reward-chip">敵勢力: ${factionName(enemyFaction)}</span>
@@ -877,10 +878,7 @@ function renderStageDetail(entry) {
     </div>
     ${tags.length > 0 ? `<div class="reward-list">${tags.map((tag) => `<span class="reward-chip owned">${tag}</span>`).join("")}</div>` : ""}
     ${renderStageRuleChips(stage)}
-    ${renderMapDetails(map, { open: true })}
-    <h3>報酬プール</h3>
-    <div class="reward-list">${renderCommonDropSummary() || `<span class="reward-chip">報酬未設定</span>`}</div>
-    <button class="primary-button" data-action="select-stage" data-map-id="${map.id}" ${playable ? "" : "disabled"}>このステージへ</button>
+    ${renderMapDetails(map)}
   `;
 }
 
@@ -1116,18 +1114,18 @@ function filterOption(value, label, current) {
 function renderLibraryControls() {
   const filter = state.libraryFilter;
   return `
+    <nav class="library-type-tabs" aria-label="カード種別">
+      ${[
+        ["mobileSuits", "機体"],
+        ["characters", "キャラ"],
+        ["weapons", "武器"],
+        ["options", "OP"],
+        ["battleships", "戦艦"],
+        ["all", "すべて"]
+      ].map(([value, label]) => `<button type="button" data-action="library-type" data-type="${value}" class="${filter.type === value ? "active" : ""}" aria-pressed="${filter.type === value}">${label}</button>`).join("")}
+    </nav>
     <div class="filter-bar">
       <label>検索<input class="library-control" data-filter-key="query" type="search" value="${escapeAttr(filter.query)}" placeholder="名前・タグ" /></label>
-      <label>種別<select class="library-control" data-filter-key="type">
-        ${[
-          ["all", "すべて"],
-          ["battleships", "戦艦"],
-          ["mobileSuits", "機体"],
-          ["weapons", "武器"],
-          ["options", "OP"],
-          ["characters", "キャラ"]
-        ].map(([value, label]) => filterOption(value, label, filter.type)).join("")}
-      </select></label>
       <label>勢力<select class="library-control" data-filter-key="faction">
         ${filterOption("all", "すべて", filter.faction)}
         ${Object.entries(state.data.factions).map(([value, label]) => filterOption(value, label, filter.faction)).join("")}
@@ -1335,12 +1333,15 @@ function renderCardList() {
       <div class="panel-heading">
         <h2>カード一覧</h2>
         <div class="toolbar-actions">
-          <button class="${state.revealAllCards ? "primary-button" : ""}" data-action="toggle-card-reveal">${state.revealAllCards ? "通常表示に戻す" : "確認用: 情報全開放"}</button>
           <button data-action="choice-card" ${choiceTicketCount() > 0 && choiceCandidateEntries().length > 0 ? "" : "disabled"}>カード引換</button>
           <button data-action="stage-select">ステージ選択</button>
           <button data-action="title">タイトルへ</button>
         </div>
       </div>
+      <details class="library-dev-tools" ${state.revealAllCards ? "open" : ""}>
+        <summary>開発・確認用表示</summary>
+        <button class="${state.revealAllCards ? "primary-button" : ""}" data-action="toggle-card-reveal">${state.revealAllCards ? "通常表示に戻す" : "未入手・固定武装の情報を開く"}</button>
+      </details>
       ${state.revealAllCards ? `<p class="support-hint ready">確認用表示中: 未入手カードと固定武装の詳細を表示しています。所持状況やセーブデータは変わりません。</p>` : ""}
       ${renderLibraryControls()}
       ${cardLibrarySection("battleships", "戦艦", state.data.battleships.filter((ship) => ship.selectable !== false), renderBattleshipDataDetails)}
@@ -1371,12 +1372,12 @@ function cardLibrarySection(type, title, items, detailRenderer, options = {}) {
           const visible = actuallyOwned || revealed;
           const countLabel = isCountedCardType(type) && actuallyOwned ? `所持 x${cardCount(type, item.id)}` : actuallyOwned ? "所持" : "確認用";
           return `
-            <article class="collection-card ${actuallyOwned ? "owned" : visible ? "revealed" : "locked"} ${visible ? cardFactionClass(item) : ""}">
+            <article class="collection-card ${actuallyOwned ? "owned" : visible ? "revealed" : "locked compact-locked-card"} ${visible ? cardFactionClass(item) : ""}">
               <div class="collection-card-head">
-                <strong>${visible ? item.name : "未入手カード"}</strong>
+                <span class="collection-card-title">${visible ? renderCardImage(type, item, { size: "sm" }) : ""}<strong>${visible ? item.name : "未入手カード"}</strong></span>
                 <span class="status-pill ${actuallyOwned ? "ready" : visible ? "preview" : ""}">${visible ? countLabel : "未入手"}</span>
               </div>
-              ${visible ? detailRenderer(item) : `<p class="small">ステージ報酬などで入手すると詳細を確認できます。</p>`}
+              ${visible ? detailRenderer(item, { omitImage: true }) : ""}
             </article>
           `;
         }).join("")}
@@ -1491,7 +1492,7 @@ function mobileSuitPickerCard(ms) {
   return `
     <article class="picker-card ${cardFactionClass(ms)} ${ms.id === state.selectedMsId ? "selected" : ""}">
       <div class="collection-card-head">
-        <strong>${ms.name}</strong>
+        <span class="collection-card-title">${renderCardImage("mobileSuits", ms, { size: "sm" })}<strong>${ms.name}</strong></span>
         <span class="status-pill ${remaining > 0 ? "ready" : ""}">所持${cardCount("mobileSuits", ms.id)} / 残り${remaining}</span>
       </div>
       ${statItems([
@@ -1502,7 +1503,7 @@ function mobileSuitPickerCard(ms) {
         ["移動", ms.mobility],
         ["装備枠", `武器${ms.weaponSlots ?? 2} / OP${ms.optionSlots ?? 1}`]
       ])}
-      ${renderMobileSuitDetails(ms, { omitCoreStats: true })}
+      ${renderMobileSuitDetails(ms, { omitCoreStats: true, omitImage: true })}
       <button class="primary-button" data-action="choose-ms" data-id="${ms.id}">この機体にする</button>
     </article>
   `;
@@ -1512,7 +1513,7 @@ function battleshipPickerCard(ship) {
   return `
     <article class="picker-card ${cardFactionClass(ship)} ${ship.id === state.selectedBattleshipId ? "selected" : ""}">
       <div class="collection-card-head">
-        <strong>${ship.name}</strong>
+        <span class="collection-card-title">${renderCardImage("battleships", ship, { size: "sm" })}<strong>${ship.name}</strong></span>
         <span class="status-pill ready">所持</span>
       </div>
       ${statItems([
@@ -1523,7 +1524,7 @@ function battleshipPickerCard(ship) {
         ["移動", ship.mobility],
         ["補給", `装甲${ship.support.armor} / EN${ship.support.energy} / 弾${ship.support.ammo}`]
       ])}
-      ${renderBattleshipDataDetails(ship, { omitCoreStats: true })}
+      ${renderBattleshipDataDetails(ship, { omitCoreStats: true, omitImage: true })}
       <button class="primary-button" data-action="choose-battleship" data-id="${ship.id}">この戦艦にする</button>
     </article>
   `;
@@ -1553,7 +1554,7 @@ function characterPickerCard(character, owner) {
   return `
     <article class="picker-card ${cardFactionClass(character)} ${current ? "selected" : ""} ${disabled ? "disabled-card" : ""}">
       <div class="collection-card-head">
-        <strong>${character.name}</strong>
+        <span class="collection-card-title">${renderCardImage("characters", character, { size: "sm" })}<strong>${character.name}</strong></span>
         <span class="status-pill ${disabled ? "" : "ready"}">${disabled ? "編成済み" : "選択可"}</span>
       </div>
       ${statItems([
@@ -1564,7 +1565,7 @@ function characterPickerCard(character, owner) {
         ["指揮", character.command],
         ["整備", character.maintenance]
       ])}
-      ${renderCharacterDetails(character, { omitCoreStats: true })}
+      ${renderCharacterDetails(character, { omitCoreStats: true, omitImage: true })}
       <button class="primary-button" data-action="choose-character" data-owner="${owner}" data-id="${character.id}" ${disabled ? "disabled" : ""}>このキャラにする</button>
     </article>
   `;
@@ -1589,11 +1590,8 @@ function renderFavoriteFormationControls() {
     return `<option value="${index}" ${index === state.selectedFavoriteSlot ? "selected" : ""}>${escapeAttr(label)}</option>`;
   }).join("");
   return `
-    <section class="favorite-formation-box">
-      <div class="favorite-formation-heading">
-        <strong>お気に入り編成</strong>
-        <span class="small">20枠</span>
-      </div>
+    <details class="favorite-formation-box" ${favorite ? "open" : ""}>
+      <summary><strong>お気に入り編成</strong><span class="small">20枠・登録／呼び出し</span></summary>
       <select id="favoriteFormationSlot" aria-label="お気に入り編成の枠">${slotOptions}</select>
       <input id="favoriteFormationName" aria-label="お気に入り編成名" maxlength="30" value="${escapeAttr(defaultName)}" />
       <div class="favorite-formation-actions">
@@ -1602,7 +1600,7 @@ function renderFavoriteFormationControls() {
         <button data-action="delete-favorite-formation" ${favorite ? "" : "disabled"}>削除</button>
       </div>
       ${favorite && !compatible ? `<p class="small">このステージでは${factionName(favorite.faction)}編成を使用できません。</p>` : ""}
-    </section>
+    </details>
   `;
 }
 
@@ -1657,7 +1655,10 @@ function renderSetup() {
         <div class="meter-line"><div class="meter-fill" style="width: ${meterPercent}%"></div></div>
         <p class="small">${battleSummaryText}</p>
       </div>
-      <p class="small">${selectedMapData.name}へ出撃します。${free ? "フリー対戦では所持カード内ならコストに縛られません。勝利報酬は1枚です。" : "キャラクターはMSにも戦艦にも配置できます。同じ人物は1人だけ編成できます。"}</p>
+      <div class="setup-stage-summary">
+        <strong>${selectedMapData.name}</strong>
+        <span>${mapTypeName(selectedMapData.type)}・${free ? "コスト上限なし" : `上限${cap}`}</span>
+      </div>
       <div class="form-row">
         <label>${free ? "マップ" : "ステージ"}</label>
         ${free ? `
@@ -1666,7 +1667,7 @@ function renderSetup() {
           </select>
         ` : `<div class="readonly-field">${selectedMapData.name} / ${mapTypeName(selectedMapData.type)}</div>`}
       </div>
-      ${renderMapDetails(selectedMapData, { open: true })}
+      ${renderMapDetails(selectedMapData)}
       <div class="form-row">
         <label for="battleshipSelect">戦艦（1隻のみ）</label>
         <div class="select-with-action">
@@ -1836,14 +1837,17 @@ function rosterCard(entry, index) {
   const optionNames = (entry.optionIds ?? []).map((id) => options[id]?.name).filter(Boolean).join(" / ") || "OPなし";
   const sortieNumber = index + 1;
   return `
-    <div class="unit-card ${cardFactionClass(unitMs)}">
-      <div class="portrait ${unitMs.faction}">${sortieNumber}</div>
+    <div class="unit-card unit-card-with-images ${cardFactionClass(unitMs)}">
+      <div class="roster-visual"><span class="roster-number">${sortieNumber}</span>${renderCardImageGroup([
+        { type: "mobileSuits", item: unitMs },
+        { type: "characters", item: unitCharacter }
+      ], { size: "sm" })}</div>
       <div>
         <strong>${sortieNumber}. ${unitMs.name} + ${unitCharacter.name}</strong>
         <div class="small">${weaponNames} / ${optionNames} / コスト${formationCost(entry)}</div>
         <div class="inline-details">
-          ${renderMobileSuitDetails(unitMs)}
-          ${renderCharacterDetails(unitCharacter)}
+          ${renderMobileSuitDetails(unitMs, { omitImage: true })}
+          ${renderCharacterDetails(unitCharacter, { omitImage: true })}
           ${entry.weaponIds.map((id) => renderWeaponDetails(weapons[id])).join("")}
           ${(entry.optionIds ?? []).map((id) => renderOptionDetails(options[id])).join("")}
         </div>
@@ -1858,15 +1862,18 @@ function battleshipRosterCard(ship) {
   const captain = characters[state.selectedCaptainId];
   const firstOfficer = characters[state.selectedFirstOfficerId];
   return `
-    <div class="unit-card flagship-card ${cardFactionClass(ship)}">
-      <div class="portrait ${ship.faction}">艦</div>
+    <div class="unit-card flagship-card unit-card-with-images ${cardFactionClass(ship)}">
+      <div class="roster-visual">${renderCardImageGroup([
+        { type: "battleships", item: ship },
+        { type: "characters", item: captain }
+      ], { size: "sm" })}</div>
       <div>
         <strong>${ship.name}</strong>
         <div class="small">艦長: ${captain?.name ?? "未配置"} / 副長: ${firstOfficer?.name ?? "未配置"} / コスト${ship.cost + bridgeCost()}</div>
         <div class="inline-details">
-          ${renderBattleshipDataDetails(ship)}
-          ${captain ? renderCharacterDetails(captain) : ""}
-          ${firstOfficer ? renderCharacterDetails(firstOfficer) : ""}
+          ${renderBattleshipDataDetails(ship, { omitImage: true })}
+          ${captain ? renderCharacterDetails(captain, { omitImage: true }) : ""}
+          ${firstOfficer ? renderCharacterDetails(firstOfficer, { omitImage: true }) : ""}
         </div>
       </div>
     </div>

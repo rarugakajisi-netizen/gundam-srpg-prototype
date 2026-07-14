@@ -923,7 +923,7 @@ function renderMobileSuitDetails(ms, options = {}) {
   const mapSuitability = mapSuitabilityLabel(ms);
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
-      <summary>性能・固定武装</summary>
+      <summary>${options.omitImage ? "" : renderCardImage("mobileSuits", ms, { size: "xs" })}<span>性能・固定武装</span></summary>
       ${statItems([
         ...(options.omitCoreStats ? [] : [
           ["コスト", ms.cost],
@@ -971,7 +971,7 @@ function renderMapDetails(map, options = {}) {
 function renderBattleshipDataDetails(ship, options = {}) {
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
-      <summary>性能・艦載武装</summary>
+      <summary>${options.omitImage ? "" : renderCardImage("battleships", ship, { size: "xs" })}<span>性能・艦載武装</span></summary>
       ${statItems([
         ...(options.omitCoreStats ? [] : [
           ["コスト", ship.cost],
@@ -1037,7 +1037,7 @@ function renderCharacterDetails(character, options = {}) {
     ?? character.faction;
   return `
     <details class="detail-box" ${options.open ? "open" : ""}>
-      <summary>能力・相性・スキル</summary>
+      <summary>${options.omitImage ? "" : renderCardImage("characters", character, { size: "xs" })}<span>能力・相性・スキル</span></summary>
       ${statItems([
         ["使用勢力", factions],
         ...(options.omitCoreStats ? [] : [

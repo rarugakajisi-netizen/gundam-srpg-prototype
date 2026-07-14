@@ -50,6 +50,7 @@ function main() {
   if (syntaxOnly) return;
   runNode(["work/check-game-data.js"]);
   runNode(["work/check-play-integrity.js"]);
+  runNode(["work/check-card-images.js"]);
 }
 
 main();
