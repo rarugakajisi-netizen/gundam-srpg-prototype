@@ -710,6 +710,15 @@ function barrageSupportPenalty(defender, attacker) {
   return state.units.some((unit) => unit.side === attacker.side && isCombatUnit(unit) && unitHasSkill(unit, "barrageSupport") && distance(unit, defender) <= 3) ? 8 : 0;
 }
 
+function suppressiveFireActive(unit) {
+  const effect = unit?.suppressiveFireDebuff;
+  return Boolean(effect && effect.turnNumber === state.turnNumber && effect.phase === state.phase);
+}
+
+function suppressiveFireEvasionPenalty(unit) {
+  return suppressiveFireActive(unit) ? SUPPRESSIVE_FIRE_EVASION_PENALTY : 0;
+}
+
 function shieldHasSkill(unit, skillId) {
   const shield = activeShield(unit);
   return Boolean(shield && (weaponFor(shield.id).specials ?? []).includes(skillId));
@@ -728,6 +737,7 @@ function activeSkillText(unit) {
   if (unitHasSkill(unit, "emergencyRepair")) skills.push(`緊急修理${unit.emergencyRepairUsed ? "使用済み" : `（整備${emergencyRepairMaintenance(unit)}）`}`);
   if (unitHasSkill(unit, "ainasPocketWatch")) skills.push(`アイナの懐中時計${unit.ainasPocketWatchUsed ? "使用済み" : "（未使用）"}`);
   if (unitHasSkill(unit, "lastShooting")) skills.push(`ラストシューティング${unit.lastShootingUsed ? "使用済み" : "（未使用）"}`);
+  if (suppressiveFireActive(unit)) skills.push(`牽制射撃被弾（回避-${SUPPRESSIVE_FIRE_EVASION_PENALTY}）`);
   if (trailFormationActive(unit)) skills.push(`トレイル陣形（回避+${TRAIL_FORMATION_EVASION_BONUS} / 被ダメージ-${TRAIL_FORMATION_DAMAGE_REDUCTION}）`);
   if (lineFormationActive(unit)) skills.push(`ライン陣形（命中+${LINE_FORMATION_ACCURACY_BONUS} / ダメージ+${LINE_FORMATION_DAMAGE_BONUS}）`);
   if (unit.priorityTargetId) skills.push("優先目標指示中");

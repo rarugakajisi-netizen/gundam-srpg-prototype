@@ -40,6 +40,7 @@
 - `work/check-recommended-formation.js`: おすすめ編成が決定的に生成され、所持枚数、勢力、地形、装備枠、キャラ重複、ステージ上限を守ることをVM上で検査する。
 - `work/check-last-stand-options.js`: アイナの懐中時計とラストシューティングのOP限定定義、共用勢力、装備制限、一度だけの装甲1生存、強制喪失除外、最適武装反撃、消費・命中・射程、相討ちをVM上で検査する。
 - `work/check-tem-ray-parts.js`: テム・レイのパーツの共用OP限定定義、マイナスコスト、機体・戦闘性能低下、変形後の補正維持をVM上で検査する。
+- `work/check-suppressive-fire.js`: 牽制射撃の機体/OP定義、低威力射撃の判定、命中時の回避低下、非重複、味方命中への反映、表示、ターン終了、対象外武器をVM上で検査する。
 - `work/check-card-images.js`: 追加済みカード画像が512x512 PNGか、対応する画像キーかを検査する。
 - `work/project-files.js`: ブラウザで読み込むデータ・実装ファイルの正規順序。検査側もこの一覧を共有する。
 - `work/load-game-data.js`: 各検査・診断が共有するゲームデータ読込処理。

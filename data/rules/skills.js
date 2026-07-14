@@ -68,6 +68,14 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "suppressiveFire",
+    "name": "牽制射撃",
+    "type": "機体/OP",
+    "timing": "低威力射撃命中時",
+    "effect": "威力45以下の射撃武装が命中した時、その行動側ターン中、対象の回避率-8。同じ効果は重複しない。",
+    "implemented": true
+  },
+  {
     "id": "guerrillaTactics",
     "name": "ゲリラ戦術",
     "type": "キャラ/OP",

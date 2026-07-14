@@ -177,6 +177,20 @@ window.GAME_DATA.options = [
     "imagePath": ""
   },
   {
+    "id": "suppressiveFireOption",
+    "name": "牽制射撃",
+    "cost": 45,
+    "effectType": "skill",
+    "grantsSkill": "suppressiveFire",
+    "effectText": "威力45以下の射撃武装が命中した時、その行動側ターン中、対象の回避率-8。同じ効果は重複しない。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "stealthSystem",
     "name": "ステルス機構",
     "cost": 55,

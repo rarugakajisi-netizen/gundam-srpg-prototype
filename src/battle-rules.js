@@ -919,11 +919,28 @@ function minimumHitRate(unit, attackOrdinal = (unit.usedWeaponIds?.length ?? 0) 
 
 function evasion(unit, options = {}) {
   if (isDefenseTarget(unit) || isDestructionTarget(unit) || isBarricade(unit)) return 0;
-  if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit) + schemingEvasionBonus(unit);
+  if (isBattleship(unit)) return Math.max(0, battleshipFor(unit).agility + battleshipEvasionBonus(unit) + schemingEvasionBonus(unit) - suppressiveFireEvasionPenalty(unit));
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
   const optionAgilityModifier = optionModifierTotal(unit.optionIds, "agilityModifier");
-  return Math.max(0, ms.agility + optionAgilityModifier + character.reaction + Math.floor(character.awakening / 2) + characterMsBonus(unit) + skillEvasionBonus(unit) + schemingEvasionBonus(unit) - jinxEvasionPenalty(unit) - oldSoldierPrideEvasionPenalty(unit, options) - unitTerrainPenalty(unit).evasion);
+  return Math.max(0, ms.agility + optionAgilityModifier + character.reaction + Math.floor(character.awakening / 2) + characterMsBonus(unit) + skillEvasionBonus(unit) + schemingEvasionBonus(unit) - suppressiveFireEvasionPenalty(unit) - jinxEvasionPenalty(unit) - oldSoldierPrideEvasionPenalty(unit, options) - unitTerrainPenalty(unit).evasion);
+}
+
+function suppressiveFireWeaponEligible(weapon) {
+  return weapon?.attackType === "shooting"
+    && Number(weapon.power) > 0
+    && Number(weapon.power) <= SUPPRESSIVE_FIRE_MAX_POWER;
+}
+
+function applySuppressiveFire(attacker, defender, weapon) {
+  if (!isMobileSuit(attacker) || !isAlive(defender) || !unitHasSkill(attacker, "suppressiveFire") || !suppressiveFireWeaponEligible(weapon)) return false;
+  if (suppressiveFireActive(defender)) return false;
+  defender.suppressiveFireDebuff = {
+    turnNumber: state.turnNumber,
+    phase: state.phase
+  };
+  state.log.push(`${unitName(defender)}は牽制射撃を受け、このターン中は回避-${SUPPRESSIVE_FIRE_EVASION_PENALTY}。`);
+  return true;
 }
 
 function hitRate(attacker, defender, weapon, options = {}) {
@@ -1462,6 +1479,7 @@ function resolveLastShooting(unit, target) {
     const damage = damageFor(unit, target, weapon, { iFieldActive });
     const effectNotes = combatEffectNotes(unit, target, weapon, { iFieldActive });
     applyDamage(target, damage);
+    applySuppressiveFire(unit, target, weapon);
     state.log.push(`${weapon.name}が命中。${unitName(target)}に${damage}ダメージ。`);
     if (effectNotes.length > 0) state.log.push(`発動: ${effectNotes.join(" / ")}`);
     if (!isAlive(target)) state.log.push(`${unitName(target)}を撃破。`);
@@ -1500,6 +1518,7 @@ function attack(attacker, defender, weapon, renderAfter = true) {
     const damage = damageFor(attacker, defender, weapon, { iFieldActive });
     const effectNotes = combatEffectNotes(attacker, defender, weapon, { iFieldActive });
     applyDamage(defender, damage);
+    applySuppressiveFire(attacker, defender, weapon);
     state.log.push(`${attackerName}の${weapon.name}が命中${repeatPenalty ? `（連続攻撃-${repeatPenalty}）` : ""}。${defenderName}に${damage}ダメージ。`);
     if (effectNotes.length > 0) state.log.push(`発動: ${effectNotes.join(" / ")}`);
     if (isAlive(defender)) pushDialogue(defender, "damaged");

@@ -46,6 +46,7 @@ const TOOL_FILES = [
   "work/check-recommended-formation.js",
   "work/check-last-stand-options.js",
   "work/check-tem-ray-parts.js",
+  "work/check-suppressive-fire.js",
   "work/check-card-images.js",
   "work/card-balance-report.js",
   "work/package-release.js",

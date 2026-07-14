@@ -60,6 +60,7 @@ const WATCHED_OPTIONS = new Set([
   "emergencyRepair",
   "trailFormation",
   "lineFormation",
+  "suppressiveFire",
   "ainasPocketWatch",
   "lastShooting"
 ]);
