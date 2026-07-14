@@ -136,6 +136,16 @@ function alliedBattleship(side) {
   return state.units.find((unit) => unit.side === side && isBattleship(unit) && isAlive(unit));
 }
 
+function alliedBattleships(side) {
+  return state.units.filter((unit) => unit.side === side && isBattleship(unit) && isAlive(unit));
+}
+
+function nearestAlliedBattleship(unit) {
+  return [...alliedBattleships(unit.side)].sort((a, b) =>
+    distance(unit, a) - distance(unit, b) || String(a.id).localeCompare(String(b.id))
+  )[0] ?? null;
+}
+
 function sideHasSkill(side, skillId) {
   return state.units.some((unit) => unit.side === side && isCombatUnit(unit) && isAlive(unit) && unitHasSkill(unit, skillId));
 }
@@ -625,12 +635,25 @@ function weaponStatus(unit, weapon) {
 }
 
 function applyBattleshipSupport(side) {
-  const battleship = alliedBattleship(side);
-  if (!battleship) return;
-  const support = supportForBattleship(battleship);
-
-  const supportedUnits = state.units.filter((unit) => unit.side === side && isCombatUnit(unit) && isMobileSuit(unit) && isAdjacent(unit, battleship));
+  const battleships = alliedBattleships(side);
+  if (battleships.length === 0) return;
+  const supportedUnits = state.units.filter((unit) =>
+    unit.side === side
+    && isCombatUnit(unit)
+    && isMobileSuit(unit)
+    && isAlive(unit)
+    && battleships.some((battleship) => isAdjacent(unit, battleship))
+  );
   supportedUnits.forEach((unit) => {
+    const battleship = [...battleships]
+      .filter((ship) => isAdjacent(unit, ship))
+      .sort((a, b) => {
+        const supportA = supportForBattleship(a);
+        const supportB = supportForBattleship(b);
+        return (supportB.armor + supportB.energy + supportB.ammo * 10 + supportB.shield)
+          - (supportA.armor + supportA.energy + supportA.ammo * 10 + supportA.shield);
+      })[0];
+    const support = supportForBattleship(battleship);
     const changes = applySupplyToUnit(unit, support);
 
     if (changes.length > 0) {
@@ -1555,9 +1578,16 @@ function endPlayerTurn() {
   state.phase = "enemy";
   state.selectedUnitId = null;
   state.selectedTargetId = null;
-  state.enemyQueue = state.units.filter((unit) => unit.side === "enemy" && isCombatUnit(unit)).map((unit) => unit.id);
+  state.enemyQueue = enemyTurnQueue();
   state.log.push("敵軍ターン開始。敵行動を進めるボタンで1手ずつ処理します。");
   renderBattle();
+}
+
+function enemyTurnQueue() {
+  return state.units
+    .filter((unit) => unit.side === "enemy" && isCombatUnit(unit))
+    .sort((a, b) => Number(isBattleship(a)) - Number(isBattleship(b)))
+    .map((unit) => unit.id);
 }
 
 function effectiveDurability(unit) {
@@ -1580,7 +1610,12 @@ function attackPlanScore(attacker, target, weapon) {
   const expectedDamage = damage * hit / 100;
   const canDestroy = damage >= effectiveDurability(target);
   const range = distance(attacker, target);
-  const rangeComfort = Math.max(0, weaponMaxRange(attacker, weapon) - range);
+  const minRange = weaponMinRange(weapon);
+  const maxRange = weaponMaxRange(attacker, weapon);
+  const preferredRange = weapon.attackType === "melee"
+    ? minRange
+    : maxRange >= 4 ? maxRange : Math.ceil((minRange + maxRange) / 2);
+  const rangeComfort = 12 - Math.abs(preferredRange - range) * 6;
   const shieldBashPenalty = weapon.kind === "shield" ? 8 : 0;
   return expectedDamage
     + targetPriority(target)
@@ -1618,25 +1653,48 @@ function parsePositionKey(key) {
   return { x, y };
 }
 
-function enemyNeedsSupport(unit) {
-  if (!isMobileSuit(unit)) return false;
-  if (unitHealthRatio(unit) <= 0.55) return true;
-  if (unit.maxEnergy > 0 && unit.energy / unit.maxEnergy <= 0.35) return true;
-  return unit.runtimeWeapons.some((runtime) => {
-    const weapon = weaponFor(runtime.id);
-    if (weapon.kind === "ammo") return runtime.ammo <= 1;
-    if (weapon.kind === "shield") return runtime.durability > 0 && runtime.durability <= Math.ceil(weapon.durability * 0.35);
+function enemySupportNeed(unit) {
+  if (!isMobileSuit(unit)) return { level: 0, reason: "" };
+  const healthRatio = unitHealthRatio(unit);
+  const energyRatio = unit.maxEnergy > 0 ? unit.energy / unit.maxEnergy : 1;
+  const weapons = attackWeapons(unit);
+  const resourceWeapons = weapons.filter((weapon) => ["ammo", "beam", "special"].includes(weapon.kind));
+  const ammoRuntimes = unit.runtimeWeapons.filter((runtime) => weaponFor(runtime.id).kind === "ammo");
+  const remainingAmmo = ammoRuntimes.reduce((sum, runtime) => sum + runtime.ammo, 0);
+  const maximumAmmo = ammoRuntimes.reduce((sum, runtime) => sum + (runtime.maxAmmo ?? weaponFor(runtime.id).ammo ?? 0), 0);
+  const ammoRatio = maximumAmmo > 0 ? remainingAmmo / maximumAmmo : 1;
+  const energyDependent = resourceWeapons.some((weapon) => ["beam", "special"].includes(weapon.kind));
+  const resourceDepleted = weapons.length > 0 && weapons.every((weapon) => {
+    const runtime = runtimeWeapon(unit, weapon.id);
+    if (weapon.kind === "beam" || weapon.kind === "special") return unit.energy < weapon.consume;
+    if (weapon.kind === "ammo") return (runtime?.ammo ?? 0) < weapon.consume;
+    if (weapon.kind === "shield") return (runtime?.durability ?? 0) < shieldAttackCost(weapon);
     return false;
   });
+  const lowEnergy = energyDependent && energyRatio <= 0.25;
+  const lowAmmo = maximumAmmo > 0 && ammoRatio <= 0.25;
+  const critical = healthRatio <= 0.3 || resourceDepleted || (healthRatio <= 0.45 && (lowEnergy || lowAmmo));
+  const moderate = critical || healthRatio <= 0.55 || lowEnergy || lowAmmo;
+  const reason = healthRatio <= 0.3
+    ? "損傷大"
+    : resourceDepleted ? "攻撃資源枯渇"
+      : lowEnergy ? "EN低下"
+        : lowAmmo ? "弾薬低下" : healthRatio <= 0.55 ? "損傷" : "";
+  return { level: critical ? 2 : moderate ? 1 : 0, reason };
+}
+
+function enemyNeedsSupport(unit) {
+  return enemySupportNeed(unit).level > 0;
 }
 
 function supportPositionScore(unit) {
-  if (!enemyNeedsSupport(unit)) return 0;
-  const ship = alliedBattleship(unit.side);
+  const need = enemySupportNeed(unit);
+  if (need.level === 0) return 0;
+  const ship = nearestAlliedBattleship(unit);
   if (!ship) return 0;
   const dist = distance(unit, ship);
-  if (dist === 1) return AI_SUPPORT_POSITION_BONUS;
-  return Math.max(0, AI_SUPPORT_POSITION_BONUS - dist * 12);
+  const base = need.level === 2 ? 2400 : 760;
+  return Math.max(0, base - Math.max(0, dist - 1) * (need.level === 2 ? 180 : 95));
 }
 
 function nearestTargetApproachScore(unit, targets) {
@@ -1680,6 +1738,70 @@ function infiltrationObjectiveScore(unit) {
   return targetDistance === null ? 0 : 1600 - targetDistance * 260;
 }
 
+function nearestDistance(unit, targets) {
+  return targets.length > 0 ? Math.min(...targets.map((target) => distance(unit, target))) : null;
+}
+
+function enemyGuardObjectiveScore(unit, opponents) {
+  if (!isMobileSuit(unit)) return 0;
+  const guardTargets = state.units.filter((target) => target.side === "enemy" && isDestructionTarget(target) && isAlive(target));
+  if (guardTargets.length === 0) return 0;
+  const guardDistance = nearestDistance(unit, guardTargets);
+  const threatened = guardTargets.some((target) => (nearestDistance(target, opponents) ?? 99) <= 6);
+  return Math.max(0, 520 - guardDistance * 70) + (threatened ? 220 : 0);
+}
+
+function enemyDelayObjectiveScore(unit, opponents) {
+  if (stageTurnLimit() === null || stageSurvivalTurnLimit() !== null || stageInfiltrationTargets().length > 0) return 0;
+  if (state.units.some((target) => target.side === "enemy" && isDestructionTarget(target) && isAlive(target))) return 0;
+  const opponentDistance = nearestDistance(unit, opponents);
+  return opponentDistance === null ? 0 : Math.min(300, opponentDistance * 32);
+}
+
+function enemySurvivalPressureScore(unit, opponents) {
+  if (stageSurvivalTurnLimit() === null) return 0;
+  const opponentDistance = nearestDistance(unit, opponents);
+  return opponentDistance === null ? 0 : Math.max(0, 360 - opponentDistance * 48);
+}
+
+function battleshipSupportPositionScore(unit) {
+  if (!isBattleship(unit)) return 0;
+  const supportTargets = state.units.filter((ally) =>
+    ally.side === unit.side && isMobileSuit(ally) && isAlive(ally) && enemyNeedsSupport(ally)
+  );
+  if (supportTargets.length === 0) return 0;
+  const supportDistance = nearestDistance(unit, supportTargets);
+  if (supportDistance === 1) return 1400;
+  return Math.max(0, 420 - supportDistance * 55);
+}
+
+function battleshipPreservationScore(unit, opponents) {
+  if (!isBattleship(unit)) return 0;
+  const opponentDistance = nearestDistance(unit, opponents);
+  if (opponentDistance === null) return 0;
+  const damagedBonus = unitHealthRatio(unit) <= 0.5 ? 2 : 1;
+  return Math.min(520, opponentDistance * 38 * damagedBonus);
+}
+
+function enemyObjectiveScore(unit, opponents) {
+  return infiltrationObjectiveScore(unit)
+    + enemyGuardObjectiveScore(unit, opponents)
+    + enemyDelayObjectiveScore(unit, opponents)
+    + enemySurvivalPressureScore(unit, opponents)
+    + battleshipSupportPositionScore(unit)
+    + battleshipPreservationScore(unit, opponents);
+}
+
+function incomingAttackRiskScore(unit, opponents) {
+  const risks = opponents.map((opponent) => {
+    const plans = attackWeaponsForTarget(opponent, unit).map((weapon) =>
+      damageFor(opponent, unit, weapon) * hitRate(opponent, unit, weapon) / 100
+    );
+    return plans.length > 0 ? Math.max(...plans) : 0;
+  }).sort((a, b) => b - a);
+  return (risks[0] ?? 0) + (risks[1] ?? 0) * 0.6;
+}
+
 function targetBlocksInfiltration(target) {
   return stageInfiltrationTargets().some((cell) => cell.x === target.x && cell.y === target.y);
 }
@@ -1691,25 +1813,68 @@ function enemyMoveCandidates(unit) {
   ];
 }
 
-function bestEnemyMove(unit, targets) {
+function bestEnemyMove(unit, targets, attackTargets = targets) {
   let best = null;
   enemyMoveCandidates(unit).forEach((cell) => {
     if (!cell.current && occupiedAt(cell.x, cell.y, unit.id)) return;
     const result = withUnitPosition(unit, cell.x, cell.y, () => {
-      const futureAttack = bestAttackPlan(unit, targets);
+      const futureAttack = bestAttackPlan(unit, attackTargets);
       const supportScore = supportPositionScore(unit);
       const approachScore = nearestTargetApproachScore(unit, targets);
-      const objectiveScore = infiltrationObjectiveScore(unit);
-      const score = (futureAttack ? AI_ATTACK_POSITION_BONUS + futureAttack.score : approachScore) + supportScore + objectiveScore;
-      return { futureAttack, supportScore, score };
+      const objectiveScore = enemyObjectiveScore(unit, targets);
+      const riskScore = incomingAttackRiskScore(unit, targets);
+      const score = (futureAttack ? AI_ATTACK_POSITION_BONUS + futureAttack.score : approachScore)
+        + supportScore
+        + objectiveScore
+        - riskScore;
+      return { futureAttack, supportScore, objectiveScore, riskScore, score };
     });
     if (!best || result.score > best.score) best = { ...cell, ...result };
   });
   if (!best || best.current) return null;
-  if (best.supportScore >= AI_SUPPORT_POSITION_BONUS) best.reason = "補給位置へ移動";
+  if (best.supportScore >= 760) best.reason = "補給位置へ移動";
   else if (best.futureAttack) best.reason = "攻撃位置へ移動";
+  else if (best.objectiveScore > 0) best.reason = "作戦目標に合わせて移動";
   else best.reason = "接近";
   return best;
+}
+
+function bestEnemySupportMove(unit) {
+  const ships = alliedBattleships(unit.side);
+  if (ships.length === 0) return null;
+  const currentDistance = Math.min(...ships.map((ship) => distance(unit, ship)));
+  let best = null;
+  enemyMoveCandidates(unit).forEach((cell) => {
+    if (cell.current || occupiedAt(cell.x, cell.y, unit.id)) return;
+    const supportDistance = Math.min(...ships.map((ship) => Math.abs(cell.x - ship.x) + Math.abs(cell.y - ship.y)));
+    if (supportDistance >= currentDistance) return;
+    const riskScore = withUnitPosition(unit, cell.x, cell.y, () => incomingAttackRiskScore(
+      unit,
+      state.units.filter((target) => target.side !== unit.side && isAttackTarget(target))
+    ));
+    if (!best || supportDistance < best.supportDistance || (supportDistance === best.supportDistance && riskScore < best.riskScore)) {
+      best = { ...cell, supportDistance, riskScore, reason: "補給のため後退" };
+    }
+  });
+  return best;
+}
+
+function shouldPrioritizeEnemySupport(unit, attackPlan) {
+  if (unit.moved || (unit.usedWeaponIds?.length ?? 0) > 0) return false;
+  const need = enemySupportNeed(unit);
+  if (need.level === 0 || !nearestAlliedBattleship(unit)) return false;
+  if (need.level === 2) return true;
+  return !attackPlan || attackPlan.score < 430;
+}
+
+function waitForEnemySupport(unit) {
+  const ship = nearestAlliedBattleship(unit);
+  if (!ship || !isAdjacent(unit, ship)) return false;
+  const need = enemySupportNeed(unit);
+  unit.acted = true;
+  unit.moved = true;
+  state.log.push(`${unitName(unit)}は${need.reason || "補給"}のため${unitName(ship)}に隣接して補給修理を待つ。`);
+  return true;
 }
 
 function advanceEnemyTurn() {
@@ -1741,7 +1906,26 @@ function advanceEnemyTurn() {
 
     const infiltrationMission = infiltrationTargetDistance(enemy) !== null;
     const blockingTargets = infiltrationMission ? targets.filter((target) => targetBlocksInfiltration(target)) : [];
-    const attackPlan = bestAttackPlan(enemy, blockingTargets.length > 0 ? blockingTargets : (infiltrationMission ? [] : targets));
+    const attackTargets = blockingTargets.length > 0 ? blockingTargets : (infiltrationMission ? [] : targets);
+    const attackPlan = bestAttackPlan(enemy, attackTargets);
+
+    if (shouldPrioritizeEnemySupport(enemy, attackPlan)) {
+      if (waitForEnemySupport(enemy)) {
+        state.enemyQueue.shift();
+        renderBattle();
+        return;
+      }
+      const supportMove = bestEnemySupportMove(enemy);
+      if (supportMove) {
+        state.selectedUnitId = enemy.id;
+        state.selectedTargetId = null;
+        moveEnemyUnit(enemy, supportMove);
+        enemy.acted = true;
+        state.enemyQueue.shift();
+        renderBattle();
+        return;
+      }
+    }
 
     if (shouldEnemyActivateFreezyYard(enemy, targets, attackPlan)) {
       state.selectedUnitId = enemy.id;
@@ -1762,17 +1946,16 @@ function advanceEnemyTurn() {
       return;
     }
 
-    if (attackPlan) {
-      state.selectedUnitId = enemy.id;
-      state.selectedTargetId = attackPlan.target.id;
-      attack(enemy, attackPlan.target, attackPlan.weapon, false);
-      if (enemy.acted || !isAlive(enemy) || state.outcome) state.enemyQueue.shift();
-      renderBattle();
-      return;
-    }
-
     if (!enemy.moved) {
-      const movePlan = bestEnemyMove(enemy, targets);
+      const movePlan = bestEnemyMove(enemy, targets, attackTargets);
+      if (!movePlan && attackPlan) {
+        state.selectedUnitId = enemy.id;
+        state.selectedTargetId = attackPlan.target.id;
+        attack(enemy, attackPlan.target, attackPlan.weapon, false);
+        if (enemy.acted || !isAlive(enemy) || state.outcome) state.enemyQueue.shift();
+        renderBattle();
+        return;
+      }
       state.selectedUnitId = enemy.id;
       state.selectedTargetId = movePlan?.futureAttack?.target.id ?? [...targets].sort((a, b) => distance(enemy, a) - distance(enemy, b))[0]?.id ?? null;
       const moved = moveEnemyUnit(enemy, movePlan);
@@ -1788,6 +1971,15 @@ function advanceEnemyTurn() {
         enemy.acted = true;
         state.enemyQueue.shift();
       }
+      renderBattle();
+      return;
+    }
+
+    if (attackPlan) {
+      state.selectedUnitId = enemy.id;
+      state.selectedTargetId = attackPlan.target.id;
+      attack(enemy, attackPlan.target, attackPlan.weapon, false);
+      if (enemy.acted || !isAlive(enemy) || state.outcome) state.enemyQueue.shift();
       renderBattle();
       return;
     }

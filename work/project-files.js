@@ -37,6 +37,7 @@ const TOOL_FILES = [
   "work/check-cli.js",
   "work/check-game-data.js",
   "work/check-play-integrity.js",
+  "work/check-enemy-ai.js",
   "work/check-card-images.js",
   "work/card-balance-report.js",
   "work/package-release.js",
