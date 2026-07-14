@@ -1172,6 +1172,10 @@ function renderStageRuleChips(stage) {
   if (destructionTargets.length > 0) chips.push(`破壊目標: ${destructionTargets.length}個 / 全破壊で勝利`);
   const infiltrationTargets = Array.isArray(stage.infiltrationTargets) ? stage.infiltrationTargets : [];
   if (infiltrationTargets.length > 0) chips.push(`進入阻止: 指定${infiltrationTargets.length}マス到達で敗北`);
+  const playerReachTargets = Array.isArray(stage.playerReachTargets) ? stage.playerReachTargets : [];
+  if (playerReachTargets.length > 0) chips.push(`到達目標: 指定${playerReachTargets.length}マスのいずれかへ到達で勝利`);
+  const initialMines = Array.isArray(stage.initialMines) ? stage.initialMines : [];
+  if (initialMines.length > 0) chips.push(`事前配置機雷: ${initialMines.length}個`);
   const delayedEnemy = Object.values(stage.enemyFormations ?? {}).flat().find((entry) => Number.isFinite(Number(entry.aiInactiveUntilTurn)));
   if (delayedEnemy) chips.push(`敵起動待機: 第${Math.floor(Number(delayedEnemy.aiInactiveUntilTurn))}ターンから行動`);
   const escortShips = Array.isArray(stage.enemyEscortBattleshipIds) ? stage.enemyEscortBattleshipIds : [];
@@ -2656,7 +2660,13 @@ function launchBattle() {
   state.selectedUnitId = battleships.find((unit) => unit.side === "player")?.id ?? playerUnits[0]?.id ?? null;
   state.selectedTargetId = null;
   state.enemyQueue = [];
-  state.mines = [];
+  state.mines = stageInitialMines().map((mine) => ({
+    id: makeId(),
+    side: mine.side === "player" ? "player" : "enemy",
+    x: mine.x,
+    y: mine.y,
+    damage: Math.max(1, Math.floor(Number(mine.damage) || 35))
+  }));
   state.sacrificialBoostSides = {};
   state.stageReinforcementSerial = 0;
   state.stageReinforcementTriggerComplete = false;

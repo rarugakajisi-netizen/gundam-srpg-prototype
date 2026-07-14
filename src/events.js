@@ -26,6 +26,8 @@ function checkOutcome() {
   const defenseTargetsDestroyed = defenseTargets.length > 0 && defenseTargets.every((unit) => !isAlive(unit));
   const destructionTargets = state.units.filter((unit) => isDestructionTarget(unit));
   const destructionTargetsDestroyed = destructionTargets.length > 0 && destructionTargets.every((unit) => !isAlive(unit));
+  const playerReachTargets = stagePlayerReachTargets();
+  const playerReacher = state.units.find((unit) => unitReachedPlayerTarget(unit));
   const infiltrator = state.units.find((unit) => unitReachedInfiltrationTarget(unit));
   const survivalLimit = stageSurvivalTurnLimit();
   const survivalComplete = survivalLimit !== null && state.phase === "player" && state.turnNumber > survivalLimit;
@@ -45,6 +47,12 @@ function checkOutcome() {
     state.outcome = "敗北";
     state.outcomeMessage = `${unitName(infiltrator)}の基地侵入を許しました。指定された侵入阻止マスを塞いでください。`;
     phaseLabel.textContent = state.outcome;
+  } else if (playerReacher) {
+    state.outcome = "勝利";
+    state.outcomeMessage = "";
+    state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
+    state.log.push(`${unitName(playerReacher)}が目標地点へ到達しました。`);
+    phaseLabel.textContent = state.outcome;
   } else if (destructionTargetsDestroyed) {
     state.outcome = "勝利";
     state.outcomeMessage = "";
@@ -61,7 +69,7 @@ function checkOutcome() {
     state.outcomeMessage = "";
     state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);
     phaseLabel.textContent = state.outcome;
-  } else if (destructionTargets.length === 0 && survivalLimit === null && !reinforcementsPending && ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive)) {
+  } else if (playerReachTargets.length === 0 && destructionTargets.length === 0 && survivalLimit === null && !reinforcementsPending && ((enemyBattleshipExists && !enemyBattleshipAlive) || !enemyAlive)) {
     state.outcome = "勝利";
     state.outcomeMessage = "";
     state.resultRewards = isFreeBattle() ? claimFreeBattleRewards() : claimStageRewards(state.selectedMapId);

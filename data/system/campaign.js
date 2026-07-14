@@ -12,6 +12,7 @@ window.GAME_DATA.campaign = {
     "blueDestiny": { "label": "THE BLUE DESTINY", "order": 50 },
     "fallenColony": { "label": "コロニーの落ちた地で...", "order": 60 },
     "spaceEndOfFlash": { "label": "宇宙、閃光の果てに...", "order": 70 },
+    "crossDimension": { "label": "CROSS DIMENSION 0079", "order": 80 },
     "other": { "label": "その他", "order": 90 }
   },
   "initialFaction": "federation",
@@ -1012,6 +1013,193 @@ window.GAME_DATA.campaign = {
           { "msId": "actZaku", "characterIds": ["malletSanguine"], "weaponIds": ["actZakuBeamRifle"], "optionIds": [] },
           { "msId": "rickDom", "characterIds": ["zeonSoldier"], "weaponIds": ["giantBazooka"], "optionIds": [] },
           { "msId": "rickDom", "characterIds": ["zeonSoldier"], "weaponIds": ["giantBazooka"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "spaceEndOfFlashBattle",
+      "series": "spaceEndOfFlash",
+      "order": 730,
+      "tags": [
+        "宇宙、閃光の果てに...",
+        "連邦視点",
+        "宇宙",
+        "デブリ帯",
+        "山場",
+        "ザンジバル",
+        "マレット",
+        "リリア",
+        "アクトザク",
+        "ブラウ・ブロ",
+        "リック・ドムII"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "zanzibar",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "戦艦残骸が密集する宙域で、ザンジバルを旗艦とする精鋭部隊と激突します。マレット・サンギーヌのアクトザク、リリア・フローベールのブラウ・ブロに加え、デブリ帯での機動に優れるリック・ドムII隊が展開するシリーズ中盤の山場です。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "actZaku", "characterIds": ["malletSanguine"], "weaponIds": ["actZakuBeamRifle"], "optionIds": [] },
+          { "msId": "brawBro", "characterIds": ["liliaFlobert"], "weaponIds": [], "optionIds": [] },
+          { "msId": "rickDom2", "characterIds": ["zeonSoldier"], "weaponIds": ["giantBazooka2"], "optionIds": [] },
+          { "msId": "rickDom2", "characterIds": ["zeonSoldier"], "weaponIds": ["giantBazooka2"], "optionIds": [] },
+          { "msId": "rickDom2", "characterIds": ["zeonVeteran"], "weaponIds": ["giantBazooka2"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "roadToPeace",
+      "series": "spaceEndOfFlash",
+      "order": 740,
+      "tags": [
+        "宇宙、閃光の果てに...",
+        "連邦視点",
+        "宇宙",
+        "デブリ帯",
+        "最終ステージ",
+        "大規模戦",
+        "チベ",
+        "ザンジバル",
+        "ノルド",
+        "マレット",
+        "高機動型ザク",
+        "アクトザク",
+        "リック・ドムII"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "zanzibar",
+      "enemyEscortBattleshipIds": ["chibe"],
+      "enemyCaptainId": "nordLangel",
+      "enemyFirstOfficerId": "",
+      "summary": "和平への道を切り開くため、戦艦残骸が埋め尽くす宙域でジオン精鋭艦隊と決戦します。ノルド・ランゲルのザンジバルと随伴するチベ、高機動型ザク隊、マレット・サンギーヌのアクトザク、リリア、ギュスター、ユイマンのリック・ドムII隊が立ちはだかる物語上の最終ステージです。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "highMobilityZaku", "characterIds": ["zeonVeteran"], "weaponIds": ["zakuMachineGunGrenade"], "optionIds": [] },
+          { "msId": "highMobilityZaku", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGunGrenade"], "optionIds": [] },
+          { "msId": "highMobilityZaku", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGunGrenade"], "optionIds": [] },
+          { "msId": "actZaku", "characterIds": ["malletSanguine"], "weaponIds": ["actZakuBeamRifle"], "optionIds": ["optionBooster"] },
+          { "msId": "rickDom2", "characterIds": ["liliaFlobert"], "weaponIds": ["giantBazooka2"], "optionIds": [] },
+          { "msId": "rickDom2", "characterIds": ["gusterPiper"], "weaponIds": ["mmp80MachineGun"], "optionIds": [] },
+          { "msId": "rickDom2", "characterIds": ["yuimanCarlile"], "weaponIds": ["giantBazooka2"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "vsThoroughbredTeam",
+      "series": "spaceEndOfFlash",
+      "order": 750,
+      "tags": [
+        "宇宙、閃光の果てに...",
+        "ジオン視点",
+        "宇宙",
+        "ボスステージ",
+        "サラブレッド隊",
+        "ガンダム4号機Bst",
+        "ガンダム5号機Bst",
+        "ガンキャノン"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "thoroughbred",
+      "enemyCaptainId": "kirstenLombard",
+      "enemyFirstOfficerId": "miyuTakizawa",
+      "summary": "ジオン側から、キルスティン・ロンバートとミユ・タキザワが指揮するサラブレッド隊を迎え撃ちます。フォルドのガンダム5号機［Bst］、ルースのガンダム4号機［Bst］と、火力支援を担うガンキャノン3機で構成された強襲部隊との決戦です。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "gundamUnit5Bst", "characterIds": ["fordRomfellow"], "weaponIds": ["hyperBeamRifle"], "optionIds": [] },
+          { "msId": "gundamUnit4Bst", "characterIds": ["luceKassel"], "weaponIds": ["hyperBeamRifle"], "optionIds": ["externalGenerator"] },
+          { "msId": "guncannon", "characterIds": ["federationVeteran"], "weaponIds": ["guncannonBeamRifle"], "optionIds": [] },
+          { "msId": "guncannon", "characterIds": ["federationSoldier"], "weaponIds": ["guncannonBeamRifle"], "optionIds": [] },
+          { "msId": "guncannon", "characterIds": ["federationSoldier"], "weaponIds": ["guncannonBeamRifle"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "demonOfFlameAndDesertFairy",
+      "series": "crossDimension",
+      "order": 810,
+      "tags": [
+        "CROSS DIMENSION 0079",
+        "ジオン視点",
+        "地上",
+        "砂漠",
+        "連邦基地",
+        "到達目標",
+        "低難易度",
+        "ガンキャノン"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": null,
+      "playerReachTargets": [
+        { "x": 3, "y": 2 }
+      ],
+      "summary": "砂漠に囲まれた連邦基地へ侵入し、基地入口の目標地点を目指します。ボルク、ダバ、サナのガンキャノン3機は手持ち武器を装備していないため、岩場を利用して固定砲撃をしのぎながら突破する低難易度ステージです。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "guncannon", "characterIds": ["borkCry"], "weaponIds": [], "optionIds": [] },
+          { "msId": "guncannon", "characterIds": ["dabaSoy"], "weaponIds": [], "optionIds": [] },
+          { "msId": "guncannon", "characterIds": ["sanaNima"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "prayerForTheDying",
+      "series": "crossDimension",
+      "order": 820,
+      "tags": [
+        "CROSS DIMENSION 0079",
+        "連邦視点",
+        "地上",
+        "砂漠",
+        "基地防衛",
+        "イフリート",
+        "ザクII"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "summary": "砂漠に囲まれた連邦基地を守備し、ヘンリー・ブーンのイフリートと、マーチン、サキ、レスタ、レイのザクII隊を迎撃します。基地施設と岩場を防壁として利用し、侵攻部隊を撃破する地上防衛戦です。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "efreet", "characterIds": ["henryBoone"], "weaponIds": ["shotgun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["martinHagar"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["sakiGraham"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["lesterCarrot"], "weaponIds": ["cracker"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["rayHamilton"], "weaponIds": ["zakuMachineGun"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "vsAlbatrossTransportTeam",
+      "series": "crossDimension",
+      "order": 830,
+      "tags": [
+        "CROSS DIMENSION 0079",
+        "ジオン視点",
+        "地上",
+        "砂漠",
+        "連邦基地",
+        "機雷原",
+        "アルバトロス輸送隊",
+        "ガンダム・ピクシー"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "medea",
+      "enemyCaptainId": "noctGadish",
+      "enemyFirstOfficerId": "",
+      "initialMines": [
+        { "x": 0, "y": 4, "damage": 45, "side": "enemy" },
+        { "x": 3, "y": 4, "damage": 45, "side": "enemy" },
+        { "x": 7, "y": 4, "damage": 45, "side": "enemy" },
+        { "x": 1, "y": 5, "damage": 45, "side": "enemy" },
+        { "x": 4, "y": 5, "damage": 45, "side": "enemy" },
+        { "x": 6, "y": 5, "damage": 45, "side": "enemy" }
+      ],
+      "summary": "砂漠の連邦基地で、ノクト・ガディッシュのミデアを旗艦とするアルバトロス輸送隊と交戦します。ボルクのガンダム・ピクシーとダバ、サナのガンキャノン隊に加え、砂漠側には事前配置された機雷原があるため、安全な進路を選ぶ必要があります。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "gundamPixy", "characterIds": ["borkCry"], "weaponIds": ["submachineGun90mm"], "optionIds": ["precisionMeleeProgramOption"] },
+          { "msId": "guncannon", "characterIds": ["dabaSoy"], "weaponIds": ["guncannonBeamRifle"], "optionIds": [] },
+          { "msId": "guncannon", "characterIds": ["sanaNima"], "weaponIds": ["guncannonBeamRifle"], "optionIds": [] }
         ]
       }
     },

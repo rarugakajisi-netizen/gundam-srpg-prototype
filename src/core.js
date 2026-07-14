@@ -680,6 +680,27 @@ function stageInfiltrationTargets(mapId = state.selectedMapId) {
     : [];
 }
 
+function stagePlayerReachTargets(mapId = state.selectedMapId) {
+  if (isFreeBattle()) return [];
+  const targets = stageConfig(mapId).playerReachTargets;
+  return Array.isArray(targets)
+    ? targets.filter((target) => Number.isInteger(target?.x) && Number.isInteger(target?.y))
+    : [];
+}
+
+function stageInitialMines(mapId = state.selectedMapId) {
+  if (isFreeBattle()) return [];
+  const mines = stageConfig(mapId).initialMines;
+  return Array.isArray(mines)
+    ? mines.filter((mine) => Number.isInteger(mine?.x) && Number.isInteger(mine?.y))
+    : [];
+}
+
+function unitReachedPlayerTarget(unit) {
+  if (!unit || unit.side !== "player" || !isMobileSuit(unit) || !isAlive(unit)) return false;
+  return stagePlayerReachTargets().some((target) => target.x === unit.x && target.y === unit.y);
+}
+
 function unitReachedInfiltrationTarget(unit) {
   if (!unit || unit.side !== "enemy" || !isMobileSuit(unit) || !isAlive(unit)) return false;
   return stageInfiltrationTargets().some((target) => target.x === unit.x && target.y === unit.y);

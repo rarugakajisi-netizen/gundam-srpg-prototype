@@ -1229,6 +1229,252 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "spaceEndOfFlashBattle",
+    "name": "宇宙、閃光の果てに...",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 4, "y": 8 },
+          { "x": 6, "y": 8 },
+          { "x": 7, "y": 7 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 0, "y": 2 },
+          { "x": 2, "y": 2 },
+          { "x": 4, "y": 2 },
+          { "x": 6, "y": 2 },
+          { "x": 7, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "debris", "space",  "debris", "space",  "space",  "debris", "space",  "debris",
+      "space",  "debris", "space",  "debris", "debris", "space",  "debris", "space",
+      "space",  "debris", "space",  "debris", "space",  "debris", "space",  "debris",
+      "debris", "space",  "debris", "debris", "debris", "space",  "debris", "space",
+      "debris", "debris", "space",  "debris", "space",  "debris", "debris", "debris",
+      "space",  "debris", "debris", "space",  "debris", "debris", "space",  "debris",
+      "debris", "space",  "debris", "debris", "space",  "debris", "debris", "space",
+      "space",  "debris", "space",  "debris", "debris", "space",  "debris", "space",
+      "space",  "debris", "space",  "debris", "space",  "debris", "space",  "debris",
+      "debris", "space",  "debris", "space",  "space",  "debris", "space",  "debris"
+    ]
+  },
+  {
+    "id": "roadToPeace",
+    "name": "和平への道",
+    "type": "space",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 1, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 9, "y": 10 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 3, "y": 0 },
+        "escortBattleships": [
+          { "x": 7, "y": 0 }
+        ],
+        "units": [
+          { "x": 0, "y": 2 },
+          { "x": 2, "y": 2 },
+          { "x": 4, "y": 2 },
+          { "x": 6, "y": 2 },
+          { "x": 8, "y": 2 },
+          { "x": 3, "y": 3 },
+          { "x": 7, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "debris", "space",  "debris", "space",  "debris", "debris", "space",  "space",  "debris", "space",
+      "space",  "debris", "space",  "debris", "space",  "debris", "space",  "debris", "space",  "debris",
+      "space",  "debris", "space",  "debris", "space",  "debris", "space",  "debris", "space",  "debris",
+      "debris", "debris", "space",  "space",  "debris", "debris", "space",  "space",  "debris", "debris",
+      "space",  "debris", "debris", "space",  "debris", "space",  "debris", "debris", "space",  "debris",
+      "debris", "space",  "debris", "debris", "space",  "debris", "space",  "debris", "debris", "space",
+      "debris", "debris", "space",  "debris", "space",  "debris", "debris", "space",  "debris", "space",
+      "space",  "debris", "space",  "debris", "debris", "space",  "debris", "space",  "debris", "debris",
+      "debris", "space",  "debris", "space",  "debris", "debris", "space",  "debris", "space",  "debris",
+      "space",  "debris", "debris", "space",  "debris", "space",  "debris", "debris", "space",  "debris",
+      "space",  "space",  "space",  "debris", "space",  "debris", "space",  "debris", "space",  "space",
+      "debris", "space",  "debris", "space",  "debris", "space",  "debris", "space",  "debris", "space"
+    ]
+  },
+  {
+    "id": "vsThoroughbredTeam",
+    "name": "VSサラブレッド隊",
+    "type": "space",
+    "width": 10,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 9 },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 },
+          { "x": 9, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 1, "y": 2 },
+          { "x": 3, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 7, "y": 2 },
+          { "x": 9, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "space",  "space",  "debris", "space",  "space",  "space",  "space",  "debris", "space",  "space",
+      "space",  "debris", "space",  "space",  "debris", "space",  "space",  "space",  "debris", "space",
+      "debris", "space",  "space",  "space",  "space",  "debris", "space",  "space",  "space",  "space",
+      "space",  "space",  "debris", "debris", "space",  "space",  "space",  "debris", "space",  "space",
+      "space",  "debris", "space",  "space",  "space",  "debris", "debris", "space",  "space",  "space",
+      "space",  "space",  "space",  "debris", "space",  "space",  "space",  "space",  "debris", "space",
+      "debris", "space",  "space",  "space",  "debris", "space",  "debris", "space",  "space",  "space",
+      "space",  "space",  "debris", "space",  "space",  "space",  "space",  "debris", "space",  "space",
+      "space",  "space",  "space",  "space",  "debris", "space",  "space",  "space",  "space",  "debris",
+      "space",  "debris", "space",  "space",  "space",  "space",  "debris", "space",  "space",  "space"
+    ]
+  },
+  {
+    "id": "demonOfFlameAndDesertFairy",
+    "name": "炎の魔神と砂漠の妖精",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": null,
+        "units": [
+          { "x": 1, "y": 3 },
+          { "x": 4, "y": 3 },
+          { "x": 6, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "base",   "base",   "base",   "base",   "base",   "base",   "desert",
+      "desert", "base",   "rock",   "base",   "base",   "rock",   "base",   "desert",
+      "desert", "base",   "base",   "gate",   "gate",   "base",   "base",   "desert",
+      "desert", "plain",  "plain",  "plain",  "plain",  "plain",  "plain",  "desert",
+      "rock",   "plain",  "rock",   "plain",  "plain",  "rock",   "plain",  "rock",
+      "desert", "plain",  "rock",   "plain",  "rock",   "plain",  "plain",  "desert",
+      "plain",  "rock",   "plain",  "plain",  "plain",  "rock",   "plain",  "plain",
+      "desert", "plain",  "plain",  "rock",   "plain",  "plain",  "rock",   "desert",
+      "desert", "plain",  "plain",  "plain",  "plain",  "plain",  "plain",  "desert",
+      "desert", "desert", "desert", "plain",  "plain",  "desert", "desert", "desert"
+    ]
+  },
+  {
+    "id": "prayerForTheDying",
+    "name": "死にゆく者たちへの祈り",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": null,
+        "units": [
+          { "x": 0, "y": 1 },
+          { "x": 2, "y": 1 },
+          { "x": 4, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 7, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "desert", "desert", "desert", "desert", "desert", "desert", "desert",
+      "desert", "plain",  "plain",  "plain",  "plain",  "plain",  "plain",  "desert",
+      "desert", "plain",  "rock",   "plain",  "plain",  "rock",   "plain",  "desert",
+      "rock",   "plain",  "rock",   "plain",  "plain",  "rock",   "plain",  "rock",
+      "desert", "plain",  "plain",  "rock",   "rock",   "plain",  "plain",  "desert",
+      "plain",  "rock",   "plain",  "plain",  "plain",  "rock",   "plain",  "plain",
+      "desert", "plain",  "rock",   "plain",  "plain",  "rock",   "plain",  "desert",
+      "desert", "base",   "base",   "gate",   "gate",   "base",   "base",   "desert",
+      "desert", "base",   "rock",   "base",   "base",   "rock",   "base",   "desert",
+      "desert", "base",   "base",   "base",   "base",   "base",   "base",   "desert"
+    ]
+  },
+  {
+    "id": "vsAlbatrossTransportTeam",
+    "name": "VSアルバトロス輸送隊",
+    "type": "ground",
+    "width": 8,
+    "height": 8,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 7 },
+        "units": [
+          { "x": 1, "y": 6 },
+          { "x": 3, "y": 6 },
+          { "x": 5, "y": 6 },
+          { "x": 7, "y": 6 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 1, "y": 1 },
+          { "x": 3, "y": 1 },
+          { "x": 6, "y": 1 }
+        ]
+      }
+    },
+    "terrain": [
+      "base",   "base",   "base",   "base",   "base",   "base",   "base",   "base",
+      "base",   "base",   "base",   "base",   "base",   "base",   "base",   "base",
+      "base",   "base",   "gate",   "gate",   "gate",   "base",   "base",   "base",
+      "plain",  "rock",   "plain",  "plain",  "plain",  "rock",   "plain",  "plain",
+      "desert", "plain",  "rock",   "plain",  "plain",  "rock",   "plain",  "desert",
+      "desert", "plain",  "plain",  "rock",   "plain",  "plain",  "plain",  "desert",
+      "desert", "plain",  "plain",  "plain",  "plain",  "plain",  "plain",  "desert",
+      "desert", "desert", "desert", "plain",  "plain",  "desert", "desert", "desert"
+    ]
+  },
+  {
     "id": "garmaFalls",
     "name": "ガルマ散る",
     "type": "ground",

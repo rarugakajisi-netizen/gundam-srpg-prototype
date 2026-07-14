@@ -639,6 +639,46 @@ function createChecker(data, dialogues = {}) {
       const infiltrationKeys = list(stage.infiltrationTargets).map((target) => `${target?.x},${target?.y}`);
       if (new Set(infiltrationKeys).size !== infiltrationKeys.length) error(`${scope}.infiltrationTargets`, "同じ座標が重複しています。");
 
+      list(stage.playerReachTargets).forEach((target, targetIndex) => {
+        const targetScope = `${scope}.playerReachTargets[${targetIndex}]`;
+        if (!isPlainObject(target)) {
+          error(targetScope, "オブジェクトである必要があります。");
+          return;
+        }
+        ["x", "y"].forEach((key) => expectNumber(targetScope, target, key, { integer: true }));
+        if (map && Number.isInteger(target.x) && Number.isInteger(target.y)) {
+          if (target.x < 0 || target.y < 0 || target.x >= map.width || target.y >= map.height) {
+            error(targetScope, `マップ外です: ${target.x},${target.y}`);
+          } else if (terrainBlocksMovement(terrainAt(map, target.x, target.y))) {
+            error(targetScope, `到達不能地形です: ${target.x},${target.y}`);
+          }
+        }
+      });
+
+      const playerReachKeys = list(stage.playerReachTargets).map((target) => `${target?.x},${target?.y}`);
+      if (new Set(playerReachKeys).size !== playerReachKeys.length) error(`${scope}.playerReachTargets`, "同じ座標が重複しています。");
+
+      list(stage.initialMines).forEach((mine, mineIndex) => {
+        const mineScope = `${scope}.initialMines[${mineIndex}]`;
+        if (!isPlainObject(mine)) {
+          error(mineScope, "オブジェクトである必要があります。");
+          return;
+        }
+        ["x", "y"].forEach((key) => expectNumber(mineScope, mine, key, { integer: true }));
+        if (mine.damage !== undefined) expectNumber(mineScope, mine, "damage", { integer: true });
+        if (mine.side !== undefined && !["player", "enemy"].includes(mine.side)) error(`${mineScope}.side`, "player または enemy を指定してください。");
+        if (map && Number.isInteger(mine.x) && Number.isInteger(mine.y)) {
+          if (mine.x < 0 || mine.y < 0 || mine.x >= map.width || mine.y >= map.height) {
+            error(mineScope, `マップ外です: ${mine.x},${mine.y}`);
+          } else if (terrainBlocksMovement(terrainAt(map, mine.x, mine.y))) {
+            error(mineScope, `機雷を配置できない地形です: ${mine.x},${mine.y}`);
+          }
+        }
+      });
+
+      const initialMineKeys = list(stage.initialMines).map((mine) => `${mine?.x},${mine?.y}`);
+      if (new Set(initialMineKeys).size !== initialMineKeys.length) error(`${scope}.initialMines`, "同じ座標が重複しています。");
+
       const formations = stage.enemyFormations ?? {};
       if (!isPlainObject(formations)) {
         error(`${scope}.enemyFormations`, "オブジェクトではありません。");

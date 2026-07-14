@@ -1553,6 +1553,106 @@ window.GAME_DATA.compatibility = {
       "characterId": "gundamExPilot",
       "msId": "gundamEx",
       "evasionBonus": 10
+    },
+    {
+      "characterId": "liliaFlobert",
+      "msId": "rickDom",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "liliaFlobert",
+      "msId": "rickDom2",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "liliaFlobert",
+      "msId": "brawBro",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "liliaFlobert",
+      "msId": "kampfer",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "yuimanCarlile",
+      "msId": "brawBro",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "gusterPiper",
+      "msId": "brawBro",
+      "evasionBonus": 7
+    },
+    {
+      "characterId": "ronKou",
+      "msId": "gmSniperCustom",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "borkCry",
+      "msId": "guncannon",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "sanaNima",
+      "msId": "guncannon",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "dabaSoy",
+      "msId": "guncannon",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "alanAylward",
+      "msId": "gmSniper2",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "dennisBarrow",
+      "msId": "massProductionGuncannon",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "lilSomers",
+      "msId": "gmCommandGround",
+      "evasionBonus": 10
+    },
+    {
+      "characterId": "leoBrower",
+      "msId": "zaku2",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "leoBrower",
+      "msId": "gogg",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "leoBrower",
+      "msId": "gelgoog",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "toldoBobrov",
+      "msId": "zaku2",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "toldoBobrov",
+      "msId": "acguy",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "toldoBobrov",
+      "msId": "zgokE",
+      "evasionBonus": 8
+    },
+    {
+      "characterId": "federicoCzariano",
+      "msId": "zaku2",
+      "evasionBonus": 10
     }
   ],
   "msWeapon": [

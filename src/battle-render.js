@@ -58,8 +58,10 @@ function renderBattleRuleStatus() {
   const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
   const destructionTargets = state.units.filter((unit) => isDestructionTarget(unit));
   const infiltrationTargets = stageInfiltrationTargets();
+  const playerReachTargets = stagePlayerReachTargets();
+  const initialMines = stageInitialMines();
   const inactiveEnemies = state.units.filter((unit) => unit.side === "enemy" && isCombatUnit(unit) && isAlive(unit) && Number.isFinite(unit.aiInactiveUntilTurn) && state.turnNumber < unit.aiInactiveUntilTurn);
-  if ((limit === null && survivalLimit === null && !reinforcements && defenseTargets.length === 0 && destructionTargets.length === 0 && infiltrationTargets.length === 0 && inactiveEnemies.length === 0) || state.outcome) return "";
+  if ((limit === null && survivalLimit === null && !reinforcements && defenseTargets.length === 0 && destructionTargets.length === 0 && infiltrationTargets.length === 0 && playerReachTargets.length === 0 && initialMines.length === 0 && inactiveEnemies.length === 0) || state.outcome) return "";
   const remaining = Math.max(0, limit - state.turnNumber + 1);
   const survivalRemaining = Math.max(0, survivalLimit - state.turnNumber + 1);
   const aliveDefenseTargets = defenseTargets.filter((unit) => isAlive(unit)).length;
@@ -76,6 +78,8 @@ function renderBattleRuleStatus() {
         ${defenseTargets.length > 0 ? `<p class="small">防衛対象: ${aliveDefenseTargets} / ${defenseTargets.length} 残存。すべて破壊されると敗北します。</p>` : ""}
         ${destructionTargets.length > 0 ? `<p class="small">破壊目標: ${aliveDestructionTargets} / ${destructionTargets.length} 残存。制限ターン内にすべて破壊してください。</p>` : ""}
         ${infiltrationTargets.length > 0 ? `<p class="small">進入阻止: 敵機が赤枠の指定マスへ到達すると敗北します。味方ユニットで塞ぐことができます。</p>` : ""}
+        ${playerReachTargets.length > 0 ? `<p class="small">到達目標: 自軍MSのいずれかが緑枠の指定マスへ到達すると勝利します。敵部隊を全滅させる必要はありません。</p>` : ""}
+        ${initialMines.length > 0 ? `<p class="small">事前配置機雷: 戦場に機雷が${initialMines.length}個設置されています。踏むとダメージを受けるため、表示されたマスを避けて進んでください。</p>` : ""}
         ${inactiveEnemies.length > 0 ? `<p class="small">起動待機: ${inactiveEnemies.map((unit) => `${unitName(unit)}は第${unit.aiInactiveUntilTurn}ターンから行動`).join(" / ")}</p>` : ""}
       </div>
     </section>
@@ -143,6 +147,7 @@ function renderCells(selected) {
     const unit = state.units.find((candidate) => candidate.x === x && candidate.y === y && isAlive(candidate));
     const terrain = terrainAt(x, y);
     const infiltrationTarget = stageInfiltrationTargets().some((target) => target.x === x && target.y === y);
+    const playerReachTarget = stagePlayerReachTargets().some((target) => target.x === x && target.y === y);
     const canMove = !state.outcome && !unit && reachable.has(positionKey(x, y));
     const canDeploy = !state.outcome && deployable.has(positionKey(x, y));
     const canTarget = !state.outcome
@@ -152,10 +157,11 @@ function renderCells(selected) {
       && unit.side !== selected.side
       && (activeAttacks.some((weapon) => weaponInRange(selected, unit, weapon)) || canDesignatePriorityTarget(selected, unit));
     const mine = state.mines?.find((item) => item.x === x && item.y === y);
-    const classes = ["cell", `terrain-${terrain}`, infiltrationTarget ? "infiltration-target" : "", canMove ? "move-ok" : "", canDeploy ? "deploy-ok" : "", canTarget ? "target-ok" : ""].filter(Boolean).join(" ");
+    const classes = ["cell", `terrain-${terrain}`, infiltrationTarget ? "infiltration-target" : "", playerReachTarget ? "player-reach-target" : "", canMove ? "move-ok" : "", canDeploy ? "deploy-ok" : "", canTarget ? "target-ok" : ""].filter(Boolean).join(" ");
     return `<div class="${classes}" data-x="${x}" data-y="${y}" title="${terrainLabel(terrain)}">
       ${terrainShortLabel(terrain) ? `<span class="terrain-badge">${terrainShortLabel(terrain)}</span>` : ""}
       ${infiltrationTarget ? `<span class="terrain-badge infiltration-badge">阻止</span>` : ""}
+      ${playerReachTarget ? `<span class="terrain-badge player-reach-badge">到達</span>` : ""}
       ${mine ? `<span class="terrain-badge mine-badge">機雷</span>` : ""}
       ${unit ? renderToken(unit) : ""}
     </div>`;
