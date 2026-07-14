@@ -331,6 +331,19 @@ battleScreen.addEventListener("click", (event) => {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) useSmokeSkill(unit);
   }
+  if (button?.dataset.action === "barricade-placement") {
+    const unit = state.units.find((item) => item.id === state.selectedUnitId);
+    if (unit) deployBarricade(unit);
+  }
+  if (button?.dataset.action === "priority-target-designation") {
+    const unit = state.units.find((item) => item.id === state.selectedUnitId);
+    const target = state.units.find((item) => item.id === state.selectedTargetId);
+    if (unit && target) designatePriorityTarget(unit, target);
+  }
+  if (button?.dataset.action === "emergency-repair") {
+    const unit = state.units.find((item) => item.id === state.selectedUnitId);
+    if (unit) useEmergencyRepair(unit);
+  }
   if (button?.dataset.action === "active-camo") {
     const unit = state.units.find((item) => item.id === state.selectedUnitId);
     if (unit) useActiveCamo(unit, weaponFor(button.dataset.weaponId));

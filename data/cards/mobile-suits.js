@@ -8,9 +8,9 @@ window.GAME_DATA.mobileSuits = [
     "name": "ボール",
     "faction": "federation",
     "cost": 55,
-    "armor": 150,
+    "armor": 140,
     "energy": 35,
-    "agility": 8,
+    "agility": 7,
     "mobility": 3,
     "weaponSlots": 0,
     "optionSlots": 1,
@@ -31,7 +31,9 @@ window.GAME_DATA.mobileSuits = [
       "ball",
       "supportPod"
     ],
-    "specials": [],
+    "specials": [
+      "barricadePlacement"
+    ],
     "imagePath": ""
   },
   {
@@ -39,9 +41,9 @@ window.GAME_DATA.mobileSuits = [
     "name": "ボール（シャークマウス）",
     "faction": "federation",
     "cost": 70,
-    "armor": 150,
+    "armor": 140,
     "energy": 35,
-    "agility": 8,
+    "agility": 7,
     "mobility": 4,
     "weaponSlots": 0,
     "optionSlots": 1,
@@ -62,7 +64,9 @@ window.GAME_DATA.mobileSuits = [
       "ball",
       "supportPod"
     ],
-    "specials": [],
+    "specials": [
+      "barricadePlacement"
+    ],
     "imagePath": ""
   },
   {
@@ -3825,9 +3829,9 @@ window.GAME_DATA.mobileSuits = [
     "name": "フィッシュアイ",
     "faction": "federation",
     "cost": 85,
-    "armor": 170,
+    "armor": 160,
     "energy": 42,
-    "agility": 12,
+    "agility": 11,
     "mobility": 4,
     "weaponSlots": 0,
     "optionSlots": 1,
@@ -3852,7 +3856,9 @@ window.GAME_DATA.mobileSuits = [
       "submarine",
       "fishEye"
     ],
-    "specials": [],
+    "specials": [
+      "barricadePlacement"
+    ],
     "imagePath": ""
   },
   {
@@ -4342,9 +4348,9 @@ window.GAME_DATA.mobileSuits = [
     "name": "ザクタンク",
     "faction": "zeon",
     "cost": 90,
-    "armor": 280,
+    "armor": 265,
     "energy": 35,
-    "agility": 6,
+    "agility": 5,
     "mobility": 3,
     "weaponSlots": 0,
     "optionSlots": 1,
@@ -4368,7 +4374,9 @@ window.GAME_DATA.mobileSuits = [
       "tank",
       "groundVehicle"
     ],
-    "specials": [],
+    "specials": [
+      "barricadePlacement"
+    ],
     "imagePath": ""
   },
   {
@@ -4911,14 +4919,16 @@ window.GAME_DATA.mobileSuits = [
       "ball",
       "supportPod"
     ],
-    "specials": [],
+    "specials": [
+      "barricadePlacement"
+    ],
     "imagePath": "",
     "id": "ballK",
     "name": "ボールK型",
     "faction": "federation",
     "cost": 60,
-    "armor": 145,
-    "agility": 13,
+    "armor": 135,
+    "agility": 12,
     "mobility": 4
   },
   {
@@ -6925,9 +6935,9 @@ window.GAME_DATA.mobileSuits = [
     "name": "フロッグ・ボール",
     "faction": "federation",
     "cost": 70,
-    "armor": 145,
+    "armor": 130,
     "energy": 35,
-    "agility": 9,
+    "agility": 8,
     "mobility": 3,
     "weaponSlots": 0,
     "optionSlots": 1,
@@ -6951,7 +6961,9 @@ window.GAME_DATA.mobileSuits = [
       "supportPod",
       "federationMassProduction"
     ],
-    "specials": [],
+    "specials": [
+      "barricadePlacement"
+    ],
     "imagePath": ""
   },
   {
@@ -6959,9 +6971,9 @@ window.GAME_DATA.mobileSuits = [
     "name": "ボールM型",
     "faction": "federation",
     "cost": 70,
-    "armor": 145,
+    "armor": 130,
     "energy": 35,
-    "agility": 9,
+    "agility": 8,
     "mobility": 3,
     "weaponSlots": 0,
     "optionSlots": 1,
@@ -6984,7 +6996,9 @@ window.GAME_DATA.mobileSuits = [
       "supportPod",
       "federationMassProduction"
     ],
-    "specials": [],
+    "specials": [
+      "barricadePlacement"
+    ],
     "imagePath": ""
   },
   {
@@ -7547,9 +7561,9 @@ window.GAME_DATA.mobileSuits = [
     "name": "ザクタンク（グリーンマカク）",
     "faction": "zeon",
     "cost": 105,
-    "armor": 300,
+    "armor": 280,
     "energy": 40,
-    "agility": 5,
+    "agility": 4,
     "mobility": 3,
     "weaponSlots": 0,
     "optionSlots": 1,
@@ -7574,7 +7588,9 @@ window.GAME_DATA.mobileSuits = [
       "zakuTank",
       "workMs"
     ],
-    "specials": [],
+    "specials": [
+      "barricadePlacement"
+    ],
     "forbiddenWeaponKinds": [
       "beam"
     ],
@@ -7585,9 +7601,9 @@ window.GAME_DATA.mobileSuits = [
     "name": "ザクタンク（ワイルドボア）",
     "faction": "zeon",
     "cost": 110,
-    "armor": 285,
+    "armor": 270,
     "energy": 40,
-    "agility": 6,
+    "agility": 5,
     "mobility": 3,
     "weaponSlots": 0,
     "optionSlots": 1,
@@ -7610,7 +7626,9 @@ window.GAME_DATA.mobileSuits = [
       "zakuTank",
       "workMs"
     ],
-    "specials": [],
+    "specials": [
+      "barricadePlacement"
+    ],
     "forbiddenWeaponKinds": [
       "beam"
     ],

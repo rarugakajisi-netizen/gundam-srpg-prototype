@@ -145,7 +145,12 @@ function renderCells(selected) {
     const infiltrationTarget = stageInfiltrationTargets().some((target) => target.x === x && target.y === y);
     const canMove = !state.outcome && !unit && reachable.has(positionKey(x, y));
     const canDeploy = !state.outcome && deployable.has(positionKey(x, y));
-    const canTarget = !state.outcome && state.phase === "player" && isCombatUnit(selected) && isAttackTarget(unit) && unit.side !== selected.side && activeAttacks.some((weapon) => weaponInRange(selected, unit, weapon));
+    const canTarget = !state.outcome
+      && state.phase === "player"
+      && isCombatUnit(selected)
+      && isAttackTarget(unit)
+      && unit.side !== selected.side
+      && (activeAttacks.some((weapon) => weaponInRange(selected, unit, weapon)) || canDesignatePriorityTarget(selected, unit));
     const mine = state.mines?.find((item) => item.x === x && item.y === y);
     const classes = ["cell", `terrain-${terrain}`, infiltrationTarget ? "infiltration-target" : "", canMove ? "move-ok" : "", canDeploy ? "deploy-ok" : "", canTarget ? "target-ok" : ""].filter(Boolean).join(" ");
     return `<div class="${classes}" data-x="${x}" data-y="${y}" title="${terrainLabel(terrain)}">
@@ -164,6 +169,8 @@ function renderToken(unit) {
   const battleship = isBattleship(unit) ? "battleship" : "";
   const defenseTarget = isDefenseTarget(unit) ? "defense-target" : "";
   const destructionTarget = isDestructionTarget(unit) ? "destruction-target" : "";
+  const barricade = isBarricade(unit) ? "barricade" : "";
+  const priorityTarget = isPriorityTarget(unit) ? "priority-target" : "";
   const displayName = concealedEnemyLabel(unit);
   const concealed = unitDetailsConcealedFromSide(unit, "player");
   const cardImage = concealed || (!isMobileSuit(unit) && !isBattleship(unit))
@@ -175,11 +182,13 @@ function renderToken(unit) {
     ? `<span class="token-number">${unit.sortieNumber}</span>`
     : isDefenseTarget(unit) ? `<span class="token-number">守</span>`
     : isDestructionTarget(unit) ? `<span class="token-number">破</span>`
+    : isBarricade(unit) ? `<span class="token-number">壁</span>`
     : "";
   return `
-    <button class="token ${faction} ${unit.side} ${battleship} ${defenseTarget} ${destructionTarget} ${selected}" data-unit-id="${unit.id}" title="${displayName}">
+    <button class="token ${faction} ${unit.side} ${battleship} ${defenseTarget} ${destructionTarget} ${barricade} ${priorityTarget} ${selected}" data-unit-id="${unit.id}" title="${displayName}">
       ${cardImage}
       ${numberBadge}
+      ${priorityTarget ? `<span class="token-priority-badge">優先</span>` : ""}
       <span class="token-name">${displayName}</span>
       <span class="hp-bar"><span class="hp-fill" style="width:${hp}%"></span></span>
     </button>
@@ -223,6 +232,7 @@ function renderConcealedEnemyDetail() {
 
 function renderUnitDetail(unit, target) {
   if (unitDetailsConcealedFromSide(unit, "player")) return renderConcealedEnemyDetail();
+  if (isBarricade(unit)) return renderBarricadeDetail(unit);
   if (isDefenseTarget(unit) || isDestructionTarget(unit)) return renderDefenseTargetDetail(unit);
   if (isBattleship(unit)) return renderBattleshipDetail(unit, target);
   const ms = msFor(unit);
@@ -252,12 +262,15 @@ function renderUnitDetail(unit, target) {
     <div class="actions">
       ${freezyYardButton(unit)}
       ${mineScatterButtons(unit)}
+      ${barricadePlacementButton(unit)}
       ${activeCamoButtons(unit)}
       ${smokeDischargerButtons(unit)}
       ${transformButtons(unit)}
       ${chargeWeaponButtons(unit)}
       ${additionalArmorButton(unit)}
       ${vehicleOptionButton(unit)}
+      ${priorityTargetDesignationButton(unit, target)}
+      ${emergencyRepairButton(unit)}
       ${attackButtons(unit, target)}
     </div>
     ${renderBattleshipSupportHint(unit)}
@@ -369,6 +382,8 @@ function renderBattleshipDetail(unit, target) {
       ? `<p class="support-hint ready">配置フェイズ: 戦艦も手前${deploymentRows("player")}列の有効マスへ配置できます。</p>`
       : target ? `<p><strong>攻撃対象:</strong> ${visibleTargetName(target)}</p>` : ""}
     <div class="actions">
+      ${priorityTargetDesignationButton(unit, target)}
+      ${emergencyRepairButton(unit)}
       ${target ? attackButtons(unit, target) : ""}
     </div>
     <details class="side-collapse">
@@ -389,7 +404,7 @@ function renderBattleshipSupportHint(unit) {
 }
 
 function attackButtons(attacker, target) {
-  const attackableTarget = isCombatUnit(target);
+  const attackableTarget = isAttackTarget(target);
   if (!attackWeapons(attacker).length) return `<p class="small">攻撃武装がありません。</p>`;
   if (!attackableTarget) return `<p class="small">敵を選ぶと、未使用の武器で攻撃できます。</p>`;
   return attackWeapons(attacker).map((weapon) => {
@@ -419,6 +434,44 @@ function attackButtons(attacker, target) {
   }).join("");
 }
 
+function priorityTargetDesignationButton(unit, target) {
+  if (!isCombatUnit(unit) || !unitHasSkill(unit, "priorityTargetDesignation")) return "";
+  const usable = canDesignatePriorityTarget(unit, target);
+  const targetText = target && target.side !== unit.side
+    ? unitDetailsConcealedFromSide(target, unit.side) ? "対象不明" : unitName(target)
+    : "可視敵を選択";
+  const status = [
+    `範囲${priorityTargetDesignationRange(unit)}`,
+    `指揮${priorityTargetCommand(unit)}`,
+    `命中+${PRIORITY_TARGET_ACCURACY_BONUS}`,
+    targetText,
+    unit.priorityTargetDesignationUsed ? "使用済み" : ""
+  ].filter(Boolean).join(" / ");
+  return `
+    <button data-action="priority-target-designation" ${state.outcome || state.phase !== "player" || unit.side !== "player" || !usable ? "disabled" : ""}>
+      優先目標指示<br><span class="button-detail">${status}</span>
+    </button>
+  `;
+}
+
+function emergencyRepairButton(unit) {
+  if (!isCombatUnit(unit) || !unitHasSkill(unit, "emergencyRepair")) return "";
+  const amount = emergencyRepairAmount(unit);
+  const status = [
+    `回復${amount}`,
+    `整備${emergencyRepairMaintenance(unit)}`,
+    "1戦闘1回",
+    unit.emergencyRepairUsed ? "使用済み" : "",
+    (unit.usedWeaponIds?.length ?? 0) > 0 ? "攻撃後不可" : "",
+    unit.armor >= unit.maxArmor ? "装甲最大" : ""
+  ].filter(Boolean).join(" / ");
+  return `
+    <button data-action="emergency-repair" ${state.outcome || state.phase !== "player" || unit.side !== "player" || !canUseEmergencyRepair(unit) ? "disabled" : ""}>
+      緊急修理<br><span class="button-detail">${status}</span>
+    </button>
+  `;
+}
+
 function renderDefenseTargetDetail(unit) {
   const destruction = isDestructionTarget(unit);
   return `
@@ -433,6 +486,19 @@ function renderDefenseTargetDetail(unit) {
     <p class="support-hint ready">${destruction
       ? "制限ターン内にすべての破壊目標を撃破してください。護衛機を全滅させるだけでは勝利になりません。"
       : `この対象を守ってください。複数ある場合は、すべて破壊されると敗北します。移動${mobilityFor(unit)}の範囲で退避できます。`}</p>
+  `;
+}
+
+function renderBarricadeDetail(unit) {
+  return `
+    <h3>${unitName(unit)}</h3>
+    <div class="stat-grid side-stat-grid">
+      <div class="stat"><span>種別</span>破壊可能な障害物</div>
+      <div class="stat"><span>耐久</span>${unit.armor} / ${unit.maxArmor}</div>
+      <div class="stat"><span>移動</span>0</div>
+      <div class="stat"><span>位置</span>${unit.x}, ${unit.y}</div>
+    </div>
+    <p class="support-hint ready">このマスへの移動と、バリケード越しの通常射撃を遮ります。敵の攻撃で破壊できます。</p>
   `;
 }
 
@@ -489,6 +555,24 @@ function mineScatterButtons(unit) {
         </button>
       `;
     }).join("");
+}
+
+function barricadePlacementButton(unit) {
+  if (!isMobileSuit(unit) || !unitHasSkill(unit, "barricadePlacement")) return "";
+  const cell = barricadeCellFor(unit);
+  const usable = canDeployBarricade(unit);
+  const status = [
+    `前方${cell ? `(${cell.x},${cell.y})` : "1マス"}`,
+    `耐久${BARRICADE_ARMOR}`,
+    "行動終了",
+    unit.barricadeUsed ? "使用済み" : "",
+    !unit.barricadeUsed && !usable ? "設置先なし" : ""
+  ].filter(Boolean).join(" / ");
+  return `
+    <button data-action="barricade-placement" ${state.outcome || state.phase !== "player" || unit.side !== "player" || !usable ? "disabled" : ""}>
+      バリケード設置<br><span class="button-detail">${status}</span>
+    </button>
+  `;
 }
 
 function smokeDischargerButtons(unit) {

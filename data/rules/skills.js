@@ -140,6 +140,30 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "priorityTargetDesignation",
+    "name": "優先目標指示",
+    "type": "キャラ/OP",
+    "timing": "未移動時",
+    "effect": "指揮に応じた範囲内の可視敵1機をターン中の優先目標に指定する。使用者は移動不能になるが攻撃でき、味方全体は指定対象への命中+8。指定範囲は指揮0～9で1マス、10～14で2マス、15～19で3マス、20～24で4マス、25以上で5マス。",
+    "implemented": true
+  },
+  {
+    "id": "precisionAttackControl",
+    "name": "精密攻撃管制",
+    "type": "機体/OP",
+    "timing": "攻撃時",
+    "effect": "1ターンに1回しか攻撃できない代わりに、その攻撃の命中+12、与ダメージ+10。",
+    "implemented": true
+  },
+  {
+    "id": "emergencyRepair",
+    "name": "緊急修理",
+    "type": "キャラ/OP",
+    "timing": "行動時",
+    "effect": "1戦闘に1回、行動として自機の装甲を「30＋整備×2」回復する。ただし最大装甲の20%が上限。EN・弾薬・盾は回復しない。",
+    "implemented": true
+  },
+  {
     "id": "antiSubmarine",
     "name": "対水中",
     "type": "機体/武器",
@@ -321,6 +345,14 @@ window.GAME_DATA.skills = [
     "type": "武器",
     "timing": "行動時",
     "effect": "行動として自機周辺へ、踏むと35ダメージを受ける機雷を最大3個置く。攻撃後散布は対応フラグを持つ武器のみ発動する。",
+    "implemented": true
+  },
+  {
+    "id": "barricadePlacement",
+    "name": "バリケード設置",
+    "type": "機体/OP",
+    "timing": "行動時",
+    "effect": "1戦闘に1回、未移動時に行動として自軍から見た前方1マスへ耐久100のバリケードを設置する。バリケードは移動と通常射撃の射線を遮り、敵の攻撃で破壊できる。",
     "implemented": true
   },
   {

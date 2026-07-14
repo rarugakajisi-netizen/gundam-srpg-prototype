@@ -52,7 +52,10 @@ const WATCHED_OPTIONS = new Set([
   "examSystem",
   "guerrillaTactics",
   "stealth",
-  "smokeDischarger"
+  "smokeDischarger",
+  "priorityTargetDesignation",
+  "precisionAttackControl",
+  "emergencyRepair"
 ]);
 
 const REPRESENTATIVE_DEFENDERS = [

@@ -52,6 +52,9 @@ function main() {
   runNode(["work/check-play-integrity.js"]);
   runNode(["work/check-enemy-ai.js"]);
   runNode(["work/check-recon.js"]);
+  runNode(["work/check-barricade.js"]);
+  runNode(["work/check-priority-target.js"]);
+  runNode(["work/check-precision-repair.js"]);
   runNode(["work/check-card-images.js"]);
 }
 

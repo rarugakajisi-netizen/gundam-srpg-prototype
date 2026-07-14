@@ -481,18 +481,20 @@ window.GAME_DATA.characters = [
     "characterKey": "omurHangal",
     "faction": "federation",
     "cost": 45,
-    "shooting": 5,
-    "melee": 3,
-    "reaction": 6,
+    "shooting": 4,
+    "melee": 2,
+    "reaction": 5,
     "awakening": 0,
-    "command": 4,
-    "support": 8,
+    "command": 3,
+    "support": 6,
     "maintenance": 18,
     "roles": [
       "mechanic",
       "operator"
     ],
-    "specials": [],
+    "specials": [
+      "emergencyRepair"
+    ],
     "imagePath": ""
   },
   {
@@ -1022,19 +1024,21 @@ window.GAME_DATA.characters = [
     "characterKey": "oliverMay",
     "faction": "zeon",
     "cost": 50,
-    "shooting": 11,
-    "melee": 4,
-    "reaction": 7,
+    "shooting": 9,
+    "melee": 3,
+    "reaction": 6,
     "awakening": 0,
-    "command": 4,
-    "support": 9,
+    "command": 3,
+    "support": 8,
     "maintenance": 19,
     "roles": [
       "mechanic",
       "operator",
       "pilot"
     ],
-    "specials": [],
+    "specials": [
+      "emergencyRepair"
+    ],
     "imagePath": ""
   },
   {
@@ -4603,18 +4607,20 @@ window.GAME_DATA.characters = [
     "characterKey": "noelAnderson",
     "faction": "federation",
     "cost": 65,
-    "shooting": 6,
-    "melee": 4,
-    "reaction": 10,
+    "shooting": 5,
+    "melee": 3,
+    "reaction": 9,
     "awakening": 0,
     "command": 15,
-    "support": 20,
-    "maintenance": 8,
+    "support": 18,
+    "maintenance": 7,
     "roles": [
       "operator",
       "commander"
     ],
-    "specials": [],
+    "specials": [
+      "priorityTargetDesignation"
+    ],
     "imagePath": ""
   },
   {
@@ -5544,18 +5550,20 @@ window.GAME_DATA.characters = [
     "characterKey": "barbaraHahli",
     "faction": "zeon",
     "cost": 85,
-    "shooting": 7,
-    "melee": 5,
-    "reaction": 10,
+    "shooting": 6,
+    "melee": 4,
+    "reaction": 9,
     "awakening": 0,
     "command": 22,
-    "support": 24,
-    "maintenance": 9,
+    "support": 22,
+    "maintenance": 8,
     "roles": [
       "operator",
       "commander"
     ],
-    "specials": [],
+    "specials": [
+      "priorityTargetDesignation"
+    ],
     "imagePath": ""
   },
   {

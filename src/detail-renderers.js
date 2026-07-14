@@ -332,7 +332,10 @@ function lineCellsBetween(a, b) {
 }
 
 function lineOfSightBlocked(attacker, defender) {
-  return lineCellsBetween(attacker, defender).some((cell) => terrainBlocksLineOfSight(terrainAt(cell.x, cell.y)));
+  return lineCellsBetween(attacker, defender).some((cell) =>
+    terrainBlocksLineOfSight(terrainAt(cell.x, cell.y))
+    || state.units.some((unit) => isBarricade(unit) && isAlive(unit) && unit.x === cell.x && unit.y === cell.y)
+  );
 }
 
 function weaponReachableByRange(attacker, defender, weapon) {
@@ -439,6 +442,53 @@ function unitSpecials(unit) {
 
 function unitHasSkill(unit, skillId) {
   return unitSpecials(unit).includes(skillId);
+}
+
+function priorityTargetCommand(unit) {
+  const characters = isBattleship(unit)
+    ? battleshipCrew(unit)
+    : isMobileSuit(unit) ? [primaryCharacterFor(unit)] : [];
+  const skillOwners = characters.filter((character) => (character?.specials ?? []).includes("priorityTargetDesignation"));
+  const candidates = skillOwners.length > 0 ? skillOwners : characters;
+  return Math.max(0, ...candidates.map((character) => Number(character?.command) || 0));
+}
+
+function emergencyRepairMaintenance(unit) {
+  const characters = isBattleship(unit)
+    ? battleshipCrew(unit)
+    : isMobileSuit(unit) ? [primaryCharacterFor(unit)] : [];
+  const skillOwners = characters.filter((character) => (character?.specials ?? []).includes("emergencyRepair"));
+  const candidates = skillOwners.length > 0 ? skillOwners : characters;
+  return Math.max(0, ...candidates.map((character) => Number(character?.maintenance) || 0));
+}
+
+function priorityTargetDesignationRange(unit) {
+  if (!isCombatUnit(unit) || !unitHasSkill(unit, "priorityTargetDesignation")) return 0;
+  const command = priorityTargetCommand(unit);
+  if (command >= 25) return 5;
+  if (command >= 20) return 4;
+  if (command >= 15) return 3;
+  if (command >= 10) return 2;
+  return 1;
+}
+
+function priorityTargetAccuracyBonus(attacker, defender) {
+  if (!isCombatUnit(attacker) || !isCombatUnit(defender)) return 0;
+  return state.units.some((source) =>
+    source.side === attacker.side
+    && isCombatUnit(source)
+    && unitHasSkill(source, "priorityTargetDesignation")
+    && source.priorityTargetId === defender.id
+  ) ? PRIORITY_TARGET_ACCURACY_BONUS : 0;
+}
+
+function isPriorityTarget(unit) {
+  return Boolean(unit && state.units.some((source) =>
+    source.side !== unit.side
+    && isCombatUnit(source)
+    && unitHasSkill(source, "priorityTargetDesignation")
+    && source.priorityTargetId === unit.id
+  ));
 }
 
 function characterCommunication(character) {
@@ -646,6 +696,11 @@ function activeSkillText(unit) {
   const skills = [...new Set(unitSpecials(unit))];
   if (unitHasSkill(unit, "recon")) skills.push(`偵察範囲${reconDetectionRange(unit)}（通信${characterCommunication(primaryCharacterFor(unit))}）`);
   if (unitHasSkill(unit, "undergroundSonar")) skills.push(`ソナー範囲${undergroundSonarRange(unit)}（通信${characterCommunication(primaryCharacterFor(unit))}）`);
+  if (unitHasSkill(unit, "priorityTargetDesignation")) skills.push(`優先目標範囲${priorityTargetDesignationRange(unit)}（指揮${priorityTargetCommand(unit)}）`);
+  if (unitHasSkill(unit, "precisionAttackControl")) skills.push(`精密管制（命中+${PRECISION_ATTACK_ACCURACY_BONUS} / ダメージ+${PRECISION_ATTACK_DAMAGE_BONUS} / 1攻撃）`);
+  if (unitHasSkill(unit, "emergencyRepair")) skills.push(`緊急修理${unit.emergencyRepairUsed ? "使用済み" : `（整備${emergencyRepairMaintenance(unit)}）`}`);
+  if (unit.priorityTargetId) skills.push("優先目標指示中");
+  if (unitHasSkill(unit, "barricadePlacement") && unit.barricadeUsed) skills.push("バリケード設置済み");
   if (activeConcealmentGrace(unit)) skills.push("能動隠密保証中");
   if ((unit.freezyYardActiveTurns ?? 0) > 0) skills.push(`フリージーヤード効果中${unit.freezyYardActiveTurns}`);
   if ((unit.smokeConcealedTurns ?? 0) > 0) skills.push(`煙幕隠蔽中${unit.smokeConcealedTurns}`);

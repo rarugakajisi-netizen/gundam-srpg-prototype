@@ -62,6 +62,7 @@ function supportForBattleship(unit) {
 }
 
 function unitName(unit) {
+  if (isBarricade(unit)) return unit.name ?? "バリケード";
   if (isDefenseTarget(unit)) return unit.name ?? "防衛対象";
   if (isDestructionTarget(unit)) return unit.name ?? "破壊目標";
   if (isBattleship(unit)) return battleshipFor(unit).name;
@@ -69,6 +70,7 @@ function unitName(unit) {
 }
 
 function unitFaction(unit) {
+  if (isBarricade(unit)) return unit.faction ?? (unit.side === "player" ? state.faction : otherFaction(state.faction));
   if (isDefenseTarget(unit)) return unit.faction ?? "federation";
   if (isDestructionTarget(unit)) return unit.faction ?? "federation";
   return isBattleship(unit) ? battleshipFor(unit).faction : msFor(unit).faction;
@@ -110,6 +112,7 @@ function enemyIntelAccuracyPenalty(attacker) {
 }
 
 function mobilityFor(unit) {
+  if (isBarricade(unit)) return 0;
   if (isDefenseTarget(unit)) return Math.max(0, Number(unit.mobility) || 0);
   if (isDestructionTarget(unit)) return Math.max(0, Number(unit.mobility) || 0);
   if (isBattleship(unit)) return battleshipFor(unit).mobility;
@@ -594,6 +597,7 @@ function frontlineSupplyTargetFor(source) {
 }
 
 function unitWeaponObjects(unit) {
+  if (!isCombatUnit(unit)) return [];
   const disabledVehicleWeapons = unit.vehicleOptionDisabled ? vehicleWeaponIds(unit) : new Set();
   return [...new Set(unit.weaponIds
     .filter((id) => !disabledVehicleWeapons.has(id))
@@ -911,7 +915,7 @@ function minimumHitRate(unit, attackOrdinal = (unit.usedWeaponIds?.length ?? 0) 
 }
 
 function evasion(unit, options = {}) {
-  if (isDefenseTarget(unit) || isDestructionTarget(unit)) return 0;
+  if (isDefenseTarget(unit) || isDestructionTarget(unit) || isBarricade(unit)) return 0;
   if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit) + schemingEvasionBonus(unit);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
@@ -922,17 +926,19 @@ function hitRate(attacker, defender, weapon, options = {}) {
   const panicPenalty = unitHasSkill(attacker, "panic") ? 8 : 0;
   const innocentPenalty = isMobileSuit(defender) && unitHasSkill(defender, "innocentPresence") ? 4 : 0;
   const enemyIntelPenalty = enemyIntelAccuracyPenalty(attacker);
+  const priorityTargetBonus = priorityTargetAccuracyBonus(attacker, defender);
+  const precisionAttackBonus = isMobileSuit(attacker) && unitHasSkill(attacker, "precisionAttackControl") ? PRECISION_ATTACK_ACCURACY_BONUS : 0;
   const attackOrdinal = options.attackOrdinal ?? ((attacker.usedWeaponIds?.length ?? 0) + 1);
   const minHitRate = minimumHitRate(attacker, attackOrdinal);
   const defenderEvasion = evasion(defender, { incomingAttack: true });
   if (isBattleship(attacker)) {
-    const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + schemingAccuracyBonus(attacker) + barrageSupportPenalty(defender, attacker) - panicPenalty - innocentPenalty - enemyIntelPenalty - defenderEvasion;
+    const raw = weapon.accuracy - BATTLESHIP_HIT_PENALTY + battleshipAimBonus(attacker) + schemingAccuracyBonus(attacker) + barrageSupportPenalty(defender, attacker) + priorityTargetBonus + precisionAttackBonus - panicPenalty - innocentPenalty - enemyIntelPenalty - defenderEvasion;
     return clamp(raw, minHitRate, MAX_HIT_RATE);
   }
   const character = primaryCharacterFor(attacker);
   const ability = weapon.attackType === "melee" ? character.melee : character.shooting;
   const repeatPenalty = repeatAttackAccuracyPenalty(attacker, attackOrdinal);
-  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + HIT_RATE_BONUS - panicPenalty - innocentPenalty - enemyIntelPenalty - repeatPenalty - defenderEvasion;
+  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + priorityTargetBonus + precisionAttackBonus + HIT_RATE_BONUS - panicPenalty - innocentPenalty - enemyIntelPenalty - repeatPenalty - defenderEvasion;
   return clamp(raw, minHitRate, MAX_HIT_RATE);
 }
 
@@ -962,6 +968,7 @@ function advanceLearningComputer(unit) {
 
 function damageFor(attacker, defender, weapon, options = {}) {
   let damage = weapon.power;
+  if (isMobileSuit(attacker) && unitHasSkill(attacker, "precisionAttackControl")) damage += PRECISION_ATTACK_DAMAGE_BONUS;
   if (aceSkillActive(attacker)) damage += 10;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "aiSenshi") && alliedMobileSuitDestroyed(attacker.side)) damage += 15;
   if (isCombatUnit(attacker) && sacrificialBoostActive(attacker.side)) damage += 12;
@@ -1009,6 +1016,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
 
 function combatEffectNotes(attacker, defender, weapon, options = {}) {
   const notes = [];
+  if (isMobileSuit(attacker) && unitHasSkill(attacker, "precisionAttackControl")) notes.push("精密攻撃管制");
   if (isCombatUnit(attacker) && sacrificialBoostActive(attacker.side)) notes.push("命を賭して……");
   if (aceSkillActive(attacker)) notes.push("エース");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "outstandingTalent") && isFrontmostAlly(attacker)) notes.push("突出した才能");
@@ -1023,6 +1031,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(defender) && unitIsFlying(defender) && weaponHasSkill(weapon, "antiAir")) notes.push("対空中");
   if (terrainAt(defender.x, defender.y) === "desert" && (unitHasSkill(attacker, "antiDesert") || weaponHasSkill(weapon, "antiDesert"))) notes.push("対砂漠");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
+  if (priorityTargetAccuracyBonus(attacker, defender) > 0) notes.push("優先目標指示");
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
   if (isMobileSuit(attacker) && massProductionModernizationActive(attacker)) notes.push("量産機近代化改修");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) notes.push("狂気");
@@ -1145,6 +1154,103 @@ function useActiveCamo(unit, weapon, renderAfter = true) {
   unit.acted = true;
   pushDialogue(unit, "wait");
   state.log.push(`${unitName(unit)}が${weapon.name}を起動し、ステルス状態へ移行。`);
+  if (renderAfter) renderBattle();
+  return true;
+}
+
+function canDesignatePriorityTarget(unit, target) {
+  if (state.outcome || !isCombatUnit(unit) || !unitHasSkill(unit, "priorityTargetDesignation")) return false;
+  if ((unit.side === "player" && state.phase !== "player") || (unit.side === "enemy" && state.phase !== "enemy")) return false;
+  if (unit.acted || unit.moved || unit.priorityTargetDesignationUsed) return false;
+  if (!isCombatUnit(target) || target.side === unit.side || !isAlive(target)) return false;
+  if (unitDetailsConcealedFromSide(target, unit.side)) return false;
+  return distance(unit, target) <= priorityTargetDesignationRange(unit);
+}
+
+function designatePriorityTarget(unit, target, renderAfter = true) {
+  if (!canDesignatePriorityTarget(unit, target)) return false;
+  unit.priorityTargetId = target.id;
+  unit.priorityTargetDesignationUsed = true;
+  unit.moved = true;
+  state.selectedTargetId = target.id;
+  state.log.push(`${unitName(unit)}が${unitName(target)}を優先目標に指定。味方全体の命中+${PRIORITY_TARGET_ACCURACY_BONUS}。`);
+  if (renderAfter) renderBattle();
+  return true;
+}
+
+function emergencyRepairAmount(unit) {
+  if (!isCombatUnit(unit)) return 0;
+  const missingArmor = Math.max(0, unit.maxArmor - unit.armor);
+  const maintenanceAmount = EMERGENCY_REPAIR_BASE + emergencyRepairMaintenance(unit) * EMERGENCY_REPAIR_MAINTENANCE_MULTIPLIER;
+  const armorCap = Math.floor(unit.maxArmor * EMERGENCY_REPAIR_MAX_ARMOR_RATIO);
+  return Math.max(0, Math.min(missingArmor, maintenanceAmount, armorCap));
+}
+
+function canUseEmergencyRepair(unit) {
+  return isCombatUnit(unit)
+    && isAlive(unit)
+    && unitHasSkill(unit, "emergencyRepair")
+    && !unit.emergencyRepairUsed
+    && !unit.acted
+    && (unit.usedWeaponIds?.length ?? 0) === 0
+    && emergencyRepairAmount(unit) > 0;
+}
+
+function useEmergencyRepair(unit, renderAfter = true) {
+  if (!canUseEmergencyRepair(unit)) return false;
+  const amount = emergencyRepairAmount(unit);
+  unit.armor = Math.min(unit.maxArmor, unit.armor + amount);
+  unit.emergencyRepairUsed = true;
+  unit.acted = true;
+  unit.moved = true;
+  pushDialogue(unit, "wait");
+  state.log.push(`${unitName(unit)}が緊急修理を実施。装甲を${amount}回復。`);
+  if (renderAfter) renderBattle();
+  return true;
+}
+
+function clearPriorityTargetDesignations(side) {
+  state.units.filter((unit) => unit.side === side).forEach((unit) => {
+    unit.priorityTargetId = null;
+    unit.priorityTargetDesignationUsed = false;
+  });
+}
+
+function barricadeCellFor(unit) {
+  if (!isMobileSuit(unit)) return null;
+  return { x: unit.x, y: unit.y + (unit.side === "player" ? -1 : 1) };
+}
+
+function canDeployBarricade(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit) || !unitHasSkill(unit, "barricadePlacement")) return false;
+  if (unit.acted || unit.moved || unit.barricadeUsed) return false;
+  const cell = barricadeCellFor(unit);
+  return Boolean(cell && inBounds(cell.x, cell.y) && terrainWalkableAt(cell.x, cell.y) && !occupiedAt(cell.x, cell.y));
+}
+
+function deployBarricade(unit, renderAfter = true) {
+  if (!canDeployBarricade(unit)) return false;
+  const cell = barricadeCellFor(unit);
+  state.units.push({
+    id: `barricade-${unit.side}-${makeId()}`,
+    type: "barricade",
+    side: unit.side,
+    faction: unitFaction(unit),
+    name: "バリケード",
+    armor: BARRICADE_ARMOR,
+    maxArmor: BARRICADE_ARMOR,
+    mobility: 0,
+    x: cell.x,
+    y: cell.y,
+    sourceUnitId: unit.id
+  });
+  unit.barricadeUsed = true;
+  unit.moved = true;
+  unit.acted = true;
+  revealStealth(unit, "バリケード設置");
+  pushDialogue(unit, "wait");
+  state.selectedTargetId = null;
+  state.log.push(`${unitName(unit)}が前方に耐久${BARRICADE_ARMOR}のバリケードを設置。`);
   if (renderAfter) renderBattle();
   return true;
 }
@@ -1307,7 +1413,7 @@ function transformToEscapeShip(unit) {
 function attack(attacker, defender, weapon, renderAfter = true) {
   if (state.outcome) return;
   if ((attacker.side === "player" && state.phase !== "player") || (attacker.side === "enemy" && state.phase !== "enemy")) return;
-  if (!isCombatUnit(attacker) || !isAttackTarget(defender) || !weapon || weaponUsed(attacker, weapon.id)) return;
+  if (!isCombatUnit(attacker) || attacker.acted || !isAttackTarget(defender) || !weapon || weaponUsed(attacker, weapon.id)) return;
   if (!weaponInRange(attacker, defender, weapon) || !canPayCost(attacker, weapon)) return;
 
   activateExamSystemByCombat(attacker, defender);
@@ -1341,7 +1447,7 @@ function attack(attacker, defender, weapon, renderAfter = true) {
   applyBeamDisruption(attacker, defender, weapon);
   recordAttackTarget(attacker, defender);
   checkOutcome();
-  attacker.acted = allAttackWeaponsUsed(attacker);
+  attacker.acted = unitHasSkill(attacker, "precisionAttackControl") || allAttackWeaponsUsed(attacker);
   attacker.moved = true;
   if (limitedSystemActive(attacker, "areusSystem") && weapon.attackType === "melee" && isAlive(attacker)) {
     attacker.moved = false;
@@ -1580,6 +1686,7 @@ function endPlayerTurn() {
   applyBattleshipSupport("player");
   applyGundamPassion("player");
   applyZakuPassion("player");
+  clearPriorityTargetDesignations("player");
   state.units.filter((unit) => unit.side === "player" && isCombatUnit(unit)).forEach((unit) => {
     resetSaturnEngineIfNoLongMove(unit);
     unit.acted = false;
@@ -1600,7 +1707,10 @@ function endPlayerTurn() {
 function enemyTurnQueue() {
   return state.units
     .filter((unit) => unit.side === "enemy" && isCombatUnit(unit))
-    .sort((a, b) => Number(isBattleship(a)) - Number(isBattleship(b)))
+    .sort((a, b) => {
+      const priorityDesignationOrder = Number(!unitHasSkill(a, "priorityTargetDesignation")) - Number(!unitHasSkill(b, "priorityTargetDesignation"));
+      return priorityDesignationOrder || Number(isBattleship(a)) - Number(isBattleship(b));
+    })
     .map((unit) => unit.id);
 }
 
@@ -1613,6 +1723,7 @@ function unitHealthRatio(unit) {
 }
 
 function targetPriority(unit) {
+  if (isBarricade(unit)) return 25 + Math.round((1 - unitHealthRatio(unit)) * 20);
   if (isDefenseTarget(unit)) return 220 + Math.round((1 - unitHealthRatio(unit)) * 80);
   const woundedBonus = Math.round((1 - unitHealthRatio(unit)) * 45);
   return woundedBonus + (isBattleship(unit) ? AI_BATTLESHIP_TARGET_BONUS : 0);
@@ -1733,6 +1844,13 @@ function shouldEnemyActivateFreezyYard(unit, targets, attackPlan) {
   return !attackPlan && incomingAmmoThreat(unit, targets);
 }
 
+function shouldEnemyUseEmergencyRepair(unit, attackPlan) {
+  if (!canUseEmergencyRepair(unit)) return false;
+  const armorRatio = unit.maxArmor > 0 ? unit.armor / unit.maxArmor : 1;
+  if (armorRatio <= 0.4) return true;
+  return armorRatio <= 0.55 && (!attackPlan || attackPlan.score < 430);
+}
+
 function shouldEnemyUseActiveConcealment(unit, targets, attackPlan) {
   if (!isMobileSuit(unit) || unit.acted || unit.moved) return false;
   if (attackPlan?.score >= 430) return false;
@@ -1749,6 +1867,24 @@ function shouldEnemyWaitForSonar(unit, attackPlan) {
   if (!isMobileSuit(unit) || unit.acted || unit.moved || !unitHasSkill(unit, "undergroundSonar")) return false;
   if (attackPlan?.score >= 430) return false;
   return concealedEnemiesInSonarRange(unit).length > 0;
+}
+
+function shouldEnemyDeployBarricade(unit, targets, attackPlan) {
+  if (!canDeployBarricade(unit) || attackPlan?.score >= 430) return false;
+  const forwardDirection = unit.side === "player" ? -1 : 1;
+  return targets.some((target) =>
+    !isBarricade(target)
+    && (target.y - unit.y) * forwardDirection > 0
+    && Math.abs(target.x - unit.x) <= 1
+    && distance(unit, target) <= 5
+  );
+}
+
+function bestEnemyPriorityTarget(unit, targets, attackPlan) {
+  const candidates = targets.filter((target) => canDesignatePriorityTarget(unit, target));
+  if (candidates.length === 0) return null;
+  if (attackPlan?.target && candidates.includes(attackPlan.target)) return attackPlan.target;
+  return candidates.sort((a, b) => targetPriority(b) - targetPriority(a) || effectiveDurability(a) - effectiveDurability(b))[0];
 }
 
 function enemyMineScatterWeapon(unit, targets, attackPlan) {
@@ -1939,7 +2075,16 @@ function advanceEnemyTurn() {
     const infiltrationMission = infiltrationTargetDistance(enemy) !== null;
     const blockingTargets = infiltrationMission ? targets.filter((target) => targetBlocksInfiltration(target)) : [];
     const attackTargets = blockingTargets.length > 0 ? blockingTargets : (infiltrationMission ? [] : targets);
-    const attackPlan = bestAttackPlan(enemy, attackTargets);
+    let attackPlan = bestAttackPlan(enemy, attackTargets);
+
+    if (shouldEnemyUseEmergencyRepair(enemy, attackPlan)) {
+      state.selectedUnitId = enemy.id;
+      state.selectedTargetId = null;
+      useEmergencyRepair(enemy, false);
+      state.enemyQueue.shift();
+      renderBattle();
+      return;
+    }
 
     if (shouldPrioritizeEnemySupport(enemy, attackPlan)) {
       if (waitForEnemySupport(enemy)) {
@@ -1992,6 +2137,23 @@ function advanceEnemyTurn() {
       state.enemyQueue.shift();
       pushDialogue(enemy, "wait");
       state.log.push(`${unitName(enemy)}はアンダーグラウンドソナーによる索敵を優先して待機。`);
+      renderBattle();
+      return;
+    }
+
+    const priorityTarget = bestEnemyPriorityTarget(enemy, attackTargets, attackPlan);
+    if (priorityTarget) {
+      state.selectedUnitId = enemy.id;
+      state.selectedTargetId = priorityTarget.id;
+      designatePriorityTarget(enemy, priorityTarget, false);
+      attackPlan = bestAttackPlan(enemy, attackTargets);
+    }
+
+    if (shouldEnemyDeployBarricade(enemy, targets, attackPlan)) {
+      state.selectedUnitId = enemy.id;
+      state.selectedTargetId = null;
+      deployBarricade(enemy, false);
+      state.enemyQueue.shift();
       renderBattle();
       return;
     }
@@ -2061,6 +2223,7 @@ function finishEnemyTurn() {
   applyBattleshipSupport("enemy");
   applyGundamPassion("enemy");
   applyZakuPassion("enemy");
+  clearPriorityTargetDesignations("enemy");
   state.units.filter((unit) => unit.side === "enemy" && isCombatUnit(unit)).forEach((unit) => {
     resetSaturnEngineIfNoLongMove(unit);
     unit.acted = false;

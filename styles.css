@@ -1768,6 +1768,35 @@ select {
   opacity: 0.15;
 }
 
+.token.barricade {
+  background: #5c5142;
+  border: 2px solid #d8c29b;
+  color: #fff7e5;
+}
+
+.token.barricade::before {
+  opacity: 0.1;
+}
+
+.token.priority-target {
+  outline: 3px solid #e34b3f;
+  outline-offset: -3px;
+}
+
+.token-priority-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  z-index: 3;
+  padding: 1px 4px;
+  border-radius: 999px;
+  background: #b52d27;
+  color: #fff;
+  font-size: 0.58rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .token.selected {
   box-shadow: inset 0 0 0 3px #f9d65c;
 }

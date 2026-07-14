@@ -243,6 +243,48 @@ window.GAME_DATA.options = [
     "imagePath": ""
   },
   {
+    "id": "priorityTargetDesignation",
+    "name": "優先目標指示",
+    "cost": 55,
+    "effectType": "skill",
+    "grantsSkill": "priorityTargetDesignation",
+    "effectText": "未移動時、指揮に応じた範囲内の可視敵1機をターン中の優先目標に指定する。使用者は移動不能になるが攻撃でき、味方全体は指定対象への命中+8。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "precisionAttackControl",
+    "name": "精密攻撃管制",
+    "cost": 50,
+    "effectType": "skill",
+    "grantsSkill": "precisionAttackControl",
+    "effectText": "1ターンに1回しか攻撃できない代わりに、その攻撃の命中+12、与ダメージ+10。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "emergencyRepair",
+    "name": "緊急修理",
+    "cost": 45,
+    "effectType": "skill",
+    "grantsSkill": "emergencyRepair",
+    "effectText": "1戦闘に1回、行動として自機の装甲を「30＋整備×2」回復する。最大装甲の20%が上限。EN・弾薬・盾は回復しない。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "enhancedWarheadOption",
     "name": "強化弾頭",
     "cost": 55,
@@ -291,6 +333,20 @@ window.GAME_DATA.options = [
     "effectType": "skill",
     "grantsSkill": "smokeDischarger",
     "effectText": "1戦闘に1回、行動として煙幕を展開して看破状態を上書きする。発動ターン中は偵察圏内でも隠密になるが、次の自軍ターン開始時にも圏内なら解除される。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "barricadePlacement",
+    "name": "バリケード設置",
+    "cost": 45,
+    "effectType": "skill",
+    "grantsSkill": "barricadePlacement",
+    "effectText": "1戦闘に1回、未移動時に行動として前方1マスへ耐久100の破壊可能な障害物を設置する。移動と通常射撃の射線を遮る。",
     "uniqueSkill": true,
     "factions": [
       "federation",
