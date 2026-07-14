@@ -106,6 +106,7 @@ setupScreen.addEventListener("change", (event) => {
     return;
   }
   if (event.target.dataset.bridgeSlot) {
+    state.setupNotice = "";
     if (event.target.dataset.bridgeSlot === "captain") state.selectedCaptainId = event.target.value;
     if (event.target.dataset.bridgeSlot === "firstOfficer") state.selectedFirstOfficerId = event.target.value;
     if (event.target.value) clearCharacterConflicts(event.target.value, event.target.dataset.bridgeSlot);
@@ -113,6 +114,7 @@ setupScreen.addEventListener("change", (event) => {
     renderSetup();
   }
   if (event.target.id === "battleshipSelect") {
+    state.setupNotice = "";
     state.selectedBattleshipId = event.target.value;
     rememberFormation();
     renderSetup();
@@ -124,6 +126,7 @@ setupScreen.addEventListener("change", (event) => {
       return;
     }
     state.selectedMapId = event.target.value;
+    state.setupNotice = "";
     state.freeBattleEnemy = null;
     state.formation = [];
     const factionBattleship = state.data.battleships.find((item) => item.faction === state.faction && hasCard("battleships", item.id) && battleshipCanDeployOnMap(item, selectedMap()));
@@ -137,20 +140,24 @@ setupScreen.addEventListener("change", (event) => {
     renderSetup();
   }
   if (event.target.id === "msSelect") {
+    state.setupNotice = "";
     state.selectedMsId = event.target.value;
     state.selectedWeaponIds = defaultLoadout(lookup().ms[state.selectedMsId]);
     renderSetup();
   }
   if (event.target.id === "characterSelect") {
+    state.setupNotice = "";
     state.selectedCharacterId = event.target.value;
     if (event.target.value) clearCharacterConflicts(event.target.value, "mobileSuit");
     renderSetup();
   }
   if (event.target.id === "optionSelect") {
+    state.setupNotice = "";
     state.selectedOptionId = event.target.value;
     renderSetup();
   }
   if (event.target.matches(".weapon-count-control")) {
+    state.setupNotice = "";
     const ms = lookup().ms[state.selectedMsId];
     const weaponId = event.target.dataset.weaponId;
     const weapon = lookup().weapons[weaponId];
@@ -243,8 +250,15 @@ setupScreen.addEventListener("click", (event) => {
     renderChoiceCardSelect();
   }
   if (action === "save-favorite-formation") saveFavoriteFormation();
-  if (action === "load-favorite-formation") loadFavoriteFormation();
+  if (action === "load-favorite-formation") {
+    state.setupNotice = "";
+    loadFavoriteFormation();
+  }
   if (action === "delete-favorite-formation") deleteFavoriteFormation();
+  if (action === "recommended-formation") {
+    applyRecommendedFormation();
+    renderSetup();
+  }
   if (action === "claim-choice-card") {
     claimChoiceCard(button.dataset.cardType, button.dataset.id);
     renderChoiceCardSelect();
@@ -271,6 +285,7 @@ setupScreen.addEventListener("click", (event) => {
     state.battleMode = "campaign";
     state.freeBattleEnemy = null;
     state.selectedMapId = button.dataset.mapId;
+    state.setupNotice = "";
     state.formation = [];
     initializeSelections();
     if (!restoreRememberedFormation()) applyStarterFormation();
@@ -289,6 +304,7 @@ setupScreen.addEventListener("click", (event) => {
     state.battleMode = "free";
     state.freeBattleEnemy = null;
     state.selectedMapId = button.dataset.mapId;
+    state.setupNotice = "";
     state.formation = [];
     initializeSelections();
     if (!restoreRememberedFormation()) applyStarterFormation();
@@ -302,6 +318,7 @@ setupScreen.addEventListener("click", (event) => {
   if (action === "add") addFormationEntry();
   if (action === "remove") {
     state.formation.splice(Number(button.dataset.index), 1);
+    state.setupNotice = "";
     rememberFormation();
     renderSetup();
   }

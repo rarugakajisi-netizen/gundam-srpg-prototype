@@ -108,6 +108,7 @@ const state = {
   selectedCharacterId: "",
   selectedWeaponIds: [],
   selectedOptionId: "",
+  setupNotice: "",
   units: [],
   phase: "setup",
   outcome: null,

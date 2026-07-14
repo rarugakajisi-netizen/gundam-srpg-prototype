@@ -158,6 +158,282 @@ function currentCost() {
   return battleshipCost + bridgeCost() + state.formation.reduce((sum, entry) => sum + formationCost(entry), 0);
 }
 
+function recommendedTargetCost() {
+  return isFreeBattle() ? Math.max(600, Number(state.data.costCap) || 1200) : stageCostCap(state.selectedMapId);
+}
+
+function recommendedMaximumUnitCount(map = selectedMap()) {
+  return clamp(Number(map.deployment?.player?.units?.length) || 4, 1, 6);
+}
+
+function recommendedBattleshipScore(ship) {
+  const support = ship.support ?? {};
+  const weaponPower = (ship.weaponIds ?? []).reduce((sum, id) => sum + (lookup().weapons[id]?.power ?? 0), 0);
+  return (ship.armor ?? 0)
+    + (ship.energy ?? 0) * 1.4
+    + (ship.agility ?? 0) * 18
+    + (ship.mobility ?? 0) * 65
+    + Object.values(support).reduce((sum, value) => sum + (Number(value) || 0), 0) * 5
+    + weaponPower * 1.2;
+}
+
+function recommendedMobileSuitScore(ms) {
+  const fixedWeapons = (ms.fixedWeaponIds ?? []).map((id) => lookup().weapons[id]).filter(Boolean);
+  const fixedPower = fixedWeapons.reduce((sum, weapon) => sum + (weaponCanAttack(weapon) ? (weapon.power ?? 0) * (weapon.accuracy ?? 0) / 100 : 0), 0);
+  return (ms.armor ?? 0) * 0.45
+    + (ms.energy ?? 0) * 0.6
+    + (ms.agility ?? 0) * 12
+    + (ms.mobility ?? 0) * 32
+    + fixedPower;
+}
+
+function recommendedCharacterScore(character, role, ms = null) {
+  if (role === "captain") return character.command * 3 + character.support * 1.4 + character.maintenance + character.reaction * 0.5;
+  if (role === "firstOfficer") return character.support * 2.4 + character.maintenance * 2.8 + character.command + character.reaction * 0.4;
+  const fixedWeapons = (ms?.fixedWeaponIds ?? []).map((id) => lookup().weapons[id]).filter(Boolean);
+  const prefersMelee = fixedWeapons.some((weapon) => weapon.attackType === "melee")
+    && !fixedWeapons.some((weapon) => weapon.attackType === "shooting");
+  const attackStat = prefersMelee ? character.melee : character.shooting;
+  const secondaryStat = prefersMelee ? character.shooting : character.melee;
+  return attackStat * 2.3 + secondaryStat * 0.7 + character.reaction * 1.8 + character.awakening * 0.5;
+}
+
+function recommendedWeaponScore(weapon, character = null) {
+  const attackValue = weaponCanAttack(weapon)
+    ? (weapon.power ?? 0) * (weapon.accuracy ?? 0) / 100 + (weapon.range ?? 0) * 8
+    : 0;
+  const pilotBonus = weapon.attackType === "melee" ? character?.melee ?? 0 : character?.shooting ?? 0;
+  return attackValue + (weapon.durability ?? 0) * 0.45 + pilotBonus * 0.7;
+}
+
+function recommendedOptionScore(option) {
+  return (option.armorModifier ?? 0) * 0.25
+    + (option.energyModifier ?? 0) * 0.4
+    + (option.agilityModifier ?? 0) * 2
+    + (option.mobilityModifier ?? option.value ?? 0) * 18
+    + (option.accuracyModifier ?? 0) * 2
+    + (option.damageModifier ?? 0) * 2
+    + (option.grantsSkill ? 28 : 0)
+    + Math.max(0, option.cost ?? 0) * 0.2;
+}
+
+function recommendedCountMap(type) {
+  const items = type === "mobileSuits" ? state.data.mobileSuits : type === "weapons" ? state.data.weapons : state.data.options ?? [];
+  return Object.fromEntries(items.map((item) => [item.id, cardCount(type, item.id)]));
+}
+
+function takeRecommendedCount(counts, id) {
+  if (!id || (counts[id] ?? 0) <= 0) return false;
+  counts[id] -= 1;
+  return true;
+}
+
+function recommendedAirOption(ms, map, optionCounts) {
+  if (map.type !== "air" || mobileSuitNativelyAirborne(ms)) return null;
+  if (!(ms.mapTypes ?? ["ground", "space"]).some((type) => mapDeployTypes(map).includes(type)) || !mapHasStandableCell(ms, map)) return null;
+  return (state.data.options ?? [])
+    .filter((option) => (optionCounts[option.id] ?? 0) > 0
+      && optionProvidesAirDeployment(option)
+      && optionEquippableByMs(option, ms, map, state.faction))
+    .sort((a, b) => (a.cost ?? 0) - (b.cost ?? 0) || recommendedOptionScore(b) - recommendedOptionScore(a))[0] ?? null;
+}
+
+function recommendedCharacter(usedKeys, role, maxCost, ms = null) {
+  const candidates = state.data.characters
+    .filter((character) => characterSelectable(character)
+      && hasCard("characters", character.id)
+      && !usedKeys.has(character.characterKey ?? character.id)
+      && (role === "pilot"
+        ? characterCanPilotMobileSuit(character, ms, state.faction)
+        : characterUsableByFaction(character, state.faction))
+      && (character.cost ?? 0) <= maxCost)
+    .sort((a, b) => recommendedCharacterScore(b, role, ms) - recommendedCharacterScore(a, role, ms)
+      || (a.cost ?? 0) - (b.cost ?? 0)
+      || a.id.localeCompare(b.id));
+  return candidates[0] ?? null;
+}
+
+function addRecommendedWeapon(entry, ms, weaponCounts, remainingBudget, filter = () => true) {
+  const usedSlots = selectedWeaponSlotCost(entry.weaponIds);
+  const character = lookup().characters[entry.characterIds[0]] ?? null;
+  const weapon = state.data.weapons
+    .filter((candidate) => (weaponCounts[candidate.id] ?? 0) > 0
+      && (candidate.cost ?? 0) <= remainingBudget
+      && filter(candidate)
+      && weaponEquippableByMs(ms, candidate)
+      && usedSlots + weaponSlotCost(candidate) <= weaponSlotCount(ms))
+    .sort((a, b) => recommendedWeaponScore(b, character) - recommendedWeaponScore(a, character)
+      || (a.cost ?? 0) - (b.cost ?? 0)
+      || a.id.localeCompare(b.id))[0];
+  if (!weapon || !takeRecommendedCount(weaponCounts, weapon.id)) return 0;
+  entry.weaponIds.push(weapon.id);
+  return weapon.cost ?? 0;
+}
+
+function buildRecommendedFormation() {
+  const map = selectedMap();
+  const targetCost = recommendedTargetCost();
+  const msCounts = recommendedCountMap("mobileSuits");
+  const weaponCounts = recommendedCountMap("weapons");
+  const optionCounts = recommendedCountMap("options");
+  const deployableMs = state.data.mobileSuits.filter((ms) =>
+    (msCounts[ms.id] ?? 0) > 0
+    && cardUsableByFaction(ms, state.faction)
+    && mobileSuitCanPotentiallyDeployOnMap(ms, map, state.faction)
+    && (mobileSuitCanDeployOnMap(ms, map) || recommendedAirOption(ms, map, optionCounts))
+  );
+  const ships = state.data.battleships.filter((ship) =>
+    ship.faction === state.faction
+    && hasCard("battleships", ship.id)
+    && battleshipCanDeployOnMap(ship, map)
+  );
+  if (ships.length === 0 || deployableMs.length === 0) return null;
+
+  const cheapestMsCost = Math.min(...deployableMs.map((ms) => {
+    const airOption = recommendedAirOption(ms, map, optionCounts);
+    return (ms.cost ?? 0) + (airOption?.cost ?? 0);
+  }));
+  const affordableShips = ships.filter((ship) => (ship.cost ?? 0) + cheapestMsCost <= targetCost);
+  if (affordableShips.length === 0) return null;
+  const preferredShips = affordableShips.filter((ship) => (ship.cost ?? 0) <= targetCost * 0.32);
+  const ship = (preferredShips.length > 0 ? preferredShips : affordableShips)
+    .sort((a, b) => recommendedBattleshipScore(b) - recommendedBattleshipScore(a)
+      || (a.cost ?? 0) - (b.cost ?? 0)
+      || a.id.localeCompare(b.id))[0];
+
+  const totalOwnedMs = deployableMs.reduce((sum, ms) => sum + (msCounts[ms.id] ?? 0), 0);
+  const maximumUnits = Math.min(recommendedMaximumUnitCount(map), totalOwnedMs);
+  const desiredUnits = Math.min(maximumUnits, Math.max(1, Math.floor((targetCost - ship.cost) / 260)));
+  const crewAndEquipmentReserve = Math.min(180, targetCost * 0.15) + desiredUnits * 80;
+  let baseBudget = Math.max(cheapestMsCost, targetCost - ship.cost - crewAndEquipmentReserve);
+  const formation = [];
+  const selectedMsCounts = {};
+
+  for (let index = 0; index < desiredUnits; index += 1) {
+    const slotsLeft = desiredUnits - index;
+    const candidates = deployableMs.map((ms) => {
+      const airOption = recommendedAirOption(ms, map, optionCounts);
+      return {
+        ms,
+        airOption,
+        cost: (ms.cost ?? 0) + (airOption?.cost ?? 0),
+        score: recommendedMobileSuitScore(ms) - (selectedMsCounts[ms.id] ?? 0) * 90
+      };
+    }).filter((candidate) => (msCounts[candidate.ms.id] ?? 0) > 0
+      && (mobileSuitCanDeployOnMap(candidate.ms, map) || candidate.airOption)
+      && candidate.cost <= baseBudget);
+    if (candidates.length === 0) break;
+    const ceiling = baseBudget / slotsLeft * 1.55;
+    const withinShare = candidates.filter((candidate) => candidate.cost <= ceiling);
+    const candidate = (withinShare.length > 0 ? withinShare : candidates)
+      .sort((a, b) => b.score - a.score || a.cost - b.cost || a.ms.id.localeCompare(b.ms.id))[0];
+    takeRecommendedCount(msCounts, candidate.ms.id);
+    if (candidate.airOption) takeRecommendedCount(optionCounts, candidate.airOption.id);
+    selectedMsCounts[candidate.ms.id] = (selectedMsCounts[candidate.ms.id] ?? 0) + 1;
+    formation.push({
+      msId: candidate.ms.id,
+      characterIds: [],
+      weaponIds: [],
+      optionIds: candidate.airOption ? [candidate.airOption.id] : []
+    });
+    baseBudget -= candidate.cost;
+  }
+  if (formation.length === 0) return null;
+
+  let spent = (ship.cost ?? 0) + formationEntriesCost(formation);
+  const usedKeys = new Set();
+  const captain = recommendedCharacter(usedKeys, "captain", Math.min(targetCost - spent, Math.max(70, targetCost * 0.14)));
+  if (captain) {
+    usedKeys.add(captain.characterKey ?? captain.id);
+    spent += captain.cost ?? 0;
+  }
+
+  const pilotEntries = [...formation]
+    .filter((entry) => mobileSuitCanHavePilot(lookup().ms[entry.msId]))
+    .sort((a, b) => recommendedMobileSuitScore(lookup().ms[b.msId]) - recommendedMobileSuitScore(lookup().ms[a.msId]));
+  pilotEntries.forEach((entry, index) => {
+    const remainingPilots = pilotEntries.length - index;
+    const equipmentReserve = remainingPilots * 25;
+    const available = Math.max(0, targetCost - spent - equipmentReserve);
+    const pilotBudget = Math.min(targetCost - spent, available / Math.max(1, remainingPilots) * 1.45);
+    const pilot = recommendedCharacter(usedKeys, "pilot", pilotBudget, lookup().ms[entry.msId]);
+    if (!pilot) return;
+    entry.characterIds = [pilot.id];
+    usedKeys.add(pilot.characterKey ?? pilot.id);
+    spent += pilot.cost ?? 0;
+  });
+
+  formation.forEach((entry, index) => {
+    const available = Math.max(0, targetCost - spent);
+    const perUnitBudget = Math.min(available, available / Math.max(1, formation.length - index) * 1.35);
+    spent += addRecommendedWeapon(entry, lookup().ms[entry.msId], weaponCounts, perUnitBudget, (weapon) => weapon.kind !== "shield");
+  });
+
+  const firstOfficer = recommendedCharacter(usedKeys, "firstOfficer", Math.min(targetCost - spent, Math.max(50, targetCost * 0.1)));
+  if (firstOfficer) {
+    usedKeys.add(firstOfficer.characterKey ?? firstOfficer.id);
+    spent += firstOfficer.cost ?? 0;
+  }
+
+  formation.forEach((entry) => {
+    const ms = lookup().ms[entry.msId];
+    let available = Math.max(0, targetCost - spent);
+    let added = addRecommendedWeapon(entry, ms, weaponCounts, available, (weapon) => weapon.kind === "shield");
+    spent += added;
+    available = Math.max(0, targetCost - spent);
+    while (added > 0 && selectedWeaponSlotCost(entry.weaponIds) < weaponSlotCount(ms)) {
+      added = addRecommendedWeapon(entry, ms, weaponCounts, available, (weapon) => !entry.weaponIds.includes(weapon.id));
+      spent += added;
+      available = Math.max(0, targetCost - spent);
+    }
+  });
+
+  formation.forEach((entry) => {
+    const ms = lookup().ms[entry.msId];
+    if ((ms.optionSlots ?? 1) <= entry.optionIds.length) return;
+    const option = (state.data.options ?? [])
+      .filter((candidate) => (optionCounts[candidate.id] ?? 0) > 0
+        && (candidate.cost ?? 0) > 0
+        && candidate.effectType !== "downgrade"
+        && (candidate.cost ?? 0) <= targetCost - spent
+        && optionEquippableByMs(candidate, ms, map, state.faction))
+      .sort((a, b) => recommendedOptionScore(b) - recommendedOptionScore(a)
+        || (a.cost ?? 0) - (b.cost ?? 0)
+        || a.id.localeCompare(b.id))[0];
+    if (!option || !takeRecommendedCount(optionCounts, option.id)) return;
+    entry.optionIds.push(option.id);
+    spent += option.cost ?? 0;
+  });
+
+  return {
+    targetCost,
+    battleshipId: ship.id,
+    captainId: captain?.id ?? "",
+    firstOfficerId: firstOfficer?.id ?? "",
+    formation
+  };
+}
+
+function applyRecommendedFormation() {
+  const recommendation = buildRecommendedFormation();
+  if (!recommendation) {
+    state.setupNotice = "所持カードと出撃条件から、編成可能な組み合わせを作れませんでした。";
+    return false;
+  }
+  state.selectedBattleshipId = recommendation.battleshipId;
+  state.selectedCaptainId = recommendation.captainId;
+  state.selectedFirstOfficerId = recommendation.firstOfficerId;
+  state.formation = recommendation.formation;
+  state.selectedMsId = recommendation.formation[0]?.msId ?? state.selectedMsId;
+  state.selectedCharacterId = "";
+  state.selectedWeaponIds = [];
+  state.selectedOptionId = "";
+  state.freeBattleEnemy = null;
+  state.setupNotice = `おすすめ編成を作成しました（${currentCost()} / ${isFreeBattle() ? `目安${recommendation.targetCost}` : recommendation.targetCost}）。このまま出撃するか、手動で調整できます。`;
+  rememberFormation();
+  return true;
+}
+
 function randomChoice(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
@@ -1754,6 +2030,11 @@ function renderSetup() {
 
     <aside class="panel stack setup-roster-panel">
       <h2>現在の部隊</h2>
+      <div class="recommended-formation-box">
+        <button type="button" data-action="recommended-formation">おすすめ編成</button>
+        <p class="small">所持カードから、地形とコストに合う部隊を自動で組みます。</p>
+      </div>
+      ${state.setupNotice ? `<p class="support-hint ${state.setupNotice.startsWith("おすすめ編成を作成") ? "ready" : ""}">${state.setupNotice}</p>` : ""}
       <button type="button" class="primary-button setup-launch-button" data-action="launch" ${state.formation.length === 0 || costOverCap ? "disabled" : ""}>出撃</button>
       <div class="roster-list">
         ${battleshipRosterCard(selectedBattleship)}
@@ -1884,6 +2165,7 @@ function chooseMobileSuit(msId) {
   const ms = lookup().ms[msId];
   if (!ms || !hasCard("mobileSuits", ms.id) || !mobileSuitCanPotentiallyDeployOnMap(ms, selectedMap(), state.faction)) return;
   state.selectedMsId = ms.id;
+  state.setupNotice = "";
   state.selectedWeaponIds = defaultLoadout(ms);
   if (!mobileSuitCanHavePilot(ms)) state.selectedCharacterId = "";
   renderSetup();
@@ -1893,11 +2175,13 @@ function chooseBattleship(shipId) {
   const ship = lookup().battleships[shipId];
   if (!ship || !hasCard("battleships", ship.id) || !battleshipCanDeployOnMap(ship, selectedMap())) return;
   state.selectedBattleshipId = ship.id;
+  state.setupNotice = "";
   rememberFormation();
   renderSetup();
 }
 
 function setCharacterForOwner(owner, characterId) {
+  state.setupNotice = "";
   let assignedCharacterId = characterId;
   if (owner === "captain") state.selectedCaptainId = characterId;
   if (owner === "firstOfficer") state.selectedFirstOfficerId = characterId;
@@ -1914,6 +2198,7 @@ function changeFaction(faction) {
   const currentMap = selectedMap();
   if (!playableFactionsOnMap(currentMap).includes(faction)) return;
   rememberFormation();
+  state.setupNotice = "";
   state.faction = faction;
   state.formation = [];
   const factionBattleship = state.data.battleships.find((ship) => ship.faction === faction && hasCard("battleships", ship.id) && battleshipCanDeployOnMap(ship, currentMap));
@@ -1950,6 +2235,7 @@ function addFormationEntry() {
   });
   state.selectedCharacterId = mobileSuitCanHavePilot(selectedMs) ? (firstAvailableCharacter(state.faction)?.id ?? "") : "";
   state.selectedOptionId = "";
+  state.setupNotice = "";
   rememberFormation();
   renderSetup();
 }

@@ -516,6 +516,26 @@ select {
   margin-bottom: 10px;
 }
 
+.recommended-formation-box {
+  display: grid;
+  gap: 5px;
+  padding: 9px;
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 7%, #ffffff);
+}
+
+.recommended-formation-box button {
+  min-height: 44px;
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.recommended-formation-box p {
+  margin: 0;
+}
+
 .choice-card,
 .unit-card,
 .log-item,
