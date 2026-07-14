@@ -445,13 +445,22 @@ function characterCommunication(character) {
   return Math.max(0, Number(character?.support) || 0);
 }
 
+function communicationDetectionRange(unit, baseRange) {
+  const communication = characterCommunication(primaryCharacterFor(unit));
+  if (communication >= 18) return baseRange + 3;
+  if (communication >= 14) return baseRange + 2;
+  if (communication >= 8) return baseRange + 1;
+  return baseRange;
+}
+
 function reconDetectionRange(unit) {
   if (!isMobileSuit(unit) || !unitHasSkill(unit, "recon")) return 0;
-  const communication = characterCommunication(primaryCharacterFor(unit));
-  if (communication >= 18) return 5;
-  if (communication >= 14) return 4;
-  if (communication >= 8) return 3;
-  return 2;
+  return communicationDetectionRange(unit, 2);
+}
+
+function undergroundSonarRange(unit) {
+  if (!isMobileSuit(unit) || !unitHasSkill(unit, "undergroundSonar")) return 0;
+  return communicationDetectionRange(unit, 3);
 }
 
 function sideReconDetects(defender, viewerSide) {
@@ -464,13 +473,21 @@ function sideReconDetects(defender, viewerSide) {
   );
 }
 
+function activeConcealmentGrace(unit) {
+  return Boolean(unit?.activeConcealmentGrace);
+}
+
 function unitIsConcealedFrom(defender, attacker) {
   if (!isMobileSuit(defender)) return false;
-  if (defender.infiltrationExposed) return false;
-  const reconDetected = sideReconDetects(defender, attacker.side);
-  const nearbyScout = state.units.some((unit) => unit.side === attacker.side && isCombatUnit(unit) && distance(unit, defender) <= 2);
+  const activationGrace = activeConcealmentGrace(defender);
+  if (defender.infiltrationExposed && !activationGrace) return false;
+  const reconDetected = !activationGrace && sideReconDetects(defender, attacker.side);
+  const nearbyScout = !activationGrace && state.units.some((unit) => unit.side === attacker.side && isCombatUnit(unit) && distance(unit, defender) <= 2);
   const smokeConcealed = (defender.smokeConcealedTurns ?? 0) > 0 && !reconDetected;
-  const stealthConcealed = unitHasSkill(defender, "stealth") && !defender.stealthRevealed && distance(defender, attacker) > 2 && !nearbyScout && !reconDetected;
+  const stealthConcealed = unitHasSkill(defender, "stealth")
+    && !defender.stealthRevealed
+    && (activationGrace || (distance(defender, attacker) > 2 && !nearbyScout))
+    && !reconDetected;
   const guerrillaConcealed = unitHasSkill(defender, "guerrillaTactics")
     && GUERRILLA_TERRAINS.has(terrainAt(defender.x, defender.y))
     && distance(defender, attacker) > 2
@@ -488,7 +505,18 @@ function unitDetailsConcealedFromSide(defender, viewerSide) {
 function revealStealth(unit, reason = "") {
   if (!isMobileSuit(unit) || !unitHasSkill(unit, "stealth") || unit.stealthRevealed) return;
   unit.stealthRevealed = true;
+  if ((unit.smokeConcealedTurns ?? 0) <= 0) unit.activeConcealmentGrace = false;
   state.log.push(`${unitName(unit)}のステルスが解除された${reason ? `（${reason}）` : ""}。`);
+}
+
+function resolveActiveConcealmentGrace(unit) {
+  if (!isMobileSuit(unit) || !activeConcealmentGrace(unit)) return;
+  unit.activeConcealmentGrace = false;
+  const opposingSide = unit.side === "player" ? "enemy" : "player";
+  if (!sideReconDetects(unit, opposingSide)) return;
+  unit.stealthRevealed = true;
+  unit.smokeConcealedTurns = 0;
+  state.log.push(`${unitName(unit)}は敵偵察圏内に留まり、隠密状態を看破された。`);
 }
 
 function alliedMobileSuitDestroyed(side) {
@@ -617,6 +645,8 @@ function weaponHasSkill(weapon, skillId) {
 function activeSkillText(unit) {
   const skills = [...new Set(unitSpecials(unit))];
   if (unitHasSkill(unit, "recon")) skills.push(`偵察範囲${reconDetectionRange(unit)}（通信${characterCommunication(primaryCharacterFor(unit))}）`);
+  if (unitHasSkill(unit, "undergroundSonar")) skills.push(`ソナー範囲${undergroundSonarRange(unit)}（通信${characterCommunication(primaryCharacterFor(unit))}）`);
+  if (activeConcealmentGrace(unit)) skills.push("能動隠密保証中");
   if ((unit.freezyYardActiveTurns ?? 0) > 0) skills.push(`フリージーヤード効果中${unit.freezyYardActiveTurns}`);
   if ((unit.smokeConcealedTurns ?? 0) > 0) skills.push(`煙幕隠蔽中${unit.smokeConcealedTurns}`);
   if ((unit.learningStacks ?? 0) > 0) skills.push(`教育型補正${unit.learningStacks}`);
@@ -657,6 +687,7 @@ function activateFreezyYard(unit, renderAfter = true) {
 
 function tickTurnStartEffects(side) {
   state.units.filter((unit) => unit.side === side && isCombatUnit(unit)).forEach((unit) => {
+    resolveActiveConcealmentGrace(unit);
     if ((unit.freezyYardActiveTurns ?? 0) > 0) unit.freezyYardActiveTurns -= 1;
     tickExamSystem(unit);
     tickHadesSystem(unit);

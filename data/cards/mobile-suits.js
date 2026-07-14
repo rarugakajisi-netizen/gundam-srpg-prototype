@@ -439,7 +439,7 @@ window.GAME_DATA.mobileSuits = [
     "id": "hoverTruckBlackDog",
     "name": "ホバー・トラック（ブラックドッグ隊）",
     "faction": "federation",
-    "cost": 65,
+    "cost": 60,
     "armor": 130,
     "energy": 35,
     "agility": 13,
@@ -467,7 +467,7 @@ window.GAME_DATA.mobileSuits = [
       "federationMassProduction"
     ],
     "specials": [
-      "recon"
+      "undergroundSonar"
     ],
     "imagePath": ""
   },
@@ -5437,13 +5437,13 @@ window.GAME_DATA.mobileSuits = [
       "reconMs"
     ],
     "specials": [
-      "recon"
+      "undergroundSonar"
     ],
     "imagePath": "",
     "id": "hoverTruck",
     "name": "ホバー・トラック",
     "faction": "federation",
-    "cost": 55,
+    "cost": 50,
     "armor": 120,
     "agility": 12,
     "mobility": 5

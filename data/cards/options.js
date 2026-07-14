@@ -290,7 +290,7 @@ window.GAME_DATA.options = [
     "cost": 50,
     "effectType": "skill",
     "grantsSkill": "smokeDischarger",
-    "effectText": "行動として煙幕を展開し、短時間射撃対象から外れやすくなる。",
+    "effectText": "1戦闘に1回、行動として煙幕を展開して看破状態を上書きする。発動ターン中は偵察圏内でも隠密になるが、次の自軍ターン開始時にも圏内なら解除される。",
     "uniqueSkill": true,
     "factions": [
       "federation",
@@ -413,7 +413,7 @@ window.GAME_DATA.options = [
     "cost": 45,
     "effectType": "skill",
     "grantsSkill": "infiltrationIntel",
-    "effectText": "戦闘開始時、敵MS1機の隠密系効果をこの戦闘中無効化する。",
+    "effectText": "戦闘開始時、現在隠密中で最もコストの高い敵MS1機を看破する。戦闘中に隠密を再発動されると上書きされる。",
     "uniqueSkill": true,
     "factions": [
       "federation",

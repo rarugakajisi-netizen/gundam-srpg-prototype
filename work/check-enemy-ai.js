@@ -197,7 +197,49 @@ function main() {
   assert.ok(survivalScores.near > survivalScores.far,
     "Survival-stage enemies should apply pressure from the generic surviveTurns field");
 
-  console.log("Enemy AI checks passed: retreat, support wait, ship hold, generic objectives.");
+  resetBattle(context, `[
+    makeUnit({ msId: "gmSpartanBlackDog", characterIds: ["federationSoldier"], weaponIds: [], optionIds: [] }, "enemy", 2, 2, 0),
+    makeUnit({ msId: "gundam", characterIds: ["amuroRay"], weaponIds: ["beamRifle"], optionIds: [] }, "player", 4, 2, 0)
+  ]`);
+  evaluate(context, `state.units.find((unit) => unit.side === "enemy").armor = 100; advanceEnemyTurn();`);
+  const smokeUse = evaluate(context, `(() => {
+    const unit = state.units.find((item) => item.side === "enemy");
+    return { used: unit.smokeSkillUsed, grace: unit.activeConcealmentGrace, log: state.log.join("\\n") };
+  })()`);
+  assert.equal(smokeUse.used, true, "A threatened enemy should use its smoke discharger");
+  assert.equal(smokeUse.grace, true);
+  assert.match(smokeUse.log, /スモークディスチャージャー/);
+
+  resetBattle(context, `[
+    makeUnit({ msId: "blackRider", characterIds: ["federationSoldier"], weaponIds: [], optionIds: [] }, "enemy", 2, 2, 0),
+    makeUnit({ msId: "gundam", characterIds: ["amuroRay"], weaponIds: ["beamRifle"], optionIds: [] }, "player", 4, 2, 0)
+  ]`);
+  evaluate(context, `state.units.find((unit) => unit.side === "enemy").armor = 100; advanceEnemyTurn();`);
+  const camoUse = evaluate(context, `(() => {
+    const unit = state.units.find((item) => item.side === "enemy");
+    return { used: unit.usedWeaponIds.includes("activeCamo"), grace: unit.activeConcealmentGrace, log: state.log.join("\\n") };
+  })()`);
+  assert.equal(camoUse.used, true, "A threatened enemy with active camo should activate it");
+  assert.equal(camoUse.grace, true);
+  assert.match(camoUse.log, /アクティブ・カモ/);
+
+  resetBattle(context, `[
+    makeUnit({ msId: "hoverTruck", characterIds: ["federationSoldier"], weaponIds: [], optionIds: [] }, "enemy", 2, 2, 0),
+    makeUnit({ msId: "gundam", characterIds: ["amuroRay"], weaponIds: ["beamRifle"], optionIds: [] }, "player", 5, 2, 0)
+  ]`);
+  evaluate(context, `state.units.find((unit) => unit.side === "player").temporarySkills = ["stealth"]; advanceEnemyTurn();`);
+  const sonarWait = evaluate(context, `(() => {
+    const unit = state.units.find((item) => item.side === "enemy");
+    return { moved: unit.moved, acted: unit.acted, log: state.log.join("\\n") };
+  })()`);
+  assert.equal(sonarWait.moved, false, "Enemy sonar should preserve the stationary condition");
+  assert.equal(sonarWait.acted, true);
+  assert.match(sonarWait.log, /ソナーによる索敵を優先/);
+  evaluate(context, "advanceEnemyTurn();");
+  assert.equal(evaluate(context, `state.units.find((unit) => unit.side === "player").infiltrationExposed`), true,
+    "Enemy sonar wait should reveal the concealed target at end of turn");
+
+  console.log("Enemy AI checks passed: retreat, support wait, objectives, active concealment, sonar wait.");
 }
 
 main();

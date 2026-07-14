@@ -150,6 +150,10 @@ function sideHasSkill(side, skillId) {
   return state.units.some((unit) => unit.side === side && isCombatUnit(unit) && isAlive(unit) && unitHasSkill(unit, skillId));
 }
 
+function opposingBattleSide(side) {
+  return side === "player" ? "enemy" : "player";
+}
+
 function massProductionModernizationSource(unit) {
   if (!isMobileSuit(unit) || !isAlive(unit)) return null;
   return state.units.find((source) => {
@@ -302,6 +306,7 @@ function exposeConcealedEnemies(source) {
     )
   );
   targets.forEach((unit) => {
+    unit.activeConcealmentGrace = false;
     unit.infiltrationExposed = true;
     unit.stealthRevealed = true;
     unit.smokeConcealedTurns = 0;
@@ -1105,11 +1110,13 @@ function useMineScatter(unit, weapon, renderAfter = true) {
 
 function useSmokeSkill(unit, renderAfter = true) {
   if (!isMobileSuit(unit) || !unitHasSkill(unit, "smokeDischarger") || unit.acted || unit.moved || unit.smokeSkillUsed) return false;
+  revealStealth(unit, "煙幕展開");
   unit.smokeSkillUsed = true;
   unit.moved = true;
   unit.smokeConcealedTurns = 2;
+  unit.infiltrationExposed = false;
+  unit.activeConcealmentGrace = true;
   unit.acted = true;
-  revealStealth(unit, "煙幕展開");
   pushDialogue(unit, "wait");
   state.log.push(`${unitName(unit)}がスモークディスチャージャーを展開。射撃対象から外れやすくなった。`);
   if (renderAfter) renderBattle();
@@ -1133,6 +1140,7 @@ function useActiveCamo(unit, weapon, renderAfter = true) {
   addTemporarySkill(unit, "stealth");
   unit.stealthRevealed = false;
   unit.infiltrationExposed = false;
+  unit.activeConcealmentGrace = true;
   unit.moved = true;
   unit.acted = true;
   pushDialogue(unit, "wait");
@@ -1141,32 +1149,38 @@ function useActiveCamo(unit, weapon, renderAfter = true) {
   return true;
 }
 
-function nearestConcealedEnemyFor(source) {
+function hasConcealmentState(unit) {
+  return (unitHasSkill(unit, "stealth") && !unit.stealthRevealed)
+    || (unitHasSkill(unit, "guerrillaTactics") && GUERRILLA_TERRAINS.has(terrainAt(unit.x, unit.y)))
+    || (unit.smokeConcealedTurns ?? 0) > 0;
+}
+
+function concealedEnemiesInSonarRange(source) {
   return state.units
     .filter((unit) =>
       unit.side !== source.side
       && isMobileSuit(unit)
       && isAlive(unit)
-      && (
-        unitHasSkill(unit, "stealth")
-        || unitHasSkill(unit, "guerrillaTactics")
-        || (unit.smokeConcealedTurns ?? 0) > 0
-      )
+      && hasConcealmentState(unit)
       && !unit.infiltrationExposed
+      && distance(source, unit) <= undergroundSonarRange(source)
     )
-    .sort((a, b) => distance(source, a) - distance(source, b) || String(a.id).localeCompare(b.id))[0] ?? null;
+    .sort((a, b) => distance(source, a) - distance(source, b) || String(a.id).localeCompare(b.id));
 }
 
 function applyUndergroundSonar(side) {
   state.units
     .filter((unit) => unit.side === side && isMobileSuit(unit) && isAlive(unit) && unitHasSkill(unit, "undergroundSonar") && !unit.moved)
     .forEach((unit) => {
-      const target = nearestConcealedEnemyFor(unit);
-      if (!target) return;
-      target.infiltrationExposed = true;
-      target.stealthRevealed = true;
-      target.smokeConcealedTurns = 0;
-      state.log.push(`${unitName(unit)}のアンダーグラウンドソナーが${unitName(target)}の隠密を看破。`);
+      const targets = concealedEnemiesInSonarRange(unit);
+      if (targets.length === 0) return;
+      targets.forEach((target) => {
+        target.activeConcealmentGrace = false;
+        target.infiltrationExposed = true;
+        target.stealthRevealed = true;
+        target.smokeConcealedTurns = 0;
+      });
+      state.log.push(`${unitName(unit)}のアンダーグラウンドソナーが範囲内の隠密${targets.length}機を看破。`);
     });
 }
 
@@ -1459,27 +1473,27 @@ function firstMobileSuitForSide(side, predicate = () => true) {
 
 function applyInfiltrationIntel(side) {
   if (!sideHasSkill(side, "infiltrationIntel")) return;
-  const target = firstMobileSuitForSide(otherFaction(side), (unit) =>
-    unitHasSkill(unit, "stealth")
-    || unitHasSkill(unit, "guerrillaTactics")
-    || (unit.smokeConcealedTurns ?? 0) > 0
-  );
+  const target = state.units
+    .filter((unit) => unit.side === opposingBattleSide(side) && isMobileSuit(unit) && isAlive(unit) && hasConcealmentState(unit))
+    .sort((a, b) => combatUnitTotalCost(b) - combatUnitTotalCost(a) || String(a.id).localeCompare(String(b.id)))[0] ?? null;
   if (!target) return;
+  target.activeConcealmentGrace = false;
   target.infiltrationExposed = true;
-  state.log.push(`${unitName(target)}の隠密情報が漏洩。隠密系効果がこの戦闘中無効化された。`);
+  state.log.push(`${unitName(target)}の隠密情報が漏洩し、現在の隠密状態が看破された。`);
 }
 
 function applySpyConduct(side) {
   if (!sideHasSkill(side, "spyConduct")) return;
-  const target = firstMobileSuitForSide(otherFaction(side), (unit) => !unitHasSkill(unit, "stealth"));
+  const target = firstMobileSuitForSide(opposingBattleSide(side), (unit) => !unitHasSkill(unit, "stealth"));
   if (!target) return;
   addTemporarySkill(target, "stealth");
   state.log.push(`スパイ行為により、敵側の${unitName(target)}が初期ステルス状態になった。`);
 }
 
 function applyCommanderStealth(side) {
-  if (!sideHasSkill(side, "commanderStealth")) return;
-  const target = firstMobileSuitForSide(side);
+  const source = state.units.find((unit) => unit.side === side && isCombatUnit(unit) && isAlive(unit) && unitHasSkill(unit, "commanderStealth"));
+  if (!source) return;
+  const target = isMobileSuit(source) ? source : firstMobileSuitForSide(side);
   if (!target) return;
   addTemporarySkill(target, "stealth");
   state.log.push(`${unitName(target)}が現地協力者の誘導で初期ステルス状態になった。`);
@@ -1487,10 +1501,10 @@ function applyCommanderStealth(side) {
 
 function applyPreBattleSkillEffects() {
   for (const side of ["player", "enemy"]) {
-    applyInfiltrationIntel(side);
     applySpyConduct(side);
     applyCommanderStealth(side);
   }
+  for (const side of ["player", "enemy"]) applyInfiltrationIntel(side);
   state.units
     .filter((unit) => isMobileSuit(unit) && unitHasSkill(unit, "mobileDiver"))
     .forEach((unit) => {
@@ -1719,6 +1733,24 @@ function shouldEnemyActivateFreezyYard(unit, targets, attackPlan) {
   return !attackPlan && incomingAmmoThreat(unit, targets);
 }
 
+function shouldEnemyUseActiveConcealment(unit, targets, attackPlan) {
+  if (!isMobileSuit(unit) || unit.acted || unit.moved) return false;
+  if (attackPlan?.score >= 430) return false;
+  const incomingRisk = incomingAttackRiskScore(unit, targets);
+  return unitHealthRatio(unit) <= 0.55
+    || incomingRisk >= Math.max(30, effectiveDurability(unit) * 0.22);
+}
+
+function enemyActiveCamoWeapon(unit) {
+  return unitWeaponObjects(unit).find((weapon) => canUseActiveCamo(unit, weapon)) ?? null;
+}
+
+function shouldEnemyWaitForSonar(unit, attackPlan) {
+  if (!isMobileSuit(unit) || unit.acted || unit.moved || !unitHasSkill(unit, "undergroundSonar")) return false;
+  if (attackPlan?.score >= 430) return false;
+  return concealedEnemiesInSonarRange(unit).length > 0;
+}
+
 function enemyMineScatterWeapon(unit, targets, attackPlan) {
   if (attackPlan || targets.length === 0) return null;
   const nearest = [...targets].sort((a, b) => distance(unit, a) - distance(unit, b))[0];
@@ -1932,6 +1964,34 @@ function advanceEnemyTurn() {
       state.selectedTargetId = null;
       activateFreezyYard(enemy, false);
       state.enemyQueue.shift();
+      renderBattle();
+      return;
+    }
+
+    if (shouldEnemyUseActiveConcealment(enemy, targets, attackPlan) && unitHasSkill(enemy, "smokeDischarger") && !enemy.smokeSkillUsed) {
+      state.selectedUnitId = enemy.id;
+      state.selectedTargetId = null;
+      useSmokeSkill(enemy, false);
+      state.enemyQueue.shift();
+      renderBattle();
+      return;
+    }
+
+    const activeCamoWeapon = shouldEnemyUseActiveConcealment(enemy, targets, attackPlan) ? enemyActiveCamoWeapon(enemy) : null;
+    if (activeCamoWeapon) {
+      state.selectedUnitId = enemy.id;
+      state.selectedTargetId = null;
+      useActiveCamo(enemy, activeCamoWeapon, false);
+      state.enemyQueue.shift();
+      renderBattle();
+      return;
+    }
+
+    if (shouldEnemyWaitForSonar(enemy, attackPlan)) {
+      enemy.acted = true;
+      state.enemyQueue.shift();
+      pushDialogue(enemy, "wait");
+      state.log.push(`${unitName(enemy)}はアンダーグラウンドソナーによる索敵を優先して待機。`);
       renderBattle();
       return;
     }
