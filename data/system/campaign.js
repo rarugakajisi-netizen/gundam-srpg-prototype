@@ -11,6 +11,7 @@ window.GAME_DATA.campaign = {
     "msIgloo": { "label": "MS IGLOO", "order": 40 },
     "blueDestiny": { "label": "THE BLUE DESTINY", "order": 50 },
     "fallenColony": { "label": "コロニーの落ちた地で...", "order": 60 },
+    "spaceEndOfFlash": { "label": "宇宙、閃光の果てに...", "order": 70 },
     "other": { "label": "その他", "order": 90 }
   },
   "initialFaction": "federation",
@@ -958,6 +959,59 @@ window.GAME_DATA.campaign = {
           { "msId": "massProductionGuncannonWhiteDingo", "characterIds": ["maximilianBerger"], "weaponIds": ["federationMachineGun100mm", "federationMachineGun100mm"], "optionIds": [] },
           { "msId": "gmSniper2WhiteDingo", "characterIds": ["leungLeeFei"], "weaponIds": ["longRangeBeamRifle"], "optionIds": [] },
           { "msId": "hoverTruck", "characterIds": ["anitaJulian"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "twoGs",
+      "series": "spaceEndOfFlash",
+      "order": 710,
+      "tags": [
+        "宇宙、閃光の果てに...",
+        "連邦視点",
+        "宇宙",
+        "月",
+        "グラナダ",
+        "監視任務",
+        "序盤",
+        "宇宙用高機動試験型ザク"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "musai",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "ア・バオア・クー攻略戦を前に、月面都市グラナダ周辺を監視・警戒します。開けた月近傍宙域で、哨戒中に遭遇したムサイとザクII、宇宙用高機動試験型ザクを撃破する序盤ミッションです。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zakuHighMobilityTestType", "characterIds": ["zeonVeteran"], "weaponIds": ["zakuMachineGun"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "encounter",
+      "series": "spaceEndOfFlash",
+      "order": 720,
+      "tags": [
+        "宇宙、閃光の果てに...",
+        "連邦視点",
+        "宇宙",
+        "デブリ帯",
+        "ザンジバル",
+        "マレット",
+        "アクトザク",
+        "リック・ドム"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "zanzibar",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "大量の戦艦残骸が漂う宙域で、ザンジバルとマレット・サンギーヌのアクトザク、随伴するリック・ドム2機に遭遇します。デブリに進路を阻まれやすいため、航路選びが重要となる戦闘です。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "actZaku", "characterIds": ["malletSanguine"], "weaponIds": ["actZakuBeamRifle"], "optionIds": [] },
+          { "msId": "rickDom", "characterIds": ["zeonSoldier"], "weaponIds": ["giantBazooka"], "optionIds": [] },
+          { "msId": "rickDom", "characterIds": ["zeonSoldier"], "weaponIds": ["giantBazooka"], "optionIds": [] }
         ]
       }
     },

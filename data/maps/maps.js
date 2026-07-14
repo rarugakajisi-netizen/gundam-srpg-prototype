@@ -1154,6 +1154,81 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "twoGs",
+    "name": "ふたつのG",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 1, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 2, "y": 2 },
+          { "x": 5, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "space", "debris", "space", "space", "debris", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "debris", "debris", "space", "space", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space",
+      "space", "debris", "space", "space", "space", "space", "debris", "space",
+      "space", "space", "space", "space", "space", "space", "space", "space"
+    ]
+  },
+  {
+    "id": "encounter",
+    "name": "遭遇",
+    "type": "space",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 1, "y": 2 },
+          { "x": 4, "y": 2 },
+          { "x": 7, "y": 2 }
+        ]
+      }
+    },
+    "terrain": [
+      "debris", "space",  "debris", "space",  "space",  "debris", "space",  "debris",
+      "space",  "debris", "debris", "space",  "debris", "debris", "debris", "space",
+      "debris", "space",  "debris", "debris", "space",  "debris", "debris", "space",
+      "debris", "debris", "space",  "debris", "debris", "space",  "debris", "debris",
+      "space",  "debris", "space",  "space",  "debris", "space",  "debris", "space",
+      "debris", "debris", "space",  "debris", "space",  "debris", "debris", "debris",
+      "debris", "space",  "debris", "debris", "space",  "debris", "space",  "debris",
+      "space",  "debris", "debris", "space",  "debris", "debris", "debris", "space",
+      "space",  "debris", "space",  "debris", "debris", "space",  "debris", "space",
+      "debris", "space",  "debris", "space",  "space",  "debris", "space",  "debris"
+    ]
+  },
+  {
     "id": "garmaFalls",
     "name": "ガルマ散る",
     "type": "ground",

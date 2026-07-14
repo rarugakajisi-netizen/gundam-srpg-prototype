@@ -3497,11 +3497,11 @@ window.GAME_DATA.characters = [
     "name": "リリア・フローベール",
     "characterKey": "liliaFlobert",
     "faction": "zeon",
-    "cost": 80,
+    "cost": 90,
     "shooting": 17,
     "melee": 10,
     "reaction": 17,
-    "awakening": 0,
+    "awakening": 12,
     "command": 7,
     "support": 9,
     "maintenance": 3,
@@ -3510,6 +3510,10 @@ window.GAME_DATA.characters = [
     ],
     "specials": [
       "allyBackup"
+    ],
+    "isNewtype": true,
+    "tags": [
+      "newtype"
     ],
     "imagePath": ""
   },
