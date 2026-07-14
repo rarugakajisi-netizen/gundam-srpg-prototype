@@ -235,6 +235,9 @@ function createChecker(data, dialogues = {}) {
       if (option && Number.isFinite(Number(option.maxMsCost)) && Number(ms.cost) > Number(option.maxMsCost)) {
         error(scope, `${itemLabel(option)} の機体コスト上限を超えています: ${ms.cost} > ${option.maxMsCost}`);
       }
+      if (option && list(option.forbiddenMsSkills).some((skillId) => list(ms.specials).includes(skillId))) {
+        error(scope, `${itemLabel(option)} は ${itemLabel(ms)} の機体スキルと競合します。`);
+      }
     });
     if (optionIds.length > (ms.optionSlots ?? 1)) {
       error(scope, `オプションスロット超過: ${optionIds.length} / ${ms.optionSlots ?? 1}`);
@@ -370,16 +373,24 @@ function createChecker(data, dialogues = {}) {
 
     data.options.forEach((option) => {
       const scope = `options.${option.id}`;
-      expectNumber(scope, option, "cost");
+      if (!Number.isFinite(option.cost)) {
+        error(scope, `cost は数値である必要があります: ${String(option.cost)}`);
+      } else if (option.cost < 0 && option.effectType !== "downgrade") {
+        error(scope, "マイナスコストは effectType が downgrade のオプションだけに設定できます。");
+      }
       expectNumber(scope, option, "maxMsCost", { integer: true, required: false });
+      ["armorModifier", "energyModifier", "agilityModifier", "mobilityModifier", "accuracyModifier", "damageModifier"].forEach((key) => {
+        if (option[key] !== undefined && !Number.isFinite(option[key])) error(scope, `${key} は数値である必要があります。`);
+      });
       if (option.allowsAirDeployment !== undefined && typeof option.allowsAirDeployment !== "boolean") error(scope, "allowsAirDeployment は真偽値で指定してください。");
-      ["factions", "mapTypes", "weaponIds"].forEach((key) => expectUniqueList(`${scope}.${key}`, option[key]));
+      ["factions", "mapTypes", "weaponIds", "forbiddenMsSkills"].forEach((key) => expectUniqueList(`${scope}.${key}`, option[key]));
       expectFactions(scope, option.factions, true);
       list(option.mapTypes).forEach((type) => {
         if (!DEPLOY_TYPES.has(type)) error(scope, `不明な mapTypes です: ${type}`);
       });
       expectId(`${scope}.grantsSkill`, "skills", option.grantsSkill, true);
       list(option.weaponIds).forEach((id) => expectId(`${scope}.weaponIds`, "weapons", id));
+      list(option.forbiddenMsSkills).forEach((id) => expectId(`${scope}.forbiddenMsSkills`, "skills", id));
       if (!option.effectText || typeof option.effectText !== "string") warning(scope, "effectText が未設定です。");
     });
   }
@@ -410,6 +421,7 @@ function createChecker(data, dialogues = {}) {
         (ms.optionSlots ?? 1) > 0
         && optionUsableByFaction(option, ms.faction)
         && (!Number.isFinite(Number(option.maxMsCost)) || Number(ms.cost) <= Number(option.maxMsCost))
+        && !list(option.forbiddenMsSkills).some((skillId) => list(ms.specials).includes(skillId))
       );
       if (!hasEligibleMs) error(`options.${option.id}`, "装備可能な機体が1機もありません。");
     });

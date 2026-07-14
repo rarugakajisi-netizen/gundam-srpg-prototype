@@ -123,7 +123,8 @@ function mobilityFor(unit) {
   const stopMovementPenalty = hinderedByStopMovement(unit) ? 1 : 0;
   const retreatBonus = retreatMobilitySupportActive(unit) ? 1 : 0;
   const modernizationBonus = massProductionModernizationActive(unit) ? 1 : 0;
-  return Math.max(1, msFor(unit).mobility + optionBonus + vehicleBonus + retreatBonus + modernizationBonus - unitTerrainPenalty(unit).mobility - stopMovementPenalty);
+  const directModifier = optionModifierTotal(unit.optionIds, "mobilityModifier");
+  return Math.max(1, msFor(unit).mobility + directModifier + optionBonus + vehicleBonus + retreatBonus + modernizationBonus - unitTerrainPenalty(unit).mobility - stopMovementPenalty);
 }
 
 function runtimeWeapon(unit, weaponId) {
@@ -596,8 +597,8 @@ function frontlineSupplyTargetFor(source) {
     .sort((a, b) => durabilityRatio(a) - durabilityRatio(b) || a.armor - b.armor || String(a.id).localeCompare(String(b.id)))[0] ?? null;
 }
 
-function unitWeaponObjects(unit) {
-  if (!isCombatUnit(unit)) return [];
+function unitWeaponObjects(unit, options = {}) {
+  if (!isCombatUnit(unit) && !(options.allowDestroyed && (isMobileSuit(unit) || isBattleship(unit)))) return [];
   const disabledVehicleWeapons = unit.vehicleOptionDisabled ? vehicleWeaponIds(unit) : new Set();
   return [...new Set(unit.weaponIds
     .filter((id) => !disabledVehicleWeapons.has(id))
@@ -605,8 +606,8 @@ function unitWeaponObjects(unit) {
     .map((id) => weaponFor(id));
 }
 
-function attackWeapons(unit) {
-  return unitWeaponObjects(unit)
+function attackWeapons(unit, options = {}) {
+  return unitWeaponObjects(unit, options)
     .filter((weapon) => weaponCanAttack(weapon))
     .filter((weapon) => !(activeVehicleOption(unit)?.forbidsMelee && weapon.attackType === "melee"));
 }
@@ -921,7 +922,8 @@ function evasion(unit, options = {}) {
   if (isBattleship(unit)) return battleshipFor(unit).agility + battleshipEvasionBonus(unit) + schemingEvasionBonus(unit);
   const ms = msFor(unit);
   const character = primaryCharacterFor(unit);
-  return Math.max(0, ms.agility + character.reaction + Math.floor(character.awakening / 2) + characterMsBonus(unit) + skillEvasionBonus(unit) + schemingEvasionBonus(unit) - jinxEvasionPenalty(unit) - oldSoldierPrideEvasionPenalty(unit, options) - unitTerrainPenalty(unit).evasion);
+  const optionAgilityModifier = optionModifierTotal(unit.optionIds, "agilityModifier");
+  return Math.max(0, ms.agility + optionAgilityModifier + character.reaction + Math.floor(character.awakening / 2) + characterMsBonus(unit) + skillEvasionBonus(unit) + schemingEvasionBonus(unit) - jinxEvasionPenalty(unit) - oldSoldierPrideEvasionPenalty(unit, options) - unitTerrainPenalty(unit).evasion);
 }
 
 function hitRate(attacker, defender, weapon, options = {}) {
@@ -940,7 +942,8 @@ function hitRate(attacker, defender, weapon, options = {}) {
   const character = primaryCharacterFor(attacker);
   const ability = weapon.attackType === "melee" ? character.melee : character.shooting;
   const repeatPenalty = repeatAttackAccuracyPenalty(attacker, attackOrdinal);
-  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + priorityTargetBonus + precisionAttackBonus + HIT_RATE_BONUS - panicPenalty - innocentPenalty - enemyIntelPenalty - repeatPenalty - defenderEvasion;
+  const optionAccuracyModifier = optionModifierTotal(attacker.optionIds, "accuracyModifier");
+  const raw = weapon.accuracy + ability + Math.floor(character.awakening / 2) + msWeaponBonus(attacker, weapon) + skillAccuracyBonus(attacker, defender, weapon) + oneHandBonus(attacker, weapon) + barrageSupportPenalty(defender, attacker) + priorityTargetBonus + precisionAttackBonus + optionAccuracyModifier + HIT_RATE_BONUS - panicPenalty - innocentPenalty - enemyIntelPenalty - repeatPenalty - defenderEvasion;
   return clamp(raw, minHitRate, MAX_HIT_RATE);
 }
 
@@ -969,7 +972,7 @@ function advanceLearningComputer(unit) {
 }
 
 function damageFor(attacker, defender, weapon, options = {}) {
-  let damage = weapon.power;
+  let damage = weapon.power + (isMobileSuit(attacker) ? optionModifierTotal(attacker.optionIds, "damageModifier") : 0);
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "precisionAttackControl")) damage += PRECISION_ATTACK_DAMAGE_BONUS;
   if (aceSkillActive(attacker)) damage += 10;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "aiSenshi") && alliedMobileSuitDestroyed(attacker.side)) damage += 15;
@@ -1363,10 +1366,10 @@ function transformToCoreFighter(unit) {
   unit.faction = coreFighter.faction;
   unit.weaponIds = [...coreFighter.fixedWeaponIds, ...(sourceMs.escapeWeaponIds ?? [])];
   unit.runtimeWeapons = runtimeWeaponsForIds(unit.weaponIds);
-  unit.armor = coreFighter.armor;
-  unit.maxArmor = coreFighter.armor;
-  unit.energy = coreFighter.energy;
-  unit.maxEnergy = coreFighter.energy;
+  unit.maxArmor = optionAdjustedValue(coreFighter.armor, unit.optionIds, "armorModifier", 1);
+  unit.maxEnergy = optionAdjustedValue(coreFighter.energy, unit.optionIds, "energyModifier", 0);
+  unit.armor = unit.maxArmor;
+  unit.energy = unit.maxEnergy;
   unit.usedWeaponIds = [];
   state.log.push(`${beforeName}の脱出機構作動。${coreFighter.name}で戦闘続行。`);
 }
@@ -1388,9 +1391,9 @@ function purgeAdditionalArmor(unit, reason = "任意パージ", renderAfter = tr
   unit.faction = targetMs.faction;
   unit.weaponIds = weaponIds;
   unit.runtimeWeapons = runtimeWeaponsAfterTransform(unit, weaponIds);
-  unit.maxArmor = targetMs.armor;
-  unit.maxEnergy = targetMs.energy + optionEnergyBonus;
-  unit.armor = targetMs.armor;
+  unit.maxArmor = optionAdjustedValue(targetMs.armor, optionIds, "armorModifier", 1);
+  unit.maxEnergy = optionAdjustedValue(targetMs.energy + optionEnergyBonus, optionIds, "energyModifier", 0);
+  unit.armor = unit.maxArmor;
   unit.energy = unit.maxEnergy;
   unit.usedWeaponIds = [];
   unit.weaponCharges = {};
@@ -1416,10 +1419,63 @@ function transformToEscapeShip(unit) {
   state.log.push(`${beforeName}から${escapeShip.name}が脱出。撃沈敗北を一度だけ回避。`);
 }
 
+function canUseAinasPocketWatch(unit) {
+  if (!isMobileSuit(unit) || unit.ainasPocketWatchUsed || !unitHasSkill(unit, "ainasPocketWatch")) return false;
+  return !["coreSystem", "additionalArmor"].some((skillId) => (msFor(unit).specials ?? []).includes(skillId));
+}
+
+function activateAinasPocketWatch(unit) {
+  if (!canUseAinasPocketWatch(unit) || unit.armor !== 0) return false;
+  unit.ainasPocketWatchUsed = true;
+  unit.armor = 1;
+  state.log.push(`${unitName(unit)}はアイナの懐中時計を支えに、装甲1で踏みとどまった。`);
+  return true;
+}
+
+function lastShootingWeapon(unit, target) {
+  if (!isMobileSuit(unit) || !isAlive(target)) return null;
+  return attackWeapons(unit, { allowDestroyed: true })
+    .filter((weapon) => canPayCost(unit, weapon) && weaponInRange(unit, target, weapon))
+    .map((weapon) => ({
+      weapon,
+      expectedDamage: damageFor(unit, target, weapon) * hitRate(unit, target, weapon, { attackOrdinal: 1 }) / 100
+    }))
+    .sort((a, b) => b.expectedDamage - a.expectedDamage || b.weapon.power - a.weapon.power || b.weapon.accuracy - a.weapon.accuracy)[0]?.weapon ?? null;
+}
+
+function resolveLastShooting(unit, target) {
+  if (!isMobileSuit(unit) || unit.armor !== 0 || unit.lastShootingUsed || !unitHasSkill(unit, "lastShooting") || !isAlive(target)) return false;
+  const weapon = lastShootingWeapon(unit, target);
+  if (!weapon) return false;
+
+  unit.lastShootingUsed = true;
+  payCost(unit, weapon);
+  markWeaponUsed(unit, weapon);
+  revealStealth(unit, "ラストシューティング");
+  const hit = hitRate(unit, target, weapon, { attackOrdinal: 1 });
+  const roll = Math.floor(Math.random() * 100) + 1;
+  state.log.push(`${unitName(unit)}のラストシューティング。${weapon.name}で${unitName(target)}へ反撃。`);
+  if (roll > hit) {
+    state.log.push(`命中${hit}%、出目${roll}で回避された。`);
+  } else {
+    const iFieldActive = activateIField(target, weapon);
+    const damage = damageFor(unit, target, weapon, { iFieldActive });
+    const effectNotes = combatEffectNotes(unit, target, weapon, { iFieldActive });
+    applyDamage(target, damage);
+    state.log.push(`${weapon.name}が命中。${unitName(target)}に${damage}ダメージ。`);
+    if (effectNotes.length > 0) state.log.push(`発動: ${effectNotes.join(" / ")}`);
+    if (!isAlive(target)) state.log.push(`${unitName(target)}を撃破。`);
+  }
+  scatterMines(unit, target, weapon);
+  applyBeamDisruption(unit, target, weapon);
+  recordAttackTarget(unit, target);
+  return true;
+}
+
 function attack(attacker, defender, weapon, renderAfter = true) {
   if (state.outcome) return;
   if ((attacker.side === "player" && state.phase !== "player") || (attacker.side === "enemy" && state.phase !== "enemy")) return;
-  if (!isCombatUnit(attacker) || attacker.acted || !isAttackTarget(defender) || !weapon || weaponUsed(attacker, weapon.id)) return;
+  if (!isCombatUnit(attacker) || !isAlive(attacker) || attacker.acted || !isAttackTarget(defender) || !isAlive(defender) || !weapon || weaponUsed(attacker, weapon.id)) return;
   if (!weaponInRange(attacker, defender, weapon) || !canPayCost(attacker, weapon)) return;
 
   activateExamSystemByCombat(attacker, defender);
@@ -1431,6 +1487,7 @@ function attack(attacker, defender, weapon, renderAfter = true) {
   const hit = hitRate(attacker, defender, weapon, { attackOrdinal });
   const repeatPenalty = repeatAttackAccuracyPenalty(attacker, attackOrdinal);
   const roll = Math.floor(Math.random() * 100) + 1;
+  let defenderDestroyedByThisAttack = false;
   revealStealth(attacker, "攻撃");
 
   if (roll > hit) {
@@ -1446,9 +1503,13 @@ function attack(attacker, defender, weapon, renderAfter = true) {
     state.log.push(`${attackerName}の${weapon.name}が命中${repeatPenalty ? `（連続攻撃-${repeatPenalty}）` : ""}。${defenderName}に${damage}ダメージ。`);
     if (effectNotes.length > 0) state.log.push(`発動: ${effectNotes.join(" / ")}`);
     if (isAlive(defender)) pushDialogue(defender, "damaged");
-    if (!isAlive(defender)) state.log.push(`${defenderName}を撃破。`);
+    if (!isAlive(defender)) {
+      defenderDestroyedByThisAttack = true;
+      state.log.push(`${defenderName}を撃破。`);
+    }
   }
 
+  if (defenderDestroyedByThisAttack) resolveLastShooting(defender, attacker);
   scatterMines(attacker, defender, weapon);
   applyBeamDisruption(attacker, defender, weapon);
   recordAttackTarget(attacker, defender);
@@ -1482,6 +1543,7 @@ function applyDamage(unit, amount) {
   if (unit.armor === 0 && canUseEscapeShip(unit)) transformToEscapeShip(unit);
   if (unit.armor === 0 && canPurgeAdditionalArmor(unit)) purgeAdditionalArmor(unit, "破壊", false);
   if (unit.armor === 0 && canUseCoreSystem(unit)) transformToCoreFighter(unit);
+  if (unit.armor === 0) activateAinasPocketWatch(unit);
   activateExamSystemByArmor(unit);
   activateHadesSystemByArmor(unit);
   activateLimitedSystemsByArmor(unit);
@@ -1559,8 +1621,8 @@ function transformMobileSuit(unit, targetMsId, renderAfter = true) {
   unit.faction = targetMs.faction;
   unit.weaponIds = weaponIds;
   unit.runtimeWeapons = runtimeWeaponsAfterTransform(unit, weaponIds);
-  unit.maxArmor = targetMs.armor;
-  unit.maxEnergy = targetMs.energy + optionEnergyBonus;
+  unit.maxArmor = optionAdjustedValue(targetMs.armor, optionIds, "armorModifier", 1);
+  unit.maxEnergy = optionAdjustedValue(targetMs.energy + optionEnergyBonus, optionIds, "energyModifier", 0);
   unit.armor = Math.min(unit.maxArmor, carriedArmor);
   unit.energy = Math.min(unit.maxEnergy, Math.ceil(unit.maxEnergy * energyRate));
   unit.usedWeaponIds = [];

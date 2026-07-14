@@ -56,6 +56,8 @@ function main() {
   runNode(["work/check-priority-target.js"]);
   runNode(["work/check-precision-repair.js"]);
   runNode(["work/check-formations.js"]);
+  runNode(["work/check-last-stand-options.js"]);
+  runNode(["work/check-tem-ray-parts.js"]);
   runNode(["work/check-card-images.js"]);
 }
 

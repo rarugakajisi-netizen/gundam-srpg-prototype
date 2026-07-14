@@ -240,6 +240,7 @@ function optionUsableOnMap(option, map = selectedMap()) {
 function optionEquippableByMs(option, ms, map = selectedMap(), faction = ms?.faction) {
   if (option?.grantsSkill === "examSystem" && (ms?.specials ?? []).includes("hadesSystem")) return false;
   if (Number.isFinite(Number(option?.maxMsCost)) && Number(ms?.cost) > Number(option.maxMsCost)) return false;
+  if ((option?.forbiddenMsSkills ?? []).some((skillId) => (ms?.specials ?? []).includes(skillId))) return false;
   return Boolean(option)
     && Boolean(ms)
     && optionUsableByFaction(option, faction)
@@ -291,6 +292,18 @@ function lookup() {
     battleships: byId(state.data.battleships),
     options: byId(state.data.options ?? [])
   };
+}
+
+function optionModifierTotal(optionIds, field) {
+  const { options } = lookup();
+  return (optionIds ?? []).reduce((total, id) => {
+    const value = Number(options[id]?.[field]);
+    return total + (Number.isFinite(value) ? value : 0);
+  }, 0);
+}
+
+function optionAdjustedValue(baseValue, optionIds, field, minimum = 0) {
+  return Math.max(minimum, Number(baseValue) + optionModifierTotal(optionIds, field));
 }
 
 function isCountedCardType(type) {

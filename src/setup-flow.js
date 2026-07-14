@@ -1961,10 +1961,11 @@ function makeUnit(entry, side, x, y, index) {
   const optionWeaponIds = optionIds.flatMap((id) => options[id]?.weaponIds ?? []);
   const weaponIds = [...unitMs.fixedWeaponIds, ...entry.weaponIds, ...optionWeaponIds];
   const runtimeWeapons = runtimeWeaponsForIds(weaponIds, optionIds);
-  const maxEnergy = unitMs.energy + (optionIds.includes("externalGenerator") ? 25 : 0);
-  const maxArmor = Number.isFinite(Number(entry.armorOverride))
+  const maxEnergy = optionAdjustedValue(unitMs.energy + (optionIds.includes("externalGenerator") ? 25 : 0), optionIds, "energyModifier", 0);
+  const baseArmor = Number.isFinite(Number(entry.armorOverride))
     ? Math.max(1, Math.floor(Number(entry.armorOverride)))
     : unitMs.armor;
+  const maxArmor = optionAdjustedValue(baseArmor, optionIds, "armorModifier", 1);
   const totalCost = unitMs.cost
     + (entry.characterIds ?? []).reduce((sum, id) => sum + (characters[id]?.cost ?? 0), 0)
     + (entry.weaponIds ?? []).reduce((sum, id) => sum + (weapons[id]?.cost ?? 0), 0)

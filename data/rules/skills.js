@@ -260,6 +260,22 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "ainasPocketWatch",
+    "name": "アイナの懐中時計",
+    "type": "OP",
+    "timing": "被撃破時",
+    "effect": "通常ダメージで装甲が0になった時、一度だけ装甲1で踏みとどまる。盾・EN・弾薬・状態は回復せず、強制撤退や自爆は防げない。",
+    "implemented": true
+  },
+  {
+    "id": "lastShooting",
+    "name": "ラストシューティング",
+    "type": "OP",
+    "timing": "直接攻撃による被撃破時",
+    "effect": "一度だけ、撃破した敵へその場から届き、消費を支払える武装のうち期待ダメージ最大のものですぐに反撃する。通常の命中判定を行う。",
+    "implemented": true
+  },
+  {
     "id": "guardMission",
     "name": "護衛任務",
     "type": "キャラ/OP",

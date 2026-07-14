@@ -116,6 +116,25 @@ window.GAME_DATA.options = [
     "imagePath": ""
   },
   {
+    "id": "temRayParts",
+    "name": "テム・レイのパーツ",
+    "cost": -30,
+    "effectType": "downgrade",
+    "armorModifier": -100,
+    "energyModifier": -25,
+    "agilityModifier": -10,
+    "mobilityModifier": -1,
+    "accuracyModifier": -10,
+    "damageModifier": -15,
+    "effectText": "編成コスト-30。最大装甲-100、最大EN-25、運動-10、移動力-1、命中-10、与ダメージ-15。どう見ても機体性能が上がる代物ではない。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "guerrillaTacticsOption",
     "name": "ゲリラ作戦",
     "cost": 55,
@@ -305,6 +324,38 @@ window.GAME_DATA.options = [
     "effectType": "skill",
     "grantsSkill": "lineFormation",
     "effectText": "同じ横列かつ4マス以内に別の生存味方MSがいると、自機と同条件の味方MSの命中+5、与ダメージ+6。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "ainasPocketWatch",
+    "name": "アイナの懐中時計",
+    "cost": 80,
+    "effectType": "skill",
+    "grantsSkill": "ainasPocketWatch",
+    "effectText": "通常ダメージで装甲が0になった時、一度だけ装甲1で踏みとどまる。盾・EN・弾薬・状態は回復せず、強制撤退や自爆は防げない。脱出機能・増加装甲持ちは装備不可。",
+    "forbiddenMsSkills": [
+      "coreSystem",
+      "additionalArmor"
+    ],
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "lastShooting",
+    "name": "ラストシューティング",
+    "cost": 65,
+    "effectType": "skill",
+    "grantsSkill": "lastShooting",
+    "effectText": "直接攻撃で撃破された時、一度だけ撃破した敵へ、射程内かつ消費を支払える武装のうち期待ダメージ最大のもので即座に反撃する。通常の命中判定を行う。",
     "uniqueSkill": true,
     "factions": [
       "federation",

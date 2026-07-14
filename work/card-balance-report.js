@@ -59,7 +59,9 @@ const WATCHED_OPTIONS = new Set([
   "precisionAttackControl",
   "emergencyRepair",
   "trailFormation",
-  "lineFormation"
+  "lineFormation",
+  "ainasPocketWatch",
+  "lastShooting"
 ]);
 
 const REPRESENTATIVE_DEFENDERS = [
@@ -134,6 +136,7 @@ function factionKey(item) {
 function optionEquippableByMs(option, ms) {
   if (option?.grantsSkill === "examSystem" && list(ms.specials).includes("hadesSystem")) return false;
   if (Number.isFinite(Number(option?.maxMsCost)) && number(ms.cost) > number(option.maxMsCost)) return false;
+  if (list(option?.forbiddenMsSkills).some((skillId) => list(ms.specials).includes(skillId))) return false;
   return cardUsableByFaction(option, ms.faction);
 }
 
@@ -632,6 +635,17 @@ function warningsFromReport(draft) {
   }
 
   for (const option of data.options ?? []) {
+    if (number(option.cost) < 0) {
+      add("medium", "negative-cost-option", option, "編成コストを直接下げるOPです。性能低下に対して値引きが過剰でないか継続監視してください。", {
+        cost: option.cost,
+        armorModifier: option.armorModifier ?? 0,
+        energyModifier: option.energyModifier ?? 0,
+        agilityModifier: option.agilityModifier ?? 0,
+        mobilityModifier: option.mobilityModifier ?? 0,
+        accuracyModifier: option.accuracyModifier ?? 0,
+        damageModifier: option.damageModifier ?? 0
+      });
+    }
     if (WATCHED_OPTIONS.has(option.grantsSkill)) {
       const severity = ["forcedMarch", "enemyIntel", "examSystem", "iField", "massProductionModernization"].includes(option.grantsSkill) ? "high" : "medium";
       add(severity, "rule-sensitive-option", option, "ルール影響が大きいOPです。コストと発動条件を継続監視してください。", {

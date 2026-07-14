@@ -726,6 +726,8 @@ function activeSkillText(unit) {
   if (unitHasSkill(unit, "priorityTargetDesignation")) skills.push(`優先目標範囲${priorityTargetDesignationRange(unit)}（指揮${priorityTargetCommand(unit)}）`);
   if (unitHasSkill(unit, "precisionAttackControl")) skills.push(`精密管制（命中+${PRECISION_ATTACK_ACCURACY_BONUS} / ダメージ+${PRECISION_ATTACK_DAMAGE_BONUS} / 1攻撃）`);
   if (unitHasSkill(unit, "emergencyRepair")) skills.push(`緊急修理${unit.emergencyRepairUsed ? "使用済み" : `（整備${emergencyRepairMaintenance(unit)}）`}`);
+  if (unitHasSkill(unit, "ainasPocketWatch")) skills.push(`アイナの懐中時計${unit.ainasPocketWatchUsed ? "使用済み" : "（未使用）"}`);
+  if (unitHasSkill(unit, "lastShooting")) skills.push(`ラストシューティング${unit.lastShootingUsed ? "使用済み" : "（未使用）"}`);
   if (trailFormationActive(unit)) skills.push(`トレイル陣形（回避+${TRAIL_FORMATION_EVASION_BONUS} / 被ダメージ-${TRAIL_FORMATION_DAMAGE_REDUCTION}）`);
   if (lineFormationActive(unit)) skills.push(`ライン陣形（命中+${LINE_FORMATION_ACCURACY_BONUS} / ダメージ+${LINE_FORMATION_DAMAGE_BONUS}）`);
   if (unit.priorityTargetId) skills.push("優先目標指示中");
@@ -1251,6 +1253,7 @@ function optionEffectTypeLabel(effectType) {
     "defense-melee": "格闘防御",
     range: "射程補助",
     mobility: "移動補助",
+    downgrade: "性能劣化",
     skill: "特殊能力",
     vehicle: "搭乗装備"
   }[effectType] ?? "特殊効果";
@@ -1267,6 +1270,7 @@ function renderOptionDetails(option, options = {}) {
         ...(option.grantsSkill && skillName(option.grantsSkill) !== option.name ? [["付与スキル", skillName(option.grantsSkill)]] : []),
         ["効果", option.effectText],
         ...(Number.isFinite(Number(option.maxMsCost)) ? [["機体コスト条件", `${option.maxMsCost}以下`]] : []),
+        ...((option.forbiddenMsSkills ?? []).length > 0 ? [["装備不可", `${option.forbiddenMsSkills.map((id) => skillName(id)).join(" / ")}所持機`]] : []),
         ["出撃", optionMapTypesText(option)],
         ...(option.uniqueSkill ? [["重複", "同名効果と重複なし"]] : []),
         ["使用勢力", factions]
