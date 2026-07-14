@@ -33,6 +33,8 @@ const WATCHED_WIDE_SKILLS = {
   barrageSupport: "周囲3マスの敵回避-8",
   massProductionFormation: "同型量産機の命中/攻防補助",
   massProductionModernization: "低コスト同一機体の命中/回避/攻防/移動補助",
+  trailFormation: "縦列4マス以内の味方MSへ回避/防御補助",
+  lineFormation: "横列4マス以内の味方MSへ命中/攻撃補助",
   enemyIntel: "最初の敵ターンのみ相手全体命中-8",
   pilotSupply: "戦艦隣接MSの命中/回避+5",
   retreatSupport: "低耐久味方MSの回避+10",
@@ -55,7 +57,9 @@ const WATCHED_OPTIONS = new Set([
   "smokeDischarger",
   "priorityTargetDesignation",
   "precisionAttackControl",
-  "emergencyRepair"
+  "emergencyRepair",
+  "trailFormation",
+  "lineFormation"
 ]);
 
 const REPRESENTATIVE_DEFENDERS = [

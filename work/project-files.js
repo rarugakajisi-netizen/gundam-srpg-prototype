@@ -42,6 +42,7 @@ const TOOL_FILES = [
   "work/check-barricade.js",
   "work/check-priority-target.js",
   "work/check-precision-repair.js",
+  "work/check-formations.js",
   "work/check-card-images.js",
   "work/card-balance-report.js",
   "work/package-release.js",

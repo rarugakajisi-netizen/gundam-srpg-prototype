@@ -285,6 +285,34 @@ window.GAME_DATA.options = [
     "imagePath": ""
   },
   {
+    "id": "trailFormation",
+    "name": "トレイル・フォーメーション",
+    "cost": 55,
+    "effectType": "skill",
+    "grantsSkill": "trailFormation",
+    "effectText": "同じ縦列かつ4マス以内に別の生存味方MSがいると、自機と同条件の味方MSの回避+5、被ダメージ-6。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
+    "id": "lineFormation",
+    "name": "ライン・フォーメーション",
+    "cost": 55,
+    "effectType": "skill",
+    "grantsSkill": "lineFormation",
+    "effectText": "同じ横列かつ4マス以内に別の生存味方MSがいると、自機と同条件の味方MSの命中+5、与ダメージ+6。",
+    "uniqueSkill": true,
+    "factions": [
+      "federation",
+      "zeon"
+    ],
+    "imagePath": ""
+  },
+  {
     "id": "enhancedWarheadOption",
     "name": "強化弾頭",
     "cost": 55,

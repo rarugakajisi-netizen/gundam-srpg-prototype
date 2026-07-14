@@ -841,6 +841,7 @@ function skillAccuracyBonus(unit, defender, weapon) {
   let bonus = 0;
   if (unitHasSkill(unit, "commanderCustom")) bonus += 3;
   if (unitHasSkill(unit, "teamwork") && hasTeamworkAlly(unit)) bonus += 5;
+  if (lineFormationActive(unit)) bonus += LINE_FORMATION_ACCURACY_BONUS;
   if (massProductionFormationActive(unit)) bonus += 4;
   if (massProductionModernizationActive(unit)) bonus += 6;
   if (unitHasSkill(unit, "educationalComputer")) bonus += Math.min(EDUCATIONAL_COMPUTER_ACCURACY_CAP, unit.learningStacks ?? 0);
@@ -878,6 +879,7 @@ function skillEvasionBonus(unit) {
   if (unitHasSkill(unit, "educationalComputer")) bonus += Math.min(EDUCATIONAL_COMPUTER_EVASION_CAP, unit.learningStacks ?? 0);
   if (retreatSupportActive(unit)) bonus += 10;
   if (unitHasSkill(unit, "haroSupport")) bonus += HARO_EVASION_BONUS;
+  if (trailFormationActive(unit)) bonus += TRAIL_FORMATION_EVASION_BONUS;
   if (pilotSupplyActive(unit)) bonus += 5;
   if (internalAuditActive(unit)) bonus += 4;
   if (marineSpaceSupportActive(unit)) bonus += 5;
@@ -981,6 +983,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (terrainAt(defender.x, defender.y) === "desert" && (unitHasSkill(attacker, "antiDesert") || weaponHasSkill(weapon, "antiDesert"))) damage += 18;
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) damage += 20;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) damage += 8;
+  if (lineFormationActive(attacker)) damage += LINE_FORMATION_DAMAGE_BONUS;
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) damage += 8;
   if (isMobileSuit(attacker) && massProductionModernizationActive(attacker)) damage += 12;
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "madness") && repeatedTargetAttack(attacker, defender)) damage += 15;
@@ -1004,6 +1007,7 @@ function damageFor(attacker, defender, weapon, options = {}) {
   if (weapon.kind === "ammo" && freezyYardActive(defender)) damage -= FREEZY_YARD_REDUCTION;
   if (isMobileSuit(defender) && weapon.attackType === "melee" && unitHasSkill(defender, "impactDiffusionArmor")) damage -= 15;
   if (isMobileSuit(defender) && unitHasSkill(defender, "aiSenshi") && alliedMobileSuitDestroyed(defender.side)) damage -= 10;
+  if (trailFormationActive(defender)) damage -= TRAIL_FORMATION_DAMAGE_REDUCTION;
   if (isMobileSuit(defender) && massProductionFormationActive(defender)) damage -= 8;
   if (isMobileSuit(defender) && massProductionModernizationActive(defender)) damage -= 10;
   if (isMobileSuit(defender) && unitHasSkill(defender, "guardedPersons")) damage -= 10;
@@ -1031,6 +1035,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (isMobileSuit(defender) && unitIsFlying(defender) && weaponHasSkill(weapon, "antiAir")) notes.push("対空中");
   if (terrainAt(defender.x, defender.y) === "desert" && (unitHasSkill(attacker, "antiDesert") || weaponHasSkill(weapon, "antiDesert"))) notes.push("対砂漠");
   if (isMobileSuit(attacker) && unitHasSkill(attacker, "teamwork") && hasTeamworkAlly(attacker)) notes.push("チームワーク攻撃");
+  if (lineFormationActive(attacker)) notes.push("ライン・フォーメーション");
   if (priorityTargetAccuracyBonus(attacker, defender) > 0) notes.push("優先目標指示");
   if (isMobileSuit(attacker) && massProductionFormationActive(attacker)) notes.push("量産機編成攻撃");
   if (isMobileSuit(attacker) && massProductionModernizationActive(attacker)) notes.push("量産機近代化改修");
@@ -1051,6 +1056,7 @@ function combatEffectNotes(attacker, defender, weapon, options = {}) {
   if (options.iFieldActive) notes.push("Iフィールド");
   if (unitIsSubmerged(defender) && (unitHasSkill(attacker, "antiSubmarine") || weaponHasSkill(weapon, "antiSubmarine"))) notes.push("対水中");
   if (weapon.kind === "ammo" && freezyYardActive(defender)) notes.push("フリージーヤード");
+  if (trailFormationActive(defender)) notes.push("トレイル・フォーメーション");
   if (isMobileSuit(defender) && massProductionFormationActive(defender)) notes.push("量産機編成防御");
   if (isMobileSuit(defender) && massProductionModernizationActive(defender)) notes.push("量産機近代化改修防御");
   if (aquaticCombatAdaptationActive(defender)) notes.push("水中戦適応防御");
@@ -1981,6 +1987,12 @@ function enemyMoveCandidates(unit) {
   ];
 }
 
+function formationPositionScore(unit) {
+  if (!isMobileSuit(unit) || !isAlive(unit)) return 0;
+  return (trailFormationActive(unit) ? FORMATION_AI_POSITION_SCORE : 0)
+    + (lineFormationActive(unit) ? FORMATION_AI_POSITION_SCORE : 0);
+}
+
 function bestEnemyMove(unit, targets, attackTargets = targets) {
   let best = null;
   enemyMoveCandidates(unit).forEach((cell) => {
@@ -1991,11 +2003,13 @@ function bestEnemyMove(unit, targets, attackTargets = targets) {
       const approachScore = nearestTargetApproachScore(unit, targets);
       const objectiveScore = enemyObjectiveScore(unit, targets);
       const riskScore = incomingAttackRiskScore(unit, targets);
+      const formationScore = formationPositionScore(unit);
       const score = (futureAttack ? AI_ATTACK_POSITION_BONUS + futureAttack.score : approachScore)
         + supportScore
         + objectiveScore
+        + formationScore
         - riskScore;
-      return { futureAttack, supportScore, objectiveScore, riskScore, score };
+      return { futureAttack, supportScore, objectiveScore, riskScore, formationScore, score };
     });
     if (!best || result.score > best.score) best = { ...cell, ...result };
   });
@@ -2003,6 +2017,7 @@ function bestEnemyMove(unit, targets, attackTargets = targets) {
   if (best.supportScore >= 760) best.reason = "補給位置へ移動";
   else if (best.futureAttack) best.reason = "攻撃位置へ移動";
   else if (best.objectiveScore > 0) best.reason = "作戦目標に合わせて移動";
+  else if (best.formationScore > 0) best.reason = "陣形を形成";
   else best.reason = "接近";
   return best;
 }

@@ -615,6 +615,33 @@ function hasTeamworkAlly(unit) {
   return alliedMobileSuits(unit).some((other) => distance(other, unit) <= 2);
 }
 
+function formationAxisMatches(source, target, axis) {
+  return axis === "vertical" ? source.x === target.x : source.y === target.y;
+}
+
+function formationSourceAffects(source, target, skillId, axis) {
+  if (!isMobileSuit(source) || !isAlive(source) || !unitHasSkill(source, skillId)) return false;
+  if (!isMobileSuit(target) || !isAlive(target) || source.side !== target.side) return false;
+  if (!formationAxisMatches(source, target, axis) || distance(source, target) > FORMATION_RANGE) return false;
+  if (source.id !== target.id) return true;
+  return alliedMobileSuits(source).some((other) =>
+    formationAxisMatches(source, other, axis) && distance(source, other) <= FORMATION_RANGE
+  );
+}
+
+function formationActive(unit, skillId, axis) {
+  if (!isMobileSuit(unit) || !isAlive(unit)) return false;
+  return state.units.some((source) => formationSourceAffects(source, unit, skillId, axis));
+}
+
+function trailFormationActive(unit) {
+  return formationActive(unit, "trailFormation", "vertical");
+}
+
+function lineFormationActive(unit) {
+  return formationActive(unit, "lineFormation", "horizontal");
+}
+
 function isFrontmostAlly(unit) {
   if (!isMobileSuit(unit)) return false;
   const allies = state.units.filter((other) => other.side === unit.side && isMobileSuit(other) && isAlive(other));
@@ -699,6 +726,8 @@ function activeSkillText(unit) {
   if (unitHasSkill(unit, "priorityTargetDesignation")) skills.push(`優先目標範囲${priorityTargetDesignationRange(unit)}（指揮${priorityTargetCommand(unit)}）`);
   if (unitHasSkill(unit, "precisionAttackControl")) skills.push(`精密管制（命中+${PRECISION_ATTACK_ACCURACY_BONUS} / ダメージ+${PRECISION_ATTACK_DAMAGE_BONUS} / 1攻撃）`);
   if (unitHasSkill(unit, "emergencyRepair")) skills.push(`緊急修理${unit.emergencyRepairUsed ? "使用済み" : `（整備${emergencyRepairMaintenance(unit)}）`}`);
+  if (trailFormationActive(unit)) skills.push(`トレイル陣形（回避+${TRAIL_FORMATION_EVASION_BONUS} / 被ダメージ-${TRAIL_FORMATION_DAMAGE_REDUCTION}）`);
+  if (lineFormationActive(unit)) skills.push(`ライン陣形（命中+${LINE_FORMATION_ACCURACY_BONUS} / ダメージ+${LINE_FORMATION_DAMAGE_BONUS}）`);
   if (unit.priorityTargetId) skills.push("優先目標指示中");
   if (unitHasSkill(unit, "barricadePlacement") && unit.barricadeUsed) skills.push("バリケード設置済み");
   if (activeConcealmentGrace(unit)) skills.push("能動隠密保証中");

@@ -244,6 +244,22 @@ window.GAME_DATA.skills = [
     "implemented": true
   },
   {
+    "id": "trailFormation",
+    "name": "トレイル・フォーメーション",
+    "type": "キャラ/OP",
+    "timing": "常時",
+    "effect": "自機と同じ縦列かつ4マス以内に別の生存味方MSがいると、同条件を満たす自機と味方MSの回避+5、被ダメージ-6。",
+    "implemented": true
+  },
+  {
+    "id": "lineFormation",
+    "name": "ライン・フォーメーション",
+    "type": "キャラ/OP",
+    "timing": "常時",
+    "effect": "自機と同じ横列かつ4マス以内に別の生存味方MSがいると、同条件を満たす自機と味方MSの命中+5、与ダメージ+6。",
+    "implemented": true
+  },
+  {
     "id": "guardMission",
     "name": "護衛任務",
     "type": "キャラ/OP",

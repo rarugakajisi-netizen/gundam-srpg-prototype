@@ -55,6 +55,7 @@ function main() {
   runNode(["work/check-barricade.js"]);
   runNode(["work/check-priority-target.js"]);
   runNode(["work/check-precision-repair.js"]);
+  runNode(["work/check-formations.js"]);
   runNode(["work/check-card-images.js"]);
 }
 

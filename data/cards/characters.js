@@ -1888,7 +1888,7 @@ window.GAME_DATA.characters = [
       "commander"
     ],
     "specials": [
-      "teamwork"
+      "trailFormation"
     ],
     "imagePath": ""
   },
@@ -3700,18 +3700,20 @@ window.GAME_DATA.characters = [
     "characterKey": "masterPRayer",
     "faction": "federation",
     "cost": 130,
-    "shooting": 22,
-    "melee": 18,
-    "reaction": 22,
+    "shooting": 21,
+    "melee": 17,
+    "reaction": 21,
     "awakening": 0,
     "command": 17,
-    "support": 9,
-    "maintenance": 3,
+    "support": 7,
+    "maintenance": 2,
     "roles": [
       "pilot",
       "commander"
     ],
-    "specials": [],
+    "specials": [
+      "lineFormation"
+    ],
     "imagePath": ""
   },
   {
