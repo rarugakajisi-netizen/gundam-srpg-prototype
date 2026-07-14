@@ -31,6 +31,8 @@ const RUNTIME_FILES = [
 const TOOL_FILES = [
   "work/project-files.js",
   "work/load-game-data.js",
+  "work/game-data-helpers.js",
+  "work/check-cli.js",
   "work/check-game-data.js",
   "work/check-play-integrity.js",
   "work/card-balance-report.js",

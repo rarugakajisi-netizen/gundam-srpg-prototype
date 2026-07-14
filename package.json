@@ -6,7 +6,6 @@
   "type": "commonjs",
   "scripts": {
     "start": "python -m http.server 8765",
-    "serve": "python -m http.server 8765",
     "check": "node work/run-checks.js",
     "check:js": "node work/run-checks.js --syntax-only",
     "check:data": "node work/check-game-data.js",

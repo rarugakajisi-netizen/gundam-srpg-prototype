@@ -1,8 +1,30 @@
 #!/usr/bin/env node
 "use strict";
 
+const fs = require("node:fs");
+const path = require("node:path");
 const { spawnSync } = require("node:child_process");
-const { PROJECT_ROOT: ROOT, SYNTAX_CHECK_FILES } = require("./project-files");
+const { PROJECT_ROOT: ROOT, SYNTAX_CHECK_FILES, projectPath } = require("./project-files");
+
+const JAVASCRIPT_SOURCE_DIRS = ["data", "src", "work", "distribution"];
+
+function javascriptFilesIn(relativeDirectory) {
+  const absoluteDirectory = projectPath(relativeDirectory);
+  return fs.readdirSync(absoluteDirectory, { withFileTypes: true }).flatMap((entry) => {
+    const relativePath = `${relativeDirectory}/${entry.name}`;
+    if (entry.isDirectory()) return javascriptFilesIn(relativePath);
+    return path.extname(entry.name) === ".js" ? [relativePath] : [];
+  });
+}
+
+function validateProjectFileManifest() {
+  const registered = new Set(SYNTAX_CHECK_FILES);
+  const discovered = JAVASCRIPT_SOURCE_DIRS.flatMap(javascriptFilesIn);
+  const unregistered = discovered.filter((file) => !registered.has(file));
+  const missing = SYNTAX_CHECK_FILES.filter((file) => !fs.existsSync(projectPath(file)));
+  if (unregistered.length > 0) throw new Error(`Unregistered JavaScript file: ${unregistered.join(", ")}`);
+  if (missing.length > 0) throw new Error(`Registered JavaScript file is missing: ${missing.join(", ")}`);
+}
 
 function runNode(args) {
   const result = spawnSync(process.execPath, args, {
@@ -23,6 +45,7 @@ function main() {
   const syntaxOnly = args.includes("--syntax-only");
   const unknown = args.filter((arg) => arg !== "--syntax-only");
   if (unknown.length > 0) throw new Error(`Unknown argument: ${unknown.join(", ")}`);
+  validateProjectFileManifest();
   runSyntaxChecks();
   if (syntaxOnly) return;
   runNode(["work/check-game-data.js"]);

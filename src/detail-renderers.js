@@ -86,10 +86,6 @@ function weaponUsableByFaction(weapon, faction) {
   return cardUsableByFaction(weapon, faction);
 }
 
-function optionUsableByFaction(option, faction) {
-  return cardUsableByFaction(option, faction);
-}
-
 function optionMapTypesText(option) {
   if (!Array.isArray(option.mapTypes) || option.mapTypes.length === 0) return "地上 / 宇宙";
   return option.mapTypes.map((type) => ({ ground: "地上", space: "宇宙" }[type] ?? type)).join(" / ");

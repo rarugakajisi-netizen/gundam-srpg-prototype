@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
 const packageJson = require("../package.json");
+const { BROWSER_SCRIPT_FILES } = require("./project-files");
 
 const projectRoot = path.resolve(__dirname, "..");
 const distRoot = path.resolve(projectRoot, "dist");
@@ -21,8 +22,7 @@ const releaseEntries = [
   "index.html",
   "styles.css",
   "assets",
-  "data",
-  "src"
+  ...BROWSER_SCRIPT_FILES
 ];
 
 function assertInside(parent, target) {

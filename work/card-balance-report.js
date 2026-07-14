@@ -8,6 +8,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { PROJECT_ROOT: ROOT, DATA_FILES } = require("./project-files");
 const { loadGameData } = require("./load-game-data");
+const { byId, list, cardUsableByFaction, mobileSuitPilotSlots } = require("./game-data-helpers");
 
 const CORE_PATH = path.join(ROOT, "src", "core.js");
 const BALANCE_CONSTANTS = {
@@ -83,14 +84,6 @@ const indexes = {
   maps: byId(data.maps ?? [])
 };
 
-function byId(items = []) {
-  return Object.fromEntries(items.map((item) => [item.id, item]));
-}
-
-function list(value) {
-  return Array.isArray(value) ? value : [];
-}
-
 function number(value, fallback = 0) {
   return Number.isFinite(value) ? value : fallback;
 }
@@ -131,21 +124,10 @@ function factionKey(item) {
   return list(item.factions ?? [item.faction]).filter(Boolean).sort().join(",");
 }
 
-function cardUsableByFaction(card, faction) {
-  if (!card) return false;
-  if (Array.isArray(card.factions)) return card.factions.includes(faction);
-  if (card.faction) return card.faction === faction;
-  return true;
-}
-
 function optionEquippableByMs(option, ms) {
   if (option?.grantsSkill === "examSystem" && list(ms.specials).includes("hadesSystem")) return false;
   if (Number.isFinite(Number(option?.maxMsCost)) && number(ms.cost) > number(option.maxMsCost)) return false;
   return cardUsableByFaction(option, ms.faction);
-}
-
-function mobileSuitPilotSlots(ms) {
-  return Math.max(0, Math.floor(Number(ms?.pilotSlots ?? 1) || 0));
 }
 
 function tagsOf(ms) {
@@ -180,13 +162,6 @@ function characterMsBonus(character, ms) {
   const match = matches.find((row) => row.msId === ms.id)
     ?? matches.reduce((best, row) => !best || number(row.evasionBonus) > number(best.evasionBonus) ? row : best, null);
   return number(match?.evasionBonus);
-}
-
-function msWeaponBonus(ms, weapon) {
-  const matches = list(data.compatibility?.msWeapon).filter((row) => compatibilityMatchesMs(row, ms));
-  const exact = matches.find((row) => row.weaponId === weapon.id);
-  const category = matches.find((row) => !row.weaponId && row.category === weapon.category);
-  return number(exact?.accuracyBonus ?? category?.accuracyBonus);
 }
 
 function attackWeapon(weapon) {
@@ -317,17 +292,6 @@ function msScore(ms) {
     + profile.fixed.count * 25
     + profile.fixed.maxPower * 0.15
     + list(ms.specials).length * 14;
-}
-
-function skillAccuracyBonusFromStatic(ms, character, optionIds = []) {
-  const skills = new Set([...list(ms.specials), ...list(character.specials), ...optionIds.map((id) => indexes.options[id]?.grantsSkill).filter(Boolean)]);
-  let bonus = 0;
-  if (skills.has("commanderCustom")) bonus += 3;
-  if (skills.has("massProductionModernization")) bonus += constants.MASS_PRODUCTION_MODERNIZATION_ACCURACY_BONUS;
-  if (skills.has("educationalComputer")) bonus += constants.EDUCATIONAL_COMPUTER_ACCURACY_CAP;
-  if (skills.has("phantomSystem")) bonus += 10;
-  if (skills.has("examSystem")) bonus += 18;
-  return bonus;
 }
 
 function skillEvasionBonusFromStatic(ms, character, optionIds = [], examActive = false, hadesActive = false) {

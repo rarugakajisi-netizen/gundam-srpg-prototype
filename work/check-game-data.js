@@ -7,6 +7,21 @@
 
 const { DATA_FILES } = require("./project-files");
 const { DIALOGUE_FILE, loadGameData, loadDialogueData } = require("./load-game-data");
+const {
+  byId,
+  list,
+  cardUsableByFaction,
+  characterSelectable,
+  mobileSuitPilotSlots,
+  mapDeployTypes,
+  terrainAt,
+  terrainBlocksMovement,
+  mobileSuitCanDeployOnMap,
+  battleshipCanDeployOnMap,
+  weaponSlotCost,
+  weaponEquippableByMs
+} = require("./game-data-helpers");
+const { formatIssues, parseCheckArgs } = require("./check-cli");
 const DIALOGUE_TYPES = ["attack", "hit", "miss", "move", "wait", "evade", "damaged"];
 
 const COUNTED_COLLECTION_TYPES = new Set(["mobileSuits", "weapons", "options"]);
@@ -15,81 +30,13 @@ const TERRAIN_KEYS = ["water", "forest", "desert", "debris"];
 const MAP_TYPES = new Set(["ground", "space", "colony", "air"]);
 const DEPLOY_TYPES = new Set(["ground", "space"]);
 const MOVEMENT_TYPES = new Set(["normal", "flying", "submarine"]);
-const BLOCKING_TERRAINS = new Set(["obstacle", "cliff", "rock", "building", "wreckage", "domeRuin", "ruin"]);
-
-function byId(items = []) {
-  return Object.fromEntries(items.map((item) => [item.id, item]));
-}
 
 function isPlainObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
-function list(value) {
-  return Array.isArray(value) ? value : [];
-}
-
 function isNonNegativeFinite(value) {
   return Number.isFinite(value) && value >= 0;
-}
-
-function mapDeployTypes(map) {
-  if (map.type === "colony") return ["ground", "space"];
-  if (map.type === "air") return ["ground"];
-  return [map.type];
-}
-
-function terrainAt(map, x, y) {
-  return map.terrain[y * map.width + x] ?? (map.type === "space" ? "space" : "plain");
-}
-
-function terrainBlocksMovement(terrain) {
-  return BLOCKING_TERRAINS.has(terrain);
-}
-
-function movementTypeCanStandOnTerrain(movementType, terrain) {
-  if (terrainBlocksMovement(terrain)) return false;
-  if (movementType === "submarine") return terrain === "water";
-  return true;
-}
-
-function cardCanStandAt(card, map, x, y) {
-  return movementTypeCanStandOnTerrain(card?.movementType ?? "normal", terrainAt(map, x, y));
-}
-
-function mapHasStandableCell(card, map) {
-  for (let y = 0; y < map.height; y += 1) {
-    for (let x = 0; x < map.width; x += 1) {
-      if (cardCanStandAt(card, map, x, y)) return true;
-    }
-  }
-  return false;
-}
-
-function mobileSuitCanDeployOnMap(ms, map, options = []) {
-  const deployTypes = mapDeployTypes(map);
-  return list(ms.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
-    && (map.type !== "air" || ms.movementType === "flying" || options.some((option) => option?.allowsAirDeployment === true))
-    && mapHasStandableCell(ms, map);
-}
-
-function battleshipCanDeployOnMap(ship, map) {
-  const deployTypes = mapDeployTypes(map);
-  return ship.selectable !== false
-    && list(ship.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
-    && (map.type !== "air" || ship.movementType === "flying")
-    && mapHasStandableCell(ship, map);
-}
-
-function weaponSlotCost(weapon) {
-  if (!weapon || weapon.fixedOnly) return 0;
-  return Math.max(1, weapon.slotCost ?? 1);
-}
-
-function cardUsableByFaction(card, faction) {
-  if (Array.isArray(card.factions)) return card.factions.includes(faction);
-  if (card.faction) return card.faction === faction;
-  return true;
 }
 
 function weaponUsableByFaction(weapon, faction) {
@@ -108,21 +55,6 @@ function optionUsableOnMap(option, map) {
 
 function characterUsableByFaction(character, faction) {
   return cardUsableByFaction(character, faction);
-}
-
-function characterSelectable(character) {
-  return character?.selectable !== false;
-}
-
-function mobileSuitPilotSlots(ms) {
-  return Math.max(0, Math.floor(Number(ms?.pilotSlots ?? 1) || 0));
-}
-
-function weaponEquippableByMs(ms, weapon) {
-  return !weapon.fixedOnly
-    && weaponUsableByFaction(weapon, ms.faction)
-    && !list(ms.forbiddenWeaponKinds).includes(weapon.kind)
-    && (!(ms.allowedWeaponIds?.length) || ms.allowedWeaponIds.includes(weapon.id));
 }
 
 function itemLabel(item) {
@@ -846,27 +778,8 @@ function createChecker(data, dialogues = {}) {
   return { run };
 }
 
-function formatIssues(title, issues) {
-  if (issues.length === 0) return `${title}: 0`;
-  return [
-    `${title}: ${issues.length}`,
-    ...issues.map((issue) => `- [${issue.scope}] ${issue.message}`)
-  ].join("\n");
-}
-
-function parseArgs(args) {
-  const parsed = { json: false, warningsAsErrors: false };
-  for (const arg of args) {
-    if (arg === "--json") parsed.json = true;
-    else if (arg === "--warnings-as-errors") parsed.warningsAsErrors = true;
-    else if (arg === "--help") parsed.help = true;
-    else throw new Error(`Unknown argument: ${arg}`);
-  }
-  return parsed;
-}
-
 function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCheckArgs(process.argv.slice(2));
   if (args.help) {
     console.log("Usage: node work/check-game-data.js [--json] [--warnings-as-errors]");
     process.exit(0);

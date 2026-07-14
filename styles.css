@@ -444,15 +444,10 @@ select {
   padding: 10px;
 }
 
-.stage-grid,
 .card-grid,
 .picker-grid {
   display: grid;
   gap: 10px;
-}
-
-.stage-grid {
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 .stage-list {
@@ -1674,7 +1669,6 @@ select {
     min-width: 0;
   }
 
-  .stage-grid,
   .stage-folder-grid,
   .card-grid,
   .picker-grid {

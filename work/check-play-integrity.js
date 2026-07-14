@@ -8,33 +8,26 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { PROJECT_ROOT: ROOT, BROWSER_SCRIPT_FILES } = require("./project-files");
+const { PROJECT_ROOT: ROOT, BROWSER_SCRIPT_FILES, RUNTIME_FILES, projectPath } = require("./project-files");
 const { loadGameData } = require("./load-game-data");
-const SOURCE_PATHS = [
-  path.join(ROOT, "src", "setup-flow.js"),
-  path.join(ROOT, "src", "battle-render.js"),
-  path.join(ROOT, "src", "events.js")
-];
+const {
+  byId,
+  list,
+  cardUsableByFaction,
+  characterSelectable,
+  mapDeployTypes,
+  mobileSuitCanDeployOnMap,
+  battleshipCanDeployOnMap,
+  weaponSlotCost,
+  weaponEquippableByMs
+} = require("./game-data-helpers");
+const { formatIssues, parseCheckArgs } = require("./check-cli");
+const SOURCE_PATHS = RUNTIME_FILES.map(projectPath);
 const COUNTED_CARD_TYPES = new Set(["mobileSuits", "weapons", "options"]);
 const COLLECTION_TYPES = ["mobileSuits", "battleships", "weapons", "characters", "options"];
-const BLOCKING_TERRAINS = new Set(["obstacle", "cliff", "rock", "building", "wreckage", "domeRuin", "ruin"]);
-
-function byId(items = []) {
-  return Object.fromEntries(items.map((item) => [item.id, item]));
-}
-
-function list(value) {
-  return Array.isArray(value) ? value : [];
-}
 
 function itemName(item) {
   return `${item?.name ?? "(no name)"} (${item?.id ?? "no-id"})`;
-}
-
-function cardUsableByFaction(card, faction) {
-  if (Array.isArray(card.factions)) return card.factions.includes(faction);
-  if (card.faction) return card.faction === faction;
-  return true;
 }
 
 function cardUsableOnMap(card, map) {
@@ -49,68 +42,9 @@ function itemFactionIds(item) {
   return [];
 }
 
-function terrainAt(map, x, y) {
-  return map.terrain[y * map.width + x] ?? (map.type === "space" ? "space" : "plain");
-}
-
-function terrainBlocksMovement(terrain) {
-  return BLOCKING_TERRAINS.has(terrain);
-}
-
-function movementTypeCanStandOnTerrain(movementType, terrain) {
-  if (terrainBlocksMovement(terrain)) return false;
-  if (movementType === "submarine") return terrain === "water";
-  return true;
-}
-
-function cardCanStandAt(card, x, y, map) {
-  return movementTypeCanStandOnTerrain(card?.movementType ?? "normal", terrainAt(map, x, y));
-}
-
-function mapHasStandableCell(card, map) {
-  for (let y = 0; y < map.height; y += 1) {
-    for (let x = 0; x < map.width; x += 1) {
-      if (cardCanStandAt(card, x, y, map)) return true;
-    }
-  }
-  return false;
-}
-
-function mapDeployTypes(map) {
-  if (map.type === "colony") return ["ground", "space"];
-  if (map.type === "air") return ["ground"];
-  return [map.type];
-}
-
-function mobileSuitCanDeployOnMap(ms, map) {
-  const deployTypes = mapDeployTypes(map);
-  return list(ms.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
-    && (map.type !== "air" || ms.movementType === "flying")
-    && mapHasStandableCell(ms, map);
-}
-
-function battleshipCanDeployOnMap(ship, map) {
-  const deployTypes = mapDeployTypes(map);
-  return ship.selectable !== false
-    && list(ship.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))
-    && (map.type !== "air" || ship.movementType === "flying")
-    && mapHasStandableCell(ship, map);
-}
-
-function weaponSlotCost(weapon) {
-  if (!weapon || weapon.fixedOnly) return 0;
-  return Math.max(1, weapon.slotCost ?? 1);
-}
 
 function weaponSlotCount(ms) {
   return ms?.weaponSlots ?? 2;
-}
-
-function weaponEquippableByMs(ms, weapon) {
-  return !weapon.fixedOnly
-    && cardUsableByFaction(weapon, ms.faction)
-    && !list(ms.forbiddenWeaponKinds).includes(weapon.kind)
-    && (!(ms.allowedWeaponIds?.length) || ms.allowedWeaponIds.includes(weapon.id));
 }
 
 function setupWeaponCandidate(ms, weapon) {
@@ -141,10 +75,6 @@ function setupCandidatePools(data, collection, faction, map) {
       hasCard(collection, "options", item.id) && cardUsableByFaction(item, faction) && cardUsableOnMap(item, map)
     )
   };
-}
-
-function characterSelectable(character) {
-  return character.selectable !== false;
 }
 
 function createChecker(data) {
@@ -246,10 +176,10 @@ function createChecker(data) {
   }
 
   function validateSourceActions() {
-    const renderSources = [
-      fs.readFileSync(path.join(ROOT, "src", "setup-flow.js"), "utf8"),
-      fs.readFileSync(path.join(ROOT, "src", "battle-render.js"), "utf8")
-    ].join("\n");
+    const renderSources = RUNTIME_FILES
+      .filter((relativePath) => relativePath !== "src/events.js")
+      .map((relativePath) => fs.readFileSync(projectPath(relativePath), "utf8"))
+      .join("\n");
     const eventSource = fs.readFileSync(path.join(ROOT, "src", "events.js"), "utf8");
     const literalActions = new Set(
       [...renderSources.matchAll(/data-action="([a-z0-9-]+)"/g)].map((match) => match[1])
@@ -260,6 +190,20 @@ function createChecker(data) {
     ]);
     for (const action of literalActions) {
       if (!handledActions.has(action)) error("ui.actions", `data-action の処理がありません: ${action}`);
+    }
+  }
+
+  function validateGlobalDefinitions() {
+    const definitions = new Map();
+    const definitionPattern = /^(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(|^(?:const|let|var)\s+([A-Za-z_$][\w$]*)\b/gm;
+    for (const relativePath of BROWSER_SCRIPT_FILES) {
+      const source = fs.readFileSync(projectPath(relativePath), "utf8");
+      for (const match of source.matchAll(definitionPattern)) {
+        const name = match[1] ?? match[2];
+        const previous = definitions.get(name);
+        if (previous) error("ui.globals", `トップレベル定義が重複しています: ${name} (${previous}, ${relativePath})`);
+        else definitions.set(name, relativePath);
+      }
     }
   }
 
@@ -284,12 +228,19 @@ function createChecker(data) {
     const index = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
     const scriptPaths = [...index.matchAll(/<script src="\.\/([^"?]+)(?:\?[^"]*)?"><\/script>/g)].map((match) => match[1]);
     const requiredOrder = BROWSER_SCRIPT_FILES;
+    const duplicateScripts = scriptPaths.filter((script, index) => scriptPaths.indexOf(script) !== index);
+    const unexpectedScripts = scriptPaths.filter((script) => !requiredOrder.includes(script));
+    for (const script of new Set(duplicateScripts)) error("ui.scriptOrder", `index.html で同じスクリプトを重複読込しています: ${script}`);
+    for (const script of unexpectedScripts) error("ui.scriptOrder", `project-files.js に未登録のスクリプトです: ${script}`);
     let lastIndex = -1;
     for (const script of requiredOrder) {
       const current = scriptPaths.indexOf(script);
       if (current === -1) error("ui.scriptOrder", `index.html に ${script} がありません。`);
       if (current < lastIndex) error("ui.scriptOrder", `${script} の読み込み順が前提と違います。`);
       lastIndex = current;
+    }
+    if (scriptPaths.length !== requiredOrder.length) {
+      error("ui.scriptOrder", `index.html と project-files.js のスクリプト数が一致しません: ${scriptPaths.length} !== ${requiredOrder.length}`);
     }
   }
 
@@ -300,6 +251,7 @@ function createChecker(data) {
     validateFreeBattlePools();
     validateSourceActions();
     validateWeaponCountControls();
+    validateGlobalDefinitions();
     validateLoadOrder();
     return { errors, warnings };
   }
@@ -307,27 +259,8 @@ function createChecker(data) {
   return { run };
 }
 
-function formatIssues(title, issues) {
-  if (issues.length === 0) return `${title}: 0`;
-  return [
-    `${title}: ${issues.length}`,
-    ...issues.map((issue) => `- [${issue.scope}] ${issue.message}`)
-  ].join("\n");
-}
-
-function parseArgs(args) {
-  const parsed = { json: false, warningsAsErrors: false };
-  for (const arg of args) {
-    if (arg === "--json") parsed.json = true;
-    else if (arg === "--warnings-as-errors") parsed.warningsAsErrors = true;
-    else if (arg === "--help") parsed.help = true;
-    else throw new Error(`Unknown argument: ${arg}`);
-  }
-  return parsed;
-}
-
 function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseCheckArgs(process.argv.slice(2));
   if (args.help) {
     console.log("Usage: node work/check-play-integrity.js [--json] [--warnings-as-errors]");
     process.exit(0);
