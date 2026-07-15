@@ -1768,6 +1768,7 @@ function moveUnit(unit, x, y) {
     return;
   }
   state.log.push(`${unitName(unit)}が移動。`);
+  checkOutcome();
   renderBattle();
 }
 

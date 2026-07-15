@@ -59,6 +59,7 @@ function main() {
   runNode(["work/check-formations.js"]);
   runNode(["work/check-recommended-formation.js"]);
   runNode(["work/check-free-battle-enemy.js"]);
+  runNode(["work/check-stage-objectives.js"]);
   runNode(["work/check-last-stand-options.js"]);
   runNode(["work/check-tem-ray-parts.js"]);
   runNode(["work/check-suppressive-fire.js"]);

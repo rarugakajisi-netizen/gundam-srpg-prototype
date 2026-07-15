@@ -19,6 +19,7 @@
     "check:formations": "node work/check-formations.js",
     "check:recommended-formation": "node work/check-recommended-formation.js",
     "check:free-battle-enemy": "node work/check-free-battle-enemy.js",
+    "check:stage-objectives": "node work/check-stage-objectives.js",
     "check:last-stand": "node work/check-last-stand-options.js",
     "check:tem-ray-parts": "node work/check-tem-ray-parts.js",
     "check:suppressive-fire": "node work/check-suppressive-fire.js",

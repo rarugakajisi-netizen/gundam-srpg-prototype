@@ -46,6 +46,7 @@ const TOOL_FILES = [
   "work/check-formations.js",
   "work/check-recommended-formation.js",
   "work/check-free-battle-enemy.js",
+  "work/check-stage-objectives.js",
   "work/check-last-stand-options.js",
   "work/check-tem-ray-parts.js",
   "work/check-suppressive-fire.js",
