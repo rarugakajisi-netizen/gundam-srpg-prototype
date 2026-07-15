@@ -366,6 +366,9 @@ function mobileSuitCanDeployOnMap(ms, map = selectedMap(), optionIds = []) {
 
 function mobileSuitCanPotentiallyDeployOnMap(ms, map = selectedMap(), faction = state.faction) {
   if (mobileSuitCanDeployOnMap(ms, map)) return true;
+  const deployTypes = mapDeployTypes(map);
+  if (!(ms.mapTypes ?? ["ground", "space"]).some((type) => deployTypes.includes(type))) return false;
+  if (!mapHasStandableCell(ms, map)) return false;
   if (map.type !== "air" || (ms.optionSlots ?? 1) < 1) return false;
   return (state.data.options ?? []).some((option) => optionProvidesAirDeployment(option) && optionEquippableByMs(option, ms, map, faction));
 }

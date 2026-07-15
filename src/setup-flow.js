@@ -507,151 +507,401 @@ function enemyBridgeForCurrentBattle(mapId = state.selectedMapId, faction = enem
   return isFreeBattle() ? freeBattleEnemyBridge() : enemyBridgeForStage(mapId, faction);
 }
 
-function freeBattleCandidateCharacters(faction, usedKeys) {
-  return state.data.characters
-    .filter((character) => character.faction === faction && !usedKeys.has(character.characterKey ?? character.id));
+const FREE_BATTLE_COMPATIBILITY_PREFERENCE_RATE = 0.3;
+const FREE_BATTLE_ORDINARY_OPTION_RATE = 0.18;
+const FREE_BATTLE_GENERATION_ATTEMPTS = 28;
+const FREE_BATTLE_COMPATIBILITY_BONUS_CACHE = new WeakMap();
+const FREE_BATTLE_ORDINARY_OPTION_TYPES = new Set([
+  "ammo",
+  "energy",
+  "defense-ammo",
+  "defense-beam",
+  "defense-melee",
+  "range",
+  "mobility"
+]);
+
+function freeBattleCharacterRoleMatches(character, role) {
+  const roles = character.roles ?? [];
+  if (role === "pilot") return roles.includes("pilot");
+  if (role === "captain") return roles.includes("captain") || roles.includes("commander");
+  if (role === "firstOfficer") return roles.includes("operator") || roles.includes("mechanic") || roles.includes("commander");
+  return true;
 }
 
-function freeBattleRandomCharacter(faction, usedKeys, preferPilot = true) {
-  const candidates = freeBattleCandidateCharacters(faction, usedKeys);
-  if (candidates.length === 0) return "";
-  const sorted = [...candidates].sort((a, b) => {
-    const aScore = preferPilot ? a.shooting + a.melee + a.reaction : a.command + a.support + a.maintenance;
-    const bScore = preferPilot ? b.shooting + b.melee + b.reaction : b.command + b.support + b.maintenance;
-    return bScore - aScore || b.cost - a.cost;
-  });
-  const picked = randomChoice(sorted.slice(0, Math.min(10, sorted.length)));
-  usedKeys.add(picked.characterKey ?? picked.id);
-  return picked.id;
+function freeBattleCandidateCharacters(faction, usedKeys, role) {
+  const candidates = state.data.characters.filter((character) =>
+    character.faction === faction
+    && !usedKeys.has(character.characterKey ?? character.id)
+  );
+  const roleCandidates = candidates.filter((character) => freeBattleCharacterRoleMatches(character, role));
+  return role === "pilot" || roleCandidates.length > 0 ? roleCandidates : candidates;
 }
 
-function freeBattleRandomWeapons(ms, remainingBudget) {
-  const slots = weaponSlotCount(ms);
-  let usedSlots = 0;
-  const weapons = [];
-  const candidates = state.data.weapons.filter((weapon) => weaponEquippableByMs(ms, weapon));
-  const attackWeapons = candidates.filter((weapon) => weapon.kind !== "shield");
-  const shields = candidates.filter((weapon) => weapon.kind === "shield");
-  const attack = weightedRandomChoice(attackWeapons, (weapon) => {
-    const target = Math.max(20, remainingBudget * 0.18);
-    return 1 / (1 + Math.abs((weapon.cost ?? 0) - target));
-  });
-  if (attack && usedSlots + weaponSlotCost(attack) <= slots) {
-    weapons.push(attack.id);
-    usedSlots += weaponSlotCost(attack);
+function freeBattleCharacterMsBonus(character, ms) {
+  if (!character || !ms) return 0;
+  let msBonuses = FREE_BATTLE_COMPATIBILITY_BONUS_CACHE.get(character);
+  if (!msBonuses) {
+    msBonuses = new WeakMap();
+    FREE_BATTLE_COMPATIBILITY_BONUS_CACHE.set(character, msBonuses);
   }
-  if (Math.random() < 0.55) {
-    const shield = randomChoice(shields.filter((weapon) => usedSlots + weaponSlotCost(weapon) <= slots));
-    if (shield) {
-      weapons.push(shield.id);
-      usedSlots += weaponSlotCost(shield);
+  if (msBonuses.has(ms)) return msBonuses.get(ms);
+  const bonus = (state.data.compatibility?.characterMs ?? [])
+    .filter((item) => item.characterId === character?.id && characterMsCompatibilityMatches(item, ms))
+    .reduce((best, item) => Math.max(best, Number(item.evasionBonus) || 0), 0);
+  msBonuses.set(ms, bonus);
+  return bonus;
+}
+
+function freeBattleRandomCharacter(faction, usedKeys, role, maxCost, targetCost, ms = null) {
+  const affordable = freeBattleCandidateCharacters(faction, usedKeys, role)
+    .filter((character) => (character.cost ?? 0) <= Math.max(0, maxCost));
+  if (affordable.length === 0) return null;
+  const compatible = ms ? affordable.filter((character) => freeBattleCharacterMsBonus(character, ms) > 0) : [];
+  const pool = compatible.length > 0 && Math.random() < FREE_BATTLE_COMPATIBILITY_PREFERENCE_RATE
+    ? compatible
+    : affordable;
+  const picked = weightedRandomChoice(pool, (character) => {
+    const quality = Math.max(1, recommendedCharacterScore(character, role, ms));
+    const costFit = 1 / (1 + Math.abs((character.cost ?? 0) - targetCost) / 35);
+    const compatibilityWeight = ms && freeBattleCharacterMsBonus(character, ms) > 0 ? 1.25 : 1;
+    return (0.6 + quality / 110) * costFit * compatibilityWeight;
+  });
+  if (!picked) return null;
+  usedKeys.add(picked.characterKey ?? picked.id);
+  return picked;
+}
+
+function freeBattleRequiredOptionIds(ms, faction, map) {
+  if (mobileSuitCanDeployOnMap(ms, map)) return [];
+  if (map.type !== "air" || (ms.optionSlots ?? 1) < 1) return null;
+  const option = (state.data.options ?? [])
+    .filter((candidate) => optionProvidesAirDeployment(candidate) && optionEquippableByMs(candidate, ms, map, faction))
+    .sort((a, b) => (a.cost ?? 0) - (b.cost ?? 0) || recommendedOptionScore(b) - recommendedOptionScore(a))[0];
+  return option ? [option.id] : null;
+}
+
+function freeBattleMobileSuitRole(ms) {
+  const fixedWeapons = (ms.fixedWeaponIds ?? []).map((id) => lookup().weapons[id]).filter(Boolean);
+  const maximumRange = fixedWeapons.reduce((best, weapon) => Math.max(best, Number(weapon.range ?? weapon.maxRange) || 1), 1);
+  if (maximumRange >= 4 || (ms.tags ?? []).some((tag) => /sniper|cannon/i.test(tag))) return "support";
+  if ((ms.mobility ?? 0) >= 6 || (ms.agility ?? 0) >= 28) return "mobile";
+  if ((ms.armor ?? 0) >= 350 || fixedWeapons.some((weapon) => weapon.attackType === "melee" && (weapon.power ?? 0) >= 80)) return "frontline";
+  return "general";
+}
+
+function freeBattleTerrainAffinityWeight(ms, map) {
+  const relevantTerrains = new Set(["water", "forest", "desert", "debris"]);
+  const cells = Array.from({ length: boardWidth(map) * boardHeight(map) }, (_, index) =>
+    map.terrain?.[index] ?? (map.type === "space" ? "space" : map.type === "air" ? "air" : "plain")
+  );
+  const standableCells = cells.filter((terrain) => !terrainBlocksMovement(terrain));
+  const suitableCells = standableCells.filter((terrain) =>
+    relevantTerrains.has(terrain) && ms.terrainSuitability?.[terrain] === true
+  );
+  const suitableShare = suitableCells.length / Math.max(1, standableCells.length);
+  return 1 + Math.min(0.55, suitableShare * 1.8);
+}
+
+function freeBattleMobileSuitCandidates(faction, map) {
+  return state.data.mobileSuits.flatMap((ms) => {
+    if (ms.faction !== faction || !mobileSuitCanPotentiallyDeployOnMap(ms, map, faction)) return [];
+    const requiredOptionIds = freeBattleRequiredOptionIds(ms, faction, map);
+    if (requiredOptionIds === null) return [];
+    const requiredOptionCost = requiredOptionIds.reduce((sum, id) => sum + (lookup().options[id]?.cost ?? 0), 0);
+    return [{
+      ms,
+      role: freeBattleMobileSuitRole(ms),
+      qualityScore: recommendedMobileSuitScore(ms),
+      terrainWeight: freeBattleTerrainAffinityWeight(ms, map),
+      requiredOptionIds,
+      baseCost: (ms.cost ?? 0) + requiredOptionCost
+    }];
+  });
+}
+
+function freeBattleRandomMobileSuit(candidates, targetCost, maxCost, selectedCounts, roleCounts) {
+  const affordable = candidates.filter((candidate) => candidate.baseCost <= maxCost);
+  if (affordable.length === 0) return null;
+  return weightedRandomChoice(affordable, (candidate) => {
+    const costFit = 1 / (1 + Math.abs(candidate.baseCost - targetCost) / 55);
+    const efficiency = candidate.qualityScore / Math.max(80, candidate.baseCost);
+    const repeatWeight = 1 / (1 + (selectedCounts[candidate.ms.id] ?? 0) * 0.8);
+    const roleWeight = 1 / (1 + (roleCounts[candidate.role] ?? 0) * 0.45);
+    return costFit * (0.75 + efficiency * 0.5) * repeatWeight * roleWeight * candidate.terrainWeight;
+  });
+}
+
+function freeBattleRandomBattleship(faction, map, targetCost, deployableShips = null) {
+  const deployable = deployableShips ?? state.data.battleships
+    .filter((ship) => ship.faction === faction && battleshipCanDeployOnMap(ship, map));
+  if (deployable.length === 0) return null;
+  const minimumCost = Math.min(...deployable.map((ship) => ship.cost ?? 0));
+  const maximumAffordable = Math.max(minimumCost, targetCost * 0.36);
+  const candidates = deployable.filter((ship) => (ship.cost ?? 0) <= maximumAffordable);
+  const shipTarget = clamp(targetCost * 0.21, minimumCost, Math.max(...candidates.map((ship) => ship.cost ?? 0)));
+  return weightedRandomChoice(candidates, (ship) => {
+    const costFit = 1 / (1 + Math.abs((ship.cost ?? 0) - shipTarget) / 65);
+    const efficiency = recommendedBattleshipScore(ship) / Math.max(150, ship.cost ?? 0);
+    return costFit * (0.7 + efficiency * 0.12);
+  });
+}
+
+function freeBattleRandomBridge(faction, usedKeys, targetCost, remainingBudget) {
+  const equipmentReserve = Math.min(remainingBudget, Math.max(25, targetCost * 0.08));
+  let available = Math.max(0, remainingBudget - equipmentReserve);
+  const captainBudget = Math.min(available, Math.max(45, targetCost * 0.09));
+  const captain = freeBattleRandomCharacter(faction, usedKeys, "captain", captainBudget, captainBudget * 0.8);
+  available -= captain?.cost ?? 0;
+  const firstOfficerBudget = Math.min(available, Math.max(35, targetCost * 0.065));
+  const firstOfficer = Math.random() < 0.68
+    ? freeBattleRandomCharacter(faction, usedKeys, "firstOfficer", firstOfficerBudget, firstOfficerBudget * 0.75)
+    : null;
+  return {
+    captainId: captain?.id ?? "",
+    firstOfficerId: firstOfficer?.id ?? ""
+  };
+}
+
+function freeBattleWeaponComplements(weapon, selectedWeapons) {
+  if (selectedWeapons.length === 0) return true;
+  return selectedWeapons.every((selected) =>
+    selected.attackType !== weapon.attackType
+    || Math.abs((selected.range ?? 1) - (weapon.range ?? 1)) >= 2
+    || selected.kind === "shield"
+    || weapon.kind === "shield"
+  );
+}
+
+function freeBattlePickWeapon(candidates, character, targetCost) {
+  if (candidates.length === 0) return null;
+  return weightedRandomChoice(candidates, (weapon) => {
+    const quality = recommendedWeaponScore(weapon, character);
+    const costFit = 1 / (1 + Math.abs((weapon.cost ?? 0) - targetCost) / 30);
+    return (0.8 + quality / 140) * costFit;
+  });
+}
+
+function freeBattleEquipWeapons(entry, budget) {
+  const ms = lookup().ms[entry.msId];
+  const character = lookup().characters[entry.characterIds[0]] ?? null;
+  const slots = weaponSlotCount(ms);
+  if (slots <= 0 || budget < 0) return 0;
+  const candidates = state.data.weapons.filter((weapon) => weaponEquippableByMs(ms, weapon));
+  const attacks = candidates.filter((weapon) => weapon.kind !== "shield");
+  const fixedAttacks = (ms.fixedWeaponIds ?? []).map((id) => lookup().weapons[id]).filter((weapon) => weapon && weapon.kind !== "shield");
+  const strongestFixedPower = fixedAttacks.reduce((best, weapon) => Math.max(best, weapon.power ?? 0), 0);
+  const selected = [];
+  let spent = 0;
+  let usedSlots = 0;
+  const affordableAttacks = attacks.filter((weapon) =>
+    (weapon.cost ?? 0) <= budget - spent
+    && usedSlots + weaponSlotCost(weapon) <= slots
+  );
+  const needsMainWeapon = fixedAttacks.length === 0 || strongestFixedPower < 90;
+  if (needsMainWeapon || Math.random() < 0.58) {
+    const main = freeBattlePickWeapon(affordableAttacks, character, Math.max(25, budget * 0.55));
+    if (main) {
+      selected.push(main);
+      spent += main.cost ?? 0;
+      usedSlots += weaponSlotCost(main);
     }
   }
-  // 先に選ばれた武器も候補に残し、同一武器カードの複数装備を許可する。
-  for (const weapon of shuffled(candidates)) {
-    if (Math.random() > 0.35) continue;
-    const cost = weaponSlotCost(weapon);
-    if (usedSlots + cost > slots) continue;
-    weapons.push(weapon.id);
-    usedSlots += cost;
-    if (usedSlots >= slots) break;
+  if (usedSlots < slots) {
+    const role = freeBattleMobileSuitRole(ms);
+    const shieldChance = role === "frontline" ? 0.36 : role === "general" ? 0.25 : 0.14;
+    const shields = candidates.filter((weapon) =>
+      weapon.kind === "shield"
+      && !selected.includes(weapon)
+      && (weapon.cost ?? 0) <= budget - spent
+      && usedSlots + weaponSlotCost(weapon) <= slots
+    );
+    const shield = Math.random() < shieldChance ? freeBattlePickWeapon(shields, character, Math.max(20, budget - spent)) : null;
+    if (shield) {
+      selected.push(shield);
+      spent += shield.cost ?? 0;
+      usedSlots += weaponSlotCost(shield);
+    } else if (Math.random() < 0.18) {
+      const alternatives = attacks.filter((weapon) =>
+        !selected.includes(weapon)
+        && freeBattleWeaponComplements(weapon, selected)
+        && (weapon.cost ?? 0) <= budget - spent
+        && usedSlots + weaponSlotCost(weapon) <= slots
+      );
+      const alternative = freeBattlePickWeapon(alternatives, character, Math.max(20, budget - spent));
+      if (alternative) {
+        selected.push(alternative);
+        spent += alternative.cost ?? 0;
+        usedSlots += weaponSlotCost(alternative);
+      }
+    }
   }
-  return fitWeaponIdsToSlots(weapons, ms);
+  entry.weaponIds = selected.map((weapon) => weapon.id);
+  return spent;
 }
 
-function freeBattleRandomOptions(ms, faction, remainingBudget, map = selectedMap()) {
-  const slots = Math.max(0, Number(ms.optionSlots ?? 1) || 0);
-  if (slots <= 0) return [];
-  const candidates = shuffled(state.data.options ?? [])
-    .filter((option) => optionEquippableByMs(option, ms, map, faction) && (option.cost ?? 0) <= Math.max(35, remainingBudget * 0.2))
-  if (map.type === "air" && !mobileSuitNativelyAirborne(ms)) {
-    return shuffled(state.data.options ?? [])
-      .filter((option) => optionProvidesAirDeployment(option) && optionEquippableByMs(option, ms, map, faction))
-      .slice(0, 1)
-      .map((option) => option.id);
-  }
-  if (Math.random() > 0.35) return [];
-  return candidates.slice(0, slots).map((option) => option.id);
+function freeBattleOrdinaryOptionScore(option, entry) {
+  const ms = lookup().ms[entry.msId];
+  const weapons = [...(ms.fixedWeaponIds ?? []), ...(entry.weaponIds ?? [])].map((id) => lookup().weapons[id]).filter(Boolean);
+  const role = freeBattleMobileSuitRole(ms);
+  let score = recommendedOptionScore(option);
+  if (option.effectType === "ammo" && weapons.some((weapon) => weapon.kind === "ammo")) score += 35;
+  if (option.effectType === "energy" && weapons.some((weapon) => (weapon.consume ?? 0) > 0)) score += 35;
+  if (option.effectType.startsWith("defense-") && role === "frontline") score += 28;
+  if (option.effectType === "range" && role === "support") score += 32;
+  if (option.effectType === "mobility" && role !== "support") score += 22;
+  return Math.max(1, score);
 }
 
-function freeBattleRandomEntry(faction, map, usedKeys, remainingBudget) {
-  const candidates = state.data.mobileSuits.filter((ms) => ms.faction === faction && mobileSuitCanPotentiallyDeployOnMap(ms, map, faction));
-  if (candidates.length === 0) return null;
-  const ms = weightedRandomChoice(candidates, (item) => {
-    const target = Math.max(60, remainingBudget * 0.55);
-    return 1 / (1 + Math.abs((item.cost ?? 0) - target));
+function freeBattleEquipOrdinaryOption(formation, faction, map, budget) {
+  if (budget <= 0 || Math.random() >= FREE_BATTLE_ORDINARY_OPTION_RATE) return 0;
+  const pairs = formation.flatMap((entry) => {
+    const ms = lookup().ms[entry.msId];
+    const slots = Math.max(0, Number(ms.optionSlots ?? 1) || 0);
+    if ((entry.optionIds ?? []).length >= slots) return [];
+    return (state.data.options ?? []).flatMap((option) => {
+      if (!FREE_BATTLE_ORDINARY_OPTION_TYPES.has(option.effectType)) return [];
+      if (optionProvidesAirDeployment(option) || (option.cost ?? 0) <= 0 || (option.cost ?? 0) > budget) return [];
+      if (!optionEquippableByMs(option, ms, map, faction)) return [];
+      return [{ entry, option, score: freeBattleOrdinaryOptionScore(option, entry) }];
+    });
   });
-  const optionIds = freeBattleRandomOptions(ms, faction, remainingBudget, map);
-  const weaponIds = freeBattleRandomWeapons(ms, Math.max(0, remainingBudget - ms.cost));
-  const characterId = mobileSuitCanHavePilot(ms) ? freeBattleRandomCharacter(faction, usedKeys, true) : "";
-  return {
-    msId: ms.id,
-    characterIds: characterId ? [characterId] : [],
-    weaponIds,
-    optionIds
-  };
+  if (pairs.length === 0) return 0;
+  const picked = weightedRandomChoice(pairs, (pair) => pair.score / Math.max(20, pair.option.cost ?? 0));
+  picked.entry.optionIds.push(picked.option.id);
+  return picked.option.cost ?? 0;
 }
 
-function freeBattleRandomBridge(faction, usedKeys) {
-  return {
-    captainId: freeBattleRandomCharacter(faction, usedKeys, false),
-    firstOfficerId: freeBattleRandomCharacter(faction, usedKeys, false)
-  };
-}
-
-function freeBattleRandomBattleship(faction, map, targetCost, usedKeys) {
-  const deployableCandidates = state.data.battleships.filter((ship) =>
-    ship.faction === faction
-    && battleshipCanDeployOnMap(ship, map)
-  );
-  const costMatchedCandidates = deployableCandidates.filter((ship) => (ship.cost ?? 0) <= targetCost * 0.65);
-  const candidates = costMatchedCandidates.length > 0 ? costMatchedCandidates : deployableCandidates;
-  if (candidates.length === 0) return { battleshipId: "", bridge: {} };
-  const ship = weightedRandomChoice(candidates, (item) => 1 / (1 + Math.abs((item.cost ?? 0) - targetCost * 0.35)));
-  const bridge = freeBattleRandomBridge(faction, usedKeys);
-  return { battleshipId: ship.id, bridge };
-}
-
-function generateFreeBattleEnemySample(faction, map, targetCost) {
+function generateFreeBattleEnemySample(faction, map, targetCost, generationContext = null) {
   const usedKeys = new Set();
-  const shipSelection = freeBattleRandomBattleship(faction, map, targetCost, usedKeys);
+  const context = generationContext ?? {
+    deployableShips: state.data.battleships.filter((ship) => ship.faction === faction && battleshipCanDeployOnMap(ship, map)),
+    msCandidates: freeBattleMobileSuitCandidates(faction, map)
+  };
+  const ship = freeBattleRandomBattleship(faction, map, targetCost, context.deployableShips);
+  const msCandidates = context.msCandidates;
+  if (!ship || msCandidates.length === 0) return null;
+  const cheapestMsCost = Math.min(...msCandidates.map((candidate) => candidate.baseCost));
+  const maximumUnits = clamp(Number(map.deployment?.enemy?.units?.length) || 4, 1, 6);
+  const crewReserve = Math.min(145, Math.max(25, targetCost * 0.085));
+  const capacityBudget = Math.max(cheapestMsCost, targetCost - (ship.cost ?? 0) - crewReserve);
+  const baseUnitCount = clamp(Math.round(capacityBudget / 295), 1, maximumUnits);
+  const unitVariance = Math.random() < 0.28 ? (Math.random() < 0.5 ? -1 : 1) : 0;
+  const desiredUnits = clamp(baseUnitCount + unitVariance, 1, maximumUnits);
+  const equipmentReserve = Math.min(targetCost * 0.13, desiredUnits * 38);
   const formation = [];
-  const slots = Math.max(1, map.deployment?.enemy?.units?.length ?? 4);
-  for (let index = 0; index < slots; index += 1) {
-    const current = costWithBridge(lookup().battleships[shipSelection.battleshipId], shipSelection.bridge) + formationEntriesCost(formation);
-    const remaining = Math.max(80, targetCost - current);
-    if (index > 0 && current >= targetCost * 0.85 && Math.random() > 0.45) break;
-    const entry = freeBattleRandomEntry(faction, map, usedKeys, remaining / Math.max(1, slots - index));
-    if (!entry) break;
+  const selectedCounts = {};
+  const roleCounts = {};
+  let spent = ship.cost ?? 0;
+
+  for (let index = 0; index < desiredUnits; index += 1) {
+    const unitsLeft = desiredUnits - index;
+    const remainingForUnits = Math.max(cheapestMsCost, targetCost - spent - crewReserve - equipmentReserve);
+    const share = remainingForUnits / unitsLeft;
+    const maximumForMs = Math.max(cheapestMsCost, remainingForUnits - cheapestMsCost * (unitsLeft - 1));
+    const picked = freeBattleRandomMobileSuit(msCandidates, share * 0.66, maximumForMs, selectedCounts, roleCounts);
+    if (!picked) break;
+    const entry = {
+      msId: picked.ms.id,
+      characterIds: [],
+      weaponIds: [],
+      optionIds: [...picked.requiredOptionIds]
+    };
     formation.push(entry);
+    selectedCounts[picked.ms.id] = (selectedCounts[picked.ms.id] ?? 0) + 1;
+    roleCounts[picked.role] = (roleCounts[picked.role] ?? 0) + 1;
+    spent += picked.baseCost;
+
+    if (mobileSuitCanHavePilot(picked.ms)) {
+      const remainingMinimumMs = cheapestMsCost * (unitsLeft - 1);
+      const pilotBudget = Math.max(0, Math.min(share * 0.38, targetCost - spent - crewReserve - equipmentReserve - remainingMinimumMs));
+      const pilot = freeBattleRandomCharacter(faction, usedKeys, "pilot", pilotBudget, Math.max(25, share * 0.28), picked.ms);
+      if (pilot) {
+        entry.characterIds = [pilot.id];
+        spent += pilot.cost ?? 0;
+      }
+    }
   }
+  if (formation.length === 0) return null;
+
+  const bridge = freeBattleRandomBridge(faction, usedKeys, targetCost, Math.max(0, targetCost - spent));
+  spent += crewCost([bridge.captainId, bridge.firstOfficerId]);
+  let weaponBudget = Math.min(Math.max(0, targetCost - spent), targetCost * 0.13);
+  formation.forEach((entry, index) => {
+    const entriesLeft = formation.length - index;
+    const share = weaponBudget / Math.max(1, entriesLeft);
+    const used = freeBattleEquipWeapons(entry, share * 1.35);
+    weaponBudget = Math.max(0, weaponBudget - used);
+    spent += used;
+  });
+  const ordinaryOptionBudget = Math.min(Math.max(0, targetCost - spent), targetCost * 0.05);
+  spent += freeBattleEquipOrdinaryOption(formation, faction, map, ordinaryOptionBudget);
+
   return {
     faction,
     targetCost,
-    ...shipSelection,
+    battleshipId: ship.id,
+    bridge,
     formation
   };
+}
+
+function freeBattleEnemySampleScore(enemy, targetCost) {
+  const cost = freeBattleEnemyCost(enemy);
+  const ratio = cost / Math.max(1, targetCost);
+  let score = Math.abs(ratio - 0.92) * 45;
+  if (ratio < 0.76) score += (0.76 - ratio) * 1500;
+  if (ratio > 1.06) score += (ratio - 1.06) * 2200;
+  const entries = enemy.formation ?? [];
+  const totalSlots = entries.reduce((sum, entry) => sum + weaponSlotCount(lookup().ms[entry.msId]), 0);
+  const usedSlots = entries.reduce((sum, entry) => sum + selectedWeaponSlotCost(entry.weaponIds), 0);
+  const slotFill = usedSlots / Math.max(1, totalSlots);
+  if (slotFill > 0.82) score += (slotFill - 0.82) * 140;
+  const ordinaryOptions = entries.flatMap((entry) => entry.optionIds)
+    .filter((id) => !optionProvidesAirDeployment(lookup().options[id]));
+  if (ordinaryOptions.length > 1) score += (ordinaryOptions.length - 1) * 200;
+  const attackless = entries.filter((entry) => {
+    const ms = lookup().ms[entry.msId];
+    return [...(ms.fixedWeaponIds ?? []), ...(entry.weaponIds ?? [])]
+      .every((id) => (lookup().weapons[id]?.power ?? 0) <= 0);
+  }).length;
+  score += attackless * 400;
+  return score + Math.random() * 12;
+}
+
+function generateFreeBattleEnemy(faction, map, targetCost) {
+  let best = null;
+  let bestScore = Infinity;
+  const generationContext = {
+    deployableShips: state.data.battleships.filter((ship) => ship.faction === faction && battleshipCanDeployOnMap(ship, map)),
+    msCandidates: freeBattleMobileSuitCandidates(faction, map)
+  };
+  for (let index = 0; index < FREE_BATTLE_GENERATION_ATTEMPTS; index += 1) {
+    const sample = generateFreeBattleEnemySample(faction, map, targetCost, generationContext);
+    if (!sample) continue;
+    const score = freeBattleEnemySampleScore(sample, targetCost);
+    if (score < bestScore) {
+      best = sample;
+      bestScore = score;
+    }
+  }
+  if (!best) return null;
+  best.actualCost = freeBattleEnemyCost(best);
+  return best;
 }
 
 function prepareFreeBattleEnemy() {
   const map = selectedMap();
   const faction = otherFaction(state.faction);
   const targetCost = Math.max(100, currentCost());
-  let best = null;
-  for (let index = 0; index < 80; index += 1) {
-    const sample = generateFreeBattleEnemySample(faction, map, targetCost);
-    if (sample.formation.length === 0) continue;
-    const score = Math.abs(freeBattleEnemyCost(sample) - targetCost);
-    if (!best || score < Math.abs(freeBattleEnemyCost(best) - targetCost)) best = sample;
-  }
-  state.freeBattleEnemy = best ?? {
+  state.freeBattleEnemy = generateFreeBattleEnemy(faction, map, targetCost) ?? {
     faction,
     targetCost,
+    actualCost: 0,
     battleshipId: "",
     bridge: {},
-    formation: [freeBattleRandomEntry(faction, map, new Set(), targetCost)].filter(Boolean)
+    formation: []
   };
-  state.freeBattleEnemy.actualCost = freeBattleEnemyCost(state.freeBattleEnemy);
   return state.freeBattleEnemy;
 }
 
