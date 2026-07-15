@@ -23,7 +23,9 @@ function checkOutcome() {
     enemyAlive = state.units.some((unit) => unit.side === "enemy" && isMobileSuit(unit) && isAlive(unit));
   }
   const defenseTargets = state.units.filter((unit) => isDefenseTarget(unit));
-  const defenseTargetsDestroyed = defenseTargets.length > 0 && defenseTargets.every((unit) => !isAlive(unit));
+  const defenseTargetLoss = defenseTargets.length > 0 && (stageDefenseTargetsMustAllSurvive()
+    ? defenseTargets.some((unit) => !isAlive(unit))
+    : defenseTargets.every((unit) => !isAlive(unit)));
   const destructionTargets = state.units.filter((unit) => isDestructionTarget(unit));
   const destructionTargetsDestroyed = destructionTargets.length > 0 && destructionTargets.every((unit) => !isAlive(unit));
   const playerReachTargets = stagePlayerReachTargets();
@@ -37,9 +39,9 @@ function checkOutcome() {
     state.outcome = "敗北";
     state.outcomeMessage = "戦艦または全機を失いました。編成を見直して再挑戦できます。";
     phaseLabel.textContent = state.outcome;
-  } else if (defenseTargetsDestroyed) {
+  } else if (defenseTargetLoss) {
     state.outcome = "敗北";
-    state.outcomeMessage = defenseTargets.length === 1
+    state.outcomeMessage = defenseTargets.length === 1 || stageDefenseTargetsMustAllSurvive()
       ? "防衛対象が破壊されました。敵の攻撃から守り切ってください。"
       : "すべての防衛対象が破壊されました。最低1つは守り切ってください。";
     phaseLabel.textContent = state.outcome;

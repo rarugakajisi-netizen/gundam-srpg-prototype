@@ -51,6 +51,7 @@ function main() {
   runNode(["work/check-game-data.js"]);
   runNode(["work/check-play-integrity.js"]);
   runNode(["work/check-enemy-ai.js"]);
+  runNode(["work/check-defense-target-rules.js"]);
   runNode(["work/check-recon.js"]);
   runNode(["work/check-barricade.js"]);
   runNode(["work/check-priority-target.js"]);

@@ -661,6 +661,10 @@ function stageDefenseTargets(mapId = state.selectedMapId) {
   return Array.isArray(stageConfig(mapId).defenseTargets) ? stageConfig(mapId).defenseTargets : [];
 }
 
+function stageDefenseTargetsMustAllSurvive(mapId = state.selectedMapId) {
+  return !isFreeBattle() && stageConfig(mapId).defenseTargetsMustAllSurvive === true;
+}
+
 function stageDestructionTargets(mapId = state.selectedMapId) {
   if (isFreeBattle()) return [];
   return Array.isArray(stageConfig(mapId).destructionTargets) ? stageConfig(mapId).destructionTargets : [];

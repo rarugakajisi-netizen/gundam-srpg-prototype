@@ -38,6 +38,7 @@ const TOOL_FILES = [
   "work/check-game-data.js",
   "work/check-play-integrity.js",
   "work/check-enemy-ai.js",
+  "work/check-defense-target-rules.js",
   "work/check-recon.js",
   "work/check-barricade.js",
   "work/check-priority-target.js",

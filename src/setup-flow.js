@@ -1417,7 +1417,9 @@ function renderStageRuleChips(stage) {
   if (stage.enemyReinforcements?.trigger === "enemyWipedOut") chips.push("敵増援: 初期敵全滅で出現");
   else if (stage.enemyReinforcements) chips.push("敵増援: 毎ターン出現");
   const defenseTargets = Array.isArray(stage.defenseTargets) ? stage.defenseTargets : [];
-  if (defenseTargets.length > 0) chips.push(`防衛対象: ${defenseTargets.length}個 / 全破壊で敗北`);
+  if (defenseTargets.length > 0) chips.push(stage.defenseTargetsMustAllSurvive === true
+    ? `防衛対象: ${defenseTargets.length}個 / 1個破壊で敗北`
+    : `防衛対象: ${defenseTargets.length}個 / 全破壊で敗北`);
   const destructionTargets = Array.isArray(stage.destructionTargets) ? stage.destructionTargets : [];
   if (destructionTargets.length > 0) chips.push(`破壊目標: ${destructionTargets.length}個 / 全破壊で勝利`);
   const infiltrationTargets = Array.isArray(stage.infiltrationTargets) ? stage.infiltrationTargets : [];
@@ -1430,6 +1432,7 @@ function renderStageRuleChips(stage) {
   if (delayedEnemy) chips.push(`敵起動待機: 第${Math.floor(Number(delayedEnemy.aiInactiveUntilTurn))}ターンから行動`);
   const escortShips = Array.isArray(stage.enemyEscortBattleshipIds) ? stage.enemyEscortBattleshipIds : [];
   if (escortShips.length > 0) chips.push(`敵随伴艦: ${escortShips.length}隻`);
+  if (Number(stage.enemyBattleshipMobilityOverride) === 0) chips.push("敵旗艦: 移動不能");
   return chips.length > 0 ? `<div class="reward-list">${chips.map((text) => `<span class="reward-chip">${text}</span>`).join("")}</div>` : "";
 }
 
@@ -2547,7 +2550,7 @@ function makeUnit(entry, side, x, y, index) {
   };
 }
 
-function makeBattleship(battleshipId, crewIds, side, x, y) {
+function makeBattleship(battleshipId, crewIds, side, x, y, config = {}) {
   const { battleships } = lookup();
   const ship = battleships[battleshipId];
   const runtimeWeapons = runtimeWeaponsForIds(ship.weaponIds);
@@ -2565,6 +2568,9 @@ function makeBattleship(battleshipId, crewIds, side, x, y) {
     maxEnergy: ship.energy,
     x,
     y,
+    mobilityOverride: Number.isFinite(Number(config.mobilityOverride))
+      ? Math.max(0, Math.floor(Number(config.mobilityOverride)))
+      : null,
     weaponIds: [...ship.weaponIds],
     runtimeWeapons,
     usedWeaponIds: [],
@@ -2887,7 +2893,9 @@ function launchBattle() {
     makeBattleship(state.selectedBattleshipId, [state.selectedCaptainId, state.selectedFirstOfficerId].filter(Boolean), "player", playerShipPosition.x, playerShipPosition.y)
   ];
   if (enemyBattleship && enemyShipPosition) {
-    battleships.push(makeBattleship(enemyBattleship.id, enemyCrewIds, "enemy", enemyShipPosition.x, enemyShipPosition.y));
+    battleships.push(makeBattleship(enemyBattleship.id, enemyCrewIds, "enemy", enemyShipPosition.x, enemyShipPosition.y, {
+      mobilityOverride: stageConfig(state.selectedMapId).enemyBattleshipMobilityOverride
+    }));
   }
   enemyEscortBattleships.forEach((ship, index) => {
     const position = enemyEscortShipPositions[index];

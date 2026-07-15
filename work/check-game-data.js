@@ -550,8 +550,15 @@ function createChecker(data, dialogues = {}) {
         }
       }
       if (stage.costCap !== undefined) expectNumber(scope, stage, "costCap");
+      if (stage.enemyBattleshipMobilityOverride !== undefined) {
+        expectNumber(scope, stage, "enemyBattleshipMobilityOverride", { integer: true });
+        if (Number(stage.enemyBattleshipMobilityOverride) < 0) error(`${scope}.enemyBattleshipMobilityOverride`, "0以上である必要があります。");
+      }
       if (stage.turnLimit !== undefined) expectNumber(scope, stage, "turnLimit", { integer: true });
       if (stage.surviveTurns !== undefined) expectNumber(scope, stage, "surviveTurns", { integer: true });
+      if (stage.defenseTargetsMustAllSurvive !== undefined && typeof stage.defenseTargetsMustAllSurvive !== "boolean") {
+        error(`${scope}.defenseTargetsMustAllSurvive`, "booleanである必要があります。");
+      }
       if (stage.enemyReinforcements !== undefined) {
         const reinforcementScope = `${scope}.enemyReinforcements`;
         if (!isPlainObject(stage.enemyReinforcements)) {

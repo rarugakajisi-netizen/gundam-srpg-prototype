@@ -2993,6 +2993,280 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "fangsOfFenrir",
+    "name": "フェンリルの牙",
+    "type": "ground",
+    "width": 8,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 3, "y": 11 },
+        "units": [
+          { "x": 2, "y": 10 },
+          { "x": 3, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 5, "y": 10 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 1, "y": 2 },
+        "units": [
+          { "x": 3, "y": 3 },
+          { "x": 4, "y": 5 },
+          { "x": 3, "y": 7 }
+        ]
+      }
+    },
+    "terrain": [
+      "building", "building", "base",     "base",  "base",  "base",     "building", "building",
+      "building", "water",    "water",    "base",  "base",  "water",    "water",    "building",
+      "building", "water",    "water",    "base",  "base",  "water",    "water",    "building",
+      "building", "base",     "base",     "base",  "base",  "base",     "base",     "building",
+      "building", "building", "plain",    "base",  "base",  "plain",    "building", "building",
+      "building", "building", "building", "base",  "base",  "building", "building", "building",
+      "building", "building", "plain",    "base",  "base",  "plain",    "building", "building",
+      "building", "building", "building", "base",  "base",  "building", "building", "building",
+      "building", "building", "plain",    "base",  "base",  "plain",    "building", "building",
+      "building", "building", "building", "base",  "base",  "building", "building", "building",
+      "building", "base",     "base",     "base",  "base",  "base",     "base",     "building",
+      "building", "building", "base",     "base",  "base",  "base",     "building", "building"
+    ]
+  },
+  {
+    "id": "redGunner",
+    "name": "赤の砲撃手",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 1, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 6, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 4, "y": 0 },
+        "units": [
+          { "x": 4, "y": 2 },
+          { "x": 2, "y": 3 },
+          { "x": 1, "y": 2 },
+          { "x": 5, "y": 4 },
+          { "x": 6, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "desert", "base",  "base",  "base",  "base",  "desert", "desert",
+      "desert", "plain",  "plain", "rock",  "plain", "plain", "plain",  "desert",
+      "plain",  "plain",  "rock",  "plain", "plain", "plain", "rock",   "plain",
+      "plain",  "rock",   "plain", "plain", "cliff", "plain", "plain",  "plain",
+      "desert", "plain",  "plain", "cliff", "plain", "plain", "rock",   "desert",
+      "plain",  "plain",  "rock",  "plain", "plain", "cliff", "plain",  "plain",
+      "plain",  "cliff",  "plain", "plain", "rock",  "plain", "plain",  "plain",
+      "desert", "plain",  "rock",  "plain", "plain", "plain", "plain",  "desert",
+      "plain",  "plain",  "plain", "plain", "plain", "plain", "plain",  "plain",
+      "desert", "desert", "base",  "base",  "base",  "base",  "desert", "desert"
+    ]
+  },
+  {
+    "id": "odessaFrontline",
+    "name": "オデッサ最前線",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 9, "y": 10 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 4, "y": 1 },
+          { "x": 6, "y": 1 },
+          { "x": 3, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 1, "y": 3 },
+          { "x": 8, "y": 3 },
+          { "x": 2, "y": 5 },
+          { "x": 7, "y": 5 },
+          { "x": 3, "y": 4 },
+          { "x": 6, "y": 4 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "desert", "base",  "base",  "base",  "base",  "base",  "base",  "desert", "desert",
+      "desert", "plain",  "plain", "plain", "plain", "plain", "plain", "plain", "plain",  "desert",
+      "plain",  "plain",  "rock",  "plain", "plain", "plain", "plain", "rock",  "plain",  "plain",
+      "plain",  "plain",  "plain", "rock",  "plain", "plain", "rock",  "plain", "plain",  "plain",
+      "desert", "rock",   "plain", "plain", "cliff", "cliff", "plain", "plain", "rock",   "desert",
+      "plain",  "plain",  "plain", "cliff", "plain", "plain", "cliff", "plain", "plain",  "plain",
+      "plain",  "rock",   "plain", "cliff", "plain", "plain", "cliff", "plain", "rock",   "plain",
+      "desert", "plain",  "plain", "plain", "rock",  "rock",  "plain", "plain", "plain",  "desert",
+      "plain",  "plain",  "rock",  "plain", "plain", "plain", "plain", "rock",  "plain",  "plain",
+      "desert", "plain",  "plain", "rock",  "plain", "plain", "rock",  "plain", "plain",  "desert",
+      "plain",  "plain",  "plain", "plain", "plain", "plain", "plain", "plain", "plain",  "plain",
+      "desert", "desert", "desert", "base", "base",  "base",  "base",  "desert", "desert", "desert"
+    ]
+  },
+  {
+    "id": "jaburoWhiteBaseAndGundam",
+    "name": "ジャブロー/木馬とガンダム",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 9, "y": 10 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 5, "y": 2 },
+          { "x": 3, "y": 3 },
+          { "x": 6, "y": 3 },
+          { "x": 4, "y": 4 },
+          { "x": 3, "y": 5 },
+          { "x": 6, "y": 5 },
+          { "x": 2, "y": 6 },
+          { "x": 7, "y": 6 }
+        ]
+      }
+    },
+    "terrain": [
+      "building", "building", "base",  "base",   "base",   "base",   "base",  "base",  "building", "building",
+      "building", "base",     "base",  "base",   "base",   "base",   "base",  "base",  "base",     "building",
+      "building", "water",    "water", "base",   "base",   "base",   "base",  "water", "water",    "building",
+      "building", "water",    "water", "bridge", "bridge", "bridge", "bridge", "water", "water",    "building",
+      "building", "water",    "water", "base",   "base",   "base",   "base",  "water", "water",    "building",
+      "rock",     "plain",    "plain", "base",   "base",   "base",   "base",  "plain", "plain",    "rock",
+      "rock",     "plain",    "plain", "plain",  "rock",   "rock",   "plain", "plain", "plain",    "rock",
+      "rock",     "plain",    "rock",  "plain",  "plain",  "plain",  "plain", "rock",  "plain",    "rock",
+      "rock",     "plain",    "plain", "base",   "base",   "base",   "base",  "plain", "plain",    "rock",
+      "building", "plain",    "plain", "plain",  "rock",   "rock",   "plain", "plain", "plain",    "building",
+      "building", "plain",    "plain", "base",   "base",   "base",   "base",  "plain", "plain",    "building",
+      "building", "building", "base",  "base",   "base",   "base",   "base",  "base",  "building", "building"
+    ]
+  },
+  {
+    "id": "asLongAsTheFangsRemain",
+    "name": "牙あるかぎり",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 9 },
+          { "x": 2, "y": 9 },
+          { "x": 4, "y": 9 },
+          { "x": 5, "y": 9 },
+          { "x": 7, "y": 9 },
+          { "x": 9, "y": 9 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 2, "y": 0 },
+        "escortBattleships": [
+          { "x": 7, "y": 0 }
+        ],
+        "units": [
+          { "x": 4, "y": 1 },
+          { "x": 7, "y": 2 },
+          { "x": 2, "y": 2 },
+          { "x": 5, "y": 3 },
+          { "x": 8, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "plain", "base",  "base",  "base",  "plain", "plain", "base",  "base",  "base",  "plain",
+      "plain", "plain", "plain", "rock",  "plain", "plain", "rock",  "plain", "plain", "plain",
+      "plain", "rock",  "plain", "plain", "plain", "plain", "plain", "plain", "rock",  "plain",
+      "plain", "plain", "rock",  "plain", "plain", "plain", "rock",  "plain", "plain", "plain",
+      "plain", "cliff", "cliff", "plain", "rock",  "plain", "plain", "cliff", "cliff", "plain",
+      "plain", "plain", "cliff", "plain", "plain", "plain", "cliff", "plain", "plain", "plain",
+      "plain", "rock",  "plain", "cliff", "plain", "plain", "cliff", "plain", "rock",  "plain",
+      "plain", "plain", "plain", "plain", "rock",  "rock",  "plain", "plain", "plain", "plain",
+      "plain", "rock",  "plain", "plain", "plain", "plain", "plain", "plain", "rock",  "plain",
+      "plain", "plain", "plain", "base",  "base",  "base",  "base",  "plain", "plain", "plain",
+      "plain", "plain", "base",  "base",  "base",  "base",  "base",  "base",  "plain", "plain",
+      "plain", "plain", "base",  "base",  "base",  "base",  "base",  "base",  "plain", "plain"
+    ]
+  },
+  {
+    "id": "vsFenrirTeam",
+    "name": "VS闇夜のフェンリル隊",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 },
+          { "x": 9, "y": 10 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 4, "y": 1 },
+          { "x": 1, "y": 1 },
+          { "x": 8, "y": 1 },
+          { "x": 2, "y": 2 },
+          { "x": 7, "y": 2 },
+          { "x": 0, "y": 3 },
+          { "x": 2, "y": 3 },
+          { "x": 4, "y": 3 },
+          { "x": 6, "y": 3 },
+          { "x": 9, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "forest", "forest", "plain",  "forest", "forest", "forest", "forest", "plain",  "forest", "forest",
+      "forest", "plain",  "plain",  "forest", "forest", "forest", "forest", "plain",  "forest", "forest",
+      "forest", "plain",  "plain",  "rock",   "forest", "forest", "rock",   "plain",  "plain",  "forest",
+      "plain",  "forest", "plain",  "forest", "plain",  "plain",  "forest", "plain",  "forest", "plain",
+      "forest", "plain",  "rock",   "plain",  "ruin",   "ruin",   "plain",  "rock",   "plain",  "forest",
+      "plain",  "plain",  "forest", "plain",  "plain",  "plain",  "plain",  "forest", "plain",  "plain",
+      "forest", "rock",   "plain",  "ruin",   "plain",  "plain",  "ruin",   "plain",  "rock",   "forest",
+      "plain",  "forest", "plain",  "plain",  "rock",   "rock",   "plain",  "plain",  "forest", "plain",
+      "forest", "plain",  "rock",   "plain",  "plain",  "plain",  "plain",  "rock",   "plain",  "forest",
+      "plain",  "plain",  "plain",  "forest", "plain",  "plain",  "forest", "plain",  "plain",  "plain",
+      "plain",  "plain",  "plain",  "base",   "base",   "base",   "base",   "plain",  "plain",  "plain",
+      "plain",  "plain",  "base",   "base",   "base",   "base",   "base",   "base",   "plain",  "plain"
+    ]
+  },
+  {
     "id": "ballHell",
     "name": "ボール地獄",
     "type": "space",

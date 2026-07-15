@@ -75,7 +75,7 @@ function renderBattleRuleStatus() {
         ${reinforcements?.trigger === "enemyWipedOut"
           ? `<p class="small">増援: 初期配備の敵を全滅させると、新たな敵が出現します。</p>`
           : (reinforcements ? `<p class="small">増援: 条件ターン中、自軍ターン開始時に敵増援が出現します。</p>` : "")}
-        ${defenseTargets.length > 0 ? `<p class="small">防衛対象: ${aliveDefenseTargets} / ${defenseTargets.length} 残存。すべて破壊されると敗北します。</p>` : ""}
+        ${defenseTargets.length > 0 ? `<p class="small">防衛対象: ${aliveDefenseTargets} / ${defenseTargets.length} 残存。${stageDefenseTargetsMustAllSurvive() ? "1つでも破壊されると敗北します。" : "すべて破壊されると敗北します。"}</p>` : ""}
         ${destructionTargets.length > 0 ? `<p class="small">破壊目標: ${aliveDestructionTargets} / ${destructionTargets.length} 残存。制限ターン内にすべて破壊してください。</p>` : ""}
         ${infiltrationTargets.length > 0 ? `<p class="small">進入阻止: 敵機が赤枠の指定マスへ到達すると敗北します。味方ユニットで塞ぐことができます。</p>` : ""}
         ${playerReachTargets.length > 0 ? `<p class="small">到達目標: 自軍MSのいずれかが緑枠の指定マスへ到達すると勝利します。敵部隊を全滅させる必要はありません。</p>` : ""}
@@ -491,7 +491,7 @@ function renderDefenseTargetDetail(unit) {
     </div>
     <p class="support-hint ready">${destruction
       ? "制限ターン内にすべての破壊目標を撃破してください。護衛機を全滅させるだけでは勝利になりません。"
-      : `この対象を守ってください。複数ある場合は、すべて破壊されると敗北します。移動${mobilityFor(unit)}の範囲で退避できます。`}</p>
+      : `この対象を守ってください。${stageDefenseTargetsMustAllSurvive() ? "複数ある場合も、1つ破壊されると敗北します。" : "複数ある場合は、すべて破壊されると敗北します。"}移動${mobilityFor(unit)}の範囲で退避できます。`}</p>
   `;
 }
 

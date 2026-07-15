@@ -13,7 +13,8 @@ window.GAME_DATA.campaign = {
     "fallenColony": { "label": "コロニーの落ちた地で...", "order": 60 },
     "spaceEndOfFlash": { "label": "宇宙、閃光の果てに...", "order": 70 },
     "crossDimension": { "label": "CROSS DIMENSION 0079", "order": 80 },
-    "other": { "label": "その他", "order": 90 }
+    "zeonicFront": { "label": "ジオニックフロント", "order": 90 },
+    "other": { "label": "その他", "order": 100 }
   },
   "initialFaction": "federation",
   "initialCollection": {
@@ -1200,6 +1201,208 @@ window.GAME_DATA.campaign = {
           { "msId": "gundamPixy", "characterIds": ["borkCry"], "weaponIds": ["submachineGun90mm"], "optionIds": ["precisionMeleeProgramOption"] },
           { "msId": "guncannon", "characterIds": ["dabaSoy"], "weaponIds": ["guncannonBeamRifle"], "optionIds": [] },
           { "msId": "guncannon", "characterIds": ["sanaNima"], "weaponIds": ["guncannonBeamRifle"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "fangsOfFenrir",
+      "series": "zeonicFront",
+      "order": 910,
+      "tags": [
+        "ジオニックフロント",
+        "ジオン視点",
+        "地上",
+        "地下施設",
+        "潜水艦ドック",
+        "破壊目標",
+        "ジュノー",
+        "61式戦車"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "juno",
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "",
+      "destructionTargets": [
+        { "name": "ドック発電設備", "x": 3, "y": 0, "armor": 300, "mobility": 0, "faction": "federation" }
+      ],
+      "summary": "敵潜水艦ドックへ続く地下通路を突破し、最奥部の発電設備を破壊します。設備手前の泊地にはジュノーが停泊しており、魚雷と障害物越しのミサイルで侵入部隊を迎撃します。通路上に配備された61式戦車隊にも注意してください。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "redGunner",
+      "series": "zeonicFront",
+      "order": 920,
+      "tags": [
+        "ジオニックフロント",
+        "ジオン視点",
+        "地上",
+        "オデッサ",
+        "荒地",
+        "岩場",
+        "エイガー",
+        "ガンキャノン",
+        "61式戦車",
+        "フライ・マンタ"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "medea",
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "荒地と岩場が広がるオデッサ戦線で、ミデアを拠点とする連邦部隊と交戦します。エイガーのガンキャノンが岩陰から砲撃し、各所に散開した61式戦車とフライ・マンタが地上と上空から攻勢をかけます。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "guncannon", "characterIds": ["eiger"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "flyManta", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "flyManta", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "odessaFrontline",
+      "series": "zeonicFront",
+      "order": 930,
+      "tags": [
+        "ジオニックフロント",
+        "ジオン視点",
+        "地上",
+        "オデッサ",
+        "大規模戦",
+        "荒地",
+        "岩場",
+        "索敵",
+        "爆撃",
+        "エイガー",
+        "サカキ"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "bigTray",
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "オデッサ戦線の本隊を迎撃します。前面へ展開したディッシュが索敵し、その後方からデプ・ロッグが爆撃を加え、ビッグ・トレーを拠点とするガンタンク、エイガーのガンキャノン、サカキを含む61式戦車隊が岩場を越えて攻め込みます。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "guntank", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "guncannon", "characterIds": ["eiger"], "weaponIds": ["guncannonBeamRifle"], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["sakaki"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "dish", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "dish", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "deppRog", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "deppRog", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "jaburoWhiteBaseAndGundam",
+      "series": "zeonicFront",
+      "order": 940,
+      "tags": [
+        "ジオニックフロント",
+        "ジオン視点",
+        "地上",
+        "ジャブロー",
+        "地下基地",
+        "洞窟",
+        "戦艦ドック",
+        "水路",
+        "マドロック"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "blancRival",
+      "enemyBattleshipMobilityOverride": 0,
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "",
+      "summary": "ジャブロー地下の戦艦ドックへ突入し、停泊中で移動不能のブランリヴァルと守備隊を撃破します。エイガーのマドロックを中心に、ジム、サカキを含む61式戦車隊、量産型ガンタンクが、洞窟内の基地施設と小水路を利用して迎撃します。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "gundamMudrock", "characterIds": ["eiger"], "weaponIds": [], "optionIds": [] },
+          { "msId": "gm", "characterIds": ["federationSoldier"], "weaponIds": ["beamSprayGun", "shield"], "optionIds": [] },
+          { "msId": "gm", "characterIds": ["federationSoldier"], "weaponIds": ["beamSprayGun", "shield"], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["sakaki"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "type61Tank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "massProductionGuntank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] },
+          { "msId": "massProductionGuntank", "characterIds": ["federationTankCrew"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "asLongAsTheFangsRemain",
+      "series": "zeonicFront",
+      "order": 950,
+      "tags": [
+        "ジオニックフロント",
+        "ジオン視点",
+        "地上",
+        "防衛戦",
+        "HLV",
+        "全対象生存",
+        "ターン制限",
+        "連邦追撃部隊",
+        "マドロック"
+      ],
+      "enemyFaction": "federation",
+      "enemyBattleshipId": "heavyFork",
+      "enemyEscortBattleshipIds": ["heavyFork"],
+      "enemyCaptainId": "federationOfficer",
+      "enemyFirstOfficerId": "",
+      "surviveTurns": 6,
+      "defenseTargetsMustAllSurvive": true,
+      "defenseTargets": [
+        { "name": "HLV 1", "x": 3, "y": 10, "armor": 500, "mobility": 0 },
+        { "name": "HLV 2", "x": 6, "y": 10, "armor": 500, "mobility": 0 }
+      ],
+      "summary": "連邦軍の追撃から2基のHLVを防衛し、第6ターン終了まで両方を守り切ります。岩場を越えてヘビィ・フォーク2隻と、エイガーのマドロックを中核とするMS・航空混成部隊が迫ります。HLVはいずれか1基でも破壊されると敗北ですが、少量の被弾には耐えられるよう耐久が強化されています。",
+      "enemyFormations": {
+        "federation": [
+          { "msId": "gundamMudrock", "characterIds": ["eiger"], "weaponIds": ["groundGundamBeamRifle", "gmCommandShield"], "optionIds": [] },
+          { "msId": "gmSniper2", "characterIds": ["federationSoldier"], "weaponIds": ["longRangeBeamRifle"], "optionIds": [] },
+          { "msId": "gmCommandGround", "characterIds": ["federationSoldier"], "weaponIds": ["beamGun", "gmCommandShield"], "optionIds": [] },
+          { "msId": "gmCannon", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "jetCoreBooster", "characterIds": ["federationSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "vsFenrirTeam",
+      "series": "zeonicFront",
+      "order": 960,
+      "tags": [
+        "ジオニックフロント",
+        "連邦視点",
+        "地上",
+        "ボスステージ",
+        "夜間戦",
+        "森林",
+        "闇夜のフェンリル隊",
+        "ゲリラ戦術",
+        "敵艦なし"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "summary": "森林と岩場に覆われた夜の戦場で、闇夜のフェンリル隊と決戦します。戦艦を持たない代わりに、ゲラートの指揮下へ専用機、ドム系重MS、グフ、ザク部隊が総動員され、地形を利用した包囲攻撃を仕掛けます。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "zaku1Gerhart", "characterIds": ["gerhartSchmitzer"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "dom", "characterIds": ["nickiRobert"], "weaponIds": ["giantBazooka"], "optionIds": [] },
+          { "msId": "zaku1", "characterIds": ["matAustin"], "weaponIds": ["zakuMachineGun", "zakuBazooka"], "optionIds": [] },
+          { "msId": "domFunf", "characterIds": ["sophieFranc"], "weaponIds": ["raketenBazooka"], "optionIds": [] },
+          { "msId": "gouf", "characterIds": ["renceh"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["charlotteHepner"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["leRoar"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["leighSvagr"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["sandra"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["manning"], "weaponIds": ["spikeShield"], "optionIds": [] }
         ]
       }
     },

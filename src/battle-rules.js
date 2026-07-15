@@ -115,7 +115,13 @@ function mobilityFor(unit) {
   if (isBarricade(unit)) return 0;
   if (isDefenseTarget(unit)) return Math.max(0, Number(unit.mobility) || 0);
   if (isDestructionTarget(unit)) return Math.max(0, Number(unit.mobility) || 0);
-  if (isBattleship(unit)) return battleshipFor(unit).mobility;
+  if (isBattleship(unit)) {
+    return unit.mobilityOverride !== null
+      && unit.mobilityOverride !== undefined
+      && Number.isFinite(Number(unit.mobilityOverride))
+      ? Math.max(0, Math.floor(Number(unit.mobilityOverride)))
+      : battleshipFor(unit).mobility;
+  }
   const optionBonus = unitOptions(unit)
     .filter((option) => option.effectType === "mobility")
     .reduce((total, option) => total + (option.value ?? 1), 0);

@@ -123,6 +123,13 @@ function main() {
   const queueTypes = evaluate(context, "enemyTurnQueue().map((id) => state.units.find((unit) => unit.id === id).type)");
   assert.deepEqual([...queueTypes], ["mobileSuit", "battleship"], "Enemy mobile suits should act before support ships");
 
+  const battleshipMobility = evaluate(context, `({
+    normal: mobilityFor(makeBattleship("blancRival", [], "enemy", 1, 1)),
+    overridden: mobilityFor(makeBattleship("blancRival", [], "enemy", 1, 1, { mobilityOverride: 0 }))
+  })`);
+  assert.equal(battleshipMobility.normal, 3, "A battleship should normally retain its card mobility");
+  assert.equal(battleshipMobility.overridden, 0, "A stage battleship mobility override of zero should make it immobile");
+
   const shipMove = evaluate(context, `(() => {
     const ship = state.units.find((unit) => isBattleship(unit));
     const targets = state.units.filter((unit) => unit.side === "player" && isAttackTarget(unit));
