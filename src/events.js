@@ -27,7 +27,10 @@ function checkOutcome() {
     ? defenseTargets.some((unit) => !isAlive(unit))
     : defenseTargets.every((unit) => !isAlive(unit)));
   const destructionTargets = state.units.filter((unit) => isDestructionTarget(unit));
-  const destructionTargetsDestroyed = destructionTargets.length > 0 && destructionTargets.every((unit) => !isAlive(unit));
+  const randomDestructionTargetGoal = stageRandomDestructionTargetGoal();
+  const destructionTargetsDestroyed = destructionTargets.length > 0 && (randomDestructionTargetGoal === null
+    ? destructionTargets.every((unit) => !isAlive(unit))
+    : destructionTargets.filter((unit) => unit.isRealObjective && !isAlive(unit)).length >= randomDestructionTargetGoal);
   const playerReachTargets = stagePlayerReachTargets();
   const playerReacher = state.units.find((unit) => unitReachedPlayerTarget(unit));
   const infiltrator = state.units.find((unit) => unitReachedInfiltrationTarget(unit));
@@ -63,7 +66,7 @@ function checkOutcome() {
   } else if (stageTurnLimit() !== null && state.phase === "player" && state.turnNumber > stageTurnLimit()) {
     state.outcome = "敗北";
     state.outcomeMessage = destructionTargets.length > 0
-      ? `打ち上げ阻止に失敗しました。${stageTurnLimit()}ターン以内にすべての破壊目標を撃破してください。`
+      ? `打ち上げ阻止に失敗しました。${stageTurnLimit()}ターン以内に${randomDestructionTargetGoal === null ? "すべての破壊目標" : `実目標${randomDestructionTargetGoal}基`}を撃破してください。`
       : `敵の時間稼ぎを許しました。${stageTurnLimit()}ターン以内に敵を撃破してください。`;
     phaseLabel.textContent = state.outcome;
   } else if (survivalComplete) {

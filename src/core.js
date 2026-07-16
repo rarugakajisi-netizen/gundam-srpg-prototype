@@ -670,6 +670,12 @@ function stageDestructionTargets(mapId = state.selectedMapId) {
   return Array.isArray(stageConfig(mapId).destructionTargets) ? stageConfig(mapId).destructionTargets : [];
 }
 
+function stageRandomDestructionTargetGoal(mapId = state.selectedMapId) {
+  if (isFreeBattle()) return null;
+  const goal = Number(stageConfig(mapId).randomDestructionTargetGoal);
+  return Number.isInteger(goal) && goal > 0 ? goal : null;
+}
+
 function stageEnemyEscortBattleshipIds(mapId = state.selectedMapId) {
   if (isFreeBattle()) return [];
   const ids = stageConfig(mapId).enemyEscortBattleshipIds;

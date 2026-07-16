@@ -1421,7 +1421,10 @@ function renderStageRuleChips(stage) {
     ? `防衛対象: ${defenseTargets.length}個 / 1個破壊で敗北`
     : `防衛対象: ${defenseTargets.length}個 / 全破壊で敗北`);
   const destructionTargets = Array.isArray(stage.destructionTargets) ? stage.destructionTargets : [];
-  if (destructionTargets.length > 0) chips.push(`破壊目標: ${destructionTargets.length}個 / 全破壊で勝利`);
+  const randomDestructionTargetGoal = Number(stage.randomDestructionTargetGoal);
+  if (destructionTargets.length > 0) chips.push(Number.isInteger(randomDestructionTargetGoal) && randomDestructionTargetGoal > 0
+    ? `破壊目標: 実目標${randomDestructionTargetGoal}個 / ダミー混在`
+    : `破壊目標: ${destructionTargets.length}個 / 全破壊で勝利`);
   const infiltrationTargets = Array.isArray(stage.infiltrationTargets) ? stage.infiltrationTargets : [];
   if (infiltrationTargets.length > 0) chips.push(`進入阻止: 指定${infiltrationTargets.length}マス到達で敗北`);
   const playerReachTargets = Array.isArray(stage.playerReachTargets) ? stage.playerReachTargets : [];
@@ -2605,9 +2608,20 @@ function makeDestructionTarget(config, index, x, y) {
     armor,
     maxArmor: armor,
     mobility: Math.max(0, Number(config.mobility) || 0),
+    isRealObjective: config.isRealObjective !== false,
+    objectiveRevealed: false,
     x,
     y
   };
+}
+
+function randomDestructionTargetIndexes(count, goal) {
+  const indexes = Array.from({ length: count }, (_, index) => index);
+  for (let index = indexes.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [indexes[index], indexes[swapIndex]] = [indexes[swapIndex], indexes[index]];
+  }
+  return new Set(indexes.slice(0, goal));
 }
 
 function defaultDeploymentPosition(side, kind, index = 0, map = selectedMap()) {
@@ -2905,9 +2919,17 @@ function launchBattle() {
     const position = reserveDefenseTargetCell(target, index, occupied);
     return makeDefenseTarget(target, index, position.x, position.y);
   });
-  const destructionTargets = stageDestructionTargets().map((target, index) => {
+  const destructionTargetConfigs = stageDestructionTargets();
+  const randomDestructionTargetGoal = stageRandomDestructionTargetGoal();
+  const realDestructionTargetIndexes = randomDestructionTargetGoal === null
+    ? null
+    : randomDestructionTargetIndexes(destructionTargetConfigs.length, randomDestructionTargetGoal);
+  const destructionTargets = destructionTargetConfigs.map((target, index) => {
     const position = reserveDefenseTargetCell(target, index, occupied);
-    return makeDestructionTarget(target, index, position.x, position.y);
+    return makeDestructionTarget({
+      ...target,
+      isRealObjective: realDestructionTargetIndexes === null || realDestructionTargetIndexes.has(index)
+    }, index, position.x, position.y);
   });
 
   state.units = [...battleships, ...playerUnits, ...defenseTargets, ...destructionTargets, ...enemyUnits];

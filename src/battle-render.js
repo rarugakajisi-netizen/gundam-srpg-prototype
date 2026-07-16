@@ -66,6 +66,8 @@ function renderBattleRuleStatus() {
   const survivalRemaining = Math.max(0, survivalLimit - state.turnNumber + 1);
   const aliveDefenseTargets = defenseTargets.filter((unit) => isAlive(unit)).length;
   const aliveDestructionTargets = destructionTargets.filter((unit) => isAlive(unit)).length;
+  const randomDestructionTargetGoal = stageRandomDestructionTargetGoal();
+  const destroyedRealDestructionTargets = destructionTargets.filter((unit) => unit.isRealObjective && !isAlive(unit)).length;
   return `
     <section class="panel deployment-panel">
       <div>
@@ -76,7 +78,9 @@ function renderBattleRuleStatus() {
           ? `<p class="small">増援: 初期配備の敵を全滅させると、新たな敵が出現します。</p>`
           : (reinforcements ? `<p class="small">増援: 条件ターン中、自軍ターン開始時に敵増援が出現します。</p>` : "")}
         ${defenseTargets.length > 0 ? `<p class="small">防衛対象: ${aliveDefenseTargets} / ${defenseTargets.length} 残存。${stageDefenseTargetsMustAllSurvive() ? "1つでも破壊されると敗北します。" : "すべて破壊されると敗北します。"}</p>` : ""}
-        ${destructionTargets.length > 0 ? `<p class="small">破壊目標: ${aliveDestructionTargets} / ${destructionTargets.length} 残存。制限ターン内にすべて破壊してください。</p>` : ""}
+        ${destructionTargets.length > 0 ? `<p class="small">${randomDestructionTargetGoal === null
+          ? `破壊目標: ${aliveDestructionTargets} / ${destructionTargets.length} 残存。制限ターン内にすべて破壊してください。`
+          : `破壊目標: 実目標 ${destroyedRealDestructionTargets} / ${randomDestructionTargetGoal} 基を破壊。未確認コンテナ ${aliveDestructionTargets} / ${destructionTargets.length} 基。`}</p>` : ""}
         ${infiltrationTargets.length > 0 ? `<p class="small">進入阻止: 敵機が赤枠の指定マスへ到達すると敗北します。味方ユニットで塞ぐことができます。</p>` : ""}
         ${playerReachTargets.length > 0 ? `<p class="small">到達目標: 自軍MSのいずれかが緑枠の指定マスへ到達すると勝利します。敵部隊を全滅させる必要はありません。</p>` : ""}
         ${initialMines.length > 0 ? `<p class="small">事前配置機雷: 戦場に機雷が${initialMines.length}個設置されています。踏むとダメージを受けるため、表示されたマスを避けて進んでください。</p>` : ""}
@@ -490,7 +494,9 @@ function renderDefenseTargetDetail(unit) {
       <div class="stat"><span>回避補正</span>0</div>
     </div>
     <p class="support-hint ready">${destruction
-      ? "制限ターン内にすべての破壊目標を撃破してください。護衛機を全滅させるだけでは勝利になりません。"
+      ? (stageRandomDestructionTargetGoal() === null
+        ? "制限ターン内にすべての破壊目標を撃破してください。護衛機を全滅させるだけでは勝利になりません。"
+        : `このコンテナを破壊すると、重要物資の有無が判明します。実目標${stageRandomDestructionTargetGoal()}基を破壊してください。`)
       : `この対象を守ってください。${stageDefenseTargetsMustAllSurvive() ? "複数ある場合も、1つ破壊されると敗北します。" : "複数ある場合は、すべて破壊されると敗北します。"}移動${mobilityFor(unit)}の範囲で退避できます。`}</p>
   `;
 }

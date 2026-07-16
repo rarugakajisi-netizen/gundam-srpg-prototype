@@ -1448,6 +1448,117 @@ window.GAME_DATA.campaign = {
       }
     },
     {
+      "mapId": "odessaInvestigationMission",
+      "series": "lostWarChronicles",
+      "order": 1020,
+      "tags": [
+        "Lost War Chronicles",
+        "連邦視点",
+        "地上",
+        "オデッサ",
+        "山林",
+        "調査任務",
+        "防衛戦",
+        "アッザム"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "defenseTargets": [
+        { "name": "ミデア（マチルダ隊）", "x": 3, "y": 9, "armor": 860, "mobility": 3, "faction": "federation" },
+        { "name": "陸戦型ジム（アニッシュ機）", "x": 6, "y": 9, "armor": 285, "mobility": 0, "faction": "federation" }
+      ],
+      "summary": "山林部で友軍を襲った未知のジオン部隊と交戦します。移動可能なマチルダ隊のミデアと、行動不能となったアニッシュの陸戦型ジムを守りながら、ザクII、ドップ、少数のドム、正体不明のアッザムを迎撃してください。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "dopp", "characterIds": [], "weaponIds": [], "optionIds": [] },
+          { "msId": "dopp", "characterIds": [], "weaponIds": [], "optionIds": [] },
+          { "msId": "dom", "characterIds": ["zeonSoldier"], "weaponIds": ["giantBazooka"], "optionIds": [] },
+          { "msId": "dom", "characterIds": ["zeonSoldier"], "weaponIds": ["giantBazooka"], "optionIds": [] },
+          { "msId": "azzam", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "jaburoDefenseMission",
+      "series": "lostWarChronicles",
+      "order": 1030,
+      "tags": [
+        "Lost War Chronicles",
+        "連邦視点",
+        "地上",
+        "ジャブロー",
+        "地下基地",
+        "基地通路",
+        "進入阻止",
+        "水陸両用MS",
+        "装甲ハッチ"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "infiltrationTargets": [
+        { "x": 3, "y": 8 }
+      ],
+      "summary": "ジャブロー地下へ通じる基地通路で、E‐22装甲ハッチの破壊による敵侵入を阻止します。敵がハッチの指定マスへ到達すると敗北。通路を押さえ、必要なら自軍機自身をハッチ上へ配置して防衛してください。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["magellaTopCannon"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "groundHighMobilityZaku", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "groundHighMobilityZaku", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
+          { "msId": "gogg", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "zgok", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "moppingUpOperation",
+      "series": "lostWarChronicles",
+      "order": 1040,
+      "tags": [
+        "Lost War Chronicles",
+        "連邦視点",
+        "地上",
+        "物資集積所",
+        "破壊任務",
+        "ダミー目標",
+        "ギャロップ",
+        "陸戦型ゲルググ",
+        "ドム・トローペン"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": "gallop",
+      "enemyCaptainId": "zeonOfficer",
+      "enemyFirstOfficerId": "",
+      "randomDestructionTargetGoal": 3,
+      "destructionTargets": [
+        { "name": "物資コンテナ", "x": 1, "y": 1, "armor": 180, "mobility": 0, "faction": "zeon" },
+        { "name": "物資コンテナ", "x": 3, "y": 1, "armor": 180, "mobility": 0, "faction": "zeon" },
+        { "name": "物資コンテナ", "x": 6, "y": 1, "armor": 180, "mobility": 0, "faction": "zeon" },
+        { "name": "物資コンテナ", "x": 8, "y": 1, "armor": 180, "mobility": 0, "faction": "zeon" },
+        { "name": "物資コンテナ", "x": 2, "y": 3, "armor": 180, "mobility": 0, "faction": "zeon" },
+        { "name": "物資コンテナ", "x": 5, "y": 3, "armor": 180, "mobility": 0, "faction": "zeon" },
+        { "name": "物資コンテナ", "x": 7, "y": 3, "armor": 180, "mobility": 0, "faction": "zeon" },
+        { "name": "物資コンテナ", "x": 3, "y": 5, "armor": 180, "mobility": 0, "faction": "zeon" },
+        { "name": "物資コンテナ", "x": 6, "y": 5, "armor": 180, "mobility": 0, "faction": "zeon" }
+      ],
+      "summary": "連邦側最後の掃討作戦です。ジオン軍物資集積所に置かれた多数のコンテナから、重要物資入りの実目標を3基破壊してください。どのコンテナが空のダミーかは破壊するまで分かりません。ギャロップ、ケンの陸戦型ゲルググ、ガースキーとジェイクのドム・トローペン隊が物資を守ります。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "gelgoogGround", "characterIds": ["kenBederstadt"], "weaponIds": ["zeonBeamRifle", "goufShield"], "optionIds": [] },
+          { "msId": "domTropen", "characterIds": ["garskyZinobiev"], "weaponIds": ["raketenBazooka"], "optionIds": [] },
+          { "msId": "domTropen", "characterIds": ["jakeGuns"], "weaponIds": ["raketenBazooka"], "optionIds": [] },
+          { "msId": "zakuCannon", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zakuCannon", "characterIds": ["zeonSoldier"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "gouf", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] },
+          { "msId": "gouf", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": [] }
+        ]
+      }
+    },
+    {
       "mapId": "garmaFalls",
       "series": "main",
       "order": 20,

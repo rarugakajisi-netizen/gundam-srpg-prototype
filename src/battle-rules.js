@@ -1531,6 +1531,12 @@ function attack(attacker, defender, weapon, renderAfter = true) {
     if (!isAlive(defender)) {
       defenderDestroyedByThisAttack = true;
       state.log.push(`${defenderName}を撃破。`);
+      if (isDestructionTarget(defender) && stageRandomDestructionTargetGoal() !== null) {
+        defender.objectiveRevealed = true;
+        state.log.push(defender.isRealObjective
+          ? `${defenderName}は重要物資を積んでいた。実目標を破壊した。`
+          : `${defenderName}は空のダミーだった。`);
+      }
     }
   }
 

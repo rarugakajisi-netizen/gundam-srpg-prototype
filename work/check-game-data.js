@@ -550,6 +550,12 @@ function createChecker(data, dialogues = {}) {
         }
       }
       if (stage.costCap !== undefined) expectNumber(scope, stage, "costCap");
+      if (stage.randomDestructionTargetGoal !== undefined) {
+        expectNumber(scope, stage, "randomDestructionTargetGoal", { integer: true });
+        const goal = Number(stage.randomDestructionTargetGoal);
+        if (goal < 1) error(`${scope}.randomDestructionTargetGoal`, "1以上である必要があります。");
+        if (goal > list(stage.destructionTargets).length) error(`${scope}.randomDestructionTargetGoal`, "destructionTargets の件数以下である必要があります。");
+      }
       if (stage.enemyBattleshipMobilityOverride !== undefined) {
         expectNumber(scope, stage, "enemyBattleshipMobilityOverride", { integer: true });
         if (Number(stage.enemyBattleshipMobilityOverride) < 0) error(`${scope}.enemyBattleshipMobilityOverride`, "0以上である必要があります。");

@@ -3307,6 +3307,138 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "odessaInvestigationMission",
+    "name": "オデッサ調査任務",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 5, "y": 10 },
+          { "x": 7, "y": 10 },
+          { "x": 9, "y": 10 }
+        ]
+      },
+      "enemy": {
+        "units": [
+          { "x": 1, "y": 2 },
+          { "x": 4, "y": 1 },
+          { "x": 7, "y": 2 },
+          { "x": 0, "y": 3 },
+          { "x": 9, "y": 3 },
+          { "x": 2, "y": 1 },
+          { "x": 7, "y": 1 },
+          { "x": 5, "y": 1 }
+        ]
+      }
+    },
+    "terrain": [
+      "rock",   "forest", "forest", "plain",  "plain",  "plain",  "plain",  "forest", "forest", "rock",
+      "rock",   "plain",  "plain",  "rock",   "plain",  "plain",  "rock",   "plain",  "plain",  "rock",
+      "forest", "plain",  "rock",   "plain",  "forest", "forest", "plain",  "plain",  "rock",   "forest",
+      "forest", "forest", "plain",  "plain",  "rock",   "rock",   "plain",  "plain",  "forest", "forest",
+      "plain",  "rock",   "forest", "plain",  "plain",  "plain",  "plain",  "forest", "rock",   "plain",
+      "plain",  "plain",  "forest", "rock",   "plain",  "plain",  "rock",   "forest", "plain",  "plain",
+      "forest", "plain",  "plain",  "rock",   "forest", "forest", "rock",   "plain",  "plain",  "forest",
+      "rock",   "plain",  "forest", "plain",  "plain",  "plain",  "plain",  "forest", "plain",  "rock",
+      "plain",  "forest", "plain",  "plain",  "rock",   "rock",   "plain",  "plain",  "forest", "plain",
+      "rock",   "plain",  "plain",  "base",   "base",   "base",   "base",   "plain",  "plain",  "rock",
+      "plain",  "plain",  "base",   "base",   "base",   "base",   "base",   "base",   "plain",  "plain",
+      "rock",   "rock",   "base",   "base",   "base",   "base",   "base",   "base",   "rock",   "rock"
+    ]
+  },
+  {
+    "id": "jaburoDefenseMission",
+    "name": "ジャブロー防衛任務",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 4, "y": 8 },
+          { "x": 6, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "units": [
+          { "x": 1, "y": 1 },
+          { "x": 3, "y": 1 },
+          { "x": 5, "y": 1 },
+          { "x": 1, "y": 2 },
+          { "x": 6, "y": 2 },
+          { "x": 2, "y": 3 },
+          { "x": 5, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "building", "building", "base",  "base",   "base",   "base",  "building", "building",
+      "building", "base",     "base",  "base",   "base",   "base",  "base",     "building",
+      "building", "base",     "water", "base",   "base",   "water", "base",     "building",
+      "building", "base",     "water", "base",   "base",   "water", "base",     "building",
+      "building", "base",     "water", "base",   "base",   "water", "base",     "building",
+      "building", "base",     "water", "base",   "base",   "water", "base",     "building",
+      "building", "base",     "base",  "base",   "base",   "base",  "base",     "building",
+      "building", "base",     "base",  "base",   "base",   "base",  "base",     "building",
+      "building", "base",     "base",  "base",   "base",   "base",  "base",     "building",
+      "building", "building", "base",  "base",   "base",   "base",  "building", "building"
+    ]
+  },
+  {
+    "id": "moppingUpOperation",
+    "name": "掃討作戦",
+    "type": "ground",
+    "width": 10,
+    "height": 12,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 5, "y": 11 },
+        "units": [
+          { "x": 0, "y": 10 },
+          { "x": 2, "y": 10 },
+          { "x": 4, "y": 10 },
+          { "x": 6, "y": 10 },
+          { "x": 8, "y": 10 }
+        ]
+      },
+      "enemy": {
+        "battleship": { "x": 5, "y": 0 },
+        "units": [
+          { "x": 0, "y": 2 },
+          { "x": 4, "y": 2 },
+          { "x": 9, "y": 2 },
+          { "x": 1, "y": 4 },
+          { "x": 8, "y": 4 },
+          { "x": 2, "y": 6 },
+          { "x": 7, "y": 6 }
+        ]
+      }
+    },
+    "terrain": [
+      "rock",  "plain", "base",  "base",  "base",  "base",  "base",  "base",  "plain", "rock",
+      "plain", "base",  "base",  "base",  "plain", "base",  "plain", "base",  "base",  "plain",
+      "plain", "plain", "base",  "rock",  "plain", "plain", "plain", "rock",  "plain", "plain",
+      "rock",  "plain", "base",  "plain", "base",  "base",  "base",  "base",  "plain", "rock",
+      "plain", "plain", "plain", "rock",  "plain", "plain", "rock",  "plain", "plain", "plain",
+      "plain", "rock",  "plain", "base",  "base",  "base",  "base",  "plain", "rock",  "plain",
+      "plain", "plain", "rock",  "plain", "plain", "plain", "plain", "rock",  "plain", "plain",
+      "forest","plain", "plain", "rock",  "plain", "plain", "rock",  "plain", "plain", "forest",
+      "plain", "forest","plain", "plain", "rock",  "rock",  "plain", "plain", "forest","plain",
+      "rock",  "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "rock",
+      "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain", "plain",
+      "rock",  "rock",  "plain", "plain", "plain", "plain", "plain", "plain", "rock",  "rock"
+    ]
+  },
+  {
     "id": "ballHell",
     "name": "ボール地獄",
     "type": "space",

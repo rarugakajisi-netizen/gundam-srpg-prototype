@@ -98,7 +98,57 @@ function main() {
   assert.equal(evaluate(context, "stageDefenseTargetsMustAllSurvive()"), false,
     "Free battle should ignore the must-all-survive stage rule");
 
-  console.log("Defense-target checks passed: default multi-target loss, all-target survival requirement, free-battle exclusion.");
+  evaluate(context, `
+    state.data.maps.push({
+      id: "randomDestructionRuleTestMap",
+      name: "Random Destruction Rule Test",
+      type: "ground",
+      width: 8,
+      height: 8,
+      terrain: Array(64).fill("plain")
+    });
+    state.data.campaign.stages.push({
+      mapId: "randomDestructionRuleTestMap",
+      enemyFaction: "zeon",
+      enemyBattleshipId: null,
+      randomDestructionTargetGoal: 2,
+      destructionTargets: Array.from({ length: 4 }, (_, index) => ({ name: "Container " + index, x: index, y: 1, armor: 100 }))
+    });
+    state.selectedMapId = "randomDestructionRuleTestMap";
+    state.battleMode = "stage";
+    state.phase = "player";
+    state.turnNumber = 1;
+    state.outcome = null;
+    state.log = [];
+    state.units = [
+      makeBattleship("gunperry", [], "player", 3, 7),
+      makeUnit({ msId: "gm", characterIds: ["federationSoldier"], weaponIds: ["beamSprayGun"], optionIds: [] }, "player", 3, 6, 0),
+      makeUnit({ msId: "zaku2", characterIds: ["zeonSoldier"], weaponIds: ["zakuMachineGun"], optionIds: [] }, "enemy", 3, 1, 0),
+      makeDestructionTarget({ name: "Container 0", armor: 100, isRealObjective: false }, 0, 0, 1),
+      makeDestructionTarget({ name: "Container 1", armor: 100, isRealObjective: true }, 1, 1, 1),
+      makeDestructionTarget({ name: "Container 2", armor: 100, isRealObjective: true }, 2, 2, 1),
+      makeDestructionTarget({ name: "Container 3", armor: 100, isRealObjective: false }, 3, 4, 1)
+    ];
+  `);
+  assert.equal(evaluate(context, "stageRandomDestructionTargetGoal()"), 2,
+    "A random destruction stage should expose its real-objective goal");
+  assert.equal(evaluate(context, "randomDestructionTargetIndexes(9, 3).size"), 3,
+    "Random objective selection should always choose the configured number of unique targets");
+
+  evaluate(context, `state.units.find((unit) => unit.name === "Container 0").armor = 0; checkOutcome();`);
+  assert.equal(evaluate(context, "state.outcome"), null,
+    "Destroying a dummy target must not complete the random destruction mission");
+  evaluate(context, `state.units.find((unit) => unit.name === "Container 1").armor = 0; checkOutcome();`);
+  assert.equal(evaluate(context, "state.outcome"), null,
+    "Destroying fewer real targets than the goal must not complete the mission");
+  evaluate(context, `state.units.find((unit) => unit.name === "Container 2").armor = 0; checkOutcome();`);
+  assert.equal(evaluate(context, "state.outcome"), "勝利",
+    "Destroying the configured number of real targets should complete the mission");
+  evaluate(context, `state.battleMode = "free";`);
+  assert.equal(evaluate(context, "stageRandomDestructionTargetGoal()"), null,
+    "Free battle should ignore the random destruction stage rule");
+
+  console.log("Objective-rule checks passed: defense targets, random real/dummy destruction targets, and free-battle exclusion.");
 }
 
 main();

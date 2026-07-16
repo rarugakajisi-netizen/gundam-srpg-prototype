@@ -271,6 +271,7 @@ unit.weaponCharges = {
 - `defenseTargets`: 通常ステージ専用の防衛対象。`[{ name, x, y, armor, mobility }]` を指定し、すべて破壊されると敗北。敵AIは優先的に攻撃します。`mobility` は任意で、未指定なら移動不可。フリー対戦では反映しない。
 - `defenseTargetsMustAllSurvive: true`: 複数の防衛対象を1つでも破壊された時点で敗北にする。全対象の生存が必要な護衛任務に使い、フリー対戦では反映しない。
 - `destructionTargets`: 通常ステージ専用の破壊目標。`[{ name, x, y, armor, mobility, faction }]` を指定し、すべて破壊すると勝利。敵MSや戦艦ではないため通常の全滅判定に含めず、護衛部隊だけを全滅させても勝利にならない。`turnLimit` と組み合わせて時間制限付きの破壊任務にでき、フリー対戦では反映しない。
+- `randomDestructionTargetGoal`: `destructionTargets` 内から開始時に実目標をランダム抽選する件数。実目標だけを指定数破壊すると勝利し、候補中の残りは破壊時に空のダミーと判明する。フリー対戦では反映しない。
 - `infiltrationTargets`: 通常ステージ専用の進入阻止地点。`[{ x, y }]` を指定し、生存中の敵MSがいずれかへ到達すると敗北。敵AIは指定地点への前進を優先し、味方ユニットで地点を塞げる。フリーバトルでは反映しない。
 - 報酬はステージ別には持たせず、`campaign.commonDropRewards` による全体ランダムドロップを使います。
 - `commonDropRewards.categoryWeights` は、まずどの種別を抽選するかの重みです。機体やキャラが増えても、戦艦など少数カテゴリがカード枚数差で埋もれないようにここで調整します。
