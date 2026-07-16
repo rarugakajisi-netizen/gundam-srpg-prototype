@@ -14,7 +14,8 @@ window.GAME_DATA.campaign = {
     "spaceEndOfFlash": { "label": "宇宙、閃光の果てに...", "order": 70 },
     "crossDimension": { "label": "CROSS DIMENSION 0079", "order": 80 },
     "zeonicFront": { "label": "ジオニックフロント", "order": 90 },
-    "other": { "label": "その他", "order": 100 }
+    "lostWarChronicles": { "label": "Lost War Chronicles", "order": 100 },
+    "other": { "label": "その他", "order": 110 }
   },
   "initialFaction": "federation",
   "initialCollection": {
@@ -1403,6 +1404,46 @@ window.GAME_DATA.campaign = {
           { "msId": "zaku2", "characterIds": ["leighSvagr"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
           { "msId": "zaku2", "characterIds": ["sandra"], "weaponIds": ["zakuBazooka"], "optionIds": [] },
           { "msId": "zaku2", "characterIds": ["manning"], "weaponIds": ["spikeShield"], "optionIds": [] }
+        ]
+      }
+    },
+    {
+      "mapId": "experimentalUnit",
+      "series": "lostWarChronicles",
+      "order": 1010,
+      "tags": [
+        "Lost War Chronicles",
+        "連邦視点",
+        "地上",
+        "護衛戦",
+        "防衛対象",
+        "ビッグ・トレー",
+        "増援",
+        "グフ",
+        "ド・ダイII"
+      ],
+      "enemyFaction": "zeon",
+      "enemyBattleshipId": null,
+      "defenseTargets": [
+        { "name": "ビッグ・トレー", "x": 4, "y": 1, "armor": 1100, "mobility": 0, "faction": "federation" }
+      ],
+      "enemyReinforcements": {
+        "startTurn": 2,
+        "endTurn": 2,
+        "countPerTurn": 3,
+        "entries": [
+          { "msId": "zaku2", "characterIds": ["kenBederstadt"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["garskyZinobiev"], "weaponIds": ["zakuMachineGun"], "optionIds": [] },
+          { "msId": "zaku2", "characterIds": ["jakeGuns"], "weaponIds": ["zakuMachineGun"], "optionIds": [] }
+        ]
+      },
+      "summary": "連邦軍のビッグ・トレーを、ド・ダイIIに搭乗したグフ2機とドップ2機から護衛します。第2ターンにはケン、ガースキー、ジェイクのザクII隊が追いつき、側面からビッグ・トレーへ迫ります。",
+      "enemyFormations": {
+        "zeon": [
+          { "msId": "gouf", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": ["dodai2"] },
+          { "msId": "gouf", "characterIds": ["zeonSoldier"], "weaponIds": [], "optionIds": ["dodai2"] },
+          { "msId": "dopp", "characterIds": [], "weaponIds": [], "optionIds": [] },
+          { "msId": "dopp", "characterIds": [], "weaponIds": [], "optionIds": [] }
         ]
       }
     },

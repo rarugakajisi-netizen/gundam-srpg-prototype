@@ -3267,6 +3267,46 @@ window.GAME_DATA.maps = [
     ]
   },
   {
+    "id": "experimentalUnit",
+    "name": "実験部隊",
+    "type": "ground",
+    "width": 8,
+    "height": 10,
+    "deployment": {
+      "player": {
+        "battleship": { "x": 4, "y": 9 },
+        "units": [
+          { "x": 0, "y": 8 },
+          { "x": 2, "y": 8 },
+          { "x": 3, "y": 8 },
+          { "x": 5, "y": 8 },
+          { "x": 6, "y": 8 },
+          { "x": 7, "y": 8 }
+        ]
+      },
+      "enemy": {
+        "units": [
+          { "x": 2, "y": 2 },
+          { "x": 5, "y": 2 },
+          { "x": 0, "y": 3 },
+          { "x": 7, "y": 3 }
+        ]
+      }
+    },
+    "terrain": [
+      "desert", "base",  "base",  "base",  "base",  "base",  "base",  "desert",
+      "desert", "plain", "rock",  "base",  "base",  "rock",  "plain", "desert",
+      "plain",  "plain", "plain", "forest", "forest", "plain", "plain", "plain",
+      "plain",  "rock",  "plain", "forest", "forest", "plain", "rock",  "plain",
+      "desert", "plain", "forest", "base",  "base",  "forest", "plain", "desert",
+      "plain",  "plain", "rock",  "base",  "base",  "rock",  "plain", "plain",
+      "plain",  "rock",  "plain", "plain", "plain", "plain", "rock",  "plain",
+      "desert", "plain", "plain", "rock",  "rock",  "plain", "plain", "desert",
+      "plain",  "plain", "base",  "base",  "base",  "base",  "plain", "plain",
+      "desert", "desert", "base",  "base",  "base",  "base",  "desert", "desert"
+    ]
+  },
+  {
     "id": "ballHell",
     "name": "ボール地獄",
     "type": "space",
